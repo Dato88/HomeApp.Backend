@@ -1,0 +1,65 @@
+﻿namespace HomeApp.Library.Tests.Crud.BudgetColumnCrudTests
+{
+    public class BudgetColumnReadTests : BaseBudgetColumnTest
+    {
+        [Fact]
+        public async Task FindByIdAsync_ReturnsBudgetColumn_WhenExists()
+        {
+            // Arrange
+            BudgetColumn budgetColumn = new()
+            {
+                Index = 1,
+                Name = "Test Budget Column"
+            };
+
+            _context.BudgetColumns.Add(budgetColumn);
+            await _context.SaveChangesAsync();
+
+            // Act
+            BudgetColumn? result = await _budgetColumnCrud.FindByIdAsync(budgetColumn.Id);
+
+            // Assert
+            result.Should().Be(budgetColumn);
+        }
+
+        [Fact]
+        public async Task FindByIdAsync_ReturnsNull_WhenNotExists()
+        {
+            // Assert
+            Func<Task> action = async () => await _budgetColumnCrud.FindByIdAsync(999);
+
+            // Assert
+            await action.Should().ThrowAsync<InvalidOperationException>()
+                                 .WithMessage(BudgetMessage.ColumnNotFound);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsAllBudgetColumns()
+        {
+            // Arrange
+            BudgetColumn budgetColumn1 = new()
+            {
+                Index = 1,
+                Name = "Test Budget Column1"
+            };
+
+
+            BudgetColumn budgetColumn2 = new()
+            {
+                Index = 2,
+                Name = "Test Budget Column2"
+            };
+
+
+            _context.BudgetColumns.Add(budgetColumn1);
+            _context.BudgetColumns.Add(budgetColumn2);
+            await _context.SaveChangesAsync();
+
+            // Act
+            IEnumerable<BudgetColumn>? result = await _budgetColumnCrud.GetAllAsync();
+
+            // Assert
+            result.Should().Contain(new[] { budgetColumn1, budgetColumn2 });
+        }
+    }
+}
