@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Library.Crud
+﻿namespace HomeApp.Library.Cruds
 {
     public abstract class BaseCrud<T>(HomeAppContext context, IBudgetValidation budgetValidation) : BaseContext(context)
     {

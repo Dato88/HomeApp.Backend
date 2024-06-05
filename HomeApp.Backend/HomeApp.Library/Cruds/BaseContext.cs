@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Library.Crud
+﻿namespace HomeApp.Library.Cruds
 {
     public class BaseContext(HomeAppContext context)
     {

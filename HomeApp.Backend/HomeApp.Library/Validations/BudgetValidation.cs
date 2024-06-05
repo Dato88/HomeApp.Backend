@@ -1,6 +1,6 @@
-﻿using HomeApp.Library.Crud;
+﻿using HomeApp.Library.Cruds;
 
-namespace HomeApp.Library.Validation
+namespace HomeApp.Library.Validations
 {
     public class BudgetValidation(HomeAppContext context) : BaseContext(context), IBudgetValidation
     {

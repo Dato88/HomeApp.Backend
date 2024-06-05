@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeApp.DataAccess\HomeApp.DataAccess.csproj" />
+    <ProjectReference Include="..\HomeApp.Library\HomeApp.Library.csproj" />
   </ItemGroup>
 
 </Project>
