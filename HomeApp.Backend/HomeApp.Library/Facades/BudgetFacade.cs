@@ -23,5 +23,53 @@ namespace HomeApp.Library.Facades
 
             return selectedBudget;
         }
+
+        public async Task PostBudgetCellAsync(BudgetCell budgetCell)
+        {
+            try
+            {
+                await _budgetCellCrud.CreateAsync(budgetCell);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task PostBudgetColumnAsync(BudgetColumn budgetColumn)
+        {
+            try
+            {
+                await _budgetColumnCrud.CreateAsync(budgetColumn);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task PostBudgetGroupAsync(BudgetGroup budgetGroup)
+        {
+            try
+            {
+                await _budgetGroupCrud.CreateAsync(budgetGroup);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task PostBudgetRowAsync(BudgetRow budgetRow)
+        {
+            try
+            {
+                await _budgetRowCrud.CreateAsync(budgetRow);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

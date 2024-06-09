@@ -1,5 +1,4 @@
 ﻿using HomeApp.Library.Models;
-using System.Security.Claims;
 
 namespace HomeApp.Library.Tests.Facades
 {
