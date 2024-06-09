@@ -32,7 +32,8 @@ namespace HomeApp.Library.Facades
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 
@@ -44,7 +45,8 @@ namespace HomeApp.Library.Facades
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 
@@ -56,7 +58,8 @@ namespace HomeApp.Library.Facades
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
 
@@ -68,7 +71,8 @@ namespace HomeApp.Library.Facades
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
