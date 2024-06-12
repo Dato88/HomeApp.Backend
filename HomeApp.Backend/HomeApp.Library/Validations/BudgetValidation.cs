@@ -15,8 +15,6 @@ namespace HomeApp.Library.Validations
 
         public async Task ValidateBudgetColumnIdExistsAsync(int budgetColumnId)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetColumnId, BudgetMessage.BudgetColumnId);
-
             if (await _context.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId))
                 throw new InvalidOperationException(BudgetMessage.ColumnIdExist);
         }

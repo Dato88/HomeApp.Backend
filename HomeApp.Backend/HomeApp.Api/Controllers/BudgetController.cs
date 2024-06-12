@@ -28,7 +28,7 @@ namespace HomeApp.Api.Controllers
         }
 
         [HttpPost(Name = "PostBudgetColumn")]
-        public async Task<BudgetColumn> PostBudgetColumnAsync(BudgetColumn budgetColumn)
+        public async Task<BudgetColumn> PostBudgetColumnAsync([FromBody] BudgetColumn budgetColumn)
         {
             await _budgetFacade.CreateBudgetColumnAsync(budgetColumn);
 
@@ -36,7 +36,7 @@ namespace HomeApp.Api.Controllers
         }
 
         [HttpPost(Name = "PostBudgetGroup")]
-        public async Task<BudgetGroup> PostBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task<BudgetGroup> PostBudgetGroupAsync([FromBody] BudgetGroup budgetGroup)
         {
             await _budgetFacade.CreateBudgetGroupAsync(budgetGroup);
 
@@ -45,7 +45,7 @@ namespace HomeApp.Api.Controllers
 
 
         [HttpPost(Name = "PostBudgetRow")]
-        public async Task<BudgetRow> PostBudgetRowAsync(BudgetRow budgetRow)
+        public async Task<BudgetRow> PostBudgetRowAsync([FromBody] BudgetRow budgetRow)
         {
             await _budgetFacade.CreateBudgetRowAsync(budgetRow);
 

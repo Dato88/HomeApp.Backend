@@ -26,14 +26,9 @@
         /// <summary>
         /// Validate BudgetColumn Table if budgetColumnId exists.
         /// <para>
-        /// <code>Throws an exception if the budgetColumnId is negative or Zero.</code>
         /// <code>Throws an exception if the budgetColumnId is found in BudgetColumn Table.</code>
         /// </para>
         /// </summary>
-        /// <param name="budgetColumnId">Selected BudgetColumnId</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// Thrown when userId is negative or Zero.
-        /// </exception>
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetColumnId is found in BudgetColumn Table.
         /// </exception>
