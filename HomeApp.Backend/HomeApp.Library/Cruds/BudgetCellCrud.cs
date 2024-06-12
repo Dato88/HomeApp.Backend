@@ -9,9 +9,9 @@ namespace HomeApp.Library.Cruds
             ArgumentNullException.ThrowIfNull(budgetCell);
 
             await _budgetValidation.ValidateForUserIdAsync(budgetCell.UserId);
-            await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetCell.BudgetRowId);
-            await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetCell.BudgetColumnId);
-            await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetCell.BudgetGroupId);
+            await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetCell.BudgetRowId);
+            await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId);
+            await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId);
 
             _context.BudgetCells.Add(budgetCell);
             await _context.SaveChangesAsync();

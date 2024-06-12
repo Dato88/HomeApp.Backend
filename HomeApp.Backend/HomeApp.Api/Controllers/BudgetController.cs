@@ -11,43 +11,43 @@ namespace HomeApp.Api.Controllers
     {
         private readonly IBudgetFacade _budgetFacade = budgetFacade;
 
-        [HttpGet(Name = "GetBudget")]
-        public async Task<Budget> GetAsync()
+        [HttpGet(Name = "GetAll")]
+        public async Task<Budget?> GetAllAsync()
         {
             Budget? budget = await _budgetFacade.GetBudgetAsync(1);
 
             return budget;
         }
 
-        [HttpPost(Name = "PostCell")]
-        public async Task<BudgetCell> PostBudgetCellAsync(BudgetCell budgetCell)
+        [HttpPost(Name = "PostBudgetCell")]
+        public async Task<BudgetCell> PostBudgetCellAsync([FromBody] BudgetCell budgetCell)
         {
-            await _budgetFacade.PostBudgetCellAsync(budgetCell);
+            await _budgetFacade.CreateBudgetCellAsync(budgetCell);
 
             return budgetCell;
         }
 
-        [HttpPost(Name = "PostColumn")]
+        [HttpPost(Name = "PostBudgetColumn")]
         public async Task<BudgetColumn> PostBudgetColumnAsync(BudgetColumn budgetColumn)
         {
-            await _budgetFacade.PostBudgetColumnAsync(budgetColumn);
+            await _budgetFacade.CreateBudgetColumnAsync(budgetColumn);
 
             return budgetColumn;
         }
-        
-        [HttpPost(Name = "PostGroup")]
+
+        [HttpPost(Name = "PostBudgetGroup")]
         public async Task<BudgetGroup> PostBudgetGroupAsync(BudgetGroup budgetGroup)
         {
-            await _budgetFacade.PostBudgetGroupAsync(budgetGroup);
+            await _budgetFacade.CreateBudgetGroupAsync(budgetGroup);
 
             return budgetGroup;
         }
 
 
-        [HttpPost(Name = "PostRow")]
+        [HttpPost(Name = "PostBudgetRow")]
         public async Task<BudgetRow> PostBudgetRowAsync(BudgetRow budgetRow)
         {
-            await _budgetFacade.PostBudgetRowAsync(budgetRow);
+            await _budgetFacade.CreateBudgetRowAsync(budgetRow);
 
             return budgetRow;
         }

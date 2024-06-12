@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Tests.Facades
 {
@@ -17,6 +19,7 @@ namespace HomeApp.Library.Tests.Facades
         protected readonly Mock<IBudgetColumnCrud> _budgetColumnCrudMock;
         protected readonly Mock<IBudgetGroupCrud> _budgetGroupCrudMock;
         protected readonly Mock<IBudgetRowCrud> _budgetRowCrudMock;
+        protected readonly Mock<ILogger<BudgetFacade>> _iLogger;
 
         public BaseBudgetFacadeTest()
         {
@@ -36,7 +39,11 @@ namespace HomeApp.Library.Tests.Facades
             _budgetRowCrudMock.DefaultValue = DefaultValue.Mock;
             _budgetRowCrudMock.SetupAllProperties();
 
-            _budgetFacade = new(_budgetCellCrudMock.Object, _budgetColumnCrudMock.Object, _budgetGroupCrudMock.Object, _budgetRowCrudMock.Object);
+            _iLogger = new();
+            _iLogger.DefaultValue = DefaultValue.Mock;
+            _iLogger.SetupAllProperties();
+
+            _budgetFacade = new(_budgetCellCrudMock.Object, _budgetColumnCrudMock.Object, _budgetGroupCrudMock.Object, _budgetRowCrudMock.Object, _iLogger.Object);
         }
     }
 }

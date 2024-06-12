@@ -6,10 +6,19 @@ using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Validation.Interfaces;
 using HomeApp.Library.Validations;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using ILogger = Serilog.ILogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+ILogger logger = 
+    new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Services.AddSingleton(logger);
 
 builder.Services.AddDbContext<HomeAppContext>(options =>
 {
