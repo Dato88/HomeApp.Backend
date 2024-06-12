@@ -183,7 +183,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(budgetIndex, budgetName);
+            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetIndex, budgetName);
 
             await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumn Index and Name already Exist").WithMessage(BudgetMessage.ColumnIndexAlreadyExists);
         }
@@ -192,7 +192,7 @@ namespace HomeApp.Library.Tests.ValidationTests
         public async Task ValidateBudgetColumnIndexAndNameAlreadyExistsAsync_UniqueIndexAndName_NoExceptionThrown()
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(1, "Unique Column");
+            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(1, "Unique Column");
             await action.Should().NotThrowAsync();
         }
 
@@ -444,7 +444,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             // Act & Assert
             Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does Exist already").WithMessage(BudgetMessage.RowIdNotExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does Exist already").WithMessage(BudgetMessage.RowIdExists);
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace HomeApp.Library.Cruds
             await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumn.Id);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetColumn.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetColumn.Index);
-            await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(budgetColumn.Index, budgetColumn.Name);
+            await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetColumn.Index, budgetColumn.Name);
 
             _context.BudgetColumns.Add(budgetColumn);
             await _context.SaveChangesAsync();
@@ -54,7 +54,7 @@ namespace HomeApp.Library.Cruds
             await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumn.Id);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetColumn.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetColumn.Index);
-            await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(budgetColumn.Index, budgetColumn.Name);
+            await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetColumn.Index, budgetColumn.Name);
 
             BudgetColumn? existingBudgetColumn = await _context.BudgetColumns.FindAsync(budgetColumn.Id);
 
