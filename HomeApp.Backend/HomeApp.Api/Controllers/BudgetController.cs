@@ -74,5 +74,29 @@ namespace HomeApp.Api.Controllers
         {
             await _budgetFacade.UpdateBudgetRowAsync(budgetRow);
         }
+
+        [HttpPost(Name = "DeleteBudgetCell")]
+        public async Task DeleteBudgetCellAsync(int id)
+        {
+            await _budgetFacade.DeleteBudgetCellAsync(id);
+        }
+
+        [HttpPost(Name = "DeleteBudgetColumn")]
+        public async Task DeleteBudgetColumnAsync(int id)
+        {
+            await _budgetFacade.DeleteBudgetColumnAsync(id);
+        }
+
+        [HttpPost(Name = "DeleteBudgetGroup")]
+        public async Task DeleteBudgetGroupAsync(int id)
+        {
+            await _budgetFacade.DeleteBudgetGroupAsync(id);
+        }
+
+        [HttpPost(Name = "DeleteBudgetRow")]
+        public async Task DeleteBudgetRowAsync(int id)
+        {
+            await _budgetFacade.DeleteBudgetRowAsync(id);
+        }
     }
 }

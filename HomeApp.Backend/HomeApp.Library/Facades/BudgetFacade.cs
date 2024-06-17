@@ -46,7 +46,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetCellError(budgetCell, DateTime.Now);
+                CreateLogBudgetCellError(budgetCell, DateTime.Now);
             }
         }
 
@@ -60,7 +60,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetColumnError(budgetColumn, DateTime.Now);
+                CreateLogBudgetColumnError(budgetColumn, DateTime.Now);
             }
         }
 
@@ -74,7 +74,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetGroupError(budgetGroup, DateTime.Now);
+                CreateLogBudgetGroupError(budgetGroup, DateTime.Now);
             }
         }
 
@@ -88,7 +88,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetRowError(budgetRow, DateTime.Now);
+                CreateLogBudgetRowError(budgetRow, DateTime.Now);
             }
         }
 
@@ -116,7 +116,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogUpdateBudgetColumnError(budgetColumn, DateTime.Now);
+                UpdateLogBudgetColumnError(budgetColumn, DateTime.Now);
             }
         }
 
@@ -130,7 +130,7 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetGroupError(budgetGroup, DateTime.Now);
+                UpdateLogBudgetGroupError(budgetGroup, DateTime.Now);
             }
         }
 
@@ -144,7 +144,64 @@ namespace HomeApp.Library.Facades
             }
             catch
             {
-                LogCreateBudgetRowError(budgetRow, DateTime.Now);
+                UpdateLogBudgetRowError(budgetRow, DateTime.Now);
+            }
+        }
+
+
+        public async Task DeleteBudgetCellAsync(int id)
+        {
+            try
+            {
+                await _budgetCellCrud.DeleteAsync(id);
+
+                DeleteLogBudgetCellInformation(id, DateTime.Now);
+            }
+            catch
+            {
+                DeleteLogBudgetCellError(id, DateTime.Now);
+            }
+        }
+
+        public async Task DeleteBudgetColumnAsync(int id)
+        {
+            try
+            {
+                await _budgetColumnCrud.DeleteAsync(id);
+
+                DeleteLogBudgetColumnInformation(id, DateTime.Now);
+            }
+            catch
+            {
+                DeleteLogBudgetColumnError(id, DateTime.Now);
+            }
+        }
+
+        public async Task DeleteBudgetGroupAsync(int id)
+        {
+            try
+            {
+                await _budgetGroupCrud.DeleteAsync(id);
+
+                DeleteLogBudgetGroupInformation(id, DateTime.Now);
+            }
+            catch
+            {
+                DeleteLogBudgetGroupError(id, DateTime.Now);
+            }
+        }
+
+        public async Task DeleteBudgetRowAsync(int id)
+        {
+            try
+            {
+                await _budgetRowCrud.DeleteAsync(id);
+
+                DeleteLogBudgetRowInformation(id, DateTime.Now);
+            }
+            catch
+            {
+                DeleteLogBudgetRowError(id, DateTime.Now);
             }
         }
     }

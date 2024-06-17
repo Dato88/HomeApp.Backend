@@ -14,5 +14,10 @@ namespace HomeApp.Library.Facades.Interfaces
         Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn);
         Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
         Task UpdateBudgetRowAsync(BudgetRow budgetRow);
+
+        Task DeleteBudgetCellAsync(int id);
+        Task DeleteBudgetColumnAsync(int id);
+        Task DeleteBudgetGroupAsync(int id);
+        Task DeleteBudgetRowAsync(int id);
     }
 }
