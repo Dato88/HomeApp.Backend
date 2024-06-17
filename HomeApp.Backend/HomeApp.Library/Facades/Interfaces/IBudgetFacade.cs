@@ -9,5 +9,10 @@ namespace HomeApp.Library.Facades.Interfaces
         Task CreateBudgetColumnAsync(BudgetColumn budgetColumn);
         Task CreateBudgetGroupAsync(BudgetGroup budgetGroup);
         Task CreateBudgetRowAsync(BudgetRow budgetRow);
+
+        Task UpdateBudgetCellAsync(BudgetCell budgetCell);
+        Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn);
+        Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup);
+        Task UpdateBudgetRowAsync(BudgetRow budgetRow);
     }
 }

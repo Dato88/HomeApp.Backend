@@ -42,11 +42,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetCellCrud.CreateAsync(budgetCell);
 
-                LogBudgetCell(budgetCell, DateTime.Now);
+                CreateLogBudgetCellInformation(budgetCell, DateTime.Now);
             }
             catch
             {
-                LogBudgetCellError(budgetCell, DateTime.Now);
+                LogCreateBudgetCellError(budgetCell, DateTime.Now);
             }
         }
 
@@ -56,11 +56,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetColumnCrud.CreateAsync(budgetColumn);
 
-                LogBudgetColumn(budgetColumn, DateTime.Now);
+                CreateLogBudgetColumnInformation(budgetColumn, DateTime.Now);
             }
             catch
             {
-                LogBudgetColumnError(budgetColumn, DateTime.Now);
+                LogCreateBudgetColumnError(budgetColumn, DateTime.Now);
             }
         }
 
@@ -70,11 +70,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetGroupCrud.CreateAsync(budgetGroup);
 
-                LogBudgetGroup(budgetGroup, DateTime.Now);
+                CreateLogBudgetGroupInformation(budgetGroup, DateTime.Now);
             }
             catch
             {
-                LogBudgetGroupError(budgetGroup, DateTime.Now);
+                LogCreateBudgetGroupError(budgetGroup, DateTime.Now);
             }
         }
 
@@ -84,11 +84,67 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetRowCrud.CreateAsync(budgetRow);
 
-                LogBudgetRow(budgetRow, DateTime.Now);
+                CreateLogBudgetRowInformation(budgetRow, DateTime.Now);
             }
             catch
             {
-                LogBudgetRowError(budgetRow, DateTime.Now);
+                LogCreateBudgetRowError(budgetRow, DateTime.Now);
+            }
+        }
+
+        public async Task UpdateBudgetCellAsync(BudgetCell budgetCell)
+        {
+            try
+            {
+                await _budgetCellCrud.UpdateAsync(budgetCell);
+
+                UpdateLogBudgetCellInformation(budgetCell, DateTime.Now);
+            }
+            catch
+            {
+                UpdateLogBudgetCellError(budgetCell, DateTime.Now);
+            }
+        }
+
+        public async Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn)
+        {
+            try
+            {
+                await _budgetColumnCrud.UpdateAsync(budgetColumn);
+
+                UpdateLogBudgetColumnInformation(budgetColumn, DateTime.Now);
+            }
+            catch
+            {
+                LogUpdateBudgetColumnError(budgetColumn, DateTime.Now);
+            }
+        }
+
+        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
+        {
+            try
+            {
+                await _budgetGroupCrud.UpdateAsync(budgetGroup);
+
+                UpdateLogBudgetGroupInformation(budgetGroup, DateTime.Now);
+            }
+            catch
+            {
+                LogCreateBudgetGroupError(budgetGroup, DateTime.Now);
+            }
+        }
+
+        public async Task UpdateBudgetRowAsync(BudgetRow budgetRow)
+        {
+            try
+            {
+                await _budgetRowCrud.UpdateAsync(budgetRow);
+
+                UpdateLogBudgetRowInformation(budgetRow, DateTime.Now);
+            }
+            catch
+            {
+                LogCreateBudgetRowError(budgetRow, DateTime.Now);
             }
         }
     }

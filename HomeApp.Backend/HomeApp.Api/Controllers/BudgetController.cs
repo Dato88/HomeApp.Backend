@@ -43,13 +43,36 @@ namespace HomeApp.Api.Controllers
             return budgetGroup;
         }
 
-
         [HttpPost(Name = "PostBudgetRow")]
         public async Task<BudgetRow> PostBudgetRowAsync([FromBody] BudgetRow budgetRow)
         {
             await _budgetFacade.CreateBudgetRowAsync(budgetRow);
 
             return budgetRow;
+        }
+
+        [HttpPost(Name = "PutBudgetCell")]
+        public async Task PutBudgetCellAsync([FromBody] BudgetCell budgetCell)
+        {
+            await _budgetFacade.UpdateBudgetCellAsync(budgetCell);
+        }
+
+        [HttpPost(Name = "PutBudgetColumn")]
+        public async Task PutBudgetColumnAsync([FromBody] BudgetColumn budgetColumn)
+        {
+            await _budgetFacade.UpdateBudgetColumnAsync(budgetColumn);
+        }
+        
+        [HttpPost(Name = "PutBudgetGroup")]
+        public async Task PutBudgetGroupAsync([FromBody] BudgetGroup budgetGroup)
+        {
+            await _budgetFacade.UpdateBudgetGroupAsync(budgetGroup);
+        }
+        
+        [HttpPost(Name = "PutBudgetRow")]
+        public async Task PutBudgetRowAsync([FromBody] BudgetRow budgetRow)
+        {
+            await _budgetFacade.UpdateBudgetRowAsync(budgetRow);
         }
     }
 }
