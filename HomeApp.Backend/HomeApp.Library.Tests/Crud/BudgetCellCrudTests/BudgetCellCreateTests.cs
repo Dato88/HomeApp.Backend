@@ -11,7 +11,8 @@
                 UserId = 1,
                 Name = "Test Budget Cell",
                 BudgetRowId = 1,
-                BudgetColumnId = 1
+                BudgetColumnId = 1,
+                Year = 2021
             };
 
             // Act
@@ -29,6 +30,24 @@
         }
 
         [Fact]
+        public async Task CreateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
+        {
+            BudgetCell budgetCell = new()
+            {
+                UserId = 1,
+                Name = "Test Budget Cell",
+                BudgetRowId = 1,
+                BudgetColumnId = 1
+            };
+
+            // Act & Assert
+            Func<Task> action = async () => await _budgetCellCrud.CreateAsync(budgetCell);
+
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+                                .WithMessage($"Year ('{budgetCell.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCell.Year}.");
+        }
+
+        [Fact]
         public async Task CreateAsync_CallsAllValidations_Once()
         {
             // Arrange
@@ -37,7 +56,8 @@
                 UserId = 1,
                 Name = "Test Budget Cell",
                 BudgetRowId = 1,
-                BudgetColumnId = 1
+                BudgetColumnId = 1,
+                Year = 2021
             };
 
             // Act
@@ -49,7 +69,7 @@
             _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsNotAsync(It.IsAny<int>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsNotAsync(It.IsAny<int>()), Times.Once);
         }
-        
+
         [Fact]
         public async Task CreateAsync_CallsAllValidations_Once_WithSelectedParameter()
         {
@@ -59,7 +79,8 @@
                 UserId = 1,
                 Name = "Test Budget Cell",
                 BudgetRowId = 5,
-                BudgetColumnId = 11
+                BudgetColumnId = 11,
+                Year = 2021
             };
 
             // Act
