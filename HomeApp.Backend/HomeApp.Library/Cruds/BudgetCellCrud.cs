@@ -57,6 +57,7 @@ namespace HomeApp.Library.Cruds
         public override async Task UpdateAsync(BudgetCell budgetCell)
         {
             ArgumentNullException.ThrowIfNull(budgetCell);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCell.Year, nameof(budgetCell.Year));
 
             await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(budgetCell.BudgetRowId, budgetCell.UserId);
             await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetCell.BudgetRowId);

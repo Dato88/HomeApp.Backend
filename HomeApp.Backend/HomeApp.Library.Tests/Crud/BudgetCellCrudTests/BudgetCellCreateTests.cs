@@ -32,6 +32,7 @@
         [Fact]
         public async Task CreateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
         {
+            // Arrange
             BudgetCell budgetCell = new()
             {
                 UserId = 1,

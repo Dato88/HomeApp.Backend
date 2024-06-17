@@ -1,4 +1,5 @@
-﻿using HomeApp.Library.Cruds.Interfaces;
+﻿using HomeApp.DataAccess.Models;
+using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds
 {
@@ -7,7 +8,7 @@ namespace HomeApp.Library.Cruds
         public override async Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn)
         {
             ArgumentNullException.ThrowIfNull(budgetColumn);
-
+           
             await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumn.Id);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetColumn.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetColumn.Index);

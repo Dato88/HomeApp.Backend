@@ -1,4 +1,5 @@
-﻿using HomeApp.Library.Cruds.Interfaces;
+﻿using HomeApp.DataAccess.Models;
+using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds
 {
@@ -7,6 +8,7 @@ namespace HomeApp.Library.Cruds
         public override async Task<BudgetRow> CreateAsync(BudgetRow budgetRow)
         {
             ArgumentNullException.ThrowIfNull(budgetRow);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
             await _budgetValidation.ValidateForUserIdAsync(budgetRow.UserId);
             await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRow.Id);
@@ -54,6 +56,7 @@ namespace HomeApp.Library.Cruds
         public override async Task UpdateAsync(BudgetRow budgetRow)
         {
             ArgumentNullException.ThrowIfNull(budgetRow);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
             await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(budgetRow.Id, budgetRow.UserId);
             await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRow.Id);
