@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Library.Crud
+﻿namespace HomeApp.Library.Cruds
 {
     public class UserCrud(HomeAppContext context, IUserValidation userValidation) : BaseCrud<User>(context, null)
     {

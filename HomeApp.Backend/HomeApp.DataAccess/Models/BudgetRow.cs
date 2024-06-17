@@ -11,6 +11,9 @@ namespace HomeApp.DataAccess.Models
         public int Index { get; set; }
 
         [Required]
+        public int Year { get; set; }
+
+        [Required]
         [StringLength(150)]
         public string Name { get; set; }
 

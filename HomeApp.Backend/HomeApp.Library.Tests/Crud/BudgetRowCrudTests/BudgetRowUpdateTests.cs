@@ -1,4 +1,6 @@
-﻿namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests
+﻿using HomeApp.DataAccess.Models;
+
+namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests
 {
     public class BudgetRowUpdateTests : BaseBudgetRowTest
     {
@@ -9,7 +11,8 @@
             BudgetRow budgetRow = new()
             {
                 Index = 1,
-                Name = "Test Budget Row"
+                Name = "Test Budget Row",
+                Year = 2021
             };
 
             _context.BudgetRows.Add(budgetRow);
@@ -19,7 +22,8 @@
             {
                 Id = budgetRow.Id,
                 Index = 2,
-                Name = "Updated Budget Row"
+                Name = "Updated Budget Row",
+                Year = 2022
             };
 
             // Act
@@ -37,6 +41,34 @@
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetRowCrud.UpdateAsync(null));
         }
+        
+        [Fact]
+        public async Task UpdateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
+        {
+            // Arrange
+            BudgetRow budgetRow = new()
+            {
+                Index = 1,
+                Name = "Test Budget Row",
+                Year = 2021
+            };
+
+            _context.BudgetRows.Add(budgetRow);
+
+            await _context.SaveChangesAsync();
+
+            BudgetRow budgetRowUpdate = new()
+            {
+                Id = budgetRow.Id,
+                Name = "Test Budget Row Update"
+            };
+
+            // Act & Assert
+            Func<Task> action = async () => await _budgetRowCrud.UpdateAsync(budgetRowUpdate);
+
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+            .WithMessage($"Year ('{budgetRowUpdate.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetRowUpdate.Year}.");
+        }
 
         [Fact]
         public async Task UpdateAsync_ThrowsException_WhenExistingBudgetRowIsNull()
@@ -44,7 +76,8 @@
             BudgetRow budgetRow = new()
             {
                 Index = 1,
-                Name = "Test Budget Row"
+                Name = "Test Budget Row",
+                Year = 2021
             };
 
             // Act & Assert
@@ -58,7 +91,8 @@
             BudgetRow budgetRow = new()
             {
                 Index = 1,
-                Name = "Test Budget Row"
+                Name = "Test Budget Row",
+                Year = 2021
             };
 
             _context.BudgetRows.Add(budgetRow);

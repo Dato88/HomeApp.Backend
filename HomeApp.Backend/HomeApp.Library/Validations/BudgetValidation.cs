@@ -1,6 +1,6 @@
-﻿using HomeApp.Library.Crud;
+﻿using HomeApp.Library.Cruds;
 
-namespace HomeApp.Library.Validation
+namespace HomeApp.Library.Validations
 {
     public class BudgetValidation(HomeAppContext context) : BaseContext(context), IBudgetValidation
     {
@@ -15,8 +15,6 @@ namespace HomeApp.Library.Validation
 
         public async Task ValidateBudgetColumnIdExistsAsync(int budgetColumnId)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetColumnId, BudgetMessage.BudgetColumnId);
-
             if (await _context.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId))
                 throw new InvalidOperationException(BudgetMessage.ColumnIdExist);
         }
@@ -29,7 +27,7 @@ namespace HomeApp.Library.Validation
                 throw new InvalidOperationException(BudgetMessage.ColumnIdNotExist);
         }
 
-        public async Task ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(int index, string name)
+        public async Task ValidateBudgetColumnIndexAndNameExistsAsync(int index, string name)
         {
             if (await _context.BudgetColumns.AnyAsync(column => column.Index == index && column.Name.Equals(name)))
                 throw new InvalidOperationException(BudgetMessage.ColumnIndexAlreadyExists);
@@ -40,7 +38,7 @@ namespace HomeApp.Library.Validation
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-            if (await _context.BudgetGroups.AnyAsync(x => x.Id == budgetGroupId && x.UserId != userId))
+            if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.UserId != userId))
                 throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
         }
 
@@ -48,7 +46,7 @@ namespace HomeApp.Library.Validation
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-            if (await _context.BudgetGroups.AnyAsync(column => column.Id == budgetGroupId))
+            if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId))
                 throw new InvalidOperationException(BudgetMessage.GroupIdExist);
         }
 
@@ -62,7 +60,7 @@ namespace HomeApp.Library.Validation
 
         public async Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(int index, string name)
         {
-            if (await _context.BudgetGroups.AnyAsync(column => column.Index == index && column.Name.Equals(name)))
+            if (await _context.BudgetGroups.AnyAsync(group => group.Index == index && group.Name.Equals(name)))
                 throw new InvalidOperationException(BudgetMessage.GroupIndexAlreadyExists);
         }
 
@@ -71,7 +69,7 @@ namespace HomeApp.Library.Validation
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
-            if (await _context.BudgetRows.AnyAsync(x => x.Id == budgetRowId && x.UserId != userId))
+            if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.UserId != userId))
                 throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
         }
 
@@ -80,7 +78,7 @@ namespace HomeApp.Library.Validation
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
             if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId))
-                throw new InvalidOperationException(BudgetMessage.RowIdNotExist);
+                throw new InvalidOperationException(BudgetMessage.RowIdExists);
         }
 
         public async Task ValidateBudgetRowIdExistsNotAsync(int budgetRowId)

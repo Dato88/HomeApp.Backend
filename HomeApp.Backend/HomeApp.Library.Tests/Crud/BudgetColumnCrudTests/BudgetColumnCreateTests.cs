@@ -43,7 +43,7 @@
             _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsAsync(It.IsAny<int>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIndexAndNameExistsAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
         }
     }
 }

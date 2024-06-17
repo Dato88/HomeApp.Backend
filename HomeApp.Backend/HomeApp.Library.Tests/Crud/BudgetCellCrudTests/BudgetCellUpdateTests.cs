@@ -1,4 +1,6 @@
-﻿namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
+﻿using HomeApp.DataAccess.Models;
+
+namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
 {
     public class BudgetCellUpdateTests : BaseBudgetCellTest
     {
@@ -11,7 +13,8 @@
                 Name = "Initial Name",
                 BudgetRowId = 1,
                 BudgetColumnId = 1,
-                BudgetGroupId = 1
+                BudgetGroupId = 1,
+                Year = 2021
             };
 
             _context.BudgetCells.Add(budgetCell);
@@ -23,7 +26,8 @@
                 Name = "Updated Name",
                 BudgetRowId = 2,
                 BudgetColumnId = 2,
-                BudgetGroupId = 2
+                BudgetGroupId = 2,
+                Year = 2021
             };
 
             // Act
@@ -43,6 +47,37 @@
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetCellCrud.UpdateAsync(null));
         }
+        
+        [Fact]
+        public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
+        {
+            // Arrange
+            BudgetCell budgetCell = new()
+            {
+                Name = "Test Budget Cell",
+                BudgetRowId = 1,
+                BudgetColumnId = 1,
+                Year = 2021
+            };
+
+            _context.BudgetCells.Add(budgetCell);
+
+            _context.SaveChanges();
+
+            BudgetCell budgetCellUpdate = new()
+            {
+                Id = budgetCell.Id,
+                Name = "Test Budget Cell",
+                BudgetRowId = 1,
+                BudgetColumnId = 1
+            };
+
+            // Act & Assert
+            Func<Task> action = async () => await _budgetCellCrud.UpdateAsync(budgetCellUpdate);
+
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+            .WithMessage($"Year ('{budgetCellUpdate.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCellUpdate.Year}.");
+        }
 
         [Fact]
         public async Task UpdateAsync_ThrowsException_WhenExistingBudgetCellIsNull()
@@ -52,7 +87,8 @@
                 Name = "Initial Name",
                 BudgetRowId = 1,
                 BudgetColumnId = 1,
-                BudgetGroupId = 1
+                BudgetGroupId = 1,
+                Year = 2021
             };
 
             // Act & Assert
@@ -67,7 +103,8 @@
             {
                 Name = "Test Budget Cell",
                 BudgetRowId = 1,
-                BudgetColumnId = 1
+                BudgetColumnId = 1,
+                Year = 2021
             };
 
             _context.BudgetCells.Add(budgetCell);

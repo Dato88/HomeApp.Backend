@@ -1,15 +1,19 @@
-﻿namespace HomeApp.Library.Crud
+﻿using HomeApp.DataAccess.Models;
+using HomeApp.Library.Cruds.Interfaces;
+
+namespace HomeApp.Library.Cruds
 {
-    public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetCell>(context, budgetValidation)
+    public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetCell>(context, budgetValidation), IBudgetCellCrud
     {
         public override async Task<BudgetCell> CreateAsync(BudgetCell budgetCell)
         {
             ArgumentNullException.ThrowIfNull(budgetCell);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCell.Year, nameof(budgetCell.Year));
 
             await _budgetValidation.ValidateForUserIdAsync(budgetCell.UserId);
-            await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetCell.BudgetRowId);
-            await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetCell.BudgetColumnId);
-            await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetCell.BudgetGroupId);
+            await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetCell.BudgetRowId);
+            await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId);
+            await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId);
 
             _context.BudgetCells.Add(budgetCell);
             await _context.SaveChangesAsync();
@@ -53,6 +57,7 @@
         public override async Task UpdateAsync(BudgetCell budgetCell)
         {
             ArgumentNullException.ThrowIfNull(budgetCell);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCell.Year, nameof(budgetCell.Year));
 
             await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(budgetCell.BudgetRowId, budgetCell.UserId);
             await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetCell.BudgetRowId);

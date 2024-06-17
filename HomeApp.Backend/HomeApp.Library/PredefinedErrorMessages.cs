@@ -8,6 +8,7 @@
         public const string BudgetRowId = "BudgetRow Id";
         public const string RowNotFound = "BudgetRow not found";
         public const string InvalidRowId = "Invalid BudgetRowId";
+        public const string RowIdExists = "BudgetRowId does exist already";
         public const string RowIdNotExist = "BudgetRowId does not exist";
 
         public const string BudgetColumnId = "BudgetColumn Id";

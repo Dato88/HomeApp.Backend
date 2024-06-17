@@ -1,6 +1,8 @@
-﻿namespace HomeApp.Library.Crud
+﻿using HomeApp.Library.Cruds.Interfaces;
+
+namespace HomeApp.Library.Cruds
 {
-    public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetGroup>(context, budgetValidation)
+    public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetGroup>(context, budgetValidation), IBudgetGroupCrud
     {
         public override async Task<BudgetGroup> CreateAsync(BudgetGroup budgetGroup)
         {

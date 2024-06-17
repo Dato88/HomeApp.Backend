@@ -1,8 +1,8 @@
-﻿using HomeApp.Library.Crud;
+﻿using HomeApp.Library.Cruds;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
-namespace HomeApp.Library.Validation
+namespace HomeApp.Library.Validations
 {
     public class UserValidation(HomeAppContext context) : BaseContext(context), IUserValidation
     {

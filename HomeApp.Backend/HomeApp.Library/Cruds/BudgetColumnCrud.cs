@@ -1,15 +1,18 @@
-﻿namespace HomeApp.Library.Crud
+﻿using HomeApp.DataAccess.Models;
+using HomeApp.Library.Cruds.Interfaces;
+
+namespace HomeApp.Library.Cruds
 {
-    public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetColumn>(context, budgetValidation)
+    public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetColumn>(context, budgetValidation), IBudgetColumnCrud
     {
         public override async Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn)
         {
             ArgumentNullException.ThrowIfNull(budgetColumn);
-
+           
             await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumn.Id);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetColumn.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetColumn.Index);
-            await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(budgetColumn.Index, budgetColumn.Name);
+            await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetColumn.Index, budgetColumn.Name);
 
             _context.BudgetColumns.Add(budgetColumn);
             await _context.SaveChangesAsync();
@@ -52,7 +55,7 @@
             await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumn.Id);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetColumn.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetColumn.Index);
-            await _budgetValidation.ValidateBudgetColumnIndexAndNameAlreadyExistsAsync(budgetColumn.Index, budgetColumn.Name);
+            await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetColumn.Index, budgetColumn.Name);
 
             BudgetColumn? existingBudgetColumn = await _context.BudgetColumns.FindAsync(budgetColumn.Id);
 

@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using HomeApp.DataAccess.Models;
-using HomeApp.Library.Tests.Helper;
-using HomeApp.Library.Validation;
+﻿using HomeApp.Library.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace HomeApp.Library.Tests.ValidationTests
