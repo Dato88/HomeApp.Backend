@@ -22,6 +22,8 @@ namespace HomeApp.Library.Cruds
 
         public override async Task<bool> DeleteAsync(int id)
         {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, "id");
+
             BudgetColumn? budgetColumn = await _context.BudgetColumns.FindAsync(id);
 
             if (budgetColumn == null)

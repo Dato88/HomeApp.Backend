@@ -22,6 +22,19 @@
             _context.BudgetRows.Should().NotContain(budgetRow);
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-3)]
+        public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
+        {
+            // Act & Assert
+            Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(id);
+
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+                                .WithMessage($"Deleting budgetCell failed: id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                                //.WithMessage($"Year ('{budgetCell.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCell.Year}.");
+        }
+
         [Fact]
         public async Task DeleteAsync_ThrowsException_WhenBudgetRowNotFound()
         {
