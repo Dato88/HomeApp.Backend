@@ -29,7 +29,7 @@
         public async Task FindByIdAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(id);
+            Func<Task> action = async () => await _budgetCellCrud.FindByIdAsync(id);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
                                 .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
