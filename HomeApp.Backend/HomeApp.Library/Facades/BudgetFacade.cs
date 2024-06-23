@@ -30,7 +30,7 @@ namespace HomeApp.Library.Facades
             }
             catch (Exception ex)
             {
-                LogBudgetError(ex, DateTime.Now);
+                LogException($"Get budget failed: {ex}", DateTime.Now);
 
                 return null;
             }
@@ -42,11 +42,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetCellCrud.CreateAsync(budgetCell);
 
-                CreateLogBudgetCellInformation(budgetCell, DateTime.Now);
+                LogInformation($"Creating budgetCell: {budgetCell}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                CreateLogBudgetCellError(budgetCell, DateTime.Now);
+                LogError($"Creating budgetCell failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -56,11 +56,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetColumnCrud.CreateAsync(budgetColumn);
 
-                CreateLogBudgetColumnInformation(budgetColumn, DateTime.Now);
+                LogInformation($"Creating budgetColumn: {budgetColumn}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                CreateLogBudgetColumnError(budgetColumn, DateTime.Now);
+                LogError($"Creating budgetColumn failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -70,11 +70,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetGroupCrud.CreateAsync(budgetGroup);
 
-                CreateLogBudgetGroupInformation(budgetGroup, DateTime.Now);
+                LogInformation($"Creating budgetGroup: {budgetGroup}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                CreateLogBudgetGroupError(budgetGroup, DateTime.Now);
+                LogError($"Creating budgetGroup failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -84,11 +84,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetRowCrud.CreateAsync(budgetRow);
 
-                CreateLogBudgetRowInformation(budgetRow, DateTime.Now);
+                LogInformation($"Creating budgetRow: {budgetRow}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                CreateLogBudgetRowError(budgetRow, DateTime.Now);
+                LogError($"Creating budgetRow failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -98,11 +98,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetCellCrud.UpdateAsync(budgetCell);
 
-                UpdateLogBudgetCellInformation(budgetCell, DateTime.Now);
+                LogInformation($"Updating budgetCell: {budgetCell}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                UpdateLogBudgetCellError(budgetCell, DateTime.Now);
+                LogError($"Updating budgetCell failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -112,11 +112,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetColumnCrud.UpdateAsync(budgetColumn);
 
-                UpdateLogBudgetColumnInformation(budgetColumn, DateTime.Now);
+                LogInformation($"Updating budgetColumn: {budgetColumn}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                UpdateLogBudgetColumnError(budgetColumn, DateTime.Now);
+                LogError($"Updating budgetColumn failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -126,11 +126,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetGroupCrud.UpdateAsync(budgetGroup);
 
-                UpdateLogBudgetGroupInformation(budgetGroup, DateTime.Now);
+                LogInformation($"Updating budgetGroup: {budgetGroup}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                UpdateLogBudgetGroupError(budgetGroup, DateTime.Now);
+                LogError($"Updating budgetGroup failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -140,11 +140,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetRowCrud.UpdateAsync(budgetRow);
 
-                UpdateLogBudgetRowInformation(budgetRow, DateTime.Now);
+                LogInformation($"Updating budgetRow: {budgetRow}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                UpdateLogBudgetRowError(budgetRow, DateTime.Now);
+                LogError($"Updating budgetRow failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -155,11 +155,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetCellCrud.DeleteAsync(id);
 
-                DeleteLogBudgetCellInformation(id, DateTime.Now);
+                LogInformation($"Deleting budgetCell: {id}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                DeleteLogBudgetCellError(id, DateTime.Now);
+                LogError($"Deleting budgetCell failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -169,11 +169,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetColumnCrud.DeleteAsync(id);
 
-                DeleteLogBudgetColumnInformation(id, DateTime.Now);
+                LogInformation($"Deleting budgetColumn: {id}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                DeleteLogBudgetColumnError(id, DateTime.Now);
+                LogError($"Deleting budgetColumn failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -183,11 +183,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetGroupCrud.DeleteAsync(id);
 
-                DeleteLogBudgetGroupInformation(id, DateTime.Now);
+                LogInformation($"Deleting budgetGroup: {id}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                DeleteLogBudgetGroupError(id, DateTime.Now);
+                LogError($"Deleting budgetGroup failed: {ex.Message}", DateTime.Now);
             }
         }
 
@@ -197,11 +197,11 @@ namespace HomeApp.Library.Facades
             {
                 await _budgetRowCrud.DeleteAsync(id);
 
-                DeleteLogBudgetRowInformation(id, DateTime.Now);
+                LogInformation($"Deleting budgetRow: {id}", DateTime.Now);
             }
-            catch
+            catch (Exception ex)
             {
-                DeleteLogBudgetRowError(id, DateTime.Now);
+                LogError($"Deleting budgetRow failed: {ex.Message}", DateTime.Now);
             }
         }
     }

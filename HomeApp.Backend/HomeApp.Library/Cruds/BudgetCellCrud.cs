@@ -23,6 +23,8 @@ namespace HomeApp.Library.Cruds
 
         public override async Task<bool> DeleteAsync(int id)
         {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetCell.Id));
+
             BudgetCell? budgetCell = await _context.BudgetCells.FindAsync(id);
 
             if (budgetCell == null)
@@ -36,6 +38,8 @@ namespace HomeApp.Library.Cruds
 
         public override async Task<BudgetCell> FindByIdAsync(int id)
         {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetCell.Id));
+
             BudgetCell? budgetCell = await _context.BudgetCells.FindAsync(id);
 
             if (budgetCell == null)
