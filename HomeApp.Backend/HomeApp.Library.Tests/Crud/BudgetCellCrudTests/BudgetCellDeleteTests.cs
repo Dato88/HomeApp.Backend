@@ -24,6 +24,18 @@
             deletedUser.Should().BeNull();
         }
 
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-3)]
+        public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
+        {
+            // Act & Assert
+            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(id);
+
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+        }
+
         [Fact]
         public async Task DeleteAsync_ShouldThrowException_WhenUserDoesNotExist()
         {

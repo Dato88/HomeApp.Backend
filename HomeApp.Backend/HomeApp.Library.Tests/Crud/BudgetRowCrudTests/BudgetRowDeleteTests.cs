@@ -31,8 +31,7 @@
             Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(id);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"Deleting budgetCell failed: id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
-                                //.WithMessage($"Year ('{budgetCell.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCell.Year}.");
+                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
