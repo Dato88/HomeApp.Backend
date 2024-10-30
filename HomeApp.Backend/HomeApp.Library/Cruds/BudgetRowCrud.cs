@@ -3,43 +3,44 @@ using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds
 {
-    public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValidation) : BaseCrud<BudgetRow>(context, budgetValidation), IBudgetRowCrud
+    public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValidation)
+        : BaseCrud<BudgetRow>(context, budgetValidation), IBudgetRowCrud
     {
-        public override async Task<BudgetRow> CreateAsync(BudgetRow budgetRow)
+        public override async Task<BudgetRow> CreateAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(budgetRow);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
-            await _budgetValidation.ValidateForUserIdAsync(budgetRow.UserId);
-            await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRow.Id);
+            await _budgetValidation.ValidateForUserIdAsync(budgetRow.UserId, cancellationToken);
+            await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRow.Id, cancellationToken);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetRow.Index);
 
             _context.BudgetRows.Add(budgetRow);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return budgetRow;
         }
 
-        public override async Task DeleteAsync(int id)
+        public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
-            BudgetRow? budgetRow = await _context.BudgetRows.FindAsync(id);
+            BudgetRow? budgetRow = await _context.BudgetRows.FindAsync(id, cancellationToken);
             if (budgetRow == null)
             {
                 throw new InvalidOperationException(BudgetMessage.RowNotFound);
             }
 
             _context.BudgetRows.Remove(budgetRow);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public override async Task<BudgetRow> FindByIdAsync(int id)
+        public override async Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
-            BudgetRow? budgetRow = await _context.BudgetRows.FindAsync(id);
+            BudgetRow? budgetRow = await _context.BudgetRows.FindAsync(id, cancellationToken);
 
             if (budgetRow == null)
                 throw new InvalidOperationException(BudgetMessage.CellNotFound);
@@ -47,27 +48,28 @@ namespace HomeApp.Library.Cruds
             return budgetRow;
         }
 
-        public override async Task<IEnumerable<BudgetRow>> GetAllAsync()
+        public override async Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _context.BudgetRows.ToListAsync();
+            return await _context.BudgetRows.ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<BudgetRow>> GetAllAsync(int userId)
+        public async Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken)
         {
-            return await _context.BudgetRows.Where(x => x.UserId == userId).ToListAsync();
+            return await _context.BudgetRows.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
         }
 
-        public override async Task UpdateAsync(BudgetRow budgetRow)
+        public override async Task UpdateAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(budgetRow);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
-            await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(budgetRow.Id, budgetRow.UserId);
-            await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRow.Id);
+            await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(budgetRow.Id, budgetRow.UserId,
+                cancellationToken);
+            await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRow.Id, cancellationToken);
             await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
             await _budgetValidation.ValidateForPositiveIndexAsync(budgetRow.Index);
 
-            BudgetRow? existingBudgetRow = await _context.BudgetRows.FindAsync(budgetRow.Id);
+            BudgetRow? existingBudgetRow = await _context.BudgetRows.FindAsync(budgetRow.Id, cancellationToken);
 
             if (existingBudgetRow == null)
                 throw new InvalidOperationException(BudgetMessage.RowNotFound);
@@ -77,7 +79,7 @@ namespace HomeApp.Library.Cruds
 
             _context.BudgetRows.Update(existingBudgetRow);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

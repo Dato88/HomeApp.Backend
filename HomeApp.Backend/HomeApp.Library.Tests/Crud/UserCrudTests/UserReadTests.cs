@@ -19,7 +19,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            User? result = await _userCrud.FindByIdAsync(user.Id);
+            User? result = await _userCrud.FindByIdAsync(user.Id, default);
 
             // Assert
             result.Should().Be(user);
@@ -29,11 +29,11 @@
         public async Task FindByIdAsync_ReturnsException_WhenNotExists()
         {
             // Assert
-            Func<Task> action = async () => await _userCrud.FindByIdAsync(999);
+            Func<Task> action = async () => await _userCrud.FindByIdAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(UserMessage.UserNotFound);
+                .WithMessage(UserMessage.UserNotFound);
         }
 
         [Fact]
@@ -63,7 +63,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            IEnumerable<User>? result = await _userCrud.GetAllAsync();
+            IEnumerable<User>? result = await _userCrud.GetAllAsync(default);
 
             // Assert
             result.Should().Contain(new[] { user1, user2 });

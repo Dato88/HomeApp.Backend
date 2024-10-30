@@ -23,7 +23,7 @@
             };
 
             // Act
-            await _budgetGroupCrud.UpdateAsync(updateBudgetGroup);
+            await _budgetGroupCrud.UpdateAsync(updateBudgetGroup, default);
 
             // Assert
             budgetGroup.Id.Should().Be(1);
@@ -35,7 +35,8 @@
         public async Task UpdateAsync_ThrowsException_WhenBudgetGroupIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetGroupCrud.UpdateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetGroupCrud.UpdateAsync(null, default));
         }
 
         [Fact]
@@ -48,7 +49,8 @@
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _budgetGroupCrud.UpdateAsync(budgetGroup));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _budgetGroupCrud.UpdateAsync(budgetGroup, default));
         }
 
         [Fact]
@@ -65,11 +67,14 @@
             await _context.SaveChangesAsync();
 
             // Act
-            await _budgetGroupCrud.UpdateAsync(budgetGroup);
+            await _budgetGroupCrud.UpdateAsync(budgetGroup, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupForUserIdChangeAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsNotAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupForUserIdChangeAsync(It.IsAny<int>(), It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIdExistsNotAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
         }

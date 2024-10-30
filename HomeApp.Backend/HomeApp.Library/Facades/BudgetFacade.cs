@@ -7,23 +7,28 @@ using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Facades
 {
-    public partial class BudgetFacade(IBudgetCellCrud budgetCellCrud, IBudgetColumnCrud budgetColumnCrud, IBudgetGroupCrud budgetGroupCrud, IBudgetRowCrud budgetRowCrud, ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
+    public partial class BudgetFacade(
+        IBudgetCellCrud budgetCellCrud,
+        IBudgetColumnCrud budgetColumnCrud,
+        IBudgetGroupCrud budgetGroupCrud,
+        IBudgetRowCrud budgetRowCrud,
+        ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
     {
         private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
         private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
         private readonly IBudgetGroupCrud _budgetGroupCrud = budgetGroupCrud;
         private readonly IBudgetRowCrud _budgetRowCrud = budgetRowCrud;
 
-        public async Task<Budget?> GetBudgetAsync(int userId)
+        public async Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken)
         {
             try
             {
                 Budget selectedBudget = new()
                 {
-                    BudgetCells = await _budgetCellCrud.GetAllAsync(userId),
-                    BudgetColumns = await _budgetColumnCrud.GetAllAsync(),
-                    BudgetGroups = await _budgetGroupCrud.GetAllAsync(userId),
-                    BudgetRows = await _budgetRowCrud.GetAllAsync(userId),
+                    BudgetCells = await _budgetCellCrud.GetAllAsync(userId, cancellationToken),
+                    BudgetColumns = await _budgetColumnCrud.GetAllAsync(cancellationToken),
+                    BudgetGroups = await _budgetGroupCrud.GetAllAsync(userId, cancellationToken),
+                    BudgetRows = await _budgetRowCrud.GetAllAsync(userId, cancellationToken),
                 };
 
                 return selectedBudget;
@@ -36,11 +41,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task CreateBudgetCellAsync(BudgetCell budgetCell)
+        public async Task CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetCellCrud.CreateAsync(budgetCell);
+                await _budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
 
                 LogInformation($"Creating budgetCell: {budgetCell}", DateTime.Now);
             }
@@ -50,11 +55,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task CreateBudgetColumnAsync(BudgetColumn budgetColumn)
+        public async Task CreateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetColumnCrud.CreateAsync(budgetColumn);
+                await _budgetColumnCrud.CreateAsync(budgetColumn, cancellationToken);
 
                 LogInformation($"Creating budgetColumn: {budgetColumn}", DateTime.Now);
             }
@@ -64,11 +69,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task CreateBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetGroupCrud.CreateAsync(budgetGroup);
+                await _budgetGroupCrud.CreateAsync(budgetGroup, cancellationToken);
 
                 LogInformation($"Creating budgetGroup: {budgetGroup}", DateTime.Now);
             }
@@ -78,11 +83,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task CreateBudgetRowAsync(BudgetRow budgetRow)
+        public async Task CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetRowCrud.CreateAsync(budgetRow);
+                await _budgetRowCrud.CreateAsync(budgetRow, cancellationToken);
 
                 LogInformation($"Creating budgetRow: {budgetRow}", DateTime.Now);
             }
@@ -92,11 +97,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task UpdateBudgetCellAsync(BudgetCell budgetCell)
+        public async Task UpdateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetCellCrud.UpdateAsync(budgetCell);
+                await _budgetCellCrud.UpdateAsync(budgetCell, cancellationToken);
 
                 LogInformation($"Updating budgetCell: {budgetCell}", DateTime.Now);
             }
@@ -106,11 +111,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn)
+        public async Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetColumnCrud.UpdateAsync(budgetColumn);
+                await _budgetColumnCrud.UpdateAsync(budgetColumn, cancellationToken);
 
                 LogInformation($"Updating budgetColumn: {budgetColumn}", DateTime.Now);
             }
@@ -120,11 +125,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup)
+        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetGroupCrud.UpdateAsync(budgetGroup);
+                await _budgetGroupCrud.UpdateAsync(budgetGroup, cancellationToken);
 
                 LogInformation($"Updating budgetGroup: {budgetGroup}", DateTime.Now);
             }
@@ -134,11 +139,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task UpdateBudgetRowAsync(BudgetRow budgetRow)
+        public async Task UpdateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetRowCrud.UpdateAsync(budgetRow);
+                await _budgetRowCrud.UpdateAsync(budgetRow, cancellationToken);
 
                 LogInformation($"Updating budgetRow: {budgetRow}", DateTime.Now);
             }
@@ -149,11 +154,11 @@ namespace HomeApp.Library.Facades
         }
 
 
-        public async Task DeleteBudgetCellAsync(int id)
+        public async Task DeleteBudgetCellAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetCellCrud.DeleteAsync(id);
+                await _budgetCellCrud.DeleteAsync(id, cancellationToken);
 
                 LogInformation($"Deleting budgetCell: {id}", DateTime.Now);
             }
@@ -163,11 +168,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task DeleteBudgetColumnAsync(int id)
+        public async Task DeleteBudgetColumnAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetColumnCrud.DeleteAsync(id);
+                await _budgetColumnCrud.DeleteAsync(id, cancellationToken);
 
                 LogInformation($"Deleting budgetColumn: {id}", DateTime.Now);
             }
@@ -177,11 +182,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task DeleteBudgetGroupAsync(int id)
+        public async Task DeleteBudgetGroupAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetGroupCrud.DeleteAsync(id);
+                await _budgetGroupCrud.DeleteAsync(id, cancellationToken);
 
                 LogInformation($"Deleting budgetGroup: {id}", DateTime.Now);
             }
@@ -191,11 +196,11 @@ namespace HomeApp.Library.Facades
             }
         }
 
-        public async Task DeleteBudgetRowAsync(int id)
+        public async Task DeleteBudgetRowAsync(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _budgetRowCrud.DeleteAsync(id);
+                await _budgetRowCrud.DeleteAsync(id, cancellationToken);
 
                 LogInformation($"Deleting budgetRow: {id}", DateTime.Now);
             }

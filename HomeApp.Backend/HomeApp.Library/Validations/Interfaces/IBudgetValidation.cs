@@ -21,7 +21,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when userId and budgetCellId not found in BudgetCell Table.
         /// </exception>
-        Task ValidateBudgetCellForUserIdChangeAsync(int userId, int budgetCellId);
+        Task ValidateBudgetCellForUserIdChangeAsync(int userId, int budgetCellId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetColumn Table if budgetColumnId exists.
@@ -32,7 +32,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetColumnId is found in BudgetColumn Table.
         /// </exception>
-        Task ValidateBudgetColumnIdExistsAsync(int budgetColumnId);
+        Task ValidateBudgetColumnIdExistsAsync(int budgetColumnId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetColumn Table if budgetColumnId does not exist.
@@ -48,7 +48,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetColumnId is not found in BudgetColumn Table.
         /// </exception>
-        Task ValidateBudgetColumnIdExistsNotAsync(int budgetColumnId);
+        Task ValidateBudgetColumnIdExistsNotAsync(int budgetColumnId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetColumn Table if budgetColumnIndex and Name does already exist.
@@ -61,7 +61,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when index and name is found in BudgetColumn Table.
         /// </exception>
-        Task ValidateBudgetColumnIndexAndNameExistsAsync(int index, string name);
+        Task ValidateBudgetColumnIndexAndNameExistsAsync(int index, string name, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetGroup Table if UserId did Change in selected BudgetGroup.
@@ -82,7 +82,8 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when userId and budgetGroupId not found in BudgetGroup Table.
         /// </exception>
-        Task ValidateBudgetGroupForUserIdChangeAsync(int userId, int budgetGroupId);
+        Task ValidateBudgetGroupForUserIdChangeAsync(int userId, int budgetGroupId,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetGroup Table if budgetGroupId does already exist.
@@ -94,7 +95,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetGroupId is found in BudgetColumn Table.
         /// </exception>
-        Task ValidateBudgetGroupIdExistsAsync(int budgetGroupId);
+        Task ValidateBudgetGroupIdExistsAsync(int budgetGroupId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetGroup Table if budgetGroupId does not exist.
@@ -110,7 +111,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetGroupId is not found in BudgetGroup Table.
         /// </exception>
-        Task ValidateBudgetGroupIdExistsNotAsync(int budgetGroupId);
+        Task ValidateBudgetGroupIdExistsNotAsync(int budgetGroupId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetGroup Table if budgetGroupIndex and Name does already exist.
@@ -123,7 +124,8 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when index and name is found in BudgetGroup Table.
         /// </exception>
-        Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(int index, string name);
+        Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(int index, string name,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetRow Table if UserId did Change in selected BudgetRow.
@@ -144,7 +146,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when userId and budgetRowId not found in BudgetRow Table.
         /// </exception>
-        Task ValidateBudgetRowForUserIdChangeAsync(int userId, int budgetRowId);
+        Task ValidateBudgetRowForUserIdChangeAsync(int userId, int budgetRowId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetRow Table if budgetRowId exists.
@@ -160,7 +162,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetRowId is found in BudgetRow Table.
         /// </exception>
-        Task ValidateBudgetRowIdExistsAsync(int budgetRowId);
+        Task ValidateBudgetRowIdExistsAsync(int budgetRowId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate BudgetRow Table if budgetRowId does not exist.
@@ -176,7 +178,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when budgetRowId is not found in BudgetRow Table.
         /// </exception>
-        Task ValidateBudgetRowIdExistsNotAsync(int budgetRowId);
+        Task ValidateBudgetRowIdExistsNotAsync(int budgetRowId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Validate if the name is not an empty string.
@@ -216,6 +218,6 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when userId is not found in User Table.
         /// </exception>
-        Task ValidateForUserIdAsync(int userId);
+        Task ValidateForUserIdAsync(int userId, CancellationToken cancellationToken);
     }
 }

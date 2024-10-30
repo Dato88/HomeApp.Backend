@@ -43,7 +43,8 @@ namespace HomeApp.Library.Tests.Facades
             _iLogger.DefaultValue = DefaultValue.Mock;
             _iLogger.SetupAllProperties();
 
-            _budgetFacade = new(_budgetCellCrudMock.Object, _budgetColumnCrudMock.Object, _budgetGroupCrudMock.Object, _budgetRowCrudMock.Object, _iLogger.Object);
+            _budgetFacade = new(_budgetCellCrudMock.Object, _budgetColumnCrudMock.Object, _budgetGroupCrudMock.Object,
+                _budgetRowCrudMock.Object, _iLogger.Object);
         }
     }
 }

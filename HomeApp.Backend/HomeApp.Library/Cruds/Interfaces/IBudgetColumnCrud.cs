@@ -13,7 +13,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when BudgetColumnId, Name, or Index does not exist or when the BudgetColumn with the given id is not found.
         /// </exception>
-        Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn);
+        Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes a BudgetColumn by its id.
@@ -23,7 +23,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetColumn with the given id is not found.
         /// </exception>
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds a BudgetColumn by its id.
@@ -33,13 +33,13 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetColumn with the given id is not found.
         /// </exception>
-        Task<BudgetColumn> FindByIdAsync(int id);
+        Task<BudgetColumn> FindByIdAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all BudgetColumns.
         /// </summary>
         /// <returns>A list of all BudgetColumns.</returns>
-        Task<IEnumerable<BudgetColumn>> GetAllAsync();
+        Task<IEnumerable<BudgetColumn>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates a BudgetColumn.
@@ -51,7 +51,6 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when BudgetColumnId, Name, or Index does not exist or when the BudgetColumn with the given id is not found.
         /// </exception>
-        Task UpdateAsync(BudgetColumn budgetColumn);
-
+        Task UpdateAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
     }
 }

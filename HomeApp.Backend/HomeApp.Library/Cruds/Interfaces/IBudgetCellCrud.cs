@@ -13,7 +13,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when UserId, BudgetRowId, BudgetColumnId, or BudgetGroupId does not exist.
         /// </exception>
-        Task<BudgetCell> CreateAsync(BudgetCell budgetCell);
+        Task<BudgetCell> CreateAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes a BudgetCell by its id.
@@ -23,7 +23,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetCell with the given id is not found.
         /// </exception>
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds a BudgetCell by its id.
@@ -33,20 +33,20 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetCell with the given id is not found.
         /// </exception>
-        Task<BudgetCell> FindByIdAsync(int id);
+        Task<BudgetCell> FindByIdAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all BudgetCells.
         /// </summary>
         /// <returns>A list of all BudgetCells.</returns>
-        Task<IEnumerable<BudgetCell>> GetAllAsync();
+        Task<IEnumerable<BudgetCell>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all BudgetCells for a specific user.
         /// </summary>
         /// <param name="userId">The id of the user.</param>
         /// <returns>A list of all BudgetCells for the specified user.</returns>
-        Task<IEnumerable<BudgetCell>> GetAllAsync(int userId);
+        Task<IEnumerable<BudgetCell>> GetAllAsync(int userId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates a BudgetCell.
@@ -58,7 +58,6 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when UserId, BudgetRowId, BudgetColumnId, or BudgetGroupId does not exist or when the BudgetCell with the given id is not found.
         /// </exception>
-        Task UpdateAsync(BudgetCell budgetCell);
-
+        Task UpdateAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
     }
 }

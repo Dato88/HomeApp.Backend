@@ -31,7 +31,7 @@ namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
             };
 
             // Act
-            await _budgetCellCrud.UpdateAsync(updateBudgetCell);
+            await _budgetCellCrud.UpdateAsync(updateBudgetCell, default);
 
             // Assert
             budgetCell.Id.Should().Be(1);
@@ -45,9 +45,10 @@ namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
         public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetCellIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetCellCrud.UpdateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetCellCrud.UpdateAsync(null, default));
         }
-        
+
         [Fact]
         public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
         {
@@ -73,10 +74,11 @@ namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
             };
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetCellCrud.UpdateAsync(budgetCellUpdate);
+            Func<Task> action = async () => await _budgetCellCrud.UpdateAsync(budgetCellUpdate, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-            .WithMessage($"Year ('{budgetCellUpdate.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCellUpdate.Year}.");
+                .WithMessage(
+                    $"Year ('{budgetCellUpdate.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCellUpdate.Year}.");
         }
 
         [Fact]
@@ -92,7 +94,8 @@ namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _budgetCellCrud.UpdateAsync(budgetCell));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _budgetCellCrud.UpdateAsync(budgetCell, default));
         }
 
         [Fact]
@@ -112,13 +115,18 @@ namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
             _context.SaveChanges();
 
             // Act
-            await _budgetCellCrud.UpdateAsync(budgetCell);
+            await _budgetCellCrud.UpdateAsync(budgetCell, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateBudgetCellForUserIdChangeAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetRowIdExistsAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetCellForUserIdChangeAsync(It.IsAny<int>(), It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetRowIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

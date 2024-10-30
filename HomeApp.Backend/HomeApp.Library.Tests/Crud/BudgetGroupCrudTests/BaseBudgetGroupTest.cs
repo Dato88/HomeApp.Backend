@@ -3,6 +3,7 @@
     public class BaseBudgetGroupTest : BaseTest
     {
         protected readonly BudgetGroupCrud _budgetGroupCrud;
+
         protected readonly Mock<IBudgetValidation> _budgetValidationMock;
 
         public BaseBudgetGroupTest()

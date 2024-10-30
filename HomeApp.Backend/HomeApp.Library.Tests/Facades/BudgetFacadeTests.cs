@@ -11,13 +11,13 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
 
             // Act
-            await _budgetFacade.GetBudgetAsync(selectedUserId);
+            await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
-            _budgetCellCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>()), Times.Once);
-            _budgetColumnCrudMock.Verify(x => x.GetAllAsync(), Times.Once);
-            _budgetGroupCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>()), Times.Once);
-            _budgetRowCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>()), Times.Once);
+            _budgetCellCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _budgetColumnCrudMock.Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _budgetGroupCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _budgetRowCrudMock.Verify(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Theory]
@@ -31,13 +31,13 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = userId;
 
             // Act
-            await _budgetFacade.GetBudgetAsync(selectedUserId);
+            await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
-            _budgetCellCrudMock.Verify(x => x.GetAllAsync(selectedUserId), Times.Once);
-            _budgetColumnCrudMock.Verify(x => x.GetAllAsync(), Times.Once);
-            _budgetGroupCrudMock.Verify(x => x.GetAllAsync(selectedUserId), Times.Once);
-            _budgetRowCrudMock.Verify(x => x.GetAllAsync(selectedUserId), Times.Once);
+            _budgetCellCrudMock.Verify(x => x.GetAllAsync(selectedUserId, It.IsAny<CancellationToken>()), Times.Once);
+            _budgetColumnCrudMock.Verify(x => x.GetAllAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _budgetGroupCrudMock.Verify(x => x.GetAllAsync(selectedUserId, It.IsAny<CancellationToken>()), Times.Once);
+            _budgetRowCrudMock.Verify(x => x.GetAllAsync(selectedUserId, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
 
             // Act
-            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId);
+            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
             output.Should().NotBe(null);
@@ -60,10 +60,11 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
             IEnumerable<BudgetCell> budgetCells = new List<BudgetCell>();
 
-            _budgetCellCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>())).ReturnsAsync(budgetCells);
+            _budgetCellCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(budgetCells);
 
             // Act
-            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId);
+            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
             output.BudgetCells.Should().NotBeNull();
@@ -76,10 +77,10 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
             IEnumerable<BudgetColumn> budgetColumn = new List<BudgetColumn>();
 
-            _budgetColumnCrudMock.Setup(x => x.GetAllAsync()).ReturnsAsync(budgetColumn);
+            _budgetColumnCrudMock.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(budgetColumn);
 
             // Act
-            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId);
+            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
             output.BudgetColumns.Should().NotBeNull();
@@ -93,10 +94,11 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
             IEnumerable<BudgetGroup> budgetGroup = new List<BudgetGroup>();
 
-            _budgetGroupCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>())).ReturnsAsync(budgetGroup);
+            _budgetGroupCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(budgetGroup);
 
             // Act
-            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId);
+            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
             output.BudgetGroups.Should().NotBeNull();
@@ -110,10 +112,11 @@ namespace HomeApp.Library.Tests.Facades
             int selectedUserId = 1;
             IEnumerable<BudgetRow> budgetRow = new List<BudgetRow>();
 
-            _budgetRowCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>())).ReturnsAsync(budgetRow);
+            _budgetRowCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(budgetRow);
 
             // Act
-            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId);
+            Budget? output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
 
             // Assert
             output.BudgetRows.Should().NotBeNull();

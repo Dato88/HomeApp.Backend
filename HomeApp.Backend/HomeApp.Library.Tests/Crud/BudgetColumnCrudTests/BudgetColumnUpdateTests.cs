@@ -23,7 +23,7 @@
             };
 
             // Act
-            await _budgetColumnCrud.UpdateAsync(updateBudgetColumn);
+            await _budgetColumnCrud.UpdateAsync(updateBudgetColumn, default);
 
             // Assert
             budgetColumn.Id.Should().Be(1);
@@ -35,7 +35,8 @@
         public async Task UpdateAsync_ThrowsException_WhenBudgetColumnIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetColumnCrud.UpdateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetColumnCrud.UpdateAsync(null, default));
         }
 
         [Fact]
@@ -48,7 +49,8 @@
             };
 
             // Act & Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _budgetColumnCrud.UpdateAsync(budgetColumn));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _budgetColumnCrud.UpdateAsync(budgetColumn, default));
         }
 
         [Fact]
@@ -65,13 +67,17 @@
             _context.SaveChanges();
 
             // Act
-            await _budgetColumnCrud.UpdateAsync(budgetColumn);
+            await _budgetColumnCrud.UpdateAsync(budgetColumn, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsNotAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIdExistsNotAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+                Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIndexAndNameExistsAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIndexAndNameExistsAsync(It.IsAny<int>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

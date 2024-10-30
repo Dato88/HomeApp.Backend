@@ -16,7 +16,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            await _budgetRowCrud.DeleteAsync(budgetRow.Id);
+            await _budgetRowCrud.DeleteAsync(budgetRow.Id, default);
 
             // Assert
             _context.BudgetRows.Should().NotContain(budgetRow);
@@ -28,21 +28,22 @@
         public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(id);
+            Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(id, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                .WithMessage(
+                    $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
         public async Task DeleteAsync_ThrowsException_WhenBudgetRowNotFound()
         {
             // Act
-            Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(999);
+            Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(BudgetMessage.RowNotFound);
+                .WithMessage(BudgetMessage.RowNotFound);
         }
     }
 }

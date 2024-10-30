@@ -79,7 +79,6 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the username already exists.
         /// </exception>
-        Task ValidateUsernameDoesNotExistAsync(string username);
-
+        Task ValidateUsernameDoesNotExistAsync(string username, CancellationToken cancellationToken);
     }
 }

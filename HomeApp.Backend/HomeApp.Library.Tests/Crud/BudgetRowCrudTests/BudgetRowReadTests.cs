@@ -17,7 +17,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            BudgetRow? result = await _budgetRowCrud.FindByIdAsync(budgetRow.Id);
+            BudgetRow? result = await _budgetRowCrud.FindByIdAsync(budgetRow.Id, default);
 
             // Assert
             result.Should().Be(budgetRow);
@@ -30,21 +30,22 @@
         public async Task FindByIdAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetRowCrud.FindByIdAsync(id);
+            Func<Task> action = async () => await _budgetRowCrud.FindByIdAsync(id, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                .WithMessage(
+                    $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
         public async Task FindByIdAsync_ReturnsNull_WhenNotExists()
         {
             // Assert
-            Func<Task> action = async () => await _budgetRowCrud.FindByIdAsync(999);
+            Func<Task> action = async () => await _budgetRowCrud.FindByIdAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(BudgetMessage.CellNotFound);
+                .WithMessage(BudgetMessage.CellNotFound);
         }
 
         [Fact]
@@ -68,7 +69,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            IEnumerable<BudgetRow>? result = await _budgetRowCrud.GetAllAsync();
+            IEnumerable<BudgetRow>? result = await _budgetRowCrud.GetAllAsync(default);
 
             // Assert
             result.Should().Contain(new[] { budgetRow1, budgetRow2 });
@@ -104,7 +105,7 @@
             IQueryable<BudgetRow>? expectedRows = _context.BudgetRows.Where(x => x.UserId == selectedUserId);
 
             // Act
-            IEnumerable<BudgetRow>? result = await _budgetRowCrud.GetAllAsync(selectedUserId);
+            IEnumerable<BudgetRow>? result = await _budgetRowCrud.GetAllAsync(selectedUserId, default);
 
             // Assert
             result.Should().HaveCount(selectedCount);

@@ -14,7 +14,7 @@
             };
 
             // Act
-            await _budgetGroupCrud.CreateAsync(budgetGroup);
+            await _budgetGroupCrud.CreateAsync(budgetGroup, default);
 
             // Assert
             Assert.Contains(budgetGroup, _context.BudgetGroups);
@@ -24,7 +24,8 @@
         public async Task CreateAsync_ThrowsException_WhenBudgetGroupIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetGroupCrud.CreateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetGroupCrud.CreateAsync(null, default));
         }
 
         [Fact]
@@ -39,14 +40,19 @@
             };
 
             // Act
-            await _budgetGroupCrud.CreateAsync(budgetGroup);
+            await _budgetGroupCrud.CreateAsync(budgetGroup, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+                Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

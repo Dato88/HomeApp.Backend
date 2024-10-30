@@ -13,7 +13,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when UserId, BudgetRowId, Name, or Index does not exist or when the BudgetRow with the given id is not found.
         /// </exception>
-        Task<BudgetRow> CreateAsync(BudgetRow budgetRow);
+        Task<BudgetRow> CreateAsync(BudgetRow budgetRow, CancellationToken cancellationToken);
 
         /// <summary>
         /// Deletes a BudgetRow by its id.
@@ -23,7 +23,7 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetRow with the given id is not found.
         /// </exception>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds a BudgetRow by its id.
@@ -33,20 +33,20 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when the BudgetRow with the given id is not found.
         /// </exception>
-        Task<BudgetRow> FindByIdAsync(int id);
+        Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all BudgetRows.
         /// </summary>
         /// <returns>A list of all BudgetRows.</returns>
-        Task<IEnumerable<BudgetRow>> GetAllAsync();
+        Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Gets all BudgetRows for a specific user.
         /// </summary>
         /// <param name="userId">The id of the user.</param>
         /// <returns>A list of all BudgetRows for the specified user.</returns>
-        Task<IEnumerable<BudgetRow>> GetAllAsync(int userId);
+        Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Updates a BudgetRow.
@@ -58,8 +58,6 @@
         /// <exception cref="System.InvalidOperationException">
         /// Thrown when UserId, BudgetRowId, Name, or Index does not exist or when the BudgetRow with the given id is not found.
         /// </exception>
-        Task UpdateAsync(BudgetRow budgetRow);
-
-
+        Task UpdateAsync(BudgetRow budgetRow, CancellationToken cancellationToken);
     }
 }

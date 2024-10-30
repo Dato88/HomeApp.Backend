@@ -33,9 +33,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             await _context.SaveChangesAsync();
 
             // Act & Assert
-            Func<Task> action = async () => await _userValidation.ValidateUsernameDoesNotExistAsync(existingUsername);
+            Func<Task> action = async () =>
+                await _userValidation.ValidateUsernameDoesNotExistAsync(existingUsername, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("Username already exists").WithMessage(UserMessage.UserAlreadyExists);
+            await action.Should().ThrowAsync<InvalidOperationException>("Username already exists")
+                .WithMessage(UserMessage.UserAlreadyExists);
         }
 
         [Theory]
@@ -83,7 +85,8 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData("testuser", "John", null, "password", "test@example.com")]
         [InlineData("testuser", "John", "Doe", null, "test@example.com")]
         [InlineData("testuser", "John", "Doe", "password", null)]
-        public void ValidateRequiredProperties_ShouldThrowException_WhenAnyPropertyIsNull(string username, string firstName, string lastName, string password, string email)
+        public void ValidateRequiredProperties_ShouldThrowException_WhenAnyPropertyIsNull(string username,
+            string firstName, string lastName, string password, string email)
         {
             // Arrange
             User user = new()
@@ -97,7 +100,8 @@ namespace HomeApp.Library.Tests.ValidationTests
 
             // Act & Assert
             Action action = () => _userValidation.ValidateRequiredProperties(user);
-            action.Should().Throw<ValidationException>("Some required properties are missing").WithMessage(UserMessage.PropertiesMissing);
+            action.Should().Throw<ValidationException>("Some required properties are missing")
+                .WithMessage(UserMessage.PropertiesMissing);
         }
 
         [Theory]
@@ -106,7 +110,8 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidatePasswordStrength_ValidPassword_ShouldNotThrowException(string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().NotThrow<ValidationException>();
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .NotThrow<ValidationException>();
         }
 
         [Theory]
@@ -117,7 +122,8 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidatePasswordStrength_PasswordTooShort_ShouldThrowException(string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().Throw<ValidationException>("Password is too short").WithMessage(UserMessage.PasswordShort);
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .Throw<ValidationException>("Password is too short").WithMessage(UserMessage.PasswordShort);
         }
 
         [Theory]
@@ -126,7 +132,8 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidatePasswordStrength_NoDigitsOrSpecialChars_ShouldThrowException(string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().Throw<ValidationException>("Digit is missing").WithMessage(UserMessage.PasswordDigitMissing);
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .Throw<ValidationException>("Digit is missing").WithMessage(UserMessage.PasswordDigitMissing);
         }
 
         [Theory]
@@ -135,7 +142,9 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidatePasswordStrength_NoUpperCaseChars_ShouldThrowException(string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().Throw<ValidationException>("At least one Uppercase is missing").WithMessage(UserMessage.PasswordUppercaseMissing);
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .Throw<ValidationException>("At least one Uppercase is missing")
+                .WithMessage(UserMessage.PasswordUppercaseMissing);
         }
 
         [Theory]
@@ -144,7 +153,9 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidatePasswordStrength_NoSpecialChars_ShouldThrowException(string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().Throw<ValidationException>("No special character provided").WithMessage(UserMessage.PasswordSpecialCharMissing);
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .Throw<ValidationException>("No special character provided")
+                .WithMessage(UserMessage.PasswordSpecialCharMissing);
         }
 
         [Theory]
@@ -155,10 +166,12 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData("AbcdefghT12!")]
         [InlineData("Abcde23fgh!")]
         [InlineData("Abcdefgxc#h1")]
-        public void ValidatePasswordStrength_ValidPasswordWithDifferentCasesAndLength_ShouldNotThrowException(string password)
+        public void ValidatePasswordStrength_ValidPasswordWithDifferentCasesAndLength_ShouldNotThrowException(
+            string password)
         {
             // Act & Assert
-            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should().NotThrow<ValidationException>("Password is Valid");
+            _userValidation.Invoking(v => v.ValidatePasswordStrength(password)).Should()
+                .NotThrow<ValidationException>("Password is Valid");
         }
     }
 }

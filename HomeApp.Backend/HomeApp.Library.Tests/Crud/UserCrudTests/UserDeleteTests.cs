@@ -19,7 +19,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            await _userCrud.DeleteAsync(user.Id);
+            await _userCrud.DeleteAsync(user.Id, default);
 
             // Assert
             User? deletedUser = await _context.Users.FindAsync(user.Id);
@@ -33,11 +33,11 @@
             int nonExistingUserId = 999;
 
             // Act
-            Func<Task> action = async () => await _userCrud.DeleteAsync(nonExistingUserId);
+            Func<Task> action = async () => await _userCrud.DeleteAsync(nonExistingUserId, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(UserMessage.UserNotFound);
+                .WithMessage(UserMessage.UserNotFound);
         }
     }
 }

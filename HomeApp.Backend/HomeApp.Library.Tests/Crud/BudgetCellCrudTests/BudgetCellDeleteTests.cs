@@ -17,7 +17,9 @@
             await _context.SaveChangesAsync();
 
             // Act
-            await _budgetCellCrud.DeleteAsync(budgetCell.Id);
+            CancellationToken cancellationToken = new();
+
+            await _budgetCellCrud.DeleteAsync(budgetCell.Id, cancellationToken);
 
             // Assert
             User? deletedUser = await _context.Users.FindAsync(budgetCell.Id);
@@ -30,10 +32,11 @@
         public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(id);
+            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(id, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                .WithMessage(
+                    $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
@@ -43,11 +46,11 @@
             int nonExistingUserId = 999;
 
             // Act
-            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(nonExistingUserId);
+            Func<Task> action = async () => await _budgetCellCrud.DeleteAsync(nonExistingUserId, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(BudgetMessage.CellNotFound);
+                .WithMessage(BudgetMessage.CellNotFound);
         }
     }
 }

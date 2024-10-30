@@ -19,7 +19,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetCellId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId, default);
 
             await action.Should().NotThrowAsync<ArgumentOutOfRangeException>("BudgetCellId is not zero or negative");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetCellId user has not changed");
@@ -29,17 +30,21 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetCellForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidCellId_NoExceptionThrown(int selectedUserId)
+        public async Task ValidateBudgetCellForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidCellId_NoExceptionThrown(
+            int selectedUserId)
         {
             // Arrange
             int userId = selectedUserId;
             int budgetCellId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId, default);
 
-            string output = $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative").WithMessage(output);
+            string output =
+                $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetCellId user has not changed");
         }
@@ -48,17 +53,21 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetCellForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeCellId_NoExceptionThrown(int selectedCellId)
+        public async Task ValidateBudgetCellForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeCellId_NoExceptionThrown(
+            int selectedCellId)
         {
             // Arrange
             int userId = 1;
             int budgetCellId = selectedCellId;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId, default);
 
-            string output = $"{BudgetMessage.BudgetCellId} ('{budgetCellId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetCellId}')Actual value was {budgetCellId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetCellId is null or negative").WithMessage(output);
+            string output =
+                $"{BudgetMessage.BudgetCellId} ('{budgetCellId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetCellId}')Actual value was {budgetCellId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetCellId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetCellId user has not changed");
         }
@@ -81,11 +90,13 @@ namespace HomeApp.Library.Tests.ValidationTests
             int newUserId = 99;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(newUserId, budgetCell.Id);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(newUserId, budgetCell.Id, default);
 
             await action.Should().NotThrowAsync<ArgumentOutOfRangeException>("BudgetCellId is not zero or negative");
 
-            await action.Should().ThrowAsync<InvalidOperationException>("Invalid BudgetColumnId").WithMessage(BudgetMessage.UserChangeNotAllowed);
+            await action.Should().ThrowAsync<InvalidOperationException>("Invalid BudgetColumnId")
+                .WithMessage(BudgetMessage.UserChangeNotAllowed);
         }
 
         [Fact]
@@ -95,7 +106,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetColumnId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumnId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumnId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetColumnId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetColumnId does not exists");
@@ -111,9 +123,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumnId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetColumnId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumnId already Exists").WithMessage(BudgetMessage.ColumnIdExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumnId already Exists")
+                .WithMessage(BudgetMessage.ColumnIdExist);
         }
 
         [Fact]
@@ -126,7 +140,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetColumnId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetColumnId does not exists");
@@ -139,9 +154,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetColumnId = 0;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId, default);
 
-            string output = $"{BudgetMessage.BudgetColumnId} ('{budgetColumnId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetColumnId}')Actual value was {budgetColumnId}.";
+            string output =
+                $"{BudgetMessage.BudgetColumnId} ('{budgetColumnId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetColumnId}')Actual value was {budgetColumnId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Invalid BudgetColumnId").WithMessage(output);
         }
@@ -153,13 +170,16 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetColumnId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetColumnId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumnId does not Exist").WithMessage(BudgetMessage.ColumnIdNotExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumnId does not Exist")
+                .WithMessage(BudgetMessage.ColumnIdNotExist);
         }
 
         [Fact]
-        public async Task ValidateBudgetColumnIndexAndNameAlreadyExistsAsync_DuplicateIndexAndName_ThrowsInvalidOperationException()
+        public async Task
+            ValidateBudgetColumnIndexAndNameAlreadyExistsAsync_DuplicateIndexAndName_ThrowsInvalidOperationException()
         {
             // Arrange
             int budgetIndex = 1;
@@ -169,16 +189,19 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetIndex, budgetName);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetIndex, budgetName, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumn Index and Name already Exist").WithMessage(BudgetMessage.ColumnIndexAlreadyExists);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetColumn Index and Name already Exist")
+                .WithMessage(BudgetMessage.ColumnIndexAlreadyExists);
         }
 
         [Fact]
         public async Task ValidateBudgetColumnIndexAndNameAlreadyExistsAsync_UniqueIndexAndName_NoExceptionThrown()
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(1, "Unique Column");
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(1, "Unique Column", default);
             await action.Should().NotThrowAsync();
         }
 
@@ -190,7 +213,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetGroupId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId, default);
 
             await action.Should().NotThrowAsync<ArgumentOutOfRangeException>("BudgetGroupId is not zero or negative");
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
@@ -200,17 +224,22 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetGroupForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidGroupId_NoExceptionThrown(int selectedUserId)
+        public async Task
+            ValidateBudgetGroupForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidGroupId_NoExceptionThrown(
+                int selectedUserId)
         {
             // Arrange
             int userId = selectedUserId;
             int budgetGroupId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId, default);
 
-            string output = $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative").WithMessage(output);
+            string output =
+                $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
         }
@@ -219,17 +248,22 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetGroupForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeGroupId_NoExceptionThrown(int selectedGroupId)
+        public async Task
+            ValidateBudgetGroupForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeGroupId_NoExceptionThrown(
+                int selectedGroupId)
         {
             // Arrange
             int userId = 1;
             int budgetGroupId = selectedGroupId;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId, default);
 
-            string output = $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetGroupId is null or negative").WithMessage(output);
+            string output =
+                $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetGroupId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
         }
@@ -241,7 +275,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetGroupId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetGroupId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetGroupId exists");
@@ -254,9 +289,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetGroupId = 0;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId, default);
 
-            string output = $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
+            string output =
+                $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Invalid BudgetGroupId").WithMessage(output);
         }
@@ -271,9 +308,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroupId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetGroupId does Exist already").WithMessage(BudgetMessage.GroupIdExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetGroupId does Exist already")
+                .WithMessage(BudgetMessage.GroupIdExist);
         }
 
         [Fact]
@@ -286,7 +325,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetGroupId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetGroupId exists");
@@ -299,9 +339,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetGroupId = 0;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId, default);
 
-            string output = $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
+            string output =
+                $"{BudgetMessage.BudgetGroupId} ('{budgetGroupId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetGroupId}')Actual value was {budgetGroupId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Invalid BudgetGroupId").WithMessage(output);
         }
@@ -313,13 +355,16 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetGroupId = 999;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroupId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetGroupId does not exist").WithMessage(BudgetMessage.GroupIdNotExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetGroupId does not exist")
+                .WithMessage(BudgetMessage.GroupIdNotExist);
         }
 
         [Fact]
-        public async Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync_DuplicateIndexAndName_ThrowsInvalidOperationException()
+        public async Task
+            ValidateBudgetGroupIndexAndNameAlreadyExistsAsync_DuplicateIndexAndName_ThrowsInvalidOperationException()
         {
             // Arrange
             BudgetGroup? budgetGroup = new BudgetGroup { Index = 1, Name = "Duplicate Group" };
@@ -327,15 +372,19 @@ namespace HomeApp.Library.Tests.ValidationTests
             await _context.SaveChangesAsync();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(budgetGroup.Index, budgetGroup.Name);
-            await action.Should().ThrowAsync<InvalidOperationException>().WithMessage(BudgetMessage.GroupIndexAlreadyExists);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(budgetGroup.Index,
+                    budgetGroup.Name, default);
+            await action.Should().ThrowAsync<InvalidOperationException>()
+                .WithMessage(BudgetMessage.GroupIndexAlreadyExists);
         }
 
         [Fact]
         public async Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync_UniqueIndexAndName_NoExceptionThrown()
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(1, "Unique Group");
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(1, "Unique Group", default);
             await action.Should().NotThrowAsync();
         }
 
@@ -347,7 +396,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetRowId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId, default);
 
             await action.Should().NotThrowAsync<ArgumentOutOfRangeException>("BudgetRowId is not zero or negative");
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
@@ -357,17 +407,21 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetRowForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidRowId_NoExceptionThrown(int selectedUserId)
+        public async Task ValidateBudgetRowForUserIdChangeAsync_ZeroOrNegativeUserId_And_ValidRowId_NoExceptionThrown(
+            int selectedUserId)
         {
             // Arrange
             int userId = selectedUserId;
             int budgetRowId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId, default);
 
-            string output = $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative").WithMessage(output);
+            string output =
+                $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
         }
@@ -376,17 +430,21 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetRowForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeRowId_NoExceptionThrown(int selectedRowId)
+        public async Task ValidateBudgetRowForUserIdChangeAsync_ValidUserId_And_ZeroOrNegativeRowId_NoExceptionThrown(
+            int selectedRowId)
         {
             // Arrange
             int userId = 1;
             int budgetRowId = selectedRowId;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId, default);
 
-            string output = $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetRowId is null or negative").WithMessage(output);
+            string output =
+                $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
+            await action.Should().ThrowAsync<ArgumentOutOfRangeException>("BudgetRowId is null or negative")
+                .WithMessage(output);
 
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId user has not changed");
         }
@@ -398,7 +456,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetRowId = 1;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetRowId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetRowId exists");
@@ -411,9 +470,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetRowId = 0;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId, default);
 
-            string output = $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
+            string output =
+                $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Invalid BudgetRowId").WithMessage(output);
         }
@@ -428,9 +489,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRowId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does Exist already").WithMessage(BudgetMessage.RowIdExists);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does Exist already")
+                .WithMessage(BudgetMessage.RowIdExists);
         }
 
         [Fact]
@@ -443,7 +506,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId, default);
 
             await action.Should().NotThrowAsync<ArgumentException>("BudgetRowId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("BudgetRowId exists");
@@ -453,15 +517,18 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateBudgetRowIdExistsNotAsync_InvalidBudgetRowId_ArgumentExceptionThrown(int selectedRowId)
+        public async Task ValidateBudgetRowIdExistsNotAsync_InvalidBudgetRowId_ArgumentExceptionThrown(
+            int selectedRowId)
         {
             // Arrange
             int budgetRowId = selectedRowId;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId, default);
 
-            string output = $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
+            string output =
+                $"{BudgetMessage.BudgetRowId} ('{budgetRowId}') must be a non-negative and non-zero value. (Parameter '{BudgetMessage.BudgetRowId}')Actual value was {budgetRowId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Invalid BudgetRowId").WithMessage(output);
         }
@@ -473,9 +540,11 @@ namespace HomeApp.Library.Tests.ValidationTests
             int budgetRowId = 999;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId);
+            Func<Task> action = async () =>
+                await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRowId, default);
 
-            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does not exist").WithMessage(BudgetMessage.RowIdNotExist);
+            await action.Should().ThrowAsync<InvalidOperationException>("BudgetRowId does not exist")
+                .WithMessage(BudgetMessage.RowIdNotExist);
         }
 
         [Fact]
@@ -539,7 +608,8 @@ namespace HomeApp.Library.Tests.ValidationTests
             // Act & Assert
             Func<Task> action = async () => await _budgetValidation.ValidateForPositiveIndexAsync(index);
 
-            string output = $"{BudgetMessage.IndexMustBePositive} ('{index}') must be a non-negative value. (Parameter 'Index must be a positive number')Actual value was {index}.";
+            string output =
+                $"{BudgetMessage.IndexMustBePositive} ('{index}') must be a non-negative value. (Parameter 'Index must be a positive number')Actual value was {index}.";
             await action.Should().ThrowAsync<ArgumentException>("Index is negative").WithMessage(output);
         }
 
@@ -564,7 +634,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             _context.SaveChanges();
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateForUserIdAsync(userId);
+            Func<Task> action = async () => await _budgetValidation.ValidateForUserIdAsync(userId, default);
 
             await action.Should().NotThrowAsync<ArgumentOutOfRangeException>("UserId is Valid");
             await action.Should().NotThrowAsync<InvalidOperationException>("UserId exists");
@@ -574,15 +644,17 @@ namespace HomeApp.Library.Tests.ValidationTests
         [InlineData(0)]
         [InlineData(-99)]
         [InlineData(null)]
-        public async Task ValidateForUserIdAsync_NegativeUserIdOrZeroUserId_ArgumentOutOfRangeException(int selectedUserId)
+        public async Task ValidateForUserIdAsync_NegativeUserIdOrZeroUserId_ArgumentOutOfRangeException(
+            int selectedUserId)
         {
             // Arrange
             int userId = selectedUserId;
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetValidation.ValidateForUserIdAsync(userId);
+            Func<Task> action = async () => await _budgetValidation.ValidateForUserIdAsync(userId, default);
 
-            string output = $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            string output =
+                $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Name is null").WithMessage(output);
         }

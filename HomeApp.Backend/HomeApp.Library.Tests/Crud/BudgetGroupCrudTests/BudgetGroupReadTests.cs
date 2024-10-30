@@ -15,7 +15,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            BudgetGroup? result = await _budgetGroupCrud.FindByIdAsync(budgetGroup.Id);
+            BudgetGroup? result = await _budgetGroupCrud.FindByIdAsync(budgetGroup.Id, default);
 
             // Assert
             result.Should().Be(budgetGroup);
@@ -27,21 +27,22 @@
         public async Task FindByIdAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetGroupCrud.FindByIdAsync(id);
+            Func<Task> action = async () => await _budgetGroupCrud.FindByIdAsync(id, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                .WithMessage(
+                    $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
         public async Task FindByIdAsync_ThrowsException_WhenNotExists()
         {
             // Act
-            Func<Task> action = async () => await _budgetGroupCrud.FindByIdAsync(999);
+            Func<Task> action = async () => await _budgetGroupCrud.FindByIdAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(BudgetMessage.GroupNotFound);
+                .WithMessage(BudgetMessage.GroupNotFound);
         }
 
         [Fact]
@@ -65,7 +66,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            IEnumerable<BudgetGroup> result = await _budgetGroupCrud.GetAllAsync();
+            IEnumerable<BudgetGroup> result = await _budgetGroupCrud.GetAllAsync(default);
 
             // Assert
             result.Should().Contain(new[] { budgetGroup1, budgetGroup2 });
@@ -101,7 +102,7 @@
             IQueryable<BudgetGroup>? expectedGroups = _context.BudgetGroups.Where(x => x.UserId == selectedUserId);
 
             // Act
-            IEnumerable<BudgetGroup>? result = await _budgetGroupCrud.GetAllAsync(selectedUserId);
+            IEnumerable<BudgetGroup>? result = await _budgetGroupCrud.GetAllAsync(selectedUserId, default);
 
             // Assert
             result.Should().HaveCount(selectedCount);

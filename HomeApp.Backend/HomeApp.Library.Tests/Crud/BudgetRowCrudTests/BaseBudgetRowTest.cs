@@ -3,6 +3,7 @@
     public class BaseBudgetRowTest : BaseTest
     {
         protected readonly BudgetRowCrud _budgetRowCrud;
+
         protected readonly Mock<IBudgetValidation> _budgetValidationMock;
 
         public BaseBudgetRowTest()

@@ -16,7 +16,9 @@
             };
 
             // Act
-            await _budgetCellCrud.CreateAsync(budgetCell);
+            CancellationToken cancellationToken = new();
+
+            await _budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
 
             // Assert
             Assert.Contains(budgetCell, _context.BudgetCells);
@@ -26,7 +28,8 @@
         public async Task CreateAsync_ThrowsException_WhenBudgetCellIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetCellCrud.CreateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetCellCrud.CreateAsync(null, default));
         }
 
         [Fact]
@@ -42,10 +45,11 @@
             };
 
             // Act & Assert
-            Func<Task> action = async () => await _budgetCellCrud.CreateAsync(budgetCell);
+            Func<Task> action = async () => await _budgetCellCrud.CreateAsync(budgetCell, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"Year ('{budgetCell.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCell.Year}.");
+                .WithMessage(
+                    $"Year ('{budgetCell.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetCell.Year}.");
         }
 
         [Fact]
@@ -62,13 +66,18 @@
             };
 
             // Act
-            await _budgetCellCrud.CreateAsync(budgetCell);
+            await _budgetCellCrud.CreateAsync(budgetCell, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetRowIdExistsNotAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsNotAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsNotAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+                Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetRowIdExistsNotAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIdExistsNotAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+                Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIdExistsNotAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
@@ -85,13 +94,20 @@
             };
 
             // Act
-            await _budgetCellCrud.CreateAsync(budgetCell);
+            await _budgetCellCrud.CreateAsync(budgetCell, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(budgetCell.UserId), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetRowIdExistsNotAsync(budgetCell.BudgetRowId), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateForUserIdAsync(budgetCell.UserId, It.IsAny<CancellationToken>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetRowIdExistsNotAsync(budgetCell.BudgetRowId, It.IsAny<CancellationToken>()),
+                Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId, It.IsAny<CancellationToken>()),
+                Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId, It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

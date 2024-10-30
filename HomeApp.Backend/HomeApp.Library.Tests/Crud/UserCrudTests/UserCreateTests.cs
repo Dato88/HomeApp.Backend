@@ -16,7 +16,7 @@
             };
 
             // Act
-            await _userCrud.CreateAsync(user);
+            await _userCrud.CreateAsync(user, default);
 
             // Assert
             user.Id.Should().NotBe(0);
@@ -37,9 +37,11 @@
             };
 
             // Act
-            await _userCrud.CreateAsync(user);
+            await _userCrud.CreateAsync(user, default);
 
-            _userValidationMock.Verify(x => x.ValidateUsernameDoesNotExistAsync(It.IsAny<string>()), Times.Once);
+            _userValidationMock.Verify(
+                x => x.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+                Times.Once);
             _userValidationMock.Verify(x => x.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
             _userValidationMock.Verify(x => x.ValidateRequiredProperties(It.IsAny<User>()), Times.Once);
             _userValidationMock.Verify(x => x.ValidatePasswordStrength(It.IsAny<string>()), Times.Once);
@@ -54,7 +56,8 @@
         public async Task CreateAsync_ThrowsException_WhenUserIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _userCrud.CreateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _userCrud.CreateAsync(null, default));
         }
     }
 }

@@ -19,9 +19,9 @@ namespace HomeApp.Library.Validations
             }
         }
 
-        public async Task ValidateUsernameDoesNotExistAsync(string username)
+        public async Task ValidateUsernameDoesNotExistAsync(string username, CancellationToken cancellationToken)
         {
-            if (await _context.Users.AnyAsync(a => a.Username == username))
+            if (await _context.Users.AnyAsync(a => a.Username == username, cancellationToken))
                 throw new InvalidOperationException(UserMessage.UserAlreadyExists);
         }
 

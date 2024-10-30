@@ -13,7 +13,7 @@
             };
 
             // Act
-            await _budgetColumnCrud.CreateAsync(budgetColumn);
+            await _budgetColumnCrud.CreateAsync(budgetColumn, default);
 
             // Assert
             Assert.Contains(budgetColumn, _context.BudgetColumns);
@@ -23,7 +23,8 @@
         public async Task CreateAsync_ThrowsException_WhenBudgetColumnIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _budgetColumnCrud.CreateAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await _budgetColumnCrud.CreateAsync(null, default));
         }
 
         [Fact]
@@ -37,13 +38,16 @@
             };
 
             // Act
-            await _budgetColumnCrud.CreateAsync(budgetColumn);
+            await _budgetColumnCrud.CreateAsync(budgetColumn, default);
 
             // Assert
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIdExistsAsync(It.IsAny<int>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
             _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateBudgetColumnIndexAndNameExistsAsync(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
+            _budgetValidationMock.Verify(
+                x => x.ValidateBudgetColumnIndexAndNameExistsAsync(It.IsAny<int>(), It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

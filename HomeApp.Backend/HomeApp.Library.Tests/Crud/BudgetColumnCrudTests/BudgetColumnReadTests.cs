@@ -16,7 +16,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            BudgetColumn? result = await _budgetColumnCrud.FindByIdAsync(budgetColumn.Id);
+            BudgetColumn? result = await _budgetColumnCrud.FindByIdAsync(budgetColumn.Id, default);
 
             // Assert
             result.Should().Be(budgetColumn);
@@ -29,21 +29,22 @@
         public async Task FindByIdAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
         {
             // Act & Assert
-            Func<Task> action = async () => await _budgetColumnCrud.FindByIdAsync(id);
+            Func<Task> action = async () => await _budgetColumnCrud.FindByIdAsync(id, default);
 
             await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                                .WithMessage($"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+                .WithMessage(
+                    $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
         }
 
         [Fact]
         public async Task FindByIdAsync_ReturnsNull_WhenNotExists()
         {
             // Assert
-            Func<Task> action = async () => await _budgetColumnCrud.FindByIdAsync(999);
+            Func<Task> action = async () => await _budgetColumnCrud.FindByIdAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
-                                 .WithMessage(BudgetMessage.ColumnNotFound);
+                .WithMessage(BudgetMessage.ColumnNotFound);
         }
 
         [Fact]
@@ -69,7 +70,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            IEnumerable<BudgetColumn>? result = await _budgetColumnCrud.GetAllAsync();
+            IEnumerable<BudgetColumn>? result = await _budgetColumnCrud.GetAllAsync(default);
 
             // Assert
             result.Should().Contain(new[] { budgetColumn1, budgetColumn2 });
