@@ -1,11 +1,13 @@
 ﻿using HomeApp.DataAccess.Models;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeApp.Api.Controllers
 {
     [ApiController]
+    [Authorize(Policy = "ViewBudgetPolicy")]
     [Route("[controller]/[action]")]
     public class BudgetController(IBudgetFacade budgetFacade) : ControllerBase
     {
