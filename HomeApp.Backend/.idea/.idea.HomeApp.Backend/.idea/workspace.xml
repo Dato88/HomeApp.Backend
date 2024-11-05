@@ -13,40 +13,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="472f067b-35d0-4b13-9987-bb7006533398" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/HomeApp.Api/Controllers/AuthenticationController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Api/GlobalUsings.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Cruds/Interfaces/IUserCrud.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Cruds/UserCrud.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/Register/RegisterUserDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/Register/RegistrationResponseDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Api/Controllers/BudgetController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/Controllers/BudgetController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Api/HomeApp.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/HomeApp.Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetCell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetGroup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetRow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetRow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/HomeAppContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/HomeAppContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/TodoUserMapping.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/TodoUserMapping.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/Person.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/GlobalUsings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Identity/GlobalUsings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/20241101123038_Initial.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/20241101123038_Initial.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/UserContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/BudgetCellCrudTests/BudgetCellDeleteTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/BudgetCellCrudTests/BudgetCellDeleteTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/BaseUserTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/BaseUserTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserCreateTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserCreateTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserDeleteTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserDeleteTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserReadTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserReadTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserUpdateTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserUpdateTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/BudgetValidationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/BudgetValidationTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/UserValidationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/UserValidationTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Cruds/UserCrud.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Cruds/PersonCrud.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Validations/Interfaces/IUserValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Validations/Interfaces/IUserValidation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Validations/UserValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Validations/UserValidation.cs" afterDir="false" />
-    </list>
+    <list default="true" id="472f067b-35d0-4b13-9987-bb7006533398" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -175,7 +142,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1730837411544</updated>
-      <workItem from="1730837413466" duration="2633000" />
+      <workItem from="1730837413466" duration="2731000" />
     </task>
     <servers />
   </component>
