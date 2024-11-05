@@ -14,19 +14,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="472f067b-35d0-4b13-9987-bb7006533398" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/GlobalUsings.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/User.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/UserContext.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Utilities/ClaimStore.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Api/Controllers/AuthenticationController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Api/GlobalUsings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Cruds/Interfaces/IUserCrud.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Cruds/UserCrud.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/Register/RegisterUserDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/Register/RegistrationResponseDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.HomeApp.Backend/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HomeApp.Api/Controllers/BudgetController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/Controllers/BudgetController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HomeApp.Api/HomeApp.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/HomeApp.Api.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HomeApp.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.Backend.sln" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Backend.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/HomeApp.DataAccess.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/HomeApp.DataAccess.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetGroup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetRow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/BudgetRow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/HomeAppContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/HomeAppContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/TodoUserMapping.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/TodoUserMapping.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.DataAccess/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.DataAccess/Models/Person.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/GlobalUsings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Identity/GlobalUsings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/20241101123038_Initial.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/20241101123038_Initial.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Migrations/UserContextModelSnapshot.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Identity/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Identity/Models/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/BudgetCellCrudTests/BudgetCellDeleteTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/BudgetCellCrudTests/BudgetCellDeleteTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/BaseUserTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/BaseUserTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserCreateTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserCreateTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserDeleteTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserDeleteTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserReadTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserReadTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserUpdateTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/Crud/UserCrudTests/UserUpdateTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/BudgetValidationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/BudgetValidationTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/UserValidationTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library.Tests/ValidationTests/UserValidationTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Cruds/UserCrud.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Cruds/PersonCrud.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Validations/Interfaces/IUserValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Validations/Interfaces/IUserValidation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HomeApp.Library/Validations/UserValidation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeApp.Library/Validations/UserValidation.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,21 +63,36 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2e49d132ea68ff47071c64476ae29138fa965dc555ef7c3f4991586431de241/Task.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3bd4df5aff92cabbc4d630be64227073db1b8539b3a1e47786b4b189d7cdb7/DbContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7d382df578ec93391918cfaa4ce7f4b8f35c9aed1241d6556dc9be26df13c/IdentityUser.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/96a4cc66aa48dda8a9d8be8febec4a769fc143f7a86dd53ecdebfb9c3177d/ControllerBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c092928882a17a51a62a367685d90a0a613eb91fb453b9f50147e19c1f3ff40/NullReferenceException.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c0e592a61f7fa8945b29713e5b225f5b75edd663fb19e30ddd7bc6263974b/IdentityBuilder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c36d13f0b3885e74da62a4b98eaf53f17f16fbc381cc731e3502685e372bae2/SR.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d8d9726f3deb1bbf671f5b791e4dc3e0338219a996f439ad2a69024b825c60/UserManager.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2oRffHy6sygsfmqNvSRRSZ8lMH2" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.Launch.executor": "Run",
+    ".NET Launch Settings Profile.Launch.executor": "Debug",
     ".NET Project.Run.executor": "Run",
     ".NET Project.Start.executor": "Run",
     ".NET Project.Unnamed.executor": "Run",
-    "git-widget-placeholder": "main",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "userManagement",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "rider.code.cleanup.on.save": "true",
     "rider.code.cleanup.on.save.profile": "Built-in: Reformat Code",
-    "settings.editor.selected.configurable": "HotReloadSettingsPage"
+    "settings.editor.selected.configurable": "HotReloadSettingsPage",
+    "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
@@ -133,10 +167,25 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="472f067b-35d0-4b13-9987-bb7006533398" name="Changes" comment="" />
+      <created>1730837411544</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1730837411544</updated>
+      <workItem from="1730837413466" duration="2633000" />
+    </task>
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />

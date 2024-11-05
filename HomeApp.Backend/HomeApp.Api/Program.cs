@@ -1,5 +1,6 @@
-using System.Security.Claims;
 using HomeApp.DataAccess.Models;
+using HomeApp.Identity.Cruds;
+using HomeApp.Identity.Cruds.Interfaces;
 using HomeApp.Identity.Models;
 using HomeApp.Identity.Utilities;
 using HomeApp.Library.Cruds;
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using ILogger = Serilog.ILogger;
-using User = HomeApp.Identity.Models.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +44,8 @@ builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
 builder.Services.AddScoped<IBudgetRowCrud, BudgetRowCrud>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
 
+builder.Services.AddScoped<IUserCrud, UserCrud>();
+
 builder.Services.AddAuthorization(options =>
 {
     foreach (var item in ClaimStore.AllClaims)
@@ -51,12 +53,9 @@ builder.Services.AddAuthorization(options =>
         options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
     }
 });
-builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme)
-    .AddBearerToken(IdentityConstants.BearerScheme);
 
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<UserContext>()
-    .AddApiEndpoints();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<UserContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -20,7 +20,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             // Arrange
             string existingUsername = "existinguser";
 
-            User existingUser = new()
+            Person existingPerson = new()
             {
                 Username = existingUsername,
                 Email = "existing@example.com",
@@ -29,7 +29,7 @@ namespace HomeApp.Library.Tests.ValidationTests
                 Password = "password"
             };
 
-            _context.Users.Add(existingUser);
+            _context.Users.Add(existingPerson);
             await _context.SaveChangesAsync();
 
             // Act & Assert
@@ -65,7 +65,7 @@ namespace HomeApp.Library.Tests.ValidationTests
         public void ValidateRequiredProperties_ShouldNotThrowException_WhenAllPropertiesAreNotEmpty()
         {
             // Arrange
-            User user = new()
+            Person person = new()
             {
                 Username = "testuser",
                 FirstName = "John",
@@ -75,7 +75,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             };
 
             // Act & Assert
-            Action action = () => _userValidation.ValidateRequiredProperties(user);
+            Action action = () => _userValidation.ValidateRequiredProperties(person);
             action.Should().NotThrow<ValidationException>("All required properties are provided");
         }
 
@@ -89,7 +89,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             string firstName, string lastName, string password, string email)
         {
             // Arrange
-            User user = new()
+            Person person = new()
             {
                 Username = username,
                 FirstName = firstName,
@@ -99,7 +99,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             };
 
             // Act & Assert
-            Action action = () => _userValidation.ValidateRequiredProperties(user);
+            Action action = () => _userValidation.ValidateRequiredProperties(person);
             action.Should().Throw<ValidationException>("Some required properties are missing")
                 .WithMessage(UserMessage.PropertiesMissing);
         }

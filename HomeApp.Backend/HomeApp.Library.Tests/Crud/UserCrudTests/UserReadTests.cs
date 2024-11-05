@@ -6,7 +6,7 @@
         public async Task FindByIdAsync_ReturnsUser_WhenExists()
         {
             // Arrange
-            User user = new()
+            Person person = new()
             {
                 Username = "testuser",
                 FirstName = "John",
@@ -15,21 +15,21 @@
                 Email = "test@example.com"
             };
 
-            _context.Users.Add(user);
+            _context.Users.Add(person);
             await _context.SaveChangesAsync();
 
             // Act
-            User? result = await _userCrud.FindByIdAsync(user.Id, default);
+            Person? result = await PersonCrud.FindByIdAsync(person.Id, default);
 
             // Assert
-            result.Should().Be(user);
+            result.Should().Be(person);
         }
 
         [Fact]
         public async Task FindByIdAsync_ReturnsException_WhenNotExists()
         {
             // Assert
-            Func<Task> action = async () => await _userCrud.FindByIdAsync(999, default);
+            Func<Task> action = async () => await PersonCrud.FindByIdAsync(999, default);
 
             // Assert
             await action.Should().ThrowAsync<InvalidOperationException>()
@@ -40,7 +40,7 @@
         public async Task GetAllAsync_ReturnsAllBudgetRows()
         {
             // Arrange
-            User user1 = new()
+            Person user1 = new()
             {
                 Username = "testuser",
                 FirstName = "John",
@@ -49,7 +49,7 @@
                 Email = "test@example.com"
             };
 
-            User user2 = new()
+            Person user2 = new()
             {
                 Username = "testuser2",
                 FirstName = "John2",
@@ -63,7 +63,7 @@
             await _context.SaveChangesAsync();
 
             // Act
-            IEnumerable<User>? result = await _userCrud.GetAllAsync(default);
+            IEnumerable<Person>? result = await PersonCrud.GetAllAsync(default);
 
             // Assert
             result.Should().Contain(new[] { user1, user2 });

@@ -2,7 +2,6 @@
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HomeApp.Api.Controllers
 {

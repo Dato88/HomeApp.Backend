@@ -22,7 +22,7 @@
             await _budgetCellCrud.DeleteAsync(budgetCell.Id, cancellationToken);
 
             // Assert
-            User? deletedUser = await _context.Users.FindAsync(budgetCell.Id);
+            Person? deletedUser = await _context.Users.FindAsync(budgetCell.Id);
             deletedUser.Should().BeNull();
         }
 

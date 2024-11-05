@@ -2,14 +2,14 @@
 {
     public class BaseUserTest : BaseTest
     {
-        protected readonly UserCrud _userCrud;
+        protected readonly PersonCrud PersonCrud;
 
         protected readonly Mock<IUserValidation> _userValidationMock;
 
         public BaseUserTest()
         {
             _userValidationMock = new Mock<IUserValidation>();
-            _userCrud = new(_context, _userValidationMock.Object);
+            PersonCrud = new(_context, _userValidationMock.Object);
         }
     }
 }

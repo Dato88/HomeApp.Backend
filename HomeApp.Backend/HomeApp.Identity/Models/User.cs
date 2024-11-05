@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace HomeApp.Identity.Models;
+﻿namespace HomeApp.Identity.Models;
 
 public class User : IdentityUser
 {
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
 }

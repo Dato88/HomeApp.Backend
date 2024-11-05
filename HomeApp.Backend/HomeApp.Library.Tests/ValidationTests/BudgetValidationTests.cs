@@ -620,7 +620,7 @@ namespace HomeApp.Library.Tests.ValidationTests
             // Arrange
             int userId = 1;
 
-            User user = new()
+            Person person = new()
             {
                 Username = "testuser",
                 FirstName = "John",
@@ -629,7 +629,7 @@ namespace HomeApp.Library.Tests.ValidationTests
                 Email = "test@example.com"
             };
 
-            _context.Users.Add(user);
+            _context.Users.Add(person);
 
             _context.SaveChanges();
 

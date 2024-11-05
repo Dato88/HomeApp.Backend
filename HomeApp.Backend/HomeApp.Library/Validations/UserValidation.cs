@@ -31,13 +31,13 @@ namespace HomeApp.Library.Validations
                 throw new ValidationException(UserMessage.InvalidEmail);
         }
 
-        public void ValidateRequiredProperties(User user)
+        public void ValidateRequiredProperties(Person person)
         {
-            if (string.IsNullOrWhiteSpace(user.Username) ||
-                string.IsNullOrWhiteSpace(user.FirstName) ||
-                string.IsNullOrWhiteSpace(user.LastName) ||
-                string.IsNullOrWhiteSpace(user.Password) ||
-                string.IsNullOrWhiteSpace(user.Email))
+            if (string.IsNullOrWhiteSpace(person.Username) ||
+                string.IsNullOrWhiteSpace(person.FirstName) ||
+                string.IsNullOrWhiteSpace(person.LastName) ||
+                string.IsNullOrWhiteSpace(person.Password) ||
+                string.IsNullOrWhiteSpace(person.Email))
             {
                 throw new ValidationException(UserMessage.PropertiesMissing);
             }
@@ -65,13 +65,13 @@ namespace HomeApp.Library.Validations
                 throw new ValidationException(UserMessage.PasswordSpecialCharMissing);
         }
 
-        public void ValidateMaxLength(User user)
+        public void ValidateMaxLength(Person person)
         {
-            if (user.Username.Length > 150 ||
-                user.FirstName.Length > 150 ||
-                user.LastName.Length > 150 ||
-                user.Password.Length > 150 ||
-                user.Email.Length > 150)
+            if (person.Username.Length > 150 ||
+                person.FirstName.Length > 150 ||
+                person.LastName.Length > 150 ||
+                person.Password.Length > 150 ||
+                person.Email.Length > 150)
             {
                 throw new ValidationException(UserMessage.MaxLengthExeed);
             }

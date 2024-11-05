@@ -17,10 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers\"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\HomeApp.DataAccess\HomeApp.DataAccess.csproj"/>
         <ProjectReference Include="..\HomeApp.Identity\HomeApp.Identity.csproj"/>
         <ProjectReference Include="..\HomeApp.Library\HomeApp.Library.csproj"/>

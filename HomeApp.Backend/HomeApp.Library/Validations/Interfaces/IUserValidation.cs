@@ -39,11 +39,11 @@
         /// <code>Throws a ValidationException if any of the user's properties exceed the maximum length.</code>
         /// </para>
         /// </summary>
-        /// <param name="user">The user to validate.</param>
+        /// <param name="person">The user to validate.</param>
         /// <exception cref="System.ComponentModel.DataAnnotations.ValidationException">
         /// Thrown when any of the user's properties exceed the maximum length.
         /// </exception>
-        void ValidateMaxLength(User user);
+        void ValidateMaxLength(Person person);
 
         /// <summary>
         /// Validates the strength of the provided password.
@@ -63,11 +63,11 @@
         /// <code>Throws a ValidationException if any of the required properties are missing.</code>
         /// </para>
         /// </summary>
-        /// <param name="user">The user to validate.</param>
+        /// <param name="person">The user to validate.</param>
         /// <exception cref="System.ComponentModel.DataAnnotations.ValidationException">
         /// Thrown when any of the required properties are missing.
         /// </exception>
-        void ValidateRequiredProperties(User user);
+        void ValidateRequiredProperties(Person person);
 
         /// <summary>
         /// Validates that the provided username does not already exist.

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeApp.Identity.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241101123038_Initial")]
+    [Migration("20241105201456_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -44,6 +44,12 @@ namespace HomeApp.Identity.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
