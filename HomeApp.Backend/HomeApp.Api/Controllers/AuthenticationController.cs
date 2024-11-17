@@ -11,6 +11,14 @@ public class AuthenticationController(IUserCrud userCrud, UserManager<User> user
 {
     private readonly IUserCrud _userCrud = userCrud;
 
+    [HttpGet(Name = "GetAllUsers")]
+    public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken)
+    {
+        var allUsers = await _userCrud.GetAllUsersAsync(cancellationToken);
+
+        return allUsers;
+    }
+
     [HttpPost(Name = "Register")]
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto,
         CancellationToken cancellationToken)

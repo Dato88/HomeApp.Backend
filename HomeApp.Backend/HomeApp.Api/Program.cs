@@ -35,6 +35,15 @@ builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppUserConnection"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy => policy
+        .WithOrigins("http://localhost:4200", "http://localhost:4200", "https://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+});
+
+
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
 builder.Services.AddScoped<IUserValidation, UserValidation>();
 
@@ -70,8 +79,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("CorsPolicy");
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers().RequireCors("CorsPolicy");
 
 app.Run();
