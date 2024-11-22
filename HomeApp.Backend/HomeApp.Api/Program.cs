@@ -1,6 +1,8 @@
+using System.Text;
 using HomeApp.DataAccess.Models;
 using HomeApp.Identity.Cruds;
 using HomeApp.Identity.Cruds.Interfaces;
+using HomeApp.Identity.Handler;
 using HomeApp.Identity.Models;
 using HomeApp.Identity.Utilities;
 using HomeApp.Library.Cruds;
@@ -9,8 +11,10 @@ using HomeApp.Library.Facades;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Validation.Interfaces;
 using HomeApp.Library.Validations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using ILogger = Serilog.ILogger;
 
@@ -53,6 +57,8 @@ builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
 builder.Services.AddScoped<IBudgetRowCrud, BudgetRowCrud>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
 
+builder.Services.AddScoped<JwtHandler>();
+
 builder.Services.AddScoped<IUserCrud, UserCrud>();
 
 builder.Services.AddAuthorization(options =>
@@ -64,14 +70,34 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddIdentity<User, IdentityRole>(
-opt =>
+        opt =>
+        {
+            opt.Password.RequiredLength = 7;
+            opt.Password.RequireDigit = false;
+
+            opt.User.RequireUniqueEmail = true;
+        })
+    .AddEntityFrameworkStores<UserContext>();
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.AddAuthentication(opt =>
 {
-    opt.Password.RequiredLength = 7;
-    opt.Password.RequireDigit = false;
-    
-    opt.User.RequireUniqueEmail = true;
-})
-.AddEntityFrameworkStores<UserContext>();
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["validIssuer"],
+        ValidAudience = jwtSettings["validAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+            .GetBytes(jwtSettings.GetSection("securityKey").Value))
+    };
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -88,6 +114,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers().RequireCors("CorsPolicy");

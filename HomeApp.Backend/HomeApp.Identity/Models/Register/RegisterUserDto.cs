@@ -18,12 +18,22 @@ public class RegisterUserDto
 
     public static implicit operator User(RegisterUserDto item)
     {
-        return new()
+        return new User
         {
             FirstName = item.FirstName,
             LastName = item.LastName,
             Email = item.Email,
             UserName = item.Email
+        };
+    }
+
+    public static implicit operator RegisterUserDto(User item)
+    {
+        return new RegisterUserDto
+        {
+            FirstName = item.FirstName,
+            LastName = item.LastName,
+            Email = item.UserName
         };
     }
 }

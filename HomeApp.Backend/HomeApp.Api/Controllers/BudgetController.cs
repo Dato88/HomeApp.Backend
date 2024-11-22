@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace HomeApp.Api.Controllers
 {
     [ApiController]
-    //[Authorize(Policy = "ViewBudgetPolicy")]
+    [Authorize(Policy = "ViewBudgetPolicy")]
     [Route("[controller]/[action]")]
     public class BudgetController(IBudgetFacade budgetFacade) : ControllerBase
     {
