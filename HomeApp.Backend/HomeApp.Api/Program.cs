@@ -38,7 +38,7 @@ builder.Services.AddDbContext<UserContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy => policy
-        .WithOrigins("http://localhost:4200", "http://localhost:4200", "https://localhost:4200")
+        .WithOrigins("http://localhost:4200", "https://localhost:4200")
         .AllowAnyHeader()
         .AllowAnyMethod());
 });
@@ -63,8 +63,15 @@ builder.Services.AddAuthorization(options =>
     }
 });
 
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<UserContext>();
+builder.Services.AddIdentity<User, IdentityRole>(
+opt =>
+{
+    opt.Password.RequiredLength = 7;
+    opt.Password.RequireDigit = false;
+    
+    opt.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<UserContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
