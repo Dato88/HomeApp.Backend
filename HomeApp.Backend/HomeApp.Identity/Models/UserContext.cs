@@ -3,12 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.Identity.Models;
 
-public class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<User>(options)
+public partial class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<User>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
         builder.HasDefaultSchema("identity");
+
+        builder.Entity<IdentityRole>().HasData(
+            new IdentityRole
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            }
+        );
     }
 }

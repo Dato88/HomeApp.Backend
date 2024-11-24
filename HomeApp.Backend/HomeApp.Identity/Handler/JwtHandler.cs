@@ -1,13 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using HomeApp.Identity.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HomeApp.Identity.Handler;
 
-public class JwtHandler(IConfiguration configuration)
+public class JwtHandler(UserManager<User> userManager, IConfiguration configuration)
 {
+    private readonly UserManager<User> _userManager = userManager;
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JwtSettings");
 
     public SigningCredentials GetSigningCredentials()
@@ -17,12 +19,20 @@ public class JwtHandler(IConfiguration configuration)
         return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }
 
-    public List<Claim> GetClaims(IdentityUser user)
+    public async Task<List<Claim>> GetClaims(User user)
     {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Email)
         };
+
+        var roles = await _userManager.GetRolesAsync(user);
+        
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
         return claims;
     }
 
