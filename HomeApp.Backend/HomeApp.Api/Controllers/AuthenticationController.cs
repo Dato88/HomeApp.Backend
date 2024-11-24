@@ -9,12 +9,10 @@ namespace HomeApp.Api.Controllers;
 [Route("[controller]/[action]")]
 public class AuthenticationController(IUserCrud userCrud, UserManager<User> userManager) : ControllerBase
 {
-    private readonly IUserCrud _userCrud = userCrud;
-
     [HttpGet(Name = "GetAllUsers")]
     public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
-        var allUsers = await _userCrud.GetAllUsersAsync(cancellationToken);
+        var allUsers = await userCrud.GetAllUsersAsync(cancellationToken);
 
         return allUsers;
     }
@@ -26,7 +24,7 @@ public class AuthenticationController(IUserCrud userCrud, UserManager<User> user
         if (registerUserDto == null || !ModelState.IsValid)
             return BadRequest();
 
-        IdentityResult result = await _userCrud.RegisterAsync(registerUserDto, cancellationToken);
+        IdentityResult result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
 
         if (!result.Succeeded)
         {

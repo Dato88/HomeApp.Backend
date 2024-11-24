@@ -7,8 +7,10 @@ using HomeApp.Identity.Models;
 using HomeApp.Identity.Utilities;
 using HomeApp.Library.Cruds;
 using HomeApp.Library.Cruds.Interfaces;
+using HomeApp.Library.Email;
 using HomeApp.Library.Facades;
 using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Models.Email;
 using HomeApp.Library.Validation.Interfaces;
 using HomeApp.Library.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +61,10 @@ builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
 
 builder.Services.AddScoped<JwtHandler>();
 
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 builder.Services.AddScoped<IUserCrud, UserCrud>();
 
 builder.Services.AddAuthorization(options =>
@@ -77,7 +83,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
 
             opt.User.RequireUniqueEmail = true;
         })
-    .AddEntityFrameworkStores<UserContext>();
+    .AddEntityFrameworkStores<UserContext>()
+    .AddDefaultTokenProviders();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddAuthentication(opt =>

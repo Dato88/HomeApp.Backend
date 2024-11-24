@@ -2,28 +2,59 @@ using System.IdentityModel.Tokens.Jwt;
 using HomeApp.Identity.Handler;
 using HomeApp.Identity.Models;
 using HomeApp.Identity.Models.Authentication;
+using HomeApp.Library.Email;
+using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace HomeApp.Api.Controllers;
 
-public class AccountsController(UserManager<User> userManager, JwtHandler jwtHandler) : ControllerBase
+[ApiController]
+[Route("[controller]/[action]")]
+public class AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailSender emailSender)
+    : ControllerBase
 {
-    private readonly UserManager<User> _userManager = userManager;
-    private readonly JwtHandler _jwtHandler = jwtHandler;
-
-    [HttpPost("Login")]
+    [HttpPost(Name = "Login")]
     public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto)
     {
-        var user = await _userManager.FindByEmailAsync(userForAuthenticationDto.Email);
+        var user = await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
 
-        if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
+        if (user == null || !await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
 
-        var signingCredentials = _jwtHandler.GetSigningCredentials();
-        var claims = await _jwtHandler.GetClaims(user);
-        var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
+        var signingCredentials = jwtHandler.GetSigningCredentials();
+        var claims = await jwtHandler.GetClaims(user);
+        var tokenOptions = jwtHandler.GenerateTokenOptions(signingCredentials, claims);
         var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+    }
+
+    [HttpPost(Name = "ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
+
+        if (user == null)
+            return BadRequest("Invalid Request");
+
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        var param = new Dictionary<string, string?>
+        {
+            { "token", token },
+            { "email", forgotPasswordDto.Email }
+        };
+
+        var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
+
+        var message = new Message(new string[] { user.Email }, "Reset password token", callback);
+
+        await emailSender.SendEmailAsync(message, cancellationToken);
+
+        return Ok();
     }
 }
