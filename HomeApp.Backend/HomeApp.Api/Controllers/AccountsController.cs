@@ -87,4 +87,19 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
 
         return Ok();
     }
+
+    [HttpGet("EmailConfirmation")]
+    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user is null)
+            return BadRequest("Invalid Email Confirmation Request");
+
+        var confirmResult = await userManager.ConfirmEmailAsync(user, token);
+
+        if (!confirmResult.Succeeded)
+            return BadRequest("Invalid Email Confirmation Request");
+
+        return Ok();
+    }
 }
