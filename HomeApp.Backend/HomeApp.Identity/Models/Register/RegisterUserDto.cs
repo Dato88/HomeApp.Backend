@@ -16,6 +16,8 @@ public class RegisterUserDto
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string? ConfirmPassword { get; set; }
 
+    public string? ClientURI { get; set; }
+
     public static implicit operator User(RegisterUserDto item)
     {
         return new User
