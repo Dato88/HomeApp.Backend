@@ -1,8 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
-using HomeApp.Identity.Entities.DataTransferObjects.Authentication;
+using HomeApp.Identity.Cruds.Interfaces;
+using HomeApp.Identity.Entities.DataTransferObjects.Register;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using HomeApp.Identity.Entities.Models;
-using HomeApp.Identity.Handler;
 using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
@@ -12,88 +11,25 @@ namespace HomeApp.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailSender emailSender)
+public class AccountsController(
+    IUserCrud userCrud,
+    IEmailSender emailSender,
+    UserManager<User> userManager)
     : ControllerBase
 {
-    [HttpPost(Name = "Login")]
-    public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto,
-        CancellationToken cancellationToken)
+    [HttpGet("EmailConfirmation")]
+    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
     {
-        var user = userForAuthenticationDto.Email is null
-            ? null
-            : await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
-
-        if (user is null || userForAuthenticationDto.Password is null)
-            BadRequest("Invalid Request");
-
-        if (!await userManager.IsEmailConfirmedAsync(user))
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
-
-        if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
-        {
-            await userManager.AccessFailedAsync(user);
-
-            if (await userManager.IsLockedOutAsync(user))
-            {
-                var content =
-                    $"Your account is locked out. To reset the password click this link: {userForAuthenticationDto.ClientURI}";
-                var message = new Message(new string[] { userForAuthenticationDto.Email },
-                    "Locked out account information", content);
-
-                await emailSender.SendEmailAsync(message, cancellationToken);
-
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "The account is locked out" });
-            }
-
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
-        }
-
-        if (await userManager.GetTwoFactorEnabledAsync(user))
-            return await GenerateOTPFor2StepVerification(user, cancellationToken);
-
-        var token = await jwtHandler.GenerateToken(user);
-
-        await userManager.ResetAccessFailedCountAsync(user);
-
-        return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
-    }
-
-    private async Task<IActionResult> GenerateOTPFor2StepVerification(User user, CancellationToken cancellationToken)
-    {
-        var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
-        if (!providers.Contains("Email"))
-        {
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
-        }
-
-        var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
-        var message = new Message(new string[] { user.Email }, "Authentication token", token);
-
-        await emailSender.SendEmailAsync(message, cancellationToken);
-
-        return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
-    }
-
-    [HttpPost("TwoStepVerification")]
-    public async Task<IActionResult> TwoStepVerification([FromBody] TwoFactorDto twoFactorDto)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest();
-
-        var user = await userManager.FindByEmailAsync(twoFactorDto.Email);
-
+        var user = await userManager.FindByEmailAsync(email);
         if (user is null)
-            return BadRequest("Invalid Request");
+            return BadRequest("Invalid Email Confirmation Request");
 
-        var validVerification =
-            await userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+        var confirmResult = await userManager.ConfirmEmailAsync(user, token);
 
-        if (!validVerification)
-            return BadRequest("Invalid Token Verification");
+        if (!confirmResult.Succeeded)
+            return BadRequest("Invalid Email Confirmation Request");
 
-        var token = await jwtHandler.GenerateToken(user);
-
-        return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+        return Ok();
     }
 
     [HttpPost(Name = "ForgotPassword")]
@@ -124,6 +60,44 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
         return Ok();
     }
 
+    [HttpGet(Name = "GetAllUsers")]
+    public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken)
+    {
+        var allUsers = await userCrud.GetAllUsersAsync(cancellationToken);
+
+        return allUsers;
+    }
+
+    [HttpPost(Name = "Register")]
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(e => e.Description);
+
+            return BadRequest(new RegistrationResponseDto { Errors = errors });
+        }
+
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
+        var param = new Dictionary<string, string?>
+        {
+            { "token", token },
+            { "email", registerUserDto.Email }
+        };
+        var callback = QueryHelpers.AddQueryString(registerUserDto?.ClientURI, param);
+        var message = new Message(new string[] { registerUserDto?.Email }, "Email Confirmation token", callback);
+
+        await emailSender.SendEmailAsync(message, cancellationToken);
+
+        return StatusCode(201);
+    }
+
     [HttpPost("ResetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
     {
@@ -145,21 +119,6 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
         }
 
         await userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
-
-        return Ok();
-    }
-
-    [HttpGet("EmailConfirmation")]
-    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
-    {
-        var user = await userManager.FindByEmailAsync(email);
-        if (user is null)
-            return BadRequest("Invalid Email Confirmation Request");
-
-        var confirmResult = await userManager.ConfirmEmailAsync(user, token);
-
-        if (!confirmResult.Succeeded)
-            return BadRequest("Invalid Email Confirmation Request");
 
         return Ok();
     }
