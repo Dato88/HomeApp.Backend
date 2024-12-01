@@ -37,11 +37,11 @@ public class AccountsController(
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
-            return BadRequest();
+            return BadRequest(ModelState);
 
-        var user = forgotPasswordDto.Email is null ? null : await userManager.FindByEmailAsync(forgotPasswordDto.Email);
+        var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
 
-        if (user?.Email is null || forgotPasswordDto.ClientURI is null)
+        if (user?.Email is null)
             return BadRequest("Invalid Request");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -73,7 +73,7 @@ public class AccountsController(
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
-            return BadRequest();
+            return BadRequest(ModelState);
 
         var result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
 
@@ -90,8 +90,10 @@ public class AccountsController(
             { "token", token },
             { "email", registerUserDto.Email }
         };
-        var callback = QueryHelpers.AddQueryString(registerUserDto?.ClientURI, param);
-        var message = new Message(new string[] { registerUserDto?.Email }, "Email Confirmation token", callback);
+        var callback = registerUserDto.ClientUri is null
+            ? string.Empty
+            : QueryHelpers.AddQueryString(registerUserDto.ClientUri, param);
+        var message = new Message(new string[] { registerUserDto.Email }, "Email Confirmation token", callback);
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
@@ -102,10 +104,10 @@ public class AccountsController(
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
     {
         if (!ModelState.IsValid)
-            return BadRequest();
+            return BadRequest(ModelState);
 
-        var user = resetPasswordDto.Email is null ? null : await userManager.FindByEmailAsync(resetPasswordDto.Email);
-        if (user is null || resetPasswordDto.Token is null || resetPasswordDto.Password is null)
+        var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+        if (user is null || resetPasswordDto.Token is null)
             return BadRequest("Invalid Request");
 
         var resetPassResult =

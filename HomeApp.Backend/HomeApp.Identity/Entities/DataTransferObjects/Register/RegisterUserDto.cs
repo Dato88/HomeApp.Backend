@@ -9,6 +9,7 @@ public class RegisterUserDto
     public string? LastName { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress]
     public string? Email { get; set; }
 
     [Required(ErrorMessage = "Password is required")]
@@ -17,7 +18,7 @@ public class RegisterUserDto
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string? ConfirmPassword { get; set; }
 
-    public string? ClientURI { get; set; }
+    public string? ClientUri { get; set; }
 
     public static implicit operator User(RegisterUserDto item)
     {

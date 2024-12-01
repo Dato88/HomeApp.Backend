@@ -10,6 +10,9 @@ public class ResetPasswordDto
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string? ConfirmPassword { get; set; }
 
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress]
     public string? Email { get; set; }
+
     public string? Token { get; set; }
 }

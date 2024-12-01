@@ -4,6 +4,10 @@ namespace HomeApp.Library.Models.Email;
 
 public class ForgotPasswordDto
 {
-    [Required] [EmailAddress] public string? Email { get; set; }
-    [Required] public string? ClientURI { get; set; }
+    [Required(ErrorMessage = "Email is required")]
+    [EmailAddress]
+    public string? Email { get; set; }
+
+    [Required(ErrorMessage = "ClientURI is required")]
+    public string? ClientURI { get; set; }
 }
