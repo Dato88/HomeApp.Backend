@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace HomeApp.Identity.Models.Authentication;
+namespace HomeApp.Identity.Entities.DataTransferObjects.Authentication;
 
 public class UserForAuthenticationDto
 {

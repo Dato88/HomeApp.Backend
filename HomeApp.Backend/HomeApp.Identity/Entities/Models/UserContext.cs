@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeApp.Identity.Models;
+namespace HomeApp.Identity.Entities.Models;
 
 public partial class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<User>(options)
 {

@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Identity.Models.Register;
+﻿namespace HomeApp.Identity.Entities.DataTransferObjects.Register;
 
 public class RegistrationResponseDto
 {

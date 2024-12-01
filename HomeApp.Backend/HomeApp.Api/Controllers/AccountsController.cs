@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
+using HomeApp.Identity.Entities.DataTransferObjects.Authentication;
+using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
+using HomeApp.Identity.Entities.Models;
 using HomeApp.Identity.Handler;
-using HomeApp.Identity.Models;
-using HomeApp.Identity.Models.Authentication;
-using HomeApp.Identity.Models.ResetPassword;
 using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
@@ -48,13 +48,50 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
         }
 
+        if (await userManager.GetTwoFactorEnabledAsync(user))
+            return await GenerateOTPFor2StepVerification(user, cancellationToken);
 
-        var signingCredentials = jwtHandler.GetSigningCredentials();
-        var claims = await jwtHandler.GetClaims(user);
-        var tokenOptions = jwtHandler.GenerateTokenOptions(signingCredentials, claims);
-        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var token = await jwtHandler.GenerateToken(user);
 
         await userManager.ResetAccessFailedCountAsync(user);
+
+        return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+    }
+
+    private async Task<IActionResult> GenerateOTPFor2StepVerification(User user, CancellationToken cancellationToken)
+    {
+        var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
+        if (!providers.Contains("Email"))
+        {
+            return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
+        }
+
+        var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
+        var message = new Message(new string[] { user.Email }, "Authentication token", token);
+
+        await emailSender.SendEmailAsync(message, cancellationToken);
+
+        return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
+    }
+
+    [HttpPost("TwoStepVerification")]
+    public async Task<IActionResult> TwoStepVerification([FromBody] TwoFactorDto twoFactorDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var user = await userManager.FindByEmailAsync(twoFactorDto.Email);
+
+        if (user is null)
+            return BadRequest("Invalid Request");
+
+        var validVerification =
+            await userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+
+        if (!validVerification)
+            return BadRequest("Invalid Token Verification");
+
+        var token = await jwtHandler.GenerateToken(user);
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
     }

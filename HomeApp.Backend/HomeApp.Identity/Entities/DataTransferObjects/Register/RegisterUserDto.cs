@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using HomeApp.Identity.Entities.Models;
 
-namespace HomeApp.Identity.Models.Register;
+namespace HomeApp.Identity.Entities.DataTransferObjects.Register;
 
 public class RegisterUserDto
 {

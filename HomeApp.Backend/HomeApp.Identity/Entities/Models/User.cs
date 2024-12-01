@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Identity.Models;
+﻿namespace HomeApp.Identity.Entities.Models;
 
 public class User : IdentityUser
 {

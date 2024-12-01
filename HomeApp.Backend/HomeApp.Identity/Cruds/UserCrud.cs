@@ -1,5 +1,6 @@
 ﻿using HomeApp.Identity.Cruds.Interfaces;
-using HomeApp.Identity.Models;
+using HomeApp.Identity.Entities.DataTransferObjects.Register;
+using HomeApp.Identity.Entities.Models;
 
 namespace HomeApp.Identity.Cruds;
 

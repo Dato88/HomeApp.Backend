@@ -1,6 +1,6 @@
 ﻿using HomeApp.Identity.Cruds.Interfaces;
-using HomeApp.Identity.Models;
-using HomeApp.Identity.Models.Register;
+using HomeApp.Identity.Entities.DataTransferObjects.Register;
+using HomeApp.Identity.Entities.Models;
 using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
@@ -25,10 +25,10 @@ public class AuthenticationController(IUserCrud userCrud, UserManager<User> user
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto,
         CancellationToken cancellationToken)
     {
-        if (registerUserDto is null || !ModelState.IsValid)
+        if (!ModelState.IsValid)
             return BadRequest();
 
-        IdentityResult result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
+        var result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
 
         if (!result.Succeeded)
         {

@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using HomeApp.Identity.Models;
+using HomeApp.Identity.Entities.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,13 +27,22 @@ public class JwtHandler(UserManager<User> userManager, IConfiguration configurat
         };
 
         var roles = await _userManager.GetRolesAsync(user);
-        
+
         foreach (var role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
         return claims;
+    }
+
+    public async Task<string> GenerateToken(User user)
+    {
+        var signingCredentials = GetSigningCredentials();
+        var claims = await GetClaims(user);
+        var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        return token;
     }
 
     public JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)

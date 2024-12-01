@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace HomeApp.Identity.Models.ResetPassword;
+namespace HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 
 public class ResetPasswordDto
 {
