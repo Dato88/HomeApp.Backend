@@ -86,6 +86,9 @@ builder.Services.AddIdentity<User, IdentityRole>(
     .AddEntityFrameworkStores<UserContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+    opt.TokenLifespan = TimeSpan.FromHours(1));
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddAuthentication(opt =>
 {
