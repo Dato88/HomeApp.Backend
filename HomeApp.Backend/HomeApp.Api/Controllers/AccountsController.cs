@@ -20,7 +20,13 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
     {
         var user = await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
 
-        if (user == null || !await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
+        if (user is null)
+            BadRequest("Invalid Request");
+
+        if (!await userManager.IsEmailConfirmedAsync(user))
+            return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
+
+        if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
 
         var signingCredentials = jwtHandler.GetSigningCredentials();
@@ -40,7 +46,7 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
 
         var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
 
-        if (user == null)
+        if (user is null)
             return BadRequest("Invalid Request");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
