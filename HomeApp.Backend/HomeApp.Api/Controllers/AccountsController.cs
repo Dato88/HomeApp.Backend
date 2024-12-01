@@ -16,23 +16,45 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
     : ControllerBase
 {
     [HttpPost(Name = "Login")]
-    public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto)
+    public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto,
+        CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
+        var user = userForAuthenticationDto.Email is null
+            ? null
+            : await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
 
-        if (user is null)
+        if (user is null || userForAuthenticationDto.Password is null)
             BadRequest("Invalid Request");
 
         if (!await userManager.IsEmailConfirmedAsync(user))
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
 
         if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
+        {
+            await userManager.AccessFailedAsync(user);
+
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var content =
+                    $"Your account is locked out. To reset the password click this link: {userForAuthenticationDto.ClientURI}";
+                var message = new Message(new string[] { userForAuthenticationDto.Email },
+                    "Locked out account information", content);
+
+                await emailSender.SendEmailAsync(message, cancellationToken);
+
+                return Unauthorized(new AuthResponseDto { ErrorMessage = "The account is locked out" });
+            }
+
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
+        }
+
 
         var signingCredentials = jwtHandler.GetSigningCredentials();
         var claims = await jwtHandler.GetClaims(user);
         var tokenOptions = jwtHandler.GenerateTokenOptions(signingCredentials, claims);
         var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+        await userManager.ResetAccessFailedCountAsync(user);
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
     }
@@ -44,9 +66,9 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
+        var user = forgotPasswordDto.Email is null ? null : await userManager.FindByEmailAsync(forgotPasswordDto.Email);
 
-        if (user is null)
+        if (user?.Email is null || forgotPasswordDto.ClientURI is null)
             return BadRequest("Invalid Request");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -71,8 +93,8 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
-        if (user is null)
+        var user = resetPasswordDto.Email is null ? null : await userManager.FindByEmailAsync(resetPasswordDto.Email);
+        if (user is null || resetPasswordDto.Token is null || resetPasswordDto.Password is null)
             return BadRequest("Invalid Request");
 
         var resetPassResult =
@@ -84,6 +106,8 @@ public class AccountsController(UserManager<User> userManager, JwtHandler jwtHan
 
             return BadRequest(new { Errors = errors });
         }
+
+        await userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
 
         return Ok();
     }

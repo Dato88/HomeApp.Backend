@@ -9,4 +9,6 @@ public class UserForAuthenticationDto
 
     [Required(ErrorMessage = "Password is required")]
     public string? Password { get; set; }
+
+    public string? ClientURI { get; set; }
 }
