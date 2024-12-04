@@ -72,6 +72,10 @@ public class AuthenticationController(
     }
 
     [HttpPost("TwoStepVerification")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary),
+        StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> TwoStepVerification([FromBody] TwoFactorDto twoFactorDto)
     {
         if (!ModelState.IsValid)

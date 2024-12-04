@@ -6,6 +6,7 @@ using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Http;
 
 namespace HomeApp.Api.Controllers;
 
@@ -18,6 +19,9 @@ public class AccountsController(
     : ControllerBase
 {
     [HttpGet("EmailConfirmation")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
     {
         var user = await userManager.FindByEmailAsync(email);
@@ -33,6 +37,10 @@ public class AccountsController(
     }
 
     [HttpPost(Name = "ForgotPassword")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary),
+        StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto,
         CancellationToken cancellationToken)
     {
@@ -45,11 +53,7 @@ public class AccountsController(
             return BadRequest("Invalid Request");
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var param = new Dictionary<string, string?>
-        {
-            { "token", token },
-            { "email", forgotPasswordDto.Email }
-        };
+        var param = new Dictionary<string, string?> { { "token", token }, { "email", forgotPasswordDto.Email } };
 
         var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
 
@@ -69,6 +73,10 @@ public class AccountsController(
     }
 
     [HttpPost(Name = "Register")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary),
+        StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto,
         CancellationToken cancellationToken)
     {
@@ -85,11 +93,7 @@ public class AccountsController(
         }
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
-        var param = new Dictionary<string, string?>
-        {
-            { "token", token },
-            { "email", registerUserDto.Email }
-        };
+        var param = new Dictionary<string, string?> { { "token", token }, { "email", registerUserDto.Email } };
         var callback = registerUserDto.ClientUri is null
             ? string.Empty
             : QueryHelpers.AddQueryString(registerUserDto.ClientUri, param);
@@ -101,6 +105,10 @@ public class AccountsController(
     }
 
     [HttpPost("ResetPassword")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary),
+        StatusCodes.Status400BadRequest)]
+    [ProducesDefaultResponseType]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
     {
         if (!ModelState.IsValid)
