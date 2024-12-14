@@ -1,12 +1,11 @@
-﻿namespace HomeApp.DataAccess.Models
-{
-    public class BaseClass
-    {
-        [Key]
-        public int Id { get; set; }
+﻿namespace HomeApp.DataAccess.Models;
 
-        [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
-    }
+public class BaseClass
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

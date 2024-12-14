@@ -1,58 +1,57 @@
-﻿namespace HomeApp.Library.Tests.Crud.BudgetGroupCrudTests
+﻿namespace HomeApp.Library.Tests.Crud.BudgetGroupCrudTests;
+
+public class BudgetGroupCreateTests : BaseBudgetGroupTest
 {
-    public class BudgetGroupCreateTests : BaseBudgetGroupTest
+    [Fact]
+    public async Task CreateAsync_AddsBudgetGroupToContext()
     {
-        [Fact]
-        public async Task CreateAsync_AddsBudgetGroupToContext()
+        // Arrange
+        BudgetGroup budgetGroup = new()
         {
-            // Arrange
-            BudgetGroup budgetGroup = new()
-            {
-                UserId = 1,
-                Index = 1,
-                Name = "Test Budget Group"
-            };
+            UserId = 1,
+            Index = 1,
+            Name = "Test Budget Group"
+        };
 
-            // Act
-            await _budgetGroupCrud.CreateAsync(budgetGroup, default);
+        // Act
+        await _budgetGroupCrud.CreateAsync(budgetGroup, default);
 
-            // Assert
-            Assert.Contains(budgetGroup, _context.BudgetGroups);
-        }
+        // Assert
+        Assert.Contains(budgetGroup, _context.BudgetGroups);
+    }
 
-        [Fact]
-        public async Task CreateAsync_ThrowsException_WhenBudgetGroupIsNull()
+    [Fact]
+    public async Task CreateAsync_ThrowsException_WhenBudgetGroupIsNull()
+    {
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await _budgetGroupCrud.CreateAsync(null, default));
+    }
+
+    [Fact]
+    public async Task CreateAsync_CallsAllValidations_Once()
+    {
+        // Arrange
+        BudgetGroup budgetGroup = new()
         {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _budgetGroupCrud.CreateAsync(null, default));
-        }
+            UserId = 1,
+            Index = 1,
+            Name = "Test Budget Group"
+        };
 
-        [Fact]
-        public async Task CreateAsync_CallsAllValidations_Once()
-        {
-            // Arrange
-            BudgetGroup budgetGroup = new()
-            {
-                UserId = 1,
-                Index = 1,
-                Name = "Test Budget Group"
-            };
+        // Act
+        await _budgetGroupCrud.CreateAsync(budgetGroup, default);
 
-            // Act
-            await _budgetGroupCrud.CreateAsync(budgetGroup, default);
-
-            // Assert
-            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
-                Times.Once);
-            _budgetValidationMock.Verify(
-                x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-            _budgetValidationMock.Verify(
-                x => x.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-        }
+        // Assert
+        _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+        _budgetValidationMock.Verify(
+            x => x.ValidateBudgetGroupIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+        _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
+        _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
+        _budgetValidationMock.Verify(
+            x => x.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(It.IsAny<int>(), It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 }

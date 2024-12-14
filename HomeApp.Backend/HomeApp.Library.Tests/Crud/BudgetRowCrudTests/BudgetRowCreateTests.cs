@@ -1,77 +1,76 @@
 ﻿using HomeApp.DataAccess.Models;
 
-namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests
+namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
+
+public class BudgetRowCreateTests : BaseBudgetRowTest
 {
-    public class BudgetRowCreateTests : BaseBudgetRowTest
+    [Fact]
+    public async Task CreateAsync_AddsBudgetRowToContext()
     {
-        [Fact]
-        public async Task CreateAsync_AddsBudgetRowToContext()
+        // Arrange
+        BudgetRow budgetRow = new()
         {
-            // Arrange
-            BudgetRow budgetRow = new()
-            {
-                UserId = 1,
-                Index = 1,
-                Name = "Test Budget Row",
-                Year = 2021
-            };
+            UserId = 1,
+            Index = 1,
+            Name = "Test Budget Row",
+            Year = 2021
+        };
 
-            // Act
-            await _budgetRowCrud.CreateAsync(budgetRow, default);
+        // Act
+        await _budgetRowCrud.CreateAsync(budgetRow, default);
 
-            // Assert
-            Assert.Contains(budgetRow, _context.BudgetRows);
-        }
+        // Assert
+        Assert.Contains(budgetRow, _context.BudgetRows);
+    }
 
-        [Fact]
-        public async Task CreateAsync_ThrowsException_WhenBudgetRowIsNull()
+    [Fact]
+    public async Task CreateAsync_ThrowsException_WhenBudgetRowIsNull()
+    {
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await _budgetRowCrud.CreateAsync(null, default));
+    }
+
+    [Fact]
+    public async Task CreateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
+    {
+        // Arrange
+        BudgetRow budgetRow = new()
         {
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-                await _budgetRowCrud.CreateAsync(null, default));
-        }
+            UserId = 1,
+            Index = 1,
+            Name = "Test Budget Row"
+        };
 
-        [Fact]
-        public async Task CreateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
+        // Act & Assert
+        Func<Task> action = async () => await _budgetRowCrud.CreateAsync(budgetRow, default);
+
+        await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
+            .WithMessage(
+                $"Year ('{budgetRow.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetRow.Year}.");
+    }
+
+    [Fact]
+    public async Task CreateAsync_CallsAllValidations_Once()
+    {
+        // Arrange
+        BudgetRow budgetRow = new()
         {
-            // Arrange
-            BudgetRow budgetRow = new()
-            {
-                UserId = 1,
-                Index = 1,
-                Name = "Test Budget Row"
-            };
+            UserId = 1,
+            Index = 1,
+            Name = "Test Budget Row",
+            Year = 2021
+        };
 
-            // Act & Assert
-            Func<Task> action = async () => await _budgetRowCrud.CreateAsync(budgetRow, default);
+        // Act
+        await _budgetRowCrud.CreateAsync(budgetRow, default);
 
-            await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-                .WithMessage(
-                    $"Year ('{budgetRow.Year}') must be a non-negative and non-zero value. (Parameter 'Year')Actual value was {budgetRow.Year}.");
-        }
-
-        [Fact]
-        public async Task CreateAsync_CallsAllValidations_Once()
-        {
-            // Arrange
-            BudgetRow budgetRow = new()
-            {
-                UserId = 1,
-                Index = 1,
-                Name = "Test Budget Row",
-                Year = 2021
-            };
-
-            // Act
-            await _budgetRowCrud.CreateAsync(budgetRow, default);
-
-            // Assert
-            _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
-                Times.Once);
-            _budgetValidationMock.Verify(
-                x => x.ValidateBudgetRowIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
-            _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
-        }
+        // Assert
+        _budgetValidationMock.Verify(x => x.ValidateForUserIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+        _budgetValidationMock.Verify(
+            x => x.ValidateBudgetRowIdExistsAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+        _budgetValidationMock.Verify(x => x.ValidateForEmptyStringAsync(It.IsAny<string>()), Times.Once);
+        _budgetValidationMock.Verify(x => x.ValidateForPositiveIndexAsync(It.IsAny<int>()), Times.Once);
     }
 }

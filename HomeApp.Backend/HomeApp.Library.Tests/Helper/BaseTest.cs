@@ -1,12 +1,8 @@
-﻿namespace HomeApp.Library.Tests.Helper
-{
-    public class BaseTest
-    {
-        protected readonly HomeAppContext _context;
+﻿namespace HomeApp.Library.Tests.Helper;
 
-        public BaseTest()
-        {
-            _context = StaticLibraryHelper.CreateInMemoryContext();
-        }
-    }
+public class BaseTest
+{
+    protected readonly HomeAppContext _context;
+
+    public BaseTest() => _context = StaticLibraryHelper.CreateInMemoryContext();
 }

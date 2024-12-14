@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using HomeApp.Identity.Entities.Models;
@@ -23,7 +23,7 @@ public class JwtHandler(UserManager<User> userManager, IConfiguration configurat
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Email)
+            new(ClaimTypes.Name, user.Email)
         };
 
         var roles = await _userManager.GetRolesAsync(user);

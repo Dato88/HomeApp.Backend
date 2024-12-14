@@ -1,10 +1,9 @@
-using System.Text;
+﻿using System.Text;
 using HomeApp.DataAccess.Models;
 using HomeApp.Identity.Cruds;
 using HomeApp.Identity.Cruds.Interfaces;
 using HomeApp.Identity.Entities.Models;
 using HomeApp.Identity.Handler;
-using HomeApp.Identity.Models;
 using HomeApp.Identity.Utilities;
 using HomeApp.Library.Cruds;
 using HomeApp.Library.Cruds.Interfaces;
@@ -32,15 +31,9 @@ ILogger logger =
 
 builder.Services.AddSingleton(logger);
 
-builder.Services.AddDbContext<HomeAppContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppConnection"));
-});
+builder.Services.AddDbContext<HomeAppContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppConnection")));
 
-builder.Services.AddDbContext<UserContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppUserConnection"));
-});
+builder.Services.AddDbContext<UserContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppUserConnection")));
 
 builder.Services.AddCors(options =>
 {
@@ -49,7 +42,6 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowAnyMethod());
 });
-
 
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
 builder.Services.AddScoped<IUserValidation, UserValidation>();

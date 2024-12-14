@@ -1,4 +1,4 @@
-namespace HomeApp.Identity.Entities.DataTransferObjects.Authentication;
+﻿namespace HomeApp.Identity.Entities.DataTransferObjects.Authentication;
 
 public class AuthResponseDto
 {

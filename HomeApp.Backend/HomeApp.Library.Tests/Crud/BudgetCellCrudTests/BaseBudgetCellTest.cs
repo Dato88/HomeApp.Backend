@@ -1,18 +1,17 @@
-﻿namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests
+﻿namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests;
+
+public class BaseBudgetCellTest : BaseTest
 {
-    public class BaseBudgetCellTest : BaseTest
+    protected readonly BudgetCellCrud _budgetCellCrud;
+
+    protected readonly Mock<IBudgetValidation> _budgetValidationMock;
+
+    public BaseBudgetCellTest()
     {
-        protected readonly BudgetCellCrud _budgetCellCrud;
+        _budgetValidationMock = new();
+        _budgetValidationMock.DefaultValue = DefaultValue.Mock;
+        _budgetValidationMock.SetupAllProperties();
 
-        protected readonly Mock<IBudgetValidation> _budgetValidationMock;
-
-        public BaseBudgetCellTest()
-        {
-            _budgetValidationMock = new();
-            _budgetValidationMock.DefaultValue = DefaultValue.Mock;
-            _budgetValidationMock.SetupAllProperties();
-
-            _budgetCellCrud = new(_context, _budgetValidationMock.Object);
-        }
+        _budgetCellCrud = new(_context, _budgetValidationMock.Object);
     }
 }
