@@ -11,7 +11,7 @@ using HomeApp.Library.Email;
 using HomeApp.Library.Facades;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
-using HomeApp.Library.Validation.Interfaces;
+using HomeApp.Library.Validations.Interfaces;
 using HomeApp.Library.Validations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

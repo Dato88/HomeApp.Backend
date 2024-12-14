@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using HomeApp.Library.Cruds;
+using HomeApp.Library.Validations.Interfaces;
 
 namespace HomeApp.Library.Validations;
 
