@@ -1,7 +1,6 @@
-﻿namespace HomeApp.Library.Cruds
+﻿namespace HomeApp.Library.Cruds;
+
+public class BaseContext(HomeAppContext context)
 {
-    public class BaseContext(HomeAppContext context)
-    {
-        protected readonly HomeAppContext _context = context;
-    }
+    protected readonly HomeAppContext _context = context;
 }

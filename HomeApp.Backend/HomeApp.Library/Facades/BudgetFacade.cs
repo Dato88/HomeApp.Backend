@@ -5,209 +5,202 @@ using HomeApp.Library.Logger;
 using HomeApp.Library.Models;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Facades
+namespace HomeApp.Library.Facades;
+
+public partial class BudgetFacade(
+    IBudgetCellCrud budgetCellCrud,
+    IBudgetColumnCrud budgetColumnCrud,
+    IBudgetGroupCrud budgetGroupCrud,
+    IBudgetRowCrud budgetRowCrud,
+    ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
 {
-    public partial class BudgetFacade(
-        IBudgetCellCrud budgetCellCrud,
-        IBudgetColumnCrud budgetColumnCrud,
-        IBudgetGroupCrud budgetGroupCrud,
-        IBudgetRowCrud budgetRowCrud,
-        ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
+    public async Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken)
     {
-        private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
-        private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
-        private readonly IBudgetGroupCrud _budgetGroupCrud = budgetGroupCrud;
-        private readonly IBudgetRowCrud _budgetRowCrud = budgetRowCrud;
-
-        public async Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken)
+        try
         {
-            try
+            Budget selectedBudget = new()
             {
-                Budget selectedBudget = new()
-                {
-                    BudgetCells = await _budgetCellCrud.GetAllAsync(userId, cancellationToken),
-                    BudgetColumns = await _budgetColumnCrud.GetAllAsync(cancellationToken),
-                    BudgetGroups = await _budgetGroupCrud.GetAllAsync(userId, cancellationToken),
-                    BudgetRows = await _budgetRowCrud.GetAllAsync(userId, cancellationToken),
-                };
+                BudgetCells = await budgetCellCrud.GetAllAsync(userId, cancellationToken),
+                BudgetColumns = await budgetColumnCrud.GetAllAsync(cancellationToken),
+                BudgetGroups = await budgetGroupCrud.GetAllAsync(userId, cancellationToken),
+                BudgetRows = await budgetRowCrud.GetAllAsync(userId, cancellationToken),
+            };
 
-                return selectedBudget;
-            }
-            catch (Exception ex)
-            {
-                LogException($"Get budget failed: {ex}", DateTime.Now);
-
-                return null;
-            }
+            return selectedBudget;
         }
-
-        public async Task CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
+            LogException($"Get budget failed: {ex}", DateTime.Now);
 
-                LogInformation($"Creating budgetCell: {budgetCell}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Creating budgetCell failed: {ex.Message}", DateTime.Now);
-            }
+            return null;
         }
+    }
 
-        public async Task CreateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
+    public async Task CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetColumnCrud.CreateAsync(budgetColumn, cancellationToken);
+            await budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
 
-                LogInformation($"Creating budgetColumn: {budgetColumn}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Creating budgetColumn failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Creating budgetCell: {budgetCell}", DateTime.Now);
         }
-
-        public async Task CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetGroupCrud.CreateAsync(budgetGroup, cancellationToken);
-
-                LogInformation($"Creating budgetGroup: {budgetGroup}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Creating budgetGroup failed: {ex.Message}", DateTime.Now);
-            }
+            LogError($"Creating budgetCell failed: {ex.Message}", DateTime.Now);
         }
+    }
 
-        public async Task CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
+    public async Task CreateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetRowCrud.CreateAsync(budgetRow, cancellationToken);
+            await budgetColumnCrud.CreateAsync(budgetColumn, cancellationToken);
 
-                LogInformation($"Creating budgetRow: {budgetRow}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Creating budgetRow failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Creating budgetColumn: {budgetColumn}", DateTime.Now);
         }
-
-        public async Task UpdateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetCellCrud.UpdateAsync(budgetCell, cancellationToken);
-
-                LogInformation($"Updating budgetCell: {budgetCell}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Updating budgetCell failed: {ex.Message}", DateTime.Now);
-            }
+            LogError($"Creating budgetColumn failed: {ex.Message}", DateTime.Now);
         }
+    }
 
-        public async Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
+    public async Task CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetColumnCrud.UpdateAsync(budgetColumn, cancellationToken);
+            await budgetGroupCrud.CreateAsync(budgetGroup, cancellationToken);
 
-                LogInformation($"Updating budgetColumn: {budgetColumn}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Updating budgetColumn failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Creating budgetGroup: {budgetGroup}", DateTime.Now);
         }
-
-        public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetGroupCrud.UpdateAsync(budgetGroup, cancellationToken);
-
-                LogInformation($"Updating budgetGroup: {budgetGroup}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Updating budgetGroup failed: {ex.Message}", DateTime.Now);
-            }
+            LogError($"Creating budgetGroup failed: {ex.Message}", DateTime.Now);
         }
+    }
 
-        public async Task UpdateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
+    public async Task CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetRowCrud.UpdateAsync(budgetRow, cancellationToken);
+            await budgetRowCrud.CreateAsync(budgetRow, cancellationToken);
 
-                LogInformation($"Updating budgetRow: {budgetRow}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Updating budgetRow failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Creating budgetRow: {budgetRow}", DateTime.Now);
         }
-
-
-        public async Task DeleteBudgetCellAsync(int id, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetCellCrud.DeleteAsync(id, cancellationToken);
-
-                LogInformation($"Deleting budgetCell: {id}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Deleting budgetCell failed: {ex.Message}", DateTime.Now);
-            }
+            LogError($"Creating budgetRow failed: {ex.Message}", DateTime.Now);
         }
+    }
 
-        public async Task DeleteBudgetColumnAsync(int id, CancellationToken cancellationToken)
+    public async Task UpdateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetColumnCrud.DeleteAsync(id, cancellationToken);
+            await budgetCellCrud.UpdateAsync(budgetCell, cancellationToken);
 
-                LogInformation($"Deleting budgetColumn: {id}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Deleting budgetColumn failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Updating budgetCell: {budgetCell}", DateTime.Now);
         }
-
-        public async Task DeleteBudgetGroupAsync(int id, CancellationToken cancellationToken)
+        catch (Exception ex)
         {
-            try
-            {
-                await _budgetGroupCrud.DeleteAsync(id, cancellationToken);
-
-                LogInformation($"Deleting budgetGroup: {id}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Deleting budgetGroup failed: {ex.Message}", DateTime.Now);
-            }
+            LogError($"Updating budgetCell failed: {ex.Message}", DateTime.Now);
         }
+    }
 
-        public async Task DeleteBudgetRowAsync(int id, CancellationToken cancellationToken)
+    public async Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
+    {
+        try
         {
-            try
-            {
-                await _budgetRowCrud.DeleteAsync(id, cancellationToken);
+            await budgetColumnCrud.UpdateAsync(budgetColumn, cancellationToken);
 
-                LogInformation($"Deleting budgetRow: {id}", DateTime.Now);
-            }
-            catch (Exception ex)
-            {
-                LogError($"Deleting budgetRow failed: {ex.Message}", DateTime.Now);
-            }
+            LogInformation($"Updating budgetColumn: {budgetColumn}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Updating budgetColumn failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetGroupCrud.UpdateAsync(budgetGroup, cancellationToken);
+
+            LogInformation($"Updating budgetGroup: {budgetGroup}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Updating budgetGroup failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task UpdateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetRowCrud.UpdateAsync(budgetRow, cancellationToken);
+
+            LogInformation($"Updating budgetRow: {budgetRow}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Updating budgetRow failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task DeleteBudgetCellAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetCellCrud.DeleteAsync(id, cancellationToken);
+
+            LogInformation($"Deleting budgetCell: {id}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Deleting budgetCell failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task DeleteBudgetColumnAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetColumnCrud.DeleteAsync(id, cancellationToken);
+
+            LogInformation($"Deleting budgetColumn: {id}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Deleting budgetColumn failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task DeleteBudgetGroupAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetGroupCrud.DeleteAsync(id, cancellationToken);
+
+            LogInformation($"Deleting budgetGroup: {id}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Deleting budgetGroup failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
+    public async Task DeleteBudgetRowAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await budgetRowCrud.DeleteAsync(id, cancellationToken);
+
+            LogInformation($"Deleting budgetRow: {id}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Deleting budgetRow failed: {ex.Message}", DateTime.Now);
         }
     }
 }

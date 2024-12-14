@@ -1,15 +1,14 @@
-﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests
+﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+
+public class BaseUserTest : BaseTest
 {
-    public class BaseUserTest : BaseTest
+    protected readonly PersonCrud PersonCrud;
+
+    protected readonly Mock<IUserValidation> _userValidationMock;
+
+    public BaseUserTest()
     {
-        protected readonly UserCrud _userCrud;
-
-        protected readonly Mock<IUserValidation> _userValidationMock;
-
-        public BaseUserTest()
-        {
-            _userValidationMock = new Mock<IUserValidation>();
-            _userCrud = new(_context, _userValidationMock.Object);
-        }
+        _userValidationMock = new Mock<IUserValidation>();
+        PersonCrud = new(_context, _userValidationMock.Object);
     }
 }

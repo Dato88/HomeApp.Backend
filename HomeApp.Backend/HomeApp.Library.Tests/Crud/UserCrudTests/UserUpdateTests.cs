@@ -1,161 +1,160 @@
-﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests
+﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+
+public class UserUpdateTests : BaseUserTest
 {
-    public class UserUpdateTests : BaseUserTest
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateUser_WhenUserExists()
     {
-        [Fact]
-        public async Task UpdateAsync_ShouldUpdateUser_WhenUserExists()
+        // Arrange
+        Person existingPerson = new()
         {
-            // Arrange
-            User existingUser = new()
-            {
-                Username = "testuser",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "password",
-                Email = "test@example.com",
-                CreatedAt = DateTime.UtcNow
-            };
+            Username = "testuser",
+            FirstName = "John",
+            LastName = "Doe",
+            Password = "password",
+            Email = "test@example.com",
+            CreatedAt = DateTime.UtcNow
+        };
 
-            _context.Users.Add(existingUser);
-            await _context.SaveChangesAsync();
+        _context.Users.Add(existingPerson);
+        await _context.SaveChangesAsync();
 
-            User updatedUser = new()
-            {
-                Id = existingUser.Id,
-                Username = "updateduser",
-                FirstName = "Jane",
-                LastName = "Doe",
-                Password = "newpassword",
-                Email = "updated@example.com",
-                LastLogin = DateTime.UtcNow
-            };
-
-            // Act
-            await _userCrud.UpdateAsync(updatedUser, default);
-
-            // Assert
-            existingUser.Id.Should().Be(1);
-            existingUser.Username.Should().Be(updatedUser.Username);
-            existingUser.FirstName.Should().Be(updatedUser.FirstName);
-            existingUser.LastName.Should().Be(updatedUser.LastName);
-            existingUser.Password.Should().Be(updatedUser.Password);
-            existingUser.Email.Should().Be(updatedUser.Email);
-            existingUser.LastLogin.Should().Be(updatedUser.LastLogin);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ShouldCall_AllValidations()
+        Person updatedPerson = new()
         {
-            // Arrange
-            User existingUser = new()
-            {
-                Username = "testuser",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "password",
-                Email = "test@example.com",
-                CreatedAt = DateTime.UtcNow
-            };
+            Id = existingPerson.Id,
+            Username = "updateduser",
+            FirstName = "Jane",
+            LastName = "Doe",
+            Password = "newpassword",
+            Email = "updated@example.com",
+            LastLogin = DateTime.UtcNow
+        };
 
-            _context.Users.Add(existingUser);
-            await _context.SaveChangesAsync();
+        // Act
+        await PersonCrud.UpdateAsync(updatedPerson, default);
 
-            // Act
-            User updatedUser = new()
-            {
-                Id = existingUser.Id,
-                Username = "updateduser",
-                FirstName = "Jane",
-                LastName = "Doe",
-                Password = "newpassword",
-                Email = "updated@example.com",
-                LastLogin = DateTime.UtcNow
-            };
+        // Assert
+        existingPerson.Id.Should().Be(1);
+        existingPerson.Username.Should().Be(updatedPerson.Username);
+        existingPerson.FirstName.Should().Be(updatedPerson.FirstName);
+        existingPerson.LastName.Should().Be(updatedPerson.LastName);
+        existingPerson.Password.Should().Be(updatedPerson.Password);
+        existingPerson.Email.Should().Be(updatedPerson.Email);
+        existingPerson.LastLogin.Should().Be(updatedPerson.LastLogin);
+    }
 
-            await _userCrud.UpdateAsync(updatedUser, default);
-
-            // Assert
-            User? result = await _context.Users.FindAsync(existingUser.Id);
-
-            _userValidationMock.Verify(
-                v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
-                Times.Once);
-            _userValidationMock.Verify(v => v.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
-            _userValidationMock.Verify(v => v.ValidateRequiredProperties(It.IsAny<User>()), Times.Once);
-            _userValidationMock.Verify(v => v.ValidatePasswordStrength(It.IsAny<string>()), Times.Once);
-            _userValidationMock.Verify(v => v.ValidateMaxLength(It.IsAny<User>()), Times.Once);
-            _userValidationMock.Verify(v => v.ValidateLastLoginDate(It.IsAny<DateTime>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ShouldNotCall_ValidateUsernameDoesNotExistAsync()
+    [Fact]
+    public async Task UpdateAsync_ShouldCall_AllValidations()
+    {
+        // Arrange
+        Person existingPerson = new()
         {
-            // Arrange
-            User existingUser = new()
-            {
-                Username = "testuser",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "password",
-                Email = "test@example.com",
-                CreatedAt = DateTime.UtcNow
-            };
+            Username = "testuser",
+            FirstName = "John",
+            LastName = "Doe",
+            Password = "password",
+            Email = "test@example.com",
+            CreatedAt = DateTime.UtcNow
+        };
 
-            _context.Users.Add(existingUser);
-            await _context.SaveChangesAsync();
+        _context.Users.Add(existingPerson);
+        await _context.SaveChangesAsync();
 
-            // Act
-            User updatedUser = new()
-            {
-                Id = existingUser.Id,
-                Username = "testuser",
-                FirstName = "Jane",
-                LastName = "Doe",
-                Password = "newpassword",
-                Email = "updated@example.com",
-                LastLogin = DateTime.UtcNow
-            };
-
-            await _userCrud.UpdateAsync(updatedUser, default);
-
-            // Assert
-            User? result = await _context.Users.FindAsync(existingUser.Id);
-
-            _userValidationMock.Verify(
-                v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
-                Times.Never);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ShouldThrowException_WhenUserIsNull()
+        // Act
+        Person updatedPerson = new()
         {
-            // Act
-            Func<Task> action = async () => await _userCrud.UpdateAsync(null, default);
+            Id = existingPerson.Id,
+            Username = "updateduser",
+            FirstName = "Jane",
+            LastName = "Doe",
+            Password = "newpassword",
+            Email = "updated@example.com",
+            LastLogin = DateTime.UtcNow
+        };
 
-            // Assert
-            await action.Should().ThrowAsync<ArgumentNullException>();
-        }
+        await PersonCrud.UpdateAsync(updatedPerson, default);
 
-        [Fact]
-        public async Task UpdateAsync_ShouldThrowException_WhenUserNotFound()
+        // Assert
+        var result = await _context.Users.FindAsync(existingPerson.Id);
+
+        _userValidationMock.Verify(
+            v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+        _userValidationMock.Verify(v => v.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
+        _userValidationMock.Verify(v => v.ValidateRequiredProperties(It.IsAny<Person>()), Times.Once);
+        _userValidationMock.Verify(v => v.ValidatePasswordStrength(It.IsAny<string>()), Times.Once);
+        _userValidationMock.Verify(v => v.ValidateMaxLength(It.IsAny<Person>()), Times.Once);
+        _userValidationMock.Verify(v => v.ValidateLastLoginDate(It.IsAny<DateTime>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldNotCall_ValidateUsernameDoesNotExistAsync()
+    {
+        // Arrange
+        Person existingPerson = new()
         {
-            // Arrange
-            User nonExistingUser = new()
-            {
-                Id = 999,
-                Username = "nonexistinguser",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "password",
-                Email = "nonexisting@example.com",
-                LastLogin = DateTime.UtcNow
-            };
+            Username = "testuser",
+            FirstName = "John",
+            LastName = "Doe",
+            Password = "password",
+            Email = "test@example.com",
+            CreatedAt = DateTime.UtcNow
+        };
 
-            // Act
-            Func<Task> action = async () => await _userCrud.UpdateAsync(nonExistingUser, default);
+        _context.Users.Add(existingPerson);
+        await _context.SaveChangesAsync();
 
-            // Assert
-            await action.Should().ThrowAsync<InvalidOperationException>().WithMessage(UserMessage.UserNotFound);
-        }
+        // Act
+        Person updatedPerson = new()
+        {
+            Id = existingPerson.Id,
+            Username = "testuser",
+            FirstName = "Jane",
+            LastName = "Doe",
+            Password = "newpassword",
+            Email = "updated@example.com",
+            LastLogin = DateTime.UtcNow
+        };
+
+        await PersonCrud.UpdateAsync(updatedPerson, default);
+
+        // Assert
+        var result = await _context.Users.FindAsync(existingPerson.Id);
+
+        _userValidationMock.Verify(
+            v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldThrowException_WhenUserIsNull()
+    {
+        // Act
+        Func<Task> action = async () => await PersonCrud.UpdateAsync(null, default);
+
+        // Assert
+        await action.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldThrowException_WhenUserNotFound()
+    {
+        // Arrange
+        Person nonExistingPerson = new()
+        {
+            Id = 999,
+            Username = "nonexistinguser",
+            FirstName = "John",
+            LastName = "Doe",
+            Password = "password",
+            Email = "nonexisting@example.com",
+            LastLogin = DateTime.UtcNow
+        };
+
+        // Act
+        Func<Task> action = async () => await PersonCrud.UpdateAsync(nonExistingPerson, default);
+
+        // Assert
+        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage(UserMessage.UserNotFound);
     }
 }
