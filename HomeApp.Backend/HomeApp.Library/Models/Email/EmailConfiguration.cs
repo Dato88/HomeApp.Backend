@@ -1,4 +1,4 @@
-namespace HomeApp.Library.Models.Email;
+﻿namespace HomeApp.Library.Models.Email;
 
 public class EmailConfiguration
 {

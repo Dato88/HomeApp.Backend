@@ -1,4 +1,4 @@
-using HomeApp.Library.Models.Email;
+﻿using HomeApp.Library.Models.Email;
 
 namespace HomeApp.Library.Email;
 

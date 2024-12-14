@@ -1,4 +1,4 @@
-using MimeKit;
+﻿using MimeKit;
 
 namespace HomeApp.Library.Models.Email;
 
