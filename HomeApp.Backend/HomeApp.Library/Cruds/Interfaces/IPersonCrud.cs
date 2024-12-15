@@ -11,6 +11,7 @@ public interface IPersonCrud
     Task CreateAsync(Person person, CancellationToken cancellationToken);
     Task DeleteAsync(int userId, CancellationToken cancellationToken);
     Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken);
+    Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken);
     Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken);
     Task UpdateAsync(Person person, CancellationToken cancellationToken);
 }

@@ -42,6 +42,16 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         return user;
     }
 
+    public async Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var user = await _context.People.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+
+        if (user is null)
+            throw new InvalidOperationException(UserMessage.UserNotFound);
+
+        return user;
+    }
+
     public override async Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken) =>
         (await _context.People.ToListAsync(cancellationToken)).Select(s => (PersonDto)s);
 
