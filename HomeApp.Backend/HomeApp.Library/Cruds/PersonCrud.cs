@@ -2,7 +2,8 @@
 
 namespace HomeApp.Library.Cruds;
 
-public class PersonCrud(HomeAppContext context, IUserValidation userValidation) : BaseCrud<Person>(context, null)
+public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
+    : BaseCrud<Person>(context, null), IPersonCrud
 {
     private readonly IUserValidation _userValidation = userValidation;
 

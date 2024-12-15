@@ -2,6 +2,7 @@
 using HomeApp.Identity.Entities.DataTransferObjects.Register;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using HomeApp.Identity.Entities.Models;
+using HomeApp.Library.Cruds;
 using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
@@ -14,17 +15,23 @@ namespace HomeApp.Api.Controllers;
 public class AccountsController(
     IUserCrud userCrud,
     IEmailSender emailSender,
+    IPersonCrud personCrud,
     UserManager<User> userManager)
     : ControllerBase
 {
+    private readonly IEmailSender _emailSender = emailSender;
+    private readonly IPersonCrud _personCrud = personCrud;
+    private readonly IUserCrud _userCrud = userCrud;
+    private readonly UserManager<User> _userManager = userManager;
+
     [HttpGet("EmailConfirmation")]
     public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
     {
-        var user = await userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
             return BadRequest("Invalid Email Confirmation Request");
 
-        var confirmResult = await userManager.ConfirmEmailAsync(user, token);
+        var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
 
         if (!confirmResult.Succeeded)
             return BadRequest("Invalid Email Confirmation Request");
@@ -39,23 +46,19 @@ public class AccountsController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await userManager.FindByEmailAsync(forgotPasswordDto.Email);
+        var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
 
         if (user?.Email is null)
             return BadRequest("Invalid Request");
 
-        var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var param = new Dictionary<string, string?>
-        {
-            { "token", token },
-            { "email", forgotPasswordDto.Email }
-        };
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var param = new Dictionary<string, string?> { { "token", token }, { "email", forgotPasswordDto.Email } };
 
         var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
 
-        var message = new Message(new string[] { user.Email }, "Reset password token", callback);
+        var message = new Message(new[] { user.Email }, "Reset password token", callback);
 
-        await emailSender.SendEmailAsync(message, cancellationToken);
+        await _emailSender.SendEmailAsync(message, cancellationToken);
 
         return Ok();
     }
@@ -63,7 +66,7 @@ public class AccountsController(
     [HttpGet(Name = "GetAllUsers")]
     public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
-        var allUsers = await userCrud.GetAllUsersAsync(cancellationToken);
+        var allUsers = await _userCrud.GetAllUsersAsync(cancellationToken);
 
         return allUsers;
     }
@@ -75,27 +78,25 @@ public class AccountsController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await userCrud.RegisterAsync(registerUserDto, cancellationToken);
+        var result = await _userCrud.RegisterAsync(registerUserDto, cancellationToken);
 
-        if (!result.Succeeded)
+        if (!result.Item1.Succeeded)
         {
-            var errors = result.Errors.Select(e => e.Description);
+            var errors = result.Item1.Errors.Select(e => e.Description);
 
             return BadRequest(new RegistrationResponseDto { Errors = errors });
         }
 
-        var token = await userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
-        var param = new Dictionary<string, string?>
-        {
-            { "token", token },
-            { "email", registerUserDto.Email }
-        };
+        await _personCrud.CreateAsync(result.Item2, cancellationToken);
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
+        var param = new Dictionary<string, string?> { { "token", token }, { "email", registerUserDto.Email } };
         var callback = registerUserDto.ClientUri is null
             ? string.Empty
             : QueryHelpers.AddQueryString(registerUserDto.ClientUri, param);
-        var message = new Message(new string[] { registerUserDto.Email }, "Email Confirmation token", callback);
+        var message = new Message(new[] { registerUserDto.Email }, "Email Confirmation token", callback);
 
-        await emailSender.SendEmailAsync(message, cancellationToken);
+        await _emailSender.SendEmailAsync(message, cancellationToken);
 
         return StatusCode(201);
     }
@@ -106,12 +107,12 @@ public class AccountsController(
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+        var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
         if (user is null || resetPasswordDto.Token is null)
             return BadRequest("Invalid Request");
 
         var resetPassResult =
-            await userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+            await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
 
         if (!resetPassResult.Succeeded)
         {
@@ -120,7 +121,7 @@ public class AccountsController(
             return BadRequest(new { Errors = errors });
         }
 
-        await userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
+        await _userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
 
         return Ok();
     }
