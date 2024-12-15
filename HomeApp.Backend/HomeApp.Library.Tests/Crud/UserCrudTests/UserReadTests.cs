@@ -24,7 +24,7 @@ public class UserReadTests : BaseUserTest
         var result = await PersonCrud.FindByIdAsync(person.Id, default);
 
         // Assert
-        result.Should().Be(person);
+        result.Should().BeEquivalentTo((PersonDto)person);
     }
 
     [Fact]
@@ -68,6 +68,7 @@ public class UserReadTests : BaseUserTest
         var result = await PersonCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { (PersonDto)user1, user2 });
+        result.Should().ContainEquivalentOf((PersonDto)user1);
+        result.Should().ContainEquivalentOf((PersonDto)user2);
     }
 }

@@ -80,13 +80,12 @@ public class UserValidationTests
     }
 
     [Theory]
-    [InlineData(null, "John", "Doe", "password", "test@example.com")]
-    [InlineData("testuser", null, "Doe", "password", "test@example.com")]
-    [InlineData("testuser", "John", null, "password", "test@example.com")]
-    [InlineData("testuser", "John", "Doe", null, "test@example.com")]
-    [InlineData("testuser", "John", "Doe", "password", null)]
+    [InlineData("testuser", null, "Doe", "test@example.com", "safdf-adfdf-dfdsx-Tcere-fooOO-1232?")]
+    [InlineData("testuser", "John", null, "test@example.com", "safdf-adfdf-dfdsx-Tcere-fooOO-1232?")]
+    [InlineData("testuser", "John", "Doe", null, "safdf-adfdf-dfdsx-Tcere-fooOO-1232?")]
+    [InlineData("testuser", "John", "Doe", "test@example.com", null)]
     public void ValidateRequiredProperties_ShouldThrowException_WhenAnyPropertyIsNull(string? username,
-        string? firstName, string? lastName, string? password, string? email)
+        string? firstName, string? lastName, string? email, string? userId)
     {
         // Arrange
         Person person = new()
@@ -95,7 +94,7 @@ public class UserValidationTests
             FirstName = firstName,
             LastName = lastName,
             Email = email,
-            UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
+            UserId = userId
         };
 
         // Act & Assert

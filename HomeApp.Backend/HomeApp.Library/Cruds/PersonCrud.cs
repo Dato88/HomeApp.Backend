@@ -33,7 +33,7 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation) 
 
     public override async Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken)
     {
-        PersonDto user = await _context.People.FindAsync(id, cancellationToken);
+        var user = await _context.People.FindAsync(id, cancellationToken);
 
         if (user is null)
             throw new InvalidOperationException(UserMessage.UserNotFound);

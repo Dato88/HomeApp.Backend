@@ -33,8 +33,7 @@ public class UserValidation(HomeAppContext context) : BaseContext(context), IUse
 
     public void ValidateRequiredProperties(Person person)
     {
-        if (string.IsNullOrWhiteSpace(person.Username) ||
-            string.IsNullOrWhiteSpace(person.FirstName) ||
+        if (string.IsNullOrWhiteSpace(person.FirstName) ||
             string.IsNullOrWhiteSpace(person.LastName) ||
             string.IsNullOrWhiteSpace(person.Email) ||
             string.IsNullOrWhiteSpace(person.UserId))
