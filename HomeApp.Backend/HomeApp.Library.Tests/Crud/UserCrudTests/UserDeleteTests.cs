@@ -11,18 +11,18 @@ public class PersonCrudTests : BaseUserTest
             Username = "testuser",
             FirstName = "John",
             LastName = "Doe",
-            Password = "password",
-            Email = "test@example.com"
+            Email = "test@example.com",
+            UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
-        _context.Users.Add(person);
+        _context.People.Add(person);
         await _context.SaveChangesAsync();
 
         // Act
         await PersonCrud.DeleteAsync(person.Id, default);
 
         // Assert
-        var deletedUser = await _context.Users.FindAsync(person.Id);
+        var deletedUser = await _context.People.FindAsync(person.Id);
         deletedUser.Should().BeNull();
     }
 
@@ -33,7 +33,7 @@ public class PersonCrudTests : BaseUserTest
         var nonExistingUserId = 999;
 
         // Act
-        Func<Task> action = async () => await PersonCrud.DeleteAsync(nonExistingUserId, default);
+        var action = async () => await PersonCrud.DeleteAsync(nonExistingUserId, default);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()

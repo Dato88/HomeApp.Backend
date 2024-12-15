@@ -37,7 +37,6 @@ public static class UserMessage
     public const string UserNotFound = "User not found";
     public const string UserAlreadyExists = "Username already exists";
     public const string InvalidEmail = "Invalid email format";
-    public const string InvalidLoginDate = "Invalid last login date";
     public const string PasswordShort = "Password must be at least 8 characters long";
     public const string PasswordUppercaseMissing = "Password must contain at least one uppercase letter";
     public const string PasswordLowercaseMissing = "Password must contain at least one lowercase letter";
@@ -46,5 +45,4 @@ public static class UserMessage
     public const string PropertiesMissing = "User Required properties are missing";
     public const string WeakPassword = "Password is too weak";
     public const string MaxLengthExeed = "Max length exceeded";
-
 }

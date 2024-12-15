@@ -1,4 +1,6 @@
-﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+﻿using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
+
+namespace HomeApp.Library.Tests.Crud.UserCrudTests;
 
 public class UserReadTests : BaseUserTest
 {
@@ -11,11 +13,11 @@ public class UserReadTests : BaseUserTest
             Username = "testuser",
             FirstName = "John",
             LastName = "Doe",
-            Password = "password",
-            Email = "test@example.com"
+            Email = "test@example.com",
+            UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
-        _context.Users.Add(person);
+        _context.People.Add(person);
         await _context.SaveChangesAsync();
 
         // Act
@@ -45,8 +47,8 @@ public class UserReadTests : BaseUserTest
             Username = "testuser",
             FirstName = "John",
             LastName = "Doe",
-            Password = "password",
-            Email = "test@example.com"
+            Email = "test@example.com",
+            UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
         Person user2 = new()
@@ -54,18 +56,18 @@ public class UserReadTests : BaseUserTest
             Username = "testuser2",
             FirstName = "John2",
             LastName = "Doe2",
-            Password = "password2",
-            Email = "test@example2.com"
+            Email = "test@example2.com",
+            UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        _context.Users.Add(user1);
-        _context.Users.Add(user2);
+        _context.People.Add(user1);
+        _context.People.Add(user2);
         await _context.SaveChangesAsync();
 
         // Act
         var result = await PersonCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { user1, user2 });
+        result.Should().Contain(new[] { (PersonDto)user1, user2 });
     }
 }

@@ -10,7 +10,7 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     {
         ArgumentNullException.ThrowIfNull(budgetGroup);
 
-        await _budgetValidation.ValidateForUserIdAsync(budgetGroup.UserId, cancellationToken);
+        await _budgetValidation.ValidateForUserIdAsync(budgetGroup.PersonId, cancellationToken);
         await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetGroup.Id, cancellationToken);
         await _budgetValidation.ValidateForEmptyStringAsync(budgetGroup.Name);
         await _budgetValidation.ValidateForPositiveIndexAsync(budgetGroup.Index);
@@ -50,15 +50,17 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         return budgetGroup;
     }
 
-    public override async Task<IEnumerable<BudgetGroup>> GetAllAsync(CancellationToken cancellationToken) => await _context.BudgetGroups.ToListAsync(cancellationToken);
+    public override async Task<IEnumerable<BudgetGroup>> GetAllAsync(CancellationToken cancellationToken) =>
+        await _context.BudgetGroups.ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<BudgetGroup>> GetAllAsync(int userId, CancellationToken cancellationToken) => await _context.BudgetGroups.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<BudgetGroup>> GetAllAsync(int userId, CancellationToken cancellationToken) =>
+        await _context.BudgetGroups.Where(x => x.PersonId == userId).ToListAsync(cancellationToken);
 
     public override async Task UpdateAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budgetGroup);
 
-        await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(budgetGroup.Id, budgetGroup.UserId,
+        await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(budgetGroup.Id, budgetGroup.PersonId,
             cancellationToken);
         await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetGroup.Id, cancellationToken);
         await _budgetValidation.ValidateForEmptyStringAsync(budgetGroup.Name);

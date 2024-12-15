@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
+﻿namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
 
 public class BudgetRowCreateTests : BaseBudgetRowTest
 {
@@ -8,13 +6,7 @@ public class BudgetRowCreateTests : BaseBudgetRowTest
     public async Task CreateAsync_AddsBudgetRowToContext()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            UserId = 1,
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { PersonId = 1, Index = 1, Name = "Test Budget Row", Year = 2021 };
 
         // Act
         await _budgetRowCrud.CreateAsync(budgetRow, default);
@@ -24,23 +16,16 @@ public class BudgetRowCreateTests : BaseBudgetRowTest
     }
 
     [Fact]
-    public async Task CreateAsync_ThrowsException_WhenBudgetRowIsNull()
-    {
+    public async Task CreateAsync_ThrowsException_WhenBudgetRowIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetRowCrud.CreateAsync(null, default));
-    }
 
     [Fact]
     public async Task CreateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            UserId = 1,
-            Index = 1,
-            Name = "Test Budget Row"
-        };
+        BudgetRow budgetRow = new() { PersonId = 1, Index = 1, Name = "Test Budget Row" };
 
         // Act & Assert
         Func<Task> action = async () => await _budgetRowCrud.CreateAsync(budgetRow, default);
@@ -54,13 +39,7 @@ public class BudgetRowCreateTests : BaseBudgetRowTest
     public async Task CreateAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            UserId = 1,
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { PersonId = 1, Index = 1, Name = "Test Budget Row", Year = 2021 };
 
         // Act
         await _budgetRowCrud.CreateAsync(budgetRow, default);

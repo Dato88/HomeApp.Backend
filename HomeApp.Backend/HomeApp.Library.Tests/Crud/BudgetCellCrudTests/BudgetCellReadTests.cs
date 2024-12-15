@@ -6,12 +6,7 @@ public class BudgetCellReadTests : BaseBudgetCellTest
     public async Task FindByIdAsync_ReturnsBudgetCell_WhenExists()
     {
         // Arrange
-        BudgetCell budgetCell = new()
-        {
-            Name = "Test Budget Cell",
-            BudgetRowId = 1,
-            BudgetColumnId = 1
-        };
+        BudgetCell budgetCell = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1 };
 
         _context.BudgetCells.Add(budgetCell);
         await _context.SaveChangesAsync();
@@ -51,19 +46,9 @@ public class BudgetCellReadTests : BaseBudgetCellTest
     public async Task GetAllAsync_ReturnsAllBudgetCells()
     {
         // Arrange
-        BudgetCell budgetCell1 = new()
-        {
-            Name = "Test Budget Cell",
-            BudgetRowId = 1,
-            BudgetColumnId = 1
-        };
+        BudgetCell budgetCell1 = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1 };
 
-        BudgetCell budgetCell2 = new()
-        {
-            Name = "Test Budget Cell2",
-            BudgetRowId = 2,
-            BudgetColumnId = 2
-        };
+        BudgetCell budgetCell2 = new() { Name = "Test Budget Cell2", BudgetRowId = 2, BudgetColumnId = 2 };
 
         _context.BudgetCells.Add(budgetCell1);
         _context.BudgetCells.Add(budgetCell2);
@@ -85,25 +70,25 @@ public class BudgetCellReadTests : BaseBudgetCellTest
         // Arrange
         List<BudgetCell>? budgetCells = new()
         {
-            new BudgetCell { UserId = 1, Name = "Test Budget Cell 1" },
-            new BudgetCell { UserId = 2, Name = "Test Budget Cell 2" },
-            new BudgetCell { UserId = 1, Name = "Test Budget Cell 3" },
-            new BudgetCell { UserId = 3, Name = "Test Budget Cell 4" },
-            new BudgetCell { UserId = 2, Name = "Test Budget Cell 5" },
-            new BudgetCell { UserId = 2, Name = "Test Budget Cell 6" },
-            new BudgetCell { UserId = 1, Name = "Test Budget Cell 7" },
-            new BudgetCell { UserId = 3, Name = "Test Budget Cell 8" },
-            new BudgetCell { UserId = 1, Name = "Test Budget Cell 9" },
-            new BudgetCell { UserId = 2, Name = "Test Budget Cell 10" },
-            new BudgetCell { UserId = 1, Name = "Test Budget Cell 11" },
-            new BudgetCell { UserId = 3, Name = "Test Budget Cell 12" }
+            new BudgetCell { PersonId = 1, Name = "Test Budget Cell 1" },
+            new BudgetCell { PersonId = 2, Name = "Test Budget Cell 2" },
+            new BudgetCell { PersonId = 1, Name = "Test Budget Cell 3" },
+            new BudgetCell { PersonId = 3, Name = "Test Budget Cell 4" },
+            new BudgetCell { PersonId = 2, Name = "Test Budget Cell 5" },
+            new BudgetCell { PersonId = 2, Name = "Test Budget Cell 6" },
+            new BudgetCell { PersonId = 1, Name = "Test Budget Cell 7" },
+            new BudgetCell { PersonId = 3, Name = "Test Budget Cell 8" },
+            new BudgetCell { PersonId = 1, Name = "Test Budget Cell 9" },
+            new BudgetCell { PersonId = 2, Name = "Test Budget Cell 10" },
+            new BudgetCell { PersonId = 1, Name = "Test Budget Cell 11" },
+            new BudgetCell { PersonId = 3, Name = "Test Budget Cell 12" }
         };
 
         _context.BudgetCells.AddRange(budgetCells);
 
         await _context.SaveChangesAsync();
 
-        var expectedCells = _context.BudgetCells.Where(x => x.UserId == selectedUserId);
+        var expectedCells = _context.BudgetCells.Where(x => x.PersonId == selectedUserId);
 
         // Act
         var result = await _budgetCellCrud.GetAllAsync(selectedUserId, default);

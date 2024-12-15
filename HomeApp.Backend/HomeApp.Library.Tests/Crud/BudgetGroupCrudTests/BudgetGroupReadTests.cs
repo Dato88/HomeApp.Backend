@@ -6,11 +6,7 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
     public async Task FindByIdAsync_ReturnsBudgetGroup_WhenExists()
     {
         // Arrange
-        BudgetGroup budgetGroup = new()
-        {
-            Index = 1,
-            Name = "Test Budget Group"
-        };
+        BudgetGroup budgetGroup = new() { Index = 1, Name = "Test Budget Group" };
         _context.BudgetGroups.Add(budgetGroup);
         await _context.SaveChangesAsync();
 
@@ -49,17 +45,9 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
     public async Task GetAllAsync_ReturnsAllBudgetGroups()
     {
         // Arrange
-        BudgetGroup budgetGroup1 = new()
-        {
-            Index = 1,
-            Name = "Test Budget Group 1"
-        };
+        BudgetGroup budgetGroup1 = new() { Index = 1, Name = "Test Budget Group 1" };
 
-        BudgetGroup budgetGroup2 = new()
-        {
-            Index = 2,
-            Name = "Test Budget Group 2"
-        };
+        BudgetGroup budgetGroup2 = new() { Index = 2, Name = "Test Budget Group 2" };
 
         _context.BudgetGroups.Add(budgetGroup1);
         _context.BudgetGroups.Add(budgetGroup2);
@@ -81,25 +69,25 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
         // Arrange
         List<BudgetGroup>? budgetGroups = new()
         {
-            new BudgetGroup { UserId = 1, Name = "Test Budget Group 1" },
-            new BudgetGroup { UserId = 2, Name = "Test Budget Group 2" },
-            new BudgetGroup { UserId = 1, Name = "Test Budget Group 3" },
-            new BudgetGroup { UserId = 3, Name = "Test Budget Group 4" },
-            new BudgetGroup { UserId = 2, Name = "Test Budget Group 5" },
-            new BudgetGroup { UserId = 2, Name = "Test Budget Group 6" },
-            new BudgetGroup { UserId = 1, Name = "Test Budget Group 7" },
-            new BudgetGroup { UserId = 3, Name = "Test Budget Group 8" },
-            new BudgetGroup { UserId = 1, Name = "Test Budget Group 9" },
-            new BudgetGroup { UserId = 2, Name = "Test Budget Group 10" },
-            new BudgetGroup { UserId = 1, Name = "Test Budget Group 11" },
-            new BudgetGroup { UserId = 3, Name = "Test Budget Group 12" }
+            new BudgetGroup { PersonId = 1, Name = "Test Budget Group 1" },
+            new BudgetGroup { PersonId = 2, Name = "Test Budget Group 2" },
+            new BudgetGroup { PersonId = 1, Name = "Test Budget Group 3" },
+            new BudgetGroup { PersonId = 3, Name = "Test Budget Group 4" },
+            new BudgetGroup { PersonId = 2, Name = "Test Budget Group 5" },
+            new BudgetGroup { PersonId = 2, Name = "Test Budget Group 6" },
+            new BudgetGroup { PersonId = 1, Name = "Test Budget Group 7" },
+            new BudgetGroup { PersonId = 3, Name = "Test Budget Group 8" },
+            new BudgetGroup { PersonId = 1, Name = "Test Budget Group 9" },
+            new BudgetGroup { PersonId = 2, Name = "Test Budget Group 10" },
+            new BudgetGroup { PersonId = 1, Name = "Test Budget Group 11" },
+            new BudgetGroup { PersonId = 3, Name = "Test Budget Group 12" }
         };
 
         _context.BudgetGroups.AddRange(budgetGroups);
 
         await _context.SaveChangesAsync();
 
-        var expectedGroups = _context.BudgetGroups.Where(x => x.UserId == selectedUserId);
+        var expectedGroups = _context.BudgetGroups.Where(x => x.PersonId == selectedUserId);
 
         // Act
         var result = await _budgetGroupCrud.GetAllAsync(selectedUserId, default);

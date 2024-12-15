@@ -1,5 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-using HomeApp.Library.Cruds.Interfaces;
+﻿using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds;
 
@@ -11,7 +10,7 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         ArgumentNullException.ThrowIfNull(budgetCell);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCell.Year, nameof(budgetCell.Year));
 
-        await _budgetValidation.ValidateForUserIdAsync(budgetCell.UserId, cancellationToken);
+        await _budgetValidation.ValidateForUserIdAsync(budgetCell.PersonId, cancellationToken);
         await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetCell.BudgetRowId, cancellationToken);
         await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId, cancellationToken);
         await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId, cancellationToken);
@@ -49,16 +48,18 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         return budgetCell;
     }
 
-    public override async Task<IEnumerable<BudgetCell>> GetAllAsync(CancellationToken cancellationToken) => await _context.BudgetCells.ToListAsync(cancellationToken);
+    public override async Task<IEnumerable<BudgetCell>> GetAllAsync(CancellationToken cancellationToken) =>
+        await _context.BudgetCells.ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<BudgetCell>> GetAllAsync(int userId, CancellationToken cancellationToken) => await _context.BudgetCells.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<BudgetCell>> GetAllAsync(int userId, CancellationToken cancellationToken) =>
+        await _context.BudgetCells.Where(x => x.PersonId == userId).ToListAsync(cancellationToken);
 
     public override async Task UpdateAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budgetCell);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCell.Year, nameof(budgetCell.Year));
 
-        await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(budgetCell.BudgetRowId, budgetCell.UserId,
+        await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(budgetCell.BudgetRowId, budgetCell.PersonId,
             cancellationToken);
         await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetCell.BudgetRowId, cancellationToken);
         await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetCell.BudgetColumnId, cancellationToken);

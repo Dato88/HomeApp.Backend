@@ -11,8 +11,8 @@ public class UserCreateTests : BaseUserTest
             Username = "testuser",
             FirstName = "John",
             LastName = "Doe",
-            Password = "password",
-            Email = "test@example.com"
+            Email = "test@example.com",
+            UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
         // Act
@@ -20,7 +20,7 @@ public class UserCreateTests : BaseUserTest
 
         // Assert
         person.Id.Should().NotBe(0);
-        Assert.Contains(person, _context.Users);
+        Assert.Contains(person, _context.People);
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class UserCreateTests : BaseUserTest
             Username = "testuser",
             FirstName = "John",
             LastName = "Doe",
-            Password = "password",
-            Email = "test@example.com"
+            Email = "test@example.com",
+            UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
         // Act
@@ -44,19 +44,15 @@ public class UserCreateTests : BaseUserTest
             Times.Once);
         _userValidationMock.Verify(x => x.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
         _userValidationMock.Verify(x => x.ValidateRequiredProperties(It.IsAny<Person>()), Times.Once);
-        _userValidationMock.Verify(x => x.ValidatePasswordStrength(It.IsAny<string>()), Times.Once);
         _userValidationMock.Verify(x => x.ValidateMaxLength(It.IsAny<Person>()), Times.Once);
-        _userValidationMock.Verify(x => x.ValidateLastLoginDate(It.IsAny<DateTime?>()), Times.Once);
 
         // Assert
-        Assert.Equal(1, _context.Users.Count());
+        Assert.Equal(1, _context.People.Count());
     }
 
     [Fact]
-    public async Task CreateAsync_ThrowsException_WhenUserIsNull()
-    {
+    public async Task CreateAsync_ThrowsException_WhenUserIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await PersonCrud.CreateAsync(null, default));
-    }
 }

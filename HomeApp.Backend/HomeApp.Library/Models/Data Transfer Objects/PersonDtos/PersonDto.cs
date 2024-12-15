@@ -1,0 +1,13 @@
+﻿namespace HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
+
+public class PersonDto(int id, string? username, string firstName, string lastName, string email)
+{
+    public int Id { get; set; } = id;
+    public string? Username { get; set; } = username;
+    public string FirstName { get; set; } = firstName;
+    public string LastName { get; set; } = lastName;
+    public string Email { get; set; } = email;
+
+    public static implicit operator PersonDto(Person item) =>
+        new(item.Id, item.Username, item.FirstName, item.LastName, item.Email);
+}
