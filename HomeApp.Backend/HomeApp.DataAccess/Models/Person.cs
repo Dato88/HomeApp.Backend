@@ -13,4 +13,9 @@ public class Person : BaseClass
     [Required] [StringLength(150)] public string Email { get; set; }
 
     [Required] [StringLength(36)] public string UserId { get; set; }
+
+    public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
+    public virtual ICollection<BudgetGroup> BudgetGroups { get; set; } = new HashSet<BudgetGroup>();
+    public virtual ICollection<BudgetRow> BudgetRows { get; set; } = new HashSet<BudgetRow>();
+    public virtual ICollection<TodoUserMapping> TodosUser { get; set; } = new HashSet<TodoUserMapping>();
 }
