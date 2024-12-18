@@ -42,11 +42,15 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     }
 
     public override async Task<BudgetGroup> FindByIdAsync(int id, CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetGroup.Id));
 
         var query = _context.BudgetGroups.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
@@ -60,9 +64,13 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     }
 
     public async Task<IEnumerable<BudgetGroup>> GetAllAsync(int userId, CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         var query = _context.BudgetGroups.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
@@ -71,9 +79,13 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     }
 
     public override async Task<IEnumerable<BudgetGroup>> GetAllAsync(CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         var query = _context.BudgetGroups.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);

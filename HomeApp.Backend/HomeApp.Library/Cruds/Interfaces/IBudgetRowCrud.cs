@@ -6,6 +6,7 @@ public interface IBudgetRowCrud
     ///     Creates a new BudgetRow.
     /// </summary>
     /// <param name="budgetRow">The BudgetRow to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The created BudgetRow.</returns>
     /// <exception cref="System.ArgumentNullException">
     ///     Thrown when the <paramref name="budgetRow" /> is null.
@@ -23,6 +24,7 @@ public interface IBudgetRowCrud
     ///     Deletes a BudgetRow by its id.
     /// </summary>
     /// <param name="id">The id of the BudgetRow to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the deletion operation.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the BudgetRow with the given <paramref name="id" /> is not found.
@@ -33,32 +35,51 @@ public interface IBudgetRowCrud
     ///     Finds a BudgetRow by its id.
     /// </summary>
     /// <param name="id">The id of the BudgetRow to find.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag indicating whether the entity should be loaded with <c>AsNoTracking()</c>.
+    ///     Default is true.
+    /// </param>
+    /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
     /// <returns>The found BudgetRow.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the BudgetRow with the given <paramref name="id" /> is not found.
     /// </exception>
-    Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken,
+    Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
     ///     Gets all BudgetRows.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag indicating whether the entities should be loaded with <c>AsNoTracking()</c>.
+    ///     Default is true.
+    /// </param>
+    /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
     /// <returns>A list of all BudgetRows.</returns>
-    Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken,
+    Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
     ///     Gets all BudgetRows for a specific user.
     /// </summary>
     /// <param name="userId">The id of the user.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag indicating whether the entities should be loaded with <c>AsNoTracking()</c>.
+    ///     Default is true.
+    /// </param>
+    /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
     /// <returns>A list of all BudgetRows associated with the specified user.</returns>
-    Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken,
+    Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
     ///     Updates an existing BudgetRow.
     /// </summary>
     /// <param name="budgetRow">The BudgetRow to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <exception cref="System.ArgumentNullException">
     ///     Thrown when the <paramref name="budgetRow" /> is null.
     /// </exception>

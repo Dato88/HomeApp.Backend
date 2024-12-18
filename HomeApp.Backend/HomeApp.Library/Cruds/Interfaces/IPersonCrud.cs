@@ -32,11 +32,15 @@ public interface IPersonCrud
     /// <param name="id">The id of the Person to find.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
+    ///     is true.
+    /// </param>
     /// <returns>The found Person as a <see cref="PersonDto" />.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Person with the given <paramref name="id" /> is not found.
     /// </exception>
-    Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken,
+    Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
@@ -45,11 +49,15 @@ public interface IPersonCrud
     /// <param name="email">The email of the Person to find.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
+    ///     is true.
+    /// </param>
     /// <returns>The found Person as a <see cref="PersonDto" />.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Person with the given <paramref name="email" /> is not found.
     /// </exception>
-    Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken,
+    Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
@@ -57,8 +65,12 @@ public interface IPersonCrud
     /// </summary>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
+    /// <param name="asNoTracking">
+    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
+    ///     is true.
+    /// </param>
     /// <returns>A list of all Persons as <see cref="PersonDto" /> objects.</returns>
-    Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken,
+    Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>

@@ -33,10 +33,15 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         await _context.SaveChangesAsync(cancellationToken);
     }
 
+
     public override async Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         var query = _context.People.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
@@ -50,9 +55,13 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
     }
 
     public async Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         var query = _context.People.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
@@ -66,9 +75,13 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
     }
 
     public override async Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken,
+        bool asNoTracking = true,
         params string[] includes)
     {
         var query = _context.People.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
