@@ -3,60 +3,62 @@
 public interface IBudgetCellCrud
 {
     /// <summary>
-    /// Creates a new BudgetCell.
+    ///     Erstellt eine neue BudgetCell.
     /// </summary>
-    /// <param name="budgetCell">The BudgetCell to create.</param>
-    /// <returns>The created BudgetCell.</returns>
-    /// <exception cref="System.ArgumentNullException">
-    /// Thrown when budgetCell is null.
+    /// <param name="budgetCell">Die zu erstellende BudgetCell.</param>
+    /// <returns>Die erstellte BudgetCell.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Wird geworfen, wenn <paramref name="budgetCell" /> null ist.
     /// </exception>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when UserId, BudgetRowId, BudgetColumnId, or BudgetGroupId does not exist.
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn UserId, BudgetRowId, BudgetColumnId oder BudgetGroupId nicht existieren.
     /// </exception>
     Task<BudgetCell> CreateAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Deletes a BudgetCell by its id.
+    ///     Löscht eine BudgetCell anhand ihrer ID.
     /// </summary>
-    /// <param name="id">The id of the BudgetCell to delete.</param>
-    /// <returns>True if the operation is successful.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when the BudgetCell with the given id is not found.
+    /// <param name="id">Die ID der zu löschenden BudgetCell.</param>
+    /// <returns>True, wenn die Löschung erfolgreich war, andernfalls False.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn die BudgetCell mit der angegebenen ID nicht gefunden wird.
     /// </exception>
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Finds a BudgetCell by its id.
+    ///     Findet eine BudgetCell anhand ihrer ID.
     /// </summary>
-    /// <param name="id">The id of the BudgetCell to find.</param>
-    /// <returns>The found BudgetCell.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when the BudgetCell with the given id is not found.
+    /// <param name="id">Die ID der zu findenden BudgetCell.</param>
+    /// <returns>Die gefundene BudgetCell.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn die BudgetCell mit der angegebenen ID nicht gefunden wird.
     /// </exception>
-    Task<BudgetCell> FindByIdAsync(int id, CancellationToken cancellationToken);
+    Task<BudgetCell> FindByIdAsync(int id, CancellationToken cancellationToken, params string[] includes);
 
     /// <summary>
-    /// Gets all BudgetCells.
+    ///     Gibt alle BudgetCells zurück.
     /// </summary>
-    /// <returns>A list of all BudgetCells.</returns>
-    Task<IEnumerable<BudgetCell>> GetAllAsync(CancellationToken cancellationToken);
+    /// <returns>Eine Liste aller BudgetCells.</returns>
+    Task<IEnumerable<BudgetCell>> GetAllAsync(CancellationToken cancellationToken, params string[] includes);
 
     /// <summary>
-    /// Gets all BudgetCells for a specific user.
+    ///     Gibt alle BudgetCells für einen bestimmten Benutzer zurück.
     /// </summary>
-    /// <param name="userId">The id of the user.</param>
-    /// <returns>A list of all BudgetCells for the specified user.</returns>
-    Task<IEnumerable<BudgetCell>> GetAllAsync(int userId, CancellationToken cancellationToken);
+    /// <param name="userId">Die ID des Benutzers.</param>
+    /// <returns>Eine Liste aller BudgetCells für den angegebenen Benutzer.</returns>
+    Task<IEnumerable<BudgetCell>> GetAllAsync(int userId, CancellationToken cancellationToken,
+        params string[] includes);
 
     /// <summary>
-    /// Updates a BudgetCell.
+    ///     Aktualisiert eine bestehende BudgetCell.
     /// </summary>
-    /// <param name="budgetCell">The BudgetCell to update.</param>
-    /// <exception cref="System.ArgumentNullException">
-    /// Thrown when budgetCell is null.
+    /// <param name="budgetCell">Die zu aktualisierende BudgetCell.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     Wird geworfen, wenn <paramref name="budgetCell" /> null ist.
     /// </exception>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when UserId, BudgetRowId, BudgetColumnId, or BudgetGroupId does not exist or when the BudgetCell with the given id is not found.
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn UserId, BudgetRowId, BudgetColumnId oder BudgetGroupId nicht existieren oder wenn
+    ///     die BudgetCell mit der angegebenen ID nicht gefunden wird.
     /// </exception>
     Task UpdateAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
 }

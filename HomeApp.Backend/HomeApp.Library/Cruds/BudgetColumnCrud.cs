@@ -1,11 +1,13 @@
-﻿using HomeApp.DataAccess.Models;
+﻿using System.Linq.Expressions;
 using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds;
 
 public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetColumn>(context, budgetValidation), IBudgetColumnCrud
+    : BaseCrud<BudgetColumn>(context), IBudgetColumnCrud
 {
+    private readonly IBudgetValidation _budgetValidation = budgetValidation;
+
     public override async Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn,
         CancellationToken cancellationToken)
     {
@@ -38,11 +40,17 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
         return true;
     }
 
-    public override async Task<BudgetColumn> FindByIdAsync(int id, CancellationToken cancellationToken)
+    public override async Task<BudgetColumn> FindByIdAsync(int id, CancellationToken cancellationToken,
+        params string[] includes)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetColumn.Id));
 
-        var budgetColumn = await _context.BudgetColumns.FindAsync(id, cancellationToken);
+        var query = _context.BudgetColumns.AsQueryable();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        var budgetColumn = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (budgetColumn == null)
             throw new InvalidOperationException(BudgetMessage.ColumnNotFound);
@@ -50,7 +58,16 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
         return budgetColumn;
     }
 
-    public override async Task<IEnumerable<BudgetColumn>> GetAllAsync(CancellationToken cancellationToken) => await _context.BudgetColumns.ToListAsync(cancellationToken);
+    public override async Task<IEnumerable<BudgetColumn>> GetAllAsync(CancellationToken cancellationToken,
+        params string[] includes)
+    {
+        var query = _context.BudgetColumns.AsQueryable();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        return await query.ToListAsync(cancellationToken);
+    }
 
     public override async Task UpdateAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken)
     {
@@ -73,5 +90,19 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
 
         _context.BudgetColumns.Update(existingBudgetColumn);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    protected override IQueryable<BudgetColumn> ApplyIncludes(IQueryable<BudgetColumn> query, params string[] includes)
+    {
+        var includeMappings = new Dictionary<string, Expression<Func<BudgetColumn, object>>>
+        {
+            { nameof(BudgetColumn.BudgetCells), x => x.BudgetCells }
+        };
+
+        foreach (var include in includes)
+            if (includeMappings.ContainsKey(include))
+                query = query.Include(includeMappings[include]);
+
+        return query;
     }
 }

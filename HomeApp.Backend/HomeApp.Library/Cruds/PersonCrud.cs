@@ -1,9 +1,10 @@
-﻿using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
+﻿using System.Linq.Expressions;
+using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
 
 namespace HomeApp.Library.Cruds;
 
 public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
-    : BaseCrud<Person>(context, null), IPersonCrud
+    : BaseCrud<Person>(context), IPersonCrud
 {
     private readonly IUserValidation _userValidation = userValidation;
 
@@ -32,9 +33,15 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public override async Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken)
+    public override async Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken,
+        params string[] includes)
     {
-        var user = await _context.People.FindAsync(id, cancellationToken);
+        var query = _context.People.AsQueryable();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        var user = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (user is null)
             throw new InvalidOperationException(UserMessage.UserNotFound);
@@ -42,9 +49,15 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         return user;
     }
 
-    public async Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken,
+        params string[] includes)
     {
-        var user = await _context.People.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+        var query = _context.People.AsQueryable();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        var user = await query.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 
         if (user is null)
             throw new InvalidOperationException(UserMessage.UserNotFound);
@@ -52,8 +65,16 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         return user;
     }
 
-    public override async Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken) =>
-        (await _context.People.ToListAsync(cancellationToken)).Select(s => (PersonDto)s);
+    public override async Task<IEnumerable<PersonDto>> GetAllAsync(CancellationToken cancellationToken,
+        params string[] includes)
+    {
+        var query = _context.People.AsQueryable();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        return (await query.ToListAsync(cancellationToken)).Select(s => (PersonDto)s);
+    }
 
     public override async Task UpdateAsync(Person person, CancellationToken cancellationToken)
     {
@@ -78,5 +99,22 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
 
         _context.People.Update(existingUser);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    protected override IQueryable<Person> ApplyIncludes(IQueryable<Person> query, params string[] includes)
+    {
+        var includeMappings = new Dictionary<string, Expression<Func<Person, object>>>
+        {
+            { nameof(Person.BudgetCells), x => x.BudgetCells },
+            { nameof(Person.BudgetGroups), x => x.BudgetGroups },
+            { nameof(Person.BudgetRows), x => x.BudgetRows },
+            { nameof(Person.TodosUser), x => x.TodosUser }
+        };
+
+        foreach (var include in includes)
+            if (includeMappings.ContainsKey(include))
+                query = query.Include(includeMappings[include]);
+
+        return query;
     }
 }

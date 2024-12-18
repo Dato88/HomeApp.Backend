@@ -3,53 +3,55 @@
 public interface IBudgetColumnCrud
 {
     /// <summary>
-    /// Creates a new BudgetColumn.
+    ///     Erstellt eine neue BudgetColumn.
     /// </summary>
-    /// <param name="budgetColumn">The BudgetColumn to create.</param>
-    /// <returns>The created BudgetColumn.</returns>
-    /// <exception cref="System.ArgumentNullException">
-    /// Thrown when budgetColumn is null.
+    /// <param name="budgetColumn">Die zu erstellende BudgetColumn.</param>
+    /// <returns>Die erstellte BudgetColumn.</returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Wird geworfen, wenn <paramref name="budgetColumn" /> null ist.
     /// </exception>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when BudgetColumnId, Name, or Index does not exist or when the BudgetColumn with the given id is not found.
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn BudgetColumnId, Name oder Index nicht existieren oder wenn die BudgetColumn mit der angegebenen
+    ///     ID nicht gefunden wird.
     /// </exception>
     Task<BudgetColumn> CreateAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Deletes a BudgetColumn by its id.
+    ///     Löscht eine BudgetColumn anhand ihrer ID.
     /// </summary>
-    /// <param name="id">The id of the BudgetColumn to delete.</param>
-    /// <returns>True if the operation is successful.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when the BudgetColumn with the given id is not found.
+    /// <param name="id">Die ID der zu löschenden BudgetColumn.</param>
+    /// <returns>True, wenn die Löschung erfolgreich war, andernfalls False.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn die BudgetColumn mit der angegebenen ID nicht gefunden wird.
     /// </exception>
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Finds a BudgetColumn by its id.
+    ///     Findet eine BudgetColumn anhand ihrer ID.
     /// </summary>
-    /// <param name="id">The id of the BudgetColumn to find.</param>
-    /// <returns>The found BudgetColumn.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when the BudgetColumn with the given id is not found.
+    /// <param name="id">Die ID der zu findenden BudgetColumn.</param>
+    /// <returns>Die gefundene BudgetColumn.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn die BudgetColumn mit der angegebenen ID nicht gefunden wird.
     /// </exception>
-    Task<BudgetColumn> FindByIdAsync(int id, CancellationToken cancellationToken);
+    Task<BudgetColumn> FindByIdAsync(int id, CancellationToken cancellationToken, params string[] includes);
 
     /// <summary>
-    /// Gets all BudgetColumns.
+    ///     Gibt alle BudgetColumns zurück.
     /// </summary>
-    /// <returns>A list of all BudgetColumns.</returns>
-    Task<IEnumerable<BudgetColumn>> GetAllAsync(CancellationToken cancellationToken);
+    /// <returns>Eine Liste aller BudgetColumns.</returns>
+    Task<IEnumerable<BudgetColumn>> GetAllAsync(CancellationToken cancellationToken, params string[] includes);
 
     /// <summary>
-    /// Updates a BudgetColumn.
+    ///     Aktualisiert eine bestehende BudgetColumn.
     /// </summary>
-    /// <param name="budgetColumn">The BudgetColumn to update.</param>
-    /// <exception cref="System.ArgumentNullException">
-    /// Thrown when budgetColumn is null.
+    /// <param name="budgetColumn">Die zu aktualisierende BudgetColumn.</param>
+    /// <exception cref="ArgumentNullException">
+    ///     Wird geworfen, wenn <paramref name="budgetColumn" /> null ist.
     /// </exception>
-    /// <exception cref="System.InvalidOperationException">
-    /// Thrown when BudgetColumnId, Name, or Index does not exist or when the BudgetColumn with the given id is not found.
+    /// <exception cref="InvalidOperationException">
+    ///     Wird geworfen, wenn BudgetColumnId, Name oder Index nicht existieren oder wenn die BudgetColumn mit der angegebenen
+    ///     ID nicht gefunden wird.
     /// </exception>
     Task UpdateAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
 }
