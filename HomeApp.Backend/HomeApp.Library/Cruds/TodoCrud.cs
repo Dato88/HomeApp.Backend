@@ -9,7 +9,7 @@ public class TodoCrud(HomeAppContext context)
     public override async Task<Todo> CreateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero((int)todo.Priority, nameof(todo.Priority));
+        ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
 
         _context.Todos.Add(todo);
         await _context.SaveChangesAsync(cancellationToken);
