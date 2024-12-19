@@ -1,5 +1,4 @@
 ﻿using HomeApp.DataAccess.Models;
-using HomeApp.Library.Cruds;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -10,10 +9,9 @@ namespace HomeApp.Api.Controllers;
 [Authorize]
 // [Authorize(Policy = "ViewBudgetPolicy")]
 [Route("[controller]/[action]")]
-public class BudgetController(IBudgetFacade budgetFacade, IPersonCrud personCrud) : ControllerBase
+public class BudgetController(IBudgetFacade budgetFacade) : ControllerBase
 {
     private readonly IBudgetFacade _budgetFacade = budgetFacade;
-    private readonly IPersonCrud _personCrud = personCrud;
 
     [HttpGet(Name = "GetAll")]
     public async Task<Budget?> GetAllAsync(CancellationToken cancellationToken)
