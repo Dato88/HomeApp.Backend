@@ -2,14 +2,17 @@
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Facades;
 
 public class PersonFacade(
     IPersonCrud personCrud,
+    IHttpContextAccessor httpContextAccessor,
     ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IPersonFacade
 {
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IPersonCrud _personCrud = personCrud;
 
     public async Task<IEnumerable<PersonDto>> GetPeopleAsync(CancellationToken cancellationToken)
@@ -21,6 +24,22 @@ public class PersonFacade(
         catch (Exception ex)
         {
             LogException($"Get people failed: {ex}", DateTime.Now);
+
+            return null;
+        }
+    }
+
+    public async Task<PersonDto> GetUserPersonAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var email = _httpContextAccessor.HttpContext.User.Identity.Name;
+
+            return await _personCrud.FindByEmailAsync(email, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogException($"Get person failed: {ex}", DateTime.Now);
 
             return null;
         }

@@ -107,6 +107,7 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

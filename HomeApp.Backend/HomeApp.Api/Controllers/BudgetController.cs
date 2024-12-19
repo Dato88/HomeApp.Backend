@@ -18,8 +18,7 @@ public class BudgetController(IBudgetFacade budgetFacade, IPersonCrud personCrud
     [HttpGet(Name = "GetAll")]
     public async Task<Budget?> GetAllAsync(CancellationToken cancellationToken)
     {
-        var personDto = await _personCrud.FindByEmailAsync(HttpContext.User.Identity.Name, cancellationToken);
-        var budget = await _budgetFacade.GetBudgetAsync(personDto.Id, cancellationToken);
+        var budget = await _budgetFacade.GetBudgetAsync(cancellationToken);
 
         return budget;
     }

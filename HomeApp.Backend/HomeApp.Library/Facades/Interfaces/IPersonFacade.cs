@@ -5,6 +5,7 @@ namespace HomeApp.Library.Facades.Interfaces;
 public interface IPersonFacade
 {
     Task<IEnumerable<PersonDto>> GetPeopleAsync(CancellationToken cancellationToken);
+    Task<PersonDto> GetUserPersonAsync(CancellationToken cancellationToken);
     Task<PersonDto> GetPersonByEmailAsync(string email, CancellationToken cancellationToken);
     Task CreatePersonAsync(Person person, CancellationToken cancellationToken);
     Task UpdatePersonAsync(Person person, CancellationToken cancellationToken);

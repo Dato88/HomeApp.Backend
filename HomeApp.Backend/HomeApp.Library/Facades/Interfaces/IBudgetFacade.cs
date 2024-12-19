@@ -4,7 +4,7 @@ namespace HomeApp.Library.Facades.Interfaces;
 
 public interface IBudgetFacade
 {
-    Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken);
+    Task<Budget?> GetBudgetAsync(CancellationToken cancellationToken);
     Task CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
     Task CreateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
     Task CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken);

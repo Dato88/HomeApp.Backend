@@ -1,4 +1,6 @@
-﻿namespace HomeApp.Library.Tests.Facades;
+﻿using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
+
+namespace HomeApp.Library.Tests.Facades;
 
 public class BudgetFacadeTests : BaseBudgetFacadeTest
 {
@@ -6,10 +8,11 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_CallsAllValidations_Once()
     {
         // Arrange
-        var selectedUserId = 1;
+        _personFacadeMock.Setup(x => x.GetUserPersonAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PersonDto(1, null, "testFirstName", "testLastName", "test@email.com"));
 
         // Act
-        await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         _budgetCellCrudMock.Verify(
@@ -35,8 +38,11 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
         // Arrange
         var selectedUserId = userId;
 
+        _personFacadeMock.Setup(x => x.GetUserPersonAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PersonDto(selectedUserId, null, "testFirstName", "testLastName", "test@email.com"));
+
         // Act
-        await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         _budgetCellCrudMock.Verify(
@@ -56,10 +62,11 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_ReturnsBudget_NotNull()
     {
         // Arrange
-        var selectedUserId = 1;
+        _personFacadeMock.Setup(x => x.GetUserPersonAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PersonDto());
 
         // Act
-        var output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        var output = await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         output.Should().NotBe(null);
@@ -69,14 +76,13 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_ReturnsBudget_BudgetCellsNotNull()
     {
         // Arrange
-        var selectedUserId = 1;
         IEnumerable<BudgetCell> budgetCells = new List<BudgetCell>();
 
         _budgetCellCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>(), default))
             .ReturnsAsync(budgetCells);
 
         // Act
-        var output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        var output = await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         output.BudgetCells.Should().NotBeNull();
@@ -86,14 +92,13 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_ReturnsBudget_BudgetColumnsNotNull()
     {
         // Arrange
-        var selectedUserId = 1;
         IEnumerable<BudgetColumn> budgetColumn = new List<BudgetColumn>();
 
         _budgetColumnCrudMock.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>(), default))
             .ReturnsAsync(budgetColumn);
 
         // Act
-        var output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        var output = await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         output.BudgetColumns.Should().NotBeNull();
@@ -103,14 +108,13 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_ReturnsBudget_BudgetGroupsNotNull()
     {
         // Arrange
-        var selectedUserId = 1;
         IEnumerable<BudgetGroup> budgetGroup = new List<BudgetGroup>();
 
         _budgetGroupCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>(), default))
             .ReturnsAsync(budgetGroup);
 
         // Act
-        var output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        var output = await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         output.BudgetGroups.Should().NotBeNull();
@@ -120,14 +124,13 @@ public class BudgetFacadeTests : BaseBudgetFacadeTest
     public async Task GetBudgetAsync_ReturnsBudget_BudgetRowsNotNull()
     {
         // Arrange
-        var selectedUserId = 1;
         IEnumerable<BudgetRow> budgetRow = new List<BudgetRow>();
 
         _budgetRowCrudMock.Setup(x => x.GetAllAsync(It.IsAny<int>(), It.IsAny<CancellationToken>(), default))
             .ReturnsAsync(budgetRow);
 
         // Act
-        var output = await _budgetFacade.GetBudgetAsync(selectedUserId, default);
+        var output = await _budgetFacade.GetBudgetAsync(default);
 
         // Assert
         output.BudgetRows.Should().NotBeNull();

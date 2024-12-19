@@ -11,23 +11,27 @@ public class BudgetFacade(
     IBudgetColumnCrud budgetColumnCrud,
     IBudgetGroupCrud budgetGroupCrud,
     IBudgetRowCrud budgetRowCrud,
+    IPersonFacade personFacade,
     ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
 {
     private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
     private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
     private readonly IBudgetGroupCrud _budgetGroupCrud = budgetGroupCrud;
     private readonly IBudgetRowCrud _budgetRowCrud = budgetRowCrud;
+    private readonly IPersonFacade _personFacade = personFacade;
 
-    public async Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken)
+    public async Task<Budget?> GetBudgetAsync(CancellationToken cancellationToken)
     {
         try
         {
+            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+
             Budget selectedBudget = new()
             {
-                BudgetCells = await _budgetCellCrud.GetAllAsync(userId, cancellationToken),
+                BudgetCells = await _budgetCellCrud.GetAllAsync(person.Id, cancellationToken),
                 BudgetColumns = await _budgetColumnCrud.GetAllAsync(cancellationToken),
-                BudgetGroups = await _budgetGroupCrud.GetAllAsync(userId, cancellationToken),
-                BudgetRows = await _budgetRowCrud.GetAllAsync(userId, cancellationToken)
+                BudgetGroups = await _budgetGroupCrud.GetAllAsync(person.Id, cancellationToken),
+                BudgetRows = await _budgetRowCrud.GetAllAsync(person.Id, cancellationToken)
             };
 
             return selectedBudget;
