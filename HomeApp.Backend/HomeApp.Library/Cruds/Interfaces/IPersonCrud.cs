@@ -1,6 +1,6 @@
 ﻿using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
 
-namespace HomeApp.Library.Cruds;
+namespace HomeApp.Library.Cruds.Interfaces;
 
 public interface IPersonCrud
 {

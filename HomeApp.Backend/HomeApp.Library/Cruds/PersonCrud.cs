@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using HomeApp.Library.Cruds.Interfaces;
 using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
 
 namespace HomeApp.Library.Cruds;
@@ -121,7 +122,7 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
             { nameof(Person.BudgetCells), x => x.BudgetCells },
             { nameof(Person.BudgetGroups), x => x.BudgetGroups },
             { nameof(Person.BudgetRows), x => x.BudgetRows },
-            { nameof(Person.TodosUser), x => x.TodosUser }
+            { nameof(Person.TodoPeople), x => x.TodoPeople }
         };
 
         foreach (var include in includes)

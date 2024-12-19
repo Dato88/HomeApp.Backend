@@ -16,7 +16,7 @@ public class HomeAppContext(DbContextOptions<HomeAppContext> options) : DbContex
 
     public virtual DbSet<TodoGroup> TodoGroups { get; set; }
 
-    public virtual DbSet<TodoGroupMapping> TodoGroupMappings { get; set; }
+    public virtual DbSet<TodoGroupTodo> TodoGroupTodos { get; set; }
 
-    public virtual DbSet<TodoUserMapping> TodoUserMappings { get; set; }
+    public virtual DbSet<TodoPerson> TodoPeople { get; set; }
 }

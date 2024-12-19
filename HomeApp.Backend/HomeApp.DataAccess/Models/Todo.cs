@@ -1,4 +1,6 @@
 ﻿#nullable disable
+using HomeApp.DataAccess.enums;
+
 namespace HomeApp.DataAccess.Models;
 
 [Table("Todos")]
@@ -6,18 +8,18 @@ public class Todo : BaseClass
 {
     public Todo()
     {
-        TodoGroupMappings = new HashSet<TodoGroupMapping>();
-        TodoUserMappings = new HashSet<TodoUserMapping>();
+        TodoGroups = new HashSet<TodoGroupTodo>();
+        People = new HashSet<TodoPerson>();
     }
 
-    [Required] [StringLength(150)] public string TodoName { get; set; }
+    [Required] [StringLength(150)] public string Name { get; set; }
 
-    [Required] public bool TodoDone { get; set; }
+    [Required] public bool Done { get; set; }
 
-    [Required] public int TodoPriority { get; set; }
+    [Required] public TodoPriority Priority { get; set; }
 
-    public DateTime TodoExecutionDate { get; set; }
+    public DateTime ExecutionDate { get; set; }
 
-    public virtual ICollection<TodoGroupMapping> TodoGroupMappings { get; set; }
-    public virtual ICollection<TodoUserMapping> TodoUserMappings { get; set; }
+    public virtual ICollection<TodoGroupTodo> TodoGroups { get; set; }
+    public virtual ICollection<TodoPerson> People { get; set; }
 }

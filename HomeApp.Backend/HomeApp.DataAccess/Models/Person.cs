@@ -17,5 +17,5 @@ public class Person : BaseClass
     public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
     public virtual ICollection<BudgetGroup> BudgetGroups { get; set; } = new HashSet<BudgetGroup>();
     public virtual ICollection<BudgetRow> BudgetRows { get; set; } = new HashSet<BudgetRow>();
-    public virtual ICollection<TodoUserMapping> TodosUser { get; set; } = new HashSet<TodoUserMapping>();
+    public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
 }
