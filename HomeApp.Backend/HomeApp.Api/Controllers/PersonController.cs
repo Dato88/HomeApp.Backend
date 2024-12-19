@@ -6,12 +6,12 @@ namespace HomeApp.Api.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 public class PersonController(IPersonFacade personFacade) : ControllerBase
 {
     private readonly IPersonFacade _personFacade = personFacade;
 
-    [HttpGet(Name = "person")]
+    [HttpGet("person")]
     public async Task<PersonDto> GetPerson(CancellationToken cancellationToken)
     {
         var person = await _personFacade.GetUserPersonAsync(cancellationToken);
