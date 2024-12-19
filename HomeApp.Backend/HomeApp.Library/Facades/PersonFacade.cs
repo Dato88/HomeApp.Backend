@@ -26,6 +26,20 @@ public class PersonFacade(
         }
     }
 
+    public async Task<PersonDto> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await _personCrud.FindByEmailAsync(email, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogException($"Get person failed: {ex}", DateTime.Now);
+
+            return null;
+        }
+    }
+
     public async Task CreatePersonAsync(Person person, CancellationToken cancellationToken)
     {
         try

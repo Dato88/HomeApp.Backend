@@ -39,6 +39,44 @@ public class PersonFacadeTests : BasePersonFacadeTest
     }
 
     [Fact]
+    public async Task GetPersonByEmailAsync_ReturnsPerson_WhenPersonExists()
+    {
+        // Arrange
+        var email = "john.doe@example.com";
+        var personDto = new PersonDto(1, email, "John", "Doe", email);
+
+        _personCrudMock.Setup(x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
+            .ReturnsAsync(personDto);
+
+        // Act
+        var result = await _personFacade.GetPersonByEmailAsync(email, default);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Email.Should().Be(email);
+        _personCrudMock.Verify(
+            x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetPersonByEmailAsync_ReturnsNull_WhenPersonDoesNotExist()
+    {
+        // Arrange
+        var email = "nonexistent@example.com";
+
+        _personCrudMock.Setup(x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
+            .ReturnsAsync((PersonDto)null);
+
+        // Act
+        var result = await _personFacade.GetPersonByEmailAsync(email, default);
+
+        // Assert
+        result.Should().BeNull();
+        _personCrudMock.Verify(
+            x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()), Times.Once);
+    }
+
+    [Fact]
     public async Task DeletePersonAsync_RemovesPersonSuccessfully()
     {
         // Arrange
