@@ -1,5 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-using HomeApp.Library.Cruds.Interfaces;
+﻿using HomeApp.Library.Cruds.Interfaces;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models;
@@ -7,23 +6,28 @@ using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Facades;
 
-public partial class BudgetFacade(
+public class BudgetFacade(
     IBudgetCellCrud budgetCellCrud,
     IBudgetColumnCrud budgetColumnCrud,
     IBudgetGroupCrud budgetGroupCrud,
     IBudgetRowCrud budgetRowCrud,
     ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
 {
+    private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
+    private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
+    private readonly IBudgetGroupCrud _budgetGroupCrud = budgetGroupCrud;
+    private readonly IBudgetRowCrud _budgetRowCrud = budgetRowCrud;
+
     public async Task<Budget?> GetBudgetAsync(int userId, CancellationToken cancellationToken)
     {
         try
         {
             Budget selectedBudget = new()
             {
-                BudgetCells = await budgetCellCrud.GetAllAsync(userId, cancellationToken),
-                BudgetColumns = await budgetColumnCrud.GetAllAsync(cancellationToken),
-                BudgetGroups = await budgetGroupCrud.GetAllAsync(userId, cancellationToken),
-                BudgetRows = await budgetRowCrud.GetAllAsync(userId, cancellationToken),
+                BudgetCells = await _budgetCellCrud.GetAllAsync(userId, cancellationToken),
+                BudgetColumns = await _budgetColumnCrud.GetAllAsync(cancellationToken),
+                BudgetGroups = await _budgetGroupCrud.GetAllAsync(userId, cancellationToken),
+                BudgetRows = await _budgetRowCrud.GetAllAsync(userId, cancellationToken)
             };
 
             return selectedBudget;
@@ -40,7 +44,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
+            await _budgetCellCrud.CreateAsync(budgetCell, cancellationToken);
 
             LogInformation($"Creating budgetCell: {budgetCell}", DateTime.Now);
         }
@@ -54,7 +58,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetColumnCrud.CreateAsync(budgetColumn, cancellationToken);
+            await _budgetColumnCrud.CreateAsync(budgetColumn, cancellationToken);
 
             LogInformation($"Creating budgetColumn: {budgetColumn}", DateTime.Now);
         }
@@ -68,7 +72,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetGroupCrud.CreateAsync(budgetGroup, cancellationToken);
+            await _budgetGroupCrud.CreateAsync(budgetGroup, cancellationToken);
 
             LogInformation($"Creating budgetGroup: {budgetGroup}", DateTime.Now);
         }
@@ -82,7 +86,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetRowCrud.CreateAsync(budgetRow, cancellationToken);
+            await _budgetRowCrud.CreateAsync(budgetRow, cancellationToken);
 
             LogInformation($"Creating budgetRow: {budgetRow}", DateTime.Now);
         }
@@ -96,7 +100,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetCellCrud.UpdateAsync(budgetCell, cancellationToken);
+            await _budgetCellCrud.UpdateAsync(budgetCell, cancellationToken);
 
             LogInformation($"Updating budgetCell: {budgetCell}", DateTime.Now);
         }
@@ -110,7 +114,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetColumnCrud.UpdateAsync(budgetColumn, cancellationToken);
+            await _budgetColumnCrud.UpdateAsync(budgetColumn, cancellationToken);
 
             LogInformation($"Updating budgetColumn: {budgetColumn}", DateTime.Now);
         }
@@ -124,7 +128,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetGroupCrud.UpdateAsync(budgetGroup, cancellationToken);
+            await _budgetGroupCrud.UpdateAsync(budgetGroup, cancellationToken);
 
             LogInformation($"Updating budgetGroup: {budgetGroup}", DateTime.Now);
         }
@@ -138,7 +142,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetRowCrud.UpdateAsync(budgetRow, cancellationToken);
+            await _budgetRowCrud.UpdateAsync(budgetRow, cancellationToken);
 
             LogInformation($"Updating budgetRow: {budgetRow}", DateTime.Now);
         }
@@ -152,7 +156,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetCellCrud.DeleteAsync(id, cancellationToken);
+            await _budgetCellCrud.DeleteAsync(id, cancellationToken);
 
             LogInformation($"Deleting budgetCell: {id}", DateTime.Now);
         }
@@ -166,7 +170,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetColumnCrud.DeleteAsync(id, cancellationToken);
+            await _budgetColumnCrud.DeleteAsync(id, cancellationToken);
 
             LogInformation($"Deleting budgetColumn: {id}", DateTime.Now);
         }
@@ -180,7 +184,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetGroupCrud.DeleteAsync(id, cancellationToken);
+            await _budgetGroupCrud.DeleteAsync(id, cancellationToken);
 
             LogInformation($"Deleting budgetGroup: {id}", DateTime.Now);
         }
@@ -194,7 +198,7 @@ public partial class BudgetFacade(
     {
         try
         {
-            await budgetRowCrud.DeleteAsync(id, cancellationToken);
+            await _budgetRowCrud.DeleteAsync(id, cancellationToken);
 
             LogInformation($"Deleting budgetRow: {id}", DateTime.Now);
         }
