@@ -14,7 +14,7 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
         var result = await _budgetGroupCrud.FindByIdAsync(budgetGroup.Id, default);
 
         // Assert
-        result.Should().Be(budgetGroup);
+        result.Should().BeEquivalentTo(budgetGroup);
     }
 
     [Theory]
@@ -45,19 +45,20 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
     public async Task GetAllAsync_ReturnsAllBudgetGroups()
     {
         // Arrange
-        BudgetGroup budgetGroup1 = new() { Index = 1, Name = "Test Budget Group 1" };
+        var budgetColumns = new[]
+        {
+            new BudgetGroup { Index = 1, Name = "Test Budget Group 1" },
+            new BudgetGroup { Index = 2, Name = "Test Budget Group 2" }
+        };
 
-        BudgetGroup budgetGroup2 = new() { Index = 2, Name = "Test Budget Group 2" };
-
-        _context.BudgetGroups.Add(budgetGroup1);
-        _context.BudgetGroups.Add(budgetGroup2);
+        _context.BudgetGroups.AddRange(budgetColumns);
         await _context.SaveChangesAsync();
 
         // Act
         var result = await _budgetGroupCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { budgetGroup1, budgetGroup2 });
+        result.Should().BeEquivalentTo(budgetColumns);
     }
 
     [Theory]
@@ -94,6 +95,6 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
 
         // Assert
         result.Should().HaveCount(selectedCount);
-        result.Should().Contain(expectedGroups);
+        result.Should().BeEquivalentTo(expectedGroups);
     }
 }

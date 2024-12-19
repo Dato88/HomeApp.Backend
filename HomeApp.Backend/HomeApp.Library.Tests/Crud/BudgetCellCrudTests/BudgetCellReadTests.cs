@@ -15,7 +15,7 @@ public class BudgetCellReadTests : BaseBudgetCellTest
         var result = await _budgetCellCrud.FindByIdAsync(budgetCell.Id, default);
 
         // Assert
-        result.Should().Be(budgetCell);
+        result.Should().BeEquivalentTo(budgetCell);
     }
 
     [Theory]
@@ -46,19 +46,20 @@ public class BudgetCellReadTests : BaseBudgetCellTest
     public async Task GetAllAsync_ReturnsAllBudgetCells()
     {
         // Arrange
-        BudgetCell budgetCell1 = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1 };
-
-        BudgetCell budgetCell2 = new() { Name = "Test Budget Cell2", BudgetRowId = 2, BudgetColumnId = 2 };
-
-        _context.BudgetCells.Add(budgetCell1);
-        _context.BudgetCells.Add(budgetCell2);
+        var budgetCells = new[]
+        {
+            new BudgetCell { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1, PersonId = 1 },
+            new BudgetCell { Name = "Test Budget Cell2", BudgetRowId = 2, BudgetColumnId = 2, PersonId = 2 }
+        };
+        _context.BudgetCells.AddRange(budgetCells);
         await _context.SaveChangesAsync();
 
         // Act
         var result = await _budgetCellCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { budgetCell1, budgetCell2 });
+        result.Should().HaveCount(budgetCells.Length);
+        result.Should().BeEquivalentTo(budgetCells);
     }
 
     [Theory]
@@ -95,6 +96,6 @@ public class BudgetCellReadTests : BaseBudgetCellTest
 
         // Assert
         result.Should().HaveCount(selectedCount);
-        result.Should().Contain(expectedCells);
+        result.Should().BeEquivalentTo(expectedCells);
     }
 }

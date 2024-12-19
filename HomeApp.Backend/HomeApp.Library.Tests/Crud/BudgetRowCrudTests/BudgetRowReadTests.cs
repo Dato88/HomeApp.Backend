@@ -16,7 +16,7 @@ public class BudgetRowReadTests : BaseBudgetRowTest
         var result = await _budgetRowCrud.FindByIdAsync(budgetRow.Id, default);
 
         // Assert
-        result.Should().Be(budgetRow);
+        result.Should().BeEquivalentTo(budgetRow);
     }
 
     [Theory]
@@ -47,19 +47,20 @@ public class BudgetRowReadTests : BaseBudgetRowTest
     public async Task GetAllAsync_ReturnsAllBudgetRows()
     {
         // Arrange
-        BudgetRow budgetRow1 = new() { Index = 1, Name = "Test Budget Row 1" };
+        List<BudgetRow>? budgetRows = new()
+        {
+            new BudgetRow { Index = 1, Name = "Test Budget Row 1" },
+            new BudgetRow { Index = 2, Name = "Test Budget Row 2" }
+        };
 
-        BudgetRow budgetRow2 = new() { Index = 2, Name = "Test Budget Row 2" };
-
-        _context.BudgetRows.Add(budgetRow1);
-        _context.BudgetRows.Add(budgetRow2);
+        _context.BudgetRows.AddRange(budgetRows);
         await _context.SaveChangesAsync();
 
         // Act
         var result = await _budgetRowCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { budgetRow1, budgetRow2 });
+        result.Should().BeEquivalentTo(budgetRows);
     }
 
     [Theory]
@@ -96,6 +97,6 @@ public class BudgetRowReadTests : BaseBudgetRowTest
 
         // Assert
         result.Should().HaveCount(selectedCount);
-        result.Should().Contain(expectedRows);
+        result.Should().BeEquivalentTo(expectedRows);
     }
 }
