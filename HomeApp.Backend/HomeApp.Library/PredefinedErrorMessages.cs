@@ -49,3 +49,13 @@ public static class TodoGroupMessage
 {
     public const string TodoGroupNotFound = "TodoGroup not found";
 }
+
+public static class TodoGroupTodoMessage
+{
+    public const string TodoGroupTodoNotFound = "TodoGroupTodo not found";
+}
+
+public static class TodoPersonMessage
+{
+    public const string TodoPersonNotFound = "TodoPerson not found";
+}

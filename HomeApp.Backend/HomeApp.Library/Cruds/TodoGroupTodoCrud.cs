@@ -23,7 +23,7 @@ public class TodoGroupTodoCrud(HomeAppContext context) : BaseCrud<TodoGroupTodo>
         var todoGroupTodo = await _context.TodoGroupTodos.FindAsync(id, cancellationToken);
 
         if (todoGroupTodo == null)
-            throw new InvalidOperationException("TodoGroupTodo not found.");
+            throw new InvalidOperationException(TodoGroupTodoMessage.TodoGroupTodoNotFound);
 
         _context.TodoGroupTodos.Remove(todoGroupTodo);
         await _context.SaveChangesAsync(cancellationToken);
@@ -47,7 +47,7 @@ public class TodoGroupTodoCrud(HomeAppContext context) : BaseCrud<TodoGroupTodo>
         var todoGroupTodo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (todoGroupTodo == null)
-            throw new InvalidOperationException("TodoGroupTodo not found.");
+            throw new InvalidOperationException(TodoGroupTodoMessage.TodoGroupTodoNotFound);
 
         return todoGroupTodo;
     }
@@ -73,7 +73,7 @@ public class TodoGroupTodoCrud(HomeAppContext context) : BaseCrud<TodoGroupTodo>
         var existingTodoGroupTodo = await _context.TodoGroupTodos.FindAsync(todoGroupTodo.Id, cancellationToken);
 
         if (existingTodoGroupTodo == null)
-            throw new InvalidOperationException("TodoGroupTodo not found.");
+            throw new InvalidOperationException(TodoGroupTodoMessage.TodoGroupTodoNotFound);
 
         existingTodoGroupTodo.TodoId = todoGroupTodo.TodoId;
         existingTodoGroupTodo.TodoGroupId = todoGroupTodo.TodoGroupId;

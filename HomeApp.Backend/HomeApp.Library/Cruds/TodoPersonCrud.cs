@@ -23,7 +23,7 @@ public class TodoPersonCrud(HomeAppContext context)
         var todoPerson = await _context.TodoPeople.FindAsync(id, cancellationToken);
 
         if (todoPerson == null)
-            throw new InvalidOperationException("TodoPerson not found.");
+            throw new InvalidOperationException(TodoPersonMessage.TodoPersonNotFound);
 
         _context.TodoPeople.Remove(todoPerson);
         await _context.SaveChangesAsync(cancellationToken);
@@ -47,7 +47,7 @@ public class TodoPersonCrud(HomeAppContext context)
         var todoPerson = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (todoPerson == null)
-            throw new InvalidOperationException("TodoPerson not found.");
+            throw new InvalidOperationException(TodoPersonMessage.TodoPersonNotFound);
 
         return todoPerson;
     }
@@ -73,7 +73,7 @@ public class TodoPersonCrud(HomeAppContext context)
         var existingTodoPerson = await _context.TodoPeople.FindAsync(todoPerson.Id, cancellationToken);
 
         if (existingTodoPerson == null)
-            throw new InvalidOperationException("TodoPerson not found.");
+            throw new InvalidOperationException(TodoPersonMessage.TodoPersonNotFound);
 
         existingTodoPerson.PersonId = todoPerson.PersonId;
         existingTodoPerson.TodoId = todoPerson.TodoId;
