@@ -11,7 +11,7 @@ public class CreateToDoDto
 
     public int? TodoGroupId { get; set; }
 
-    [Required] [StringLength(150)] public string Name { get; set; }
+    [Required] [StringLength(150)] public string Name { get; set; } = string.Empty;
 
     [Required] public bool Done { get; set; }
 

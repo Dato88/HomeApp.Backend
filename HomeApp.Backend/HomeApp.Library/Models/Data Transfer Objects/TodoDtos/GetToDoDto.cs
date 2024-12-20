@@ -10,7 +10,7 @@ public class GetToDoDto
 
     public int Id { get; set; }
     public int? TodoGroupId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public bool Done { get; set; }
 
     public TodoPriority Priority { get; set; }
