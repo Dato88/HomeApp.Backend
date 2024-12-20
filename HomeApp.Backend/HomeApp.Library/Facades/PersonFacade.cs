@@ -10,7 +10,7 @@ namespace HomeApp.Library.Facades;
 public class PersonFacade(
     IPersonCrud personCrud,
     IHttpContextAccessor httpContextAccessor,
-    ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IPersonFacade
+    ILogger<PersonFacade> logger) : LoggerExtension<PersonFacade>(logger), IPersonFacade
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IPersonCrud _personCrud = personCrud;

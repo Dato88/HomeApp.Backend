@@ -2,7 +2,7 @@
 
 namespace HomeApp.Library.Logger;
 
-public partial class BudgetLoggerExtension<T>(ILogger<T> logger)
+public partial class LoggerExtension<T>(ILogger<T> logger)
 {
     private readonly ILogger<T> _logger = logger;
 

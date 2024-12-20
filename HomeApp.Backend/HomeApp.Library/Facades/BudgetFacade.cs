@@ -12,7 +12,7 @@ public class BudgetFacade(
     IBudgetGroupCrud budgetGroupCrud,
     IBudgetRowCrud budgetRowCrud,
     IPersonFacade personFacade,
-    ILogger<BudgetFacade> logger) : BudgetLoggerExtension<BudgetFacade>(logger), IBudgetFacade
+    ILogger<BudgetFacade> logger) : LoggerExtension<BudgetFacade>(logger), IBudgetFacade
 {
     private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
     private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
