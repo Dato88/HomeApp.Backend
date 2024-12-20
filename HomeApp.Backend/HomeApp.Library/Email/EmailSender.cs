@@ -4,11 +4,12 @@ using HomeApp.Library.Models.Email;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
+using MimeKit.Text;
 
 namespace HomeApp.Library.Email;
 
 public class EmailSender(EmailConfiguration emailConfig, ILogger<EmailSender> logger)
-    : BudgetLoggerExtension<EmailSender>(logger), IEmailSender
+    : LoggerExtension<EmailSender>(logger), IEmailSender
 {
     public async Task SendEmailAsync(Message message, CancellationToken cancellationToken)
     {
@@ -22,7 +23,7 @@ public class EmailSender(EmailConfiguration emailConfig, ILogger<EmailSender> lo
         emailMessage.From.Add(new MailboxAddress("email", emailConfig.From));
         emailMessage.To.AddRange(message.To);
         emailMessage.Subject = message.Subject;
-        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
+        emailMessage.Body = new TextPart(TextFormat.Text) { Text = message.Content };
 
         return emailMessage;
     }

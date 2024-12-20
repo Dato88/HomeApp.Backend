@@ -8,7 +8,7 @@ namespace HomeApp.Library.Tests.Facades;
 public class BasePersonFacadeTest : BaseTest
 {
     protected readonly Mock<IHttpContextAccessor> _httpContextAccessor;
-    protected readonly Mock<ILogger<BudgetFacade>> _iLogger;
+    protected readonly Mock<ILogger<PersonFacade>> _iLogger;
     protected readonly Mock<IPersonCrud> _personCrudMock;
     protected readonly PersonFacade _personFacade;
 
@@ -22,7 +22,7 @@ public class BasePersonFacadeTest : BaseTest
         _personCrudMock.DefaultValue = DefaultValue.Mock;
         _personCrudMock.SetupAllProperties();
 
-        _iLogger = new Mock<ILogger<BudgetFacade>>();
+        _iLogger = new Mock<ILogger<PersonFacade>>();
         _iLogger.DefaultValue = DefaultValue.Mock;
         _iLogger.SetupAllProperties();
 

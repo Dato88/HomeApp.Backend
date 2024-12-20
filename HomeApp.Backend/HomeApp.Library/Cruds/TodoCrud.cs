@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HomeApp.Library.Cruds.Interfaces;
+using HomeApp.Library.Models.Data_Transfer_Objects.TodoDtos;
 
 namespace HomeApp.Library.Cruds;
 
@@ -57,6 +58,16 @@ public class TodoCrud(HomeAppContext context)
     public override Task GetAllAsync(CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes) => throw new NotImplementedException();
 
+    public async Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken)
+    {
+        var query = _context.TodoPeople.AsNoTracking().Include(i => i.Todo)
+            .ThenInclude(t => t.TodoGroupTodo);
+
+        var todoPeople = await query.Where(x => x.PersonId == personId).ToListAsync(cancellationToken);
+
+        return todoPeople.Select(s => (GetToDoDto)s.Todo).AsEnumerable();
+    }
+
     public override async Task UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
@@ -80,7 +91,7 @@ public class TodoCrud(HomeAppContext context)
     {
         var includeMappings = new Dictionary<string, Expression<Func<Todo, object>>>
         {
-            { nameof(Todo.TodoGroups), x => x.TodoGroups }, { nameof(Todo.People), x => x.People }
+            { nameof(Todo.TodoGroupTodo), x => x.TodoGroupTodo }, { nameof(Todo.TodoPeople), x => x.TodoPeople }
         };
 
         foreach (var include in includes)

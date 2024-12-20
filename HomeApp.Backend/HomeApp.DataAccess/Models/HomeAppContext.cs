@@ -11,12 +11,8 @@ public class HomeAppContext(DbContextOptions<HomeAppContext> options) : DbContex
     public virtual DbSet<BudgetColumn> BudgetColumns { get; set; }
     public virtual DbSet<BudgetGroup> BudgetGroups { get; set; }
     public virtual DbSet<BudgetRow> BudgetRows { get; set; }
-
     public virtual DbSet<Todo> Todos { get; set; }
-
     public virtual DbSet<TodoGroup> TodoGroups { get; set; }
-
     public virtual DbSet<TodoGroupTodo> TodoGroupTodos { get; set; }
-
     public virtual DbSet<TodoPerson> TodoPeople { get; set; }
 }
