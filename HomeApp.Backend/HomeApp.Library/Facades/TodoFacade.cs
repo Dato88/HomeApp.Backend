@@ -26,6 +26,12 @@ public class TodoFacade(
         {
             var todo = await _todoCrud.CreateAsync(createToDoDto, cancellationToken);
 
+            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+
+            var todoPerson = new CreateToDoPersonDto(person.Id, todo.Id);
+
+            await _todoPersonCrud.CreateAsync(todoPerson, cancellationToken);
+
             if (createToDoDto.TodoGroupId is not null)
             {
                 var todoGroupTodo =

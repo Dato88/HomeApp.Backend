@@ -11,8 +11,8 @@ public class TodoController(ITodoFacade todoFacade) : ControllerBase
 {
     private readonly ITodoFacade _todoFacade = todoFacade;
 
-    [HttpGet("todo")]
-    public async Task<IEnumerable<GetToDoDto>> GetTodo(CancellationToken cancellationToken)
+    [HttpGet("todos")]
+    public async Task<IEnumerable<GetToDoDto>> GetTodos(CancellationToken cancellationToken)
     {
         var todos = await _todoFacade.GetTodosAsync(cancellationToken);
 
@@ -20,7 +20,7 @@ public class TodoController(ITodoFacade todoFacade) : ControllerBase
     }
 
     [HttpPost("todo")]
-    public async Task<GetToDoDto> PostBudgetCellAsync([FromBody] CreateToDoDto createToDoDto,
+    public async Task<GetToDoDto> PostGetToDoDtoAsync([FromBody] CreateToDoDto createToDoDto,
         CancellationToken cancellationToken)
     {
         var todo = await _todoFacade.CreateTodoAsync(createToDoDto, cancellationToken);

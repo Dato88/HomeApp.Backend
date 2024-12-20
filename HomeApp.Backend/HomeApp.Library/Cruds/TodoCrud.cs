@@ -58,20 +58,14 @@ public class TodoCrud(HomeAppContext context)
     public override Task GetAllAsync(CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes) => throw new NotImplementedException();
 
-
-    public async Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken,
-        bool asNoTracking = true,
-        params string[] includes)
+    public async Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken)
     {
-        var query = _context.TodoPeople.AsQueryable();
+        var query = _context.TodoPeople.AsNoTracking().Include(i => i.Todo)
+            .ThenInclude(t => t.TodoGroupTodo);
 
-        if (asNoTracking)
-            query = query.AsNoTracking();
+        var todoPeople = await query.Where(x => x.PersonId == personId).ToListAsync(cancellationToken);
 
-        query.Include(i => i.Todo);
-
-        return (await query.Where(x => x.PersonId == personId).ToListAsync(cancellationToken)).Select(s =>
-            (GetToDoDto)s.Todo);
+        return todoPeople.Select(s => (GetToDoDto)s.Todo).AsEnumerable();
     }
 
     public override async Task UpdateAsync(Todo todo, CancellationToken cancellationToken)

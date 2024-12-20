@@ -20,7 +20,7 @@ public class GetToDoDto
         new()
         {
             Id = item.Id,
-            TodoGroupId = item.TodoGroupTodo.TodoGroupId,
+            TodoGroupId = item.TodoGroupTodo?.TodoGroupId,
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,

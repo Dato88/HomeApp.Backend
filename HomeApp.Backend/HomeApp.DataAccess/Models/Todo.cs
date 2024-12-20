@@ -6,8 +6,6 @@ namespace HomeApp.DataAccess.Models;
 [Table("Todos")]
 public class Todo : BaseClass
 {
-    public Todo() => TodoPeople = new HashSet<TodoPerson>();
-
     [Required] [StringLength(150)] public string Name { get; set; }
 
     [Required] public bool Done { get; set; }
@@ -17,5 +15,5 @@ public class Todo : BaseClass
     public DateTime? ExecutionDate { get; set; }
 
     public virtual TodoGroupTodo TodoGroupTodo { get; set; }
-    public virtual ICollection<TodoPerson> TodoPeople { get; set; }
+    public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
 }

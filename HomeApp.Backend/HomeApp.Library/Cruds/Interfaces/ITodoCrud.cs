@@ -58,14 +58,8 @@ public interface ITodoCrud
     /// </summary>
     /// <param name="personId"></param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <param name="asNoTracking">
-    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default is true.
-    /// </param>
-    /// <param name="includes">Optional additional properties to include in the result (e.g., related entities).</param>
     /// <returns>A list of all TodoPersons.</returns>
-    Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken,
-        bool asNoTracking = true,
-        params string[] includes);
+    Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Updates an existing Todo.

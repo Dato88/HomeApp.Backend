@@ -23,6 +23,6 @@ public class CreateToDoDto
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            ExecutionDate = item.Done ? DateTime.Now : DateTime.MinValue
+            ExecutionDate = item.Done ? DateTime.Now : null
         };
 }

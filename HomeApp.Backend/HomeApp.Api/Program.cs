@@ -48,13 +48,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
 builder.Services.AddScoped<IPersonValidation, PersonValidation>();
 
-builder.Services.AddScoped<IPersonCrud, PersonCrud>();
-builder.Services.AddScoped<IPersonFacade, PersonFacade>();
 builder.Services.AddScoped<IBudgetCellCrud, BudgetCellCrud>();
 builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnCrud>();
 builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
 builder.Services.AddScoped<IBudgetRowCrud, BudgetRowCrud>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
+builder.Services.AddScoped<IPersonCrud, PersonCrud>();
+builder.Services.AddScoped<IPersonFacade, PersonFacade>();
+builder.Services.AddScoped<ITodoCrud, TodoCrud>();
+builder.Services.AddScoped<ITodoGroupCrud, TodoGroupCrud>();
+builder.Services.AddScoped<ITodoGroupTodoCrud, TodoGroupTodoCrud>();
+builder.Services.AddScoped<ITodoPersonCrud, TodoPersonCrud>();
+builder.Services.AddScoped<ITodoFacade, TodoFacade>();
 
 builder.Services.AddScoped<JwtHandler>();
 
