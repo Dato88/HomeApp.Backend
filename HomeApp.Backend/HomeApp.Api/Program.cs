@@ -11,8 +11,8 @@ using HomeApp.Library.Email;
 using HomeApp.Library.Facades;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
-using HomeApp.Library.Validations.Interfaces;
 using HomeApp.Library.Validations;
+using HomeApp.Library.Validations.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,9 +31,11 @@ ILogger logger =
 
 builder.Services.AddSingleton(logger);
 
-builder.Services.AddDbContext<HomeAppContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppConnection")));
+builder.Services.AddDbContext<HomeAppContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppConnection")));
 
-builder.Services.AddDbContext<UserContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppUserConnection")));
+builder.Services.AddDbContext<UserContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("HomeAppUserConnection")));
 
 builder.Services.AddCors(options =>
 {
@@ -44,8 +46,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
-builder.Services.AddScoped<IUserValidation, UserValidation>();
+builder.Services.AddScoped<IPersonValidation, PersonValidation>();
 
+builder.Services.AddScoped<IPersonCrud, PersonCrud>();
+builder.Services.AddScoped<IPersonFacade, PersonFacade>();
 builder.Services.AddScoped<IBudgetCellCrud, BudgetCellCrud>();
 builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnCrud>();
 builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
@@ -63,9 +67,7 @@ builder.Services.AddScoped<IUserCrud, UserCrud>();
 builder.Services.AddAuthorization(options =>
 {
     foreach (var item in ClaimStore.AllClaims)
-    {
         options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
-    }
 });
 
 builder.Services.AddIdentity<User, IdentityRole>(
@@ -106,6 +108,7 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

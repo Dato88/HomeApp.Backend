@@ -1,17 +1,19 @@
-﻿using HomeApp.DataAccess.Models;
+﻿using System.Linq.Expressions;
 using HomeApp.Library.Cruds.Interfaces;
 
 namespace HomeApp.Library.Cruds;
 
 public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetRow>(context, budgetValidation), IBudgetRowCrud
+    : BaseCrud<BudgetRow>(context), IBudgetRowCrud
 {
+    private readonly IBudgetValidation _budgetValidation = budgetValidation;
+
     public override async Task<BudgetRow> CreateAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budgetRow);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
-        await _budgetValidation.ValidateForUserIdAsync(budgetRow.UserId, cancellationToken);
+        await _budgetValidation.ValidateForUserIdAsync(budgetRow.PersonId, cancellationToken);
         await _budgetValidation.ValidateBudgetRowIdExistsAsync(budgetRow.Id, cancellationToken);
         await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
         await _budgetValidation.ValidateForPositiveIndexAsync(budgetRow.Index);
@@ -27,20 +29,27 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
         var budgetRow = await _context.BudgetRows.FindAsync(id, cancellationToken);
-        if (budgetRow == null)
-        {
-            throw new InvalidOperationException(BudgetMessage.RowNotFound);
-        }
+        if (budgetRow == null) throw new InvalidOperationException(BudgetMessage.RowNotFound);
 
         _context.BudgetRows.Remove(budgetRow);
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public override async Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken)
+    public override async Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken,
+        bool asNoTracking = true,
+        params string[] includes)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
-        var budgetRow = await _context.BudgetRows.FindAsync(id, cancellationToken);
+        var query = _context.BudgetRows.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        var budgetRow = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (budgetRow == null)
             throw new InvalidOperationException(BudgetMessage.CellNotFound);
@@ -48,16 +57,42 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         return budgetRow;
     }
 
-    public override async Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken) => await _context.BudgetRows.ToListAsync(cancellationToken);
+    public async Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken,
+        bool asNoTracking = true,
+        params string[] includes)
+    {
+        var query = _context.BudgetRows.AsQueryable();
 
-    public async Task<IEnumerable<BudgetRow>> GetAllAsync(int userId, CancellationToken cancellationToken) => await _context.BudgetRows.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        return await query.Where(x => x.PersonId == userId).ToListAsync(cancellationToken);
+    }
+
+    public override async Task<IEnumerable<BudgetRow>> GetAllAsync(CancellationToken cancellationToken,
+        bool asNoTracking = true,
+        params string[] includes)
+    {
+        var query = _context.BudgetRows.AsQueryable();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        if (includes is { Length: > 0 })
+            query = ApplyIncludes(query, includes);
+
+        return await query.ToListAsync(cancellationToken);
+    }
 
     public override async Task UpdateAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budgetRow);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRow.Year, nameof(budgetRow.Year));
 
-        await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(budgetRow.Id, budgetRow.UserId,
+        await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(budgetRow.Id, budgetRow.PersonId,
             cancellationToken);
         await _budgetValidation.ValidateBudgetRowIdExistsNotAsync(budgetRow.Id, cancellationToken);
         await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
@@ -74,5 +109,19 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         _context.BudgetRows.Update(existingBudgetRow);
 
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    protected override IQueryable<BudgetRow> ApplyIncludes(IQueryable<BudgetRow> query, params string[] includes)
+    {
+        var includeMappings = new Dictionary<string, Expression<Func<BudgetRow, object>>>
+        {
+            { nameof(BudgetGroup.BudgetCells), x => x.BudgetCells }
+        };
+
+        foreach (var include in includes)
+            if (includeMappings.ContainsKey(include))
+                query = query.Include(includeMappings[include]);
+
+        return query;
     }
 }

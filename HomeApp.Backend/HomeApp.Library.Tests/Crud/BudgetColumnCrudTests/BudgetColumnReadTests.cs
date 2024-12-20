@@ -6,11 +6,7 @@ public class BudgetColumnReadTests : BaseBudgetColumnTest
     public async Task FindByIdAsync_ReturnsBudgetColumn_WhenExists()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 1,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 1, Name = "Test Budget Column" };
 
         _context.BudgetColumns.Add(budgetColumn);
         await _context.SaveChangesAsync();
@@ -19,7 +15,7 @@ public class BudgetColumnReadTests : BaseBudgetColumnTest
         var result = await _budgetColumnCrud.FindByIdAsync(budgetColumn.Id, default);
 
         // Assert
-        result.Should().Be(budgetColumn);
+        result.Should().BeEquivalentTo(budgetColumn);
     }
 
     [Theory]
@@ -50,26 +46,19 @@ public class BudgetColumnReadTests : BaseBudgetColumnTest
     public async Task GetAllAsync_ReturnsAllBudgetColumns()
     {
         // Arrange
-        BudgetColumn budgetColumn1 = new()
+        var budgetColumns = new[]
         {
-            Index = 1,
-            Name = "Test Budget Column1"
+            new BudgetColumn { Index = 1, Name = "Test Budget Column1" },
+            new BudgetColumn { Index = 2, Name = "Test Budget Column2" }
         };
 
-        BudgetColumn budgetColumn2 = new()
-        {
-            Index = 2,
-            Name = "Test Budget Column2"
-        };
-
-        _context.BudgetColumns.Add(budgetColumn1);
-        _context.BudgetColumns.Add(budgetColumn2);
+        _context.BudgetColumns.AddRange(budgetColumns);
         await _context.SaveChangesAsync();
 
         // Act
         var result = await _budgetColumnCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().Contain(new[] { budgetColumn1, budgetColumn2 });
+        result.Should().BeEquivalentTo(budgetColumns);
     }
 }

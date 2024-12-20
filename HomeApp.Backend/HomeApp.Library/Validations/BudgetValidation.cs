@@ -7,10 +7,10 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     public async Task ValidateBudgetCellForUserIdChangeAsync(int userId, int budgetCellId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCellId, BudgetMessage.BudgetCellId);
 
-        if (await _context.BudgetCells.AnyAsync(x => x.Id == budgetCellId && x.UserId != userId, cancellationToken))
+        if (await _context.BudgetCells.AnyAsync(x => x.Id == budgetCellId && x.PersonId != userId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
     }
 
@@ -33,22 +33,18 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         if (await _context.BudgetColumns.AnyAsync(column => column.Index == index && column.Name.Equals(name),
                 cancellationToken))
-        {
             throw new InvalidOperationException(BudgetMessage.ColumnIndexAlreadyExists);
-        }
     }
 
     public async Task ValidateBudgetGroupForUserIdChangeAsync(int userId, int budgetGroupId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-        if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.UserId != userId,
+        if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.PersonId != userId,
                 cancellationToken))
-        {
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
-        }
     }
 
     public async Task ValidateBudgetGroupIdExistsAsync(int budgetGroupId, CancellationToken cancellationToken)
@@ -72,22 +68,18 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         if (await _context.BudgetGroups.AnyAsync(group => group.Index == index && group.Name.Equals(name),
                 cancellationToken))
-        {
             throw new InvalidOperationException(BudgetMessage.GroupIndexAlreadyExists);
-        }
     }
 
     public async Task ValidateBudgetRowForUserIdChangeAsync(int userId, int budgetRowId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
-        if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.UserId != userId,
+        if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.PersonId != userId,
                 cancellationToken))
-        {
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
-        }
     }
 
     public async Task ValidateBudgetRowIdExistsAsync(int budgetRowId, CancellationToken cancellationToken)
@@ -122,9 +114,9 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
 
     public async Task ValidateForUserIdAsync(int userId, CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
 
-        if (!await _context.Users.AnyAsync(user => user.Id == userId, cancellationToken))
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+        if (!await _context.People.AnyAsync(user => user.Id == userId, cancellationToken))
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
     }
 }

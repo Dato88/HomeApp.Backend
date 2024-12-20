@@ -6,12 +6,7 @@ public class BudgetGroupCreateTests : BaseBudgetGroupTest
     public async Task CreateAsync_AddsBudgetGroupToContext()
     {
         // Arrange
-        BudgetGroup budgetGroup = new()
-        {
-            UserId = 1,
-            Index = 1,
-            Name = "Test Budget Group"
-        };
+        BudgetGroup budgetGroup = new() { PersonId = 1, Index = 1, Name = "Test Budget Group" };
 
         // Act
         await _budgetGroupCrud.CreateAsync(budgetGroup, default);
@@ -21,23 +16,16 @@ public class BudgetGroupCreateTests : BaseBudgetGroupTest
     }
 
     [Fact]
-    public async Task CreateAsync_ThrowsException_WhenBudgetGroupIsNull()
-    {
+    public async Task CreateAsync_ThrowsException_WhenBudgetGroupIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetGroupCrud.CreateAsync(null, default));
-    }
 
     [Fact]
     public async Task CreateAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetGroup budgetGroup = new()
-        {
-            UserId = 1,
-            Index = 1,
-            Name = "Test Budget Group"
-        };
+        BudgetGroup budgetGroup = new() { PersonId = 1, Index = 1, Name = "Test Budget Group" };
 
         // Act
         await _budgetGroupCrud.CreateAsync(budgetGroup, default);

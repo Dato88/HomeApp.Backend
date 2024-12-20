@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Identity;
 namespace HomeApp.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/[action]")]
+[Route("[controller]")]
 public class AuthenticationController(
     JwtHandler jwtHandler,
     UserManager<User> userManager,
     IEmailSender emailSender)
     : ControllerBase
 {
-    [HttpPost(Name = "Login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto,
         CancellationToken cancellationToken)
     {
@@ -39,7 +39,7 @@ public class AuthenticationController(
 
             var content =
                 $"Your account is locked out. To reset the password click this link: {userForAuthenticationDto.ClientUri}";
-            var message = new Message(new string[] { userForAuthenticationDto.Email },
+            var message = new Message(new[] { userForAuthenticationDto.Email },
                 "Locked out account information", content);
 
             await emailSender.SendEmailAsync(message, cancellationToken);
@@ -64,14 +64,14 @@ public class AuthenticationController(
             return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
 
         var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
-        var message = new Message(new string[] { user.Email }, "Authentication token", token);
+        var message = new Message(new[] { user.Email }, "Authentication token", token);
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
         return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
     }
 
-    [HttpPost("TwoStepVerification")]
+    [HttpPost("2fa-verify")]
     public async Task<IActionResult> TwoStepVerification([FromBody] TwoFactorDto twoFactorDto)
     {
         if (!ModelState.IsValid)

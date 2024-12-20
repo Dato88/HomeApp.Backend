@@ -21,8 +21,4 @@
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Entities\DataTransferObjects\"/>
-    </ItemGroup>
-
 </Project>

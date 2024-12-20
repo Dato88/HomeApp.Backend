@@ -17,7 +17,7 @@ namespace HomeApp.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -47,7 +47,7 @@ namespace HomeApp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Year")
@@ -61,7 +61,7 @@ namespace HomeApp.DataAccess.Migrations
 
                     b.HasIndex("BudgetRowId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("BudgetCells");
                 });
@@ -111,12 +111,12 @@ namespace HomeApp.DataAccess.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("BudgetGroups");
                 });
@@ -141,7 +141,7 @@ namespace HomeApp.DataAccess.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Year")
@@ -149,9 +149,50 @@ namespace HomeApp.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("BudgetRows");
+                });
+
+            modelBuilder.Entity("HomeApp.DataAccess.Models.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)");
+
+                    b.Property<string>("Username")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("People");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.Todo", b =>
@@ -166,18 +207,18 @@ namespace HomeApp.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("TodoDone")
+                    b.Property<bool>("Done")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("TodoExecutionDate")
+                    b.Property<DateTime>("ExecutionDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("TodoName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("TodoPriority")
+                    b.Property<int>("Priority")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -197,7 +238,7 @@ namespace HomeApp.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("TodoGroupName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
@@ -207,7 +248,7 @@ namespace HomeApp.DataAccess.Migrations
                     b.ToTable("TodoGroups");
                 });
 
-            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoGroupMapping", b =>
+            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoGroupTodo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -231,10 +272,10 @@ namespace HomeApp.DataAccess.Migrations
 
                     b.HasIndex("TodoId");
 
-                    b.ToTable("TodoGroupMapping");
+                    b.ToTable("TodoGroupTodos");
                 });
 
-            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoUserMapping", b =>
+            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoPerson", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -245,65 +286,20 @@ namespace HomeApp.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TodoId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
 
                     b.HasIndex("TodoId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TodoUserMapping");
-                });
-
-            modelBuilder.Entity("HomeApp.DataAccess.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<DateTime?>("LastLogin")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
+                    b.ToTable("TodoPeople");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.BudgetCell", b =>
@@ -326,9 +322,9 @@ namespace HomeApp.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeApp.DataAccess.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("HomeApp.DataAccess.Models.Person", "Person")
+                        .WithMany("BudgetCells")
+                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -338,41 +334,41 @@ namespace HomeApp.DataAccess.Migrations
 
                     b.Navigation("BudgetRow");
 
-                    b.Navigation("User");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.BudgetGroup", b =>
                 {
-                    b.HasOne("HomeApp.DataAccess.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("HomeApp.DataAccess.Models.Person", "Person")
+                        .WithMany("BudgetGroups")
+                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.BudgetRow", b =>
                 {
-                    b.HasOne("HomeApp.DataAccess.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("HomeApp.DataAccess.Models.Person", "Person")
+                        .WithMany("BudgetRows")
+                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoGroupMapping", b =>
+            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoGroupTodo", b =>
                 {
                     b.HasOne("HomeApp.DataAccess.Models.TodoGroup", "TodoGroup")
-                        .WithMany("TodoGroupMappings")
+                        .WithMany("Todos")
                         .HasForeignKey("TodoGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("HomeApp.DataAccess.Models.Todo", "Todo")
-                        .WithMany("TodoGroupMappings")
+                        .WithMany("TodoGroups")
                         .HasForeignKey("TodoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,23 +378,23 @@ namespace HomeApp.DataAccess.Migrations
                     b.Navigation("TodoGroup");
                 });
 
-            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoUserMapping", b =>
+            modelBuilder.Entity("HomeApp.DataAccess.Models.TodoPerson", b =>
                 {
+                    b.HasOne("HomeApp.DataAccess.Models.Person", "Person")
+                        .WithMany("TodoPeople")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("HomeApp.DataAccess.Models.Todo", "Todo")
-                        .WithMany("TodoUserMappings")
+                        .WithMany("People")
                         .HasForeignKey("TodoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeApp.DataAccess.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Person");
 
                     b.Navigation("Todo");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.BudgetColumn", b =>
@@ -416,16 +412,27 @@ namespace HomeApp.DataAccess.Migrations
                     b.Navigation("BudgetCells");
                 });
 
+            modelBuilder.Entity("HomeApp.DataAccess.Models.Person", b =>
+                {
+                    b.Navigation("BudgetCells");
+
+                    b.Navigation("BudgetGroups");
+
+                    b.Navigation("BudgetRows");
+
+                    b.Navigation("TodoPeople");
+                });
+
             modelBuilder.Entity("HomeApp.DataAccess.Models.Todo", b =>
                 {
-                    b.Navigation("TodoGroupMappings");
+                    b.Navigation("People");
 
-                    b.Navigation("TodoUserMappings");
+                    b.Navigation("TodoGroups");
                 });
 
             modelBuilder.Entity("HomeApp.DataAccess.Models.TodoGroup", b =>
                 {
-                    b.Navigation("TodoGroupMappings");
+                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }

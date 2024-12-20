@@ -6,12 +6,7 @@ public class BudgetCellDeleteTests : BaseBudgetCellTest
     public async Task DeleteAsync_ShouldDeleteUser_WhenUserExists()
     {
         // Arrange
-        BudgetCell budgetCell = new()
-        {
-            Name = "Test",
-            BudgetRowId = 1,
-            BudgetColumnId = 1
-        };
+        BudgetCell budgetCell = new() { Name = "Test", BudgetRowId = 1, BudgetColumnId = 1 };
 
         _context.BudgetCells.Add(budgetCell);
         await _context.SaveChangesAsync();
@@ -22,7 +17,7 @@ public class BudgetCellDeleteTests : BaseBudgetCellTest
         await _budgetCellCrud.DeleteAsync(budgetCell.Id, cancellationToken);
 
         // Assert
-        var deletedUser = await _context.Users.FindAsync(budgetCell.Id);
+        var deletedUser = await _context.People.FindAsync(budgetCell.Id);
         deletedUser.Should().BeNull();
     }
 

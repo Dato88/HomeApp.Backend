@@ -1,10 +1,10 @@
 ﻿#nullable disable
 namespace HomeApp.DataAccess.Models;
 
-[Table("TodoUserMapping")]
-public partial class TodoUserMapping : BaseClass
+[Table("TodoPeople")]
+public class TodoPerson : BaseClass
 {
-    [Required] public int UserId { get; set; }
+    [Required] public int PersonId { get; set; }
 
     [Required] public int TodoId { get; set; }
 

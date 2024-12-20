@@ -2,13 +2,11 @@
 namespace HomeApp.DataAccess.Models;
 
 [Table("TodoGroups")]
-public partial class TodoGroup : BaseClass
+public class TodoGroup : BaseClass
 {
-    public TodoGroup() => TodoGroupMappings = new HashSet<TodoGroupMapping>();
+    public TodoGroup() => Todos = new HashSet<TodoGroupTodo>();
 
-    [Required]
-    [StringLength(150)]
-    public string TodoGroupName { get; set; }
+    [Required] [StringLength(150)] public string Name { get; set; }
 
-    public virtual ICollection<TodoGroupMapping> TodoGroupMappings { get; set; }
+    public virtual ICollection<TodoGroupTodo> Todos { get; set; }
 }

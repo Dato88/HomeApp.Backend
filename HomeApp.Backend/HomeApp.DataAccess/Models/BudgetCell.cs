@@ -2,7 +2,7 @@
 namespace HomeApp.DataAccess.Models;
 
 [Table("BudgetCells")]
-public partial class BudgetCell : BaseClass
+public class BudgetCell : BaseClass
 {
     [Required] public int BudgetRowId { get; set; }
 
@@ -10,7 +10,7 @@ public partial class BudgetCell : BaseClass
 
     [Required] public int BudgetGroupId { get; set; }
 
-    [Required] public int UserId { get; set; }
+    [Required] public int PersonId { get; set; }
 
     [Required] public int Year { get; set; }
 
