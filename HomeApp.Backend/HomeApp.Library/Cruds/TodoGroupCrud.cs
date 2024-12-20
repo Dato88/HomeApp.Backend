@@ -84,7 +84,7 @@ public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context
     {
         var includeMappings = new Dictionary<string, Expression<Func<TodoGroup, object>>>
         {
-            { nameof(TodoGroup.Todos), x => x.Todos }
+            { nameof(TodoGroup.TodoGroupTodos), x => x.TodoGroupTodos }
         };
 
         foreach (var include in includes)

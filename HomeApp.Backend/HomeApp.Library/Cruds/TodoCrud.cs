@@ -97,7 +97,7 @@ public class TodoCrud(HomeAppContext context)
     {
         var includeMappings = new Dictionary<string, Expression<Func<Todo, object>>>
         {
-            { nameof(Todo.TodoGroup), x => x.TodoGroup }, { nameof(Todo.People), x => x.People }
+            { nameof(Todo.TodoGroupTodo), x => x.TodoGroupTodo }, { nameof(Todo.TodoPeople), x => x.TodoPeople }
         };
 
         foreach (var include in includes)
