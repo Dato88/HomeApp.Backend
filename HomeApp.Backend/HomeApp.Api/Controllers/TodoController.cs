@@ -12,19 +12,19 @@ public class TodoController(ITodoFacade todoFacade) : ControllerBase
     private readonly ITodoFacade _todoFacade = todoFacade;
 
     [HttpGet("todos")]
-    public async Task<IEnumerable<GetToDoDto>> GetTodos(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTodos(CancellationToken cancellationToken)
     {
         var todos = await _todoFacade.GetTodosAsync(cancellationToken);
 
-        return todos;
+        return Ok(todos);
     }
 
     [HttpPost("todo")]
-    public async Task<GetToDoDto> PostGetToDoDtoAsync([FromBody] CreateToDoDto createToDoDto,
+    public async Task<IActionResult> PostGetToDoDtoAsync([FromBody] CreateToDoDto createToDoDto,
         CancellationToken cancellationToken)
     {
         var todo = await _todoFacade.CreateTodoAsync(createToDoDto, cancellationToken);
 
-        return todo;
+        return Ok(todo);
     }
 }

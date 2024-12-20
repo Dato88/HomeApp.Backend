@@ -5,6 +5,7 @@ using HomeApp.Identity.Entities.Models;
 using HomeApp.Library.Email;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -63,6 +64,7 @@ public class AccountsController(
         return Ok();
     }
 
+    [Authorize]
     [HttpGet("users")]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync(CancellationToken cancellationToken)
     {
@@ -100,6 +102,7 @@ public class AccountsController(
         return StatusCode(201);
     }
 
+    [Authorize]
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
     {
