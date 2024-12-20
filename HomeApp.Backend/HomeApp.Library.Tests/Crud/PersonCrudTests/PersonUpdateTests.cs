@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class PersonCrudUpdateTests : BasePersonTest
+public class PersonUpdateTests : BasePersonTest
 {
     [Fact]
     public async Task UpdateAsync_ShouldUpdatePerson_WhenPersonExists()

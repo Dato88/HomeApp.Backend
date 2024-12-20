@@ -2,7 +2,7 @@
 
 namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
-public class TodoCrudUpdateTests : BaseTodoTest
+public class TodoUpdateTests : BaseTodoTest
 {
     [Fact]
     public async Task UpdateAsync_UpdatesTodoInContext()

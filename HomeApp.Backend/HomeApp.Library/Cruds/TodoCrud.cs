@@ -24,7 +24,7 @@ public class TodoCrud(HomeAppContext context)
         var todo = await _context.Todos.FindAsync(new object[] { id }, cancellationToken);
 
         if (todo == null)
-            throw new InvalidOperationException("Todo not found.");
+            throw new InvalidOperationException(TodoMessage.TodoNotFound);
 
         _context.Todos.Remove(todo);
         await _context.SaveChangesAsync(cancellationToken);
@@ -49,7 +49,7 @@ public class TodoCrud(HomeAppContext context)
         var todo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (todo == null)
-            throw new InvalidOperationException("Todo not found.");
+            throw new InvalidOperationException(TodoMessage.TodoNotFound);
 
         return todo;
     }
@@ -65,7 +65,7 @@ public class TodoCrud(HomeAppContext context)
         var existingTodo = await _context.Todos.FindAsync(todo.Id, cancellationToken);
 
         if (existingTodo == null)
-            throw new InvalidOperationException("Todo not found.");
+            throw new InvalidOperationException(TodoMessage.TodoNotFound);
 
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;

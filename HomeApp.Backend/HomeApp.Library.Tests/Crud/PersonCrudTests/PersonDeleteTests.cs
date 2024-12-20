@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class PersonCrudDeleteTests : BasePersonTest
+public class PersonDeleteTests : BasePersonTest
 {
     [Fact]
     public async Task DeleteAsync_ShouldDeletePerson_WhenPersonExists()

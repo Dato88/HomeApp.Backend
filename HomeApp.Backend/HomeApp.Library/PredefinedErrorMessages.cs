@@ -39,3 +39,13 @@ public static class PersonMessage
     public const string PropertiesMissing = "Person Required properties are missing";
     public const string MaxLengthExeed = "Max length exceeded";
 }
+
+public static class TodoMessage
+{
+    public const string TodoNotFound = "Todo not found";
+}
+
+public static class TodoGroupMessage
+{
+    public const string TodoGroupNotFound = "TodoGroup not found";
+}

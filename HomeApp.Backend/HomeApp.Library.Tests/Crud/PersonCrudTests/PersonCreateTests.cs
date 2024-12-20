@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class PersonCrudCreateTests : BasePersonTest
+public class PersonCreateTests : BasePersonTest
 {
     [Fact]
     public async Task CreateAsync_AddsPersonToContext()

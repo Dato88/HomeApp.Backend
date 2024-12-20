@@ -48,6 +48,6 @@ public class TodoDeleteTests : BaseTodoTest
         Func<Task> action = async () => await _todoCrud.DeleteAsync(999, default);
 
         await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Todo not found.");
+            .WithMessage(TodoMessage.TodoNotFound);
     }
 }

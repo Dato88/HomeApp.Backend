@@ -35,4 +35,9 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Crud\TodoGroupTodoCrudTests\"/>
+        <Folder Include="Crud\TodoPersonCrudTests\"/>
+    </ItemGroup>
+
 </Project>

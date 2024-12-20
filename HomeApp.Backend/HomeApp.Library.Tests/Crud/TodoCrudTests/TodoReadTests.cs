@@ -2,7 +2,7 @@
 
 namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
-public class TodoCrudReadTests : BaseTodoTest
+public class TodoReadTests : BaseTodoTest
 {
     [Fact]
     public async Task FindByIdAsync_ReturnsTodo_WhenExists()
@@ -43,6 +43,6 @@ public class TodoCrudReadTests : BaseTodoTest
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Todo not found.");
+            .WithMessage(TodoMessage.TodoNotFound);
     }
 }

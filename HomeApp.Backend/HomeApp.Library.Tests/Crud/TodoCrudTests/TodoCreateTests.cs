@@ -2,7 +2,7 @@
 
 namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
-public class TodoCrudCreateTests : BaseTodoTest
+public class TodoCreateTests : BaseTodoTest
 {
     [Fact]
     public async Task CreateAsync_AddsTodoToContext()

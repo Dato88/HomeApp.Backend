@@ -2,7 +2,7 @@
 
 namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class PersonCrudReadTests : BasePersonTest
+public class PersonReadTests : BasePersonTest
 {
     [Fact]
     public async Task FindByIdAsync_ReturnsPersonDto_WhenPersonExists()
