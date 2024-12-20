@@ -1,9 +1,9 @@
-﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+﻿namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class UserUpdateTests : BaseUserTest
+public class PersonCrudUpdateTests : BasePersonTest
 {
     [Fact]
-    public async Task UpdateAsync_ShouldUpdateUser_WhenUserExists()
+    public async Task UpdateAsync_ShouldUpdatePerson_WhenPersonExists()
     {
         // Arrange
         Person existingPerson = new()
@@ -30,7 +30,7 @@ public class UserUpdateTests : BaseUserTest
         };
 
         // Act
-        await PersonCrud.UpdateAsync(updatedPerson, default);
+        await _personCrud.UpdateAsync(updatedPerson, default);
 
         // Assert
         existingPerson.Id.Should().Be(1);
@@ -69,21 +69,21 @@ public class UserUpdateTests : BaseUserTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        await PersonCrud.UpdateAsync(updatedPerson, default);
+        await _personCrud.UpdateAsync(updatedPerson, default);
 
         // Assert
         var result = await _context.People.FindAsync(existingPerson.Id);
 
-        _userValidationMock.Verify(
-            v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+        _personValidationMock.Verify(
+            v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Once);
-        _userValidationMock.Verify(v => v.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
-        _userValidationMock.Verify(v => v.ValidateRequiredProperties(It.IsAny<Person>()), Times.Once);
-        _userValidationMock.Verify(v => v.ValidateMaxLength(It.IsAny<Person>()), Times.Once);
+        _personValidationMock.Verify(v => v.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
+        _personValidationMock.Verify(v => v.ValidateRequiredProperties(It.IsAny<Person>()), Times.Once);
+        _personValidationMock.Verify(v => v.ValidateMaxLength(It.IsAny<Person>()), Times.Once);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldNotCall_ValidateUsernameDoesNotExistAsync()
+    public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync()
     {
         // Arrange
         Person existingPerson = new()
@@ -110,28 +110,28 @@ public class UserUpdateTests : BaseUserTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        await PersonCrud.UpdateAsync(updatedPerson, default);
+        await _personCrud.UpdateAsync(updatedPerson, default);
 
         // Assert
         var result = await _context.People.FindAsync(existingPerson.Id);
 
-        _userValidationMock.Verify(
-            v => v.ValidateUsernameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+        _personValidationMock.Verify(
+            v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldThrowException_WhenUserIsNull()
+    public async Task UpdateAsync_ShouldThrowException_WhenPersonIsNull()
     {
         // Act
-        var action = async () => await PersonCrud.UpdateAsync(null, default);
+        var action = async () => await _personCrud.UpdateAsync(null, default);
 
         // Assert
         await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldThrowException_WhenUserNotFound()
+    public async Task UpdateAsync_ShouldThrowException_WhenPersonNotFound()
     {
         // Arrange
         Person nonExistingPerson = new()
@@ -145,9 +145,9 @@ public class UserUpdateTests : BaseUserTest
         };
 
         // Act
-        var action = async () => await PersonCrud.UpdateAsync(nonExistingPerson, default);
+        var action = async () => await _personCrud.UpdateAsync(nonExistingPerson, default);
 
         // Assert
-        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage(UserMessage.UserNotFound);
+        await action.Should().ThrowAsync<InvalidOperationException>().WithMessage(PersonMessage.PersonNotFound);
     }
 }

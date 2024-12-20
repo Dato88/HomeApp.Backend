@@ -30,19 +30,19 @@ public static class BudgetMessage
     public const string IndexMustBePositive = "Index must be a positive number";
 }
 
-public static class UserMessage
+public static class PersonMessage
 {
-    public const string UserId = "User Id";
-    public const string UserIdZero = "UserId is zero";
-    public const string UserNotFound = "User not found";
-    public const string UserAlreadyExists = "Username already exists";
+    public const string PersonId = "Person Id";
+    public const string PersonIdZero = "PersonId is zero";
+    public const string PersonNotFound = "Person not found";
+    public const string PersonAlreadyExists = "Personname already exists";
     public const string InvalidEmail = "Invalid email format";
     public const string PasswordShort = "Password must be at least 8 characters long";
     public const string PasswordUppercaseMissing = "Password must contain at least one uppercase letter";
     public const string PasswordLowercaseMissing = "Password must contain at least one lowercase letter";
     public const string PasswordDigitMissing = "Password must contain at least one digit";
     public const string PasswordSpecialCharMissing = "Password must contain at least one special character";
-    public const string PropertiesMissing = "User Required properties are missing";
+    public const string PropertiesMissing = "Person Required properties are missing";
     public const string WeakPassword = "Password is too weak";
     public const string MaxLengthExeed = "Max length exceeded";
 }

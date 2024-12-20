@@ -7,7 +7,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     public async Task ValidateBudgetCellForUserIdChangeAsync(int userId, int budgetCellId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCellId, BudgetMessage.BudgetCellId);
 
         if (await _context.BudgetCells.AnyAsync(x => x.Id == budgetCellId && x.PersonId != userId, cancellationToken))
@@ -39,7 +39,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     public async Task ValidateBudgetGroupForUserIdChangeAsync(int userId, int budgetGroupId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
         if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.PersonId != userId,
@@ -74,7 +74,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     public async Task ValidateBudgetRowForUserIdChangeAsync(int userId, int budgetRowId,
         CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
         if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.PersonId != userId,
@@ -114,9 +114,9 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
 
     public async Task ValidateForUserIdAsync(int userId, CancellationToken cancellationToken)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, UserMessage.UserId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
 
         if (!await _context.People.AnyAsync(user => user.Id == userId, cancellationToken))
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
     }
 }

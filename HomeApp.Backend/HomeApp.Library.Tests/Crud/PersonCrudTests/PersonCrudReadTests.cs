@@ -1,11 +1,11 @@
 ﻿using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
 
-namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class UserReadTests : BaseUserTest
+public class PersonCrudReadTests : BasePersonTest
 {
     [Fact]
-    public async Task FindByIdAsync_ReturnsUser_WhenExists()
+    public async Task FindByIdAsync_ReturnsPersonDto_WhenPersonExists()
     {
         // Arrange
         Person person = new()
@@ -21,7 +21,7 @@ public class UserReadTests : BaseUserTest
         await _context.SaveChangesAsync();
 
         // Act
-        var result = await PersonCrud.FindByIdAsync(person.Id, default);
+        var result = await _personCrud.FindByIdAsync(person.Id, default);
 
         // Assert
         result.Should().BeEquivalentTo((PersonDto)person);
@@ -31,18 +31,18 @@ public class UserReadTests : BaseUserTest
     public async Task FindByIdAsync_ReturnsException_WhenNotExists()
     {
         // Assert
-        Func<Task> action = async () => await PersonCrud.FindByIdAsync(999, default);
+        Func<Task> action = async () => await _personCrud.FindByIdAsync(999, default);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage(UserMessage.UserNotFound);
+            .WithMessage(PersonMessage.PersonNotFound);
     }
 
     [Fact]
     public async Task GetAllAsync_ReturnsAllBudgetRows()
     {
         // Arrange
-        Person user1 = new()
+        Person person1 = new()
         {
             Username = "testuser",
             FirstName = "John",
@@ -51,7 +51,7 @@ public class UserReadTests : BaseUserTest
             UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
-        Person user2 = new()
+        Person person2 = new()
         {
             Username = "testuser2",
             FirstName = "John2",
@@ -60,15 +60,15 @@ public class UserReadTests : BaseUserTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        _context.People.Add(user1);
-        _context.People.Add(user2);
+        _context.People.Add(person1);
+        _context.People.Add(person2);
         await _context.SaveChangesAsync();
 
         // Act
-        var result = await PersonCrud.GetAllAsync(default);
+        var result = await _personCrud.GetAllAsync(default);
 
         // Assert
-        result.Should().ContainEquivalentOf((PersonDto)user1);
-        result.Should().ContainEquivalentOf((PersonDto)user2);
+        result.Should().ContainEquivalentOf((PersonDto)person1);
+        result.Should().ContainEquivalentOf((PersonDto)person2);
     }
 }

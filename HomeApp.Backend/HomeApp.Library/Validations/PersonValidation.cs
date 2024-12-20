@@ -4,7 +4,7 @@ using HomeApp.Library.Cruds;
 
 namespace HomeApp.Library.Validations;
 
-public class UserValidation(HomeAppContext context) : BaseContext(context), IUserValidation
+public class PersonValidation(HomeAppContext context) : BaseContext(context), IPersonValidation
 {
     public bool IsValidEmail(string email)
     {
@@ -19,16 +19,16 @@ public class UserValidation(HomeAppContext context) : BaseContext(context), IUse
         }
     }
 
-    public async Task ValidateUsernameDoesNotExistAsync(string username, CancellationToken cancellationToken)
+    public async Task ValidatePersonnameDoesNotExistAsync(string username, CancellationToken cancellationToken)
     {
         if (await _context.People.AnyAsync(a => a.Username == username, cancellationToken))
-            throw new InvalidOperationException(UserMessage.UserAlreadyExists);
+            throw new InvalidOperationException(PersonMessage.PersonAlreadyExists);
     }
 
     public void ValidateEmailFormat(string email)
     {
         if (!IsValidEmail(email))
-            throw new ValidationException(UserMessage.InvalidEmail);
+            throw new ValidationException(PersonMessage.InvalidEmail);
     }
 
     public void ValidateRequiredProperties(Person person)
@@ -37,7 +37,7 @@ public class UserValidation(HomeAppContext context) : BaseContext(context), IUse
             string.IsNullOrWhiteSpace(person.LastName) ||
             string.IsNullOrWhiteSpace(person.Email) ||
             string.IsNullOrWhiteSpace(person.UserId))
-            throw new ValidationException(UserMessage.PropertiesMissing);
+            throw new ValidationException(PersonMessage.PropertiesMissing);
     }
 
     public void ValidateMaxLength(Person person)
@@ -47,6 +47,6 @@ public class UserValidation(HomeAppContext context) : BaseContext(context), IUse
             person.LastName.Length > 150 ||
             person.Email.Length > 150 ||
             person.UserId.Length < 36)
-            throw new ValidationException(UserMessage.MaxLengthExeed);
+            throw new ValidationException(PersonMessage.MaxLengthExeed);
     }
 }

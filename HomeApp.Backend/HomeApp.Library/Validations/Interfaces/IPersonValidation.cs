@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Validations.Interfaces;
 
-public interface IUserValidation
+public interface IPersonValidation
 {
     /// <summary>
     ///     Checks if the provided email is valid.
@@ -56,5 +56,5 @@ public interface IUserValidation
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the username already exists.
     /// </exception>
-    Task ValidateUsernameDoesNotExistAsync(string username, CancellationToken cancellationToken);
+    Task ValidatePersonnameDoesNotExistAsync(string username, CancellationToken cancellationToken);
 }

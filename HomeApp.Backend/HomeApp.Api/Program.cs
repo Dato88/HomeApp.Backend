@@ -46,7 +46,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
-builder.Services.AddScoped<IUserValidation, UserValidation>();
+builder.Services.AddScoped<IPersonValidation, PersonValidation>();
 
 builder.Services.AddScoped<IPersonCrud, PersonCrud>();
 builder.Services.AddScoped<IPersonFacade, PersonFacade>();

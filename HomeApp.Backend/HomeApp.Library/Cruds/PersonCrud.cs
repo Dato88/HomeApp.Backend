@@ -4,31 +4,31 @@ using HomeApp.Library.Models.Data_Transfer_Objects.PersonDtos;
 
 namespace HomeApp.Library.Cruds;
 
-public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
+public class PersonCrud(HomeAppContext context, IPersonValidation personValidation)
     : BaseCrud<Person>(context), IPersonCrud
 {
-    private readonly IUserValidation _userValidation = userValidation;
+    private readonly IPersonValidation _personValidation = personValidation;
 
     public override async Task CreateAsync(Person person, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(person);
 
-        _userValidation.ValidateRequiredProperties(person);
-        _userValidation.ValidateMaxLength(person);
-        await _userValidation.ValidateUsernameDoesNotExistAsync(person.Username, cancellationToken);
-        _userValidation.ValidateEmailFormat(person.Email);
+        _personValidation.ValidateRequiredProperties(person);
+        _personValidation.ValidateMaxLength(person);
+        await _personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
+        _personValidation.ValidateEmailFormat(person.Email);
 
         _context.People.Add(person);
 
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public override async Task DeleteAsync(int userId, CancellationToken cancellationToken)
+    public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var user = await _context.People.FindAsync(userId, cancellationToken);
+        var user = await _context.People.FindAsync(id, cancellationToken);
 
         if (user == null)
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
 
         _context.People.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
@@ -50,7 +50,7 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         var user = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         if (user is null)
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
 
         return user;
     }
@@ -70,7 +70,7 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
         var user = await query.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 
         if (user is null)
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
 
         return user;
     }
@@ -94,17 +94,17 @@ public class PersonCrud(HomeAppContext context, IUserValidation userValidation)
     {
         ArgumentNullException.ThrowIfNull(person);
 
-        _userValidation.ValidateRequiredProperties(person);
-        _userValidation.ValidateMaxLength(person);
-        _userValidation.ValidateEmailFormat(person.Email);
+        _personValidation.ValidateRequiredProperties(person);
+        _personValidation.ValidateMaxLength(person);
+        _personValidation.ValidateEmailFormat(person.Email);
 
         var existingUser = await _context.People.FindAsync(person.Id, cancellationToken);
 
         if (existingUser == null)
-            throw new InvalidOperationException(UserMessage.UserNotFound);
+            throw new InvalidOperationException(PersonMessage.PersonNotFound);
 
         if (person.Username != existingUser.Username)
-            await _userValidation.ValidateUsernameDoesNotExistAsync(person.Username, cancellationToken);
+            await _personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
 
         existingUser.Username = person.Username;
         existingUser.FirstName = person.FirstName;

@@ -38,7 +38,7 @@ public class BudgetValidationTests : BaseTest
             await _budgetValidation.ValidateBudgetCellForUserIdChangeAsync(userId, budgetCellId, default);
 
         var output =
-            $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            $"{PersonMessage.PersonId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{PersonMessage.PersonId}')Actual value was {userId}.";
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
             .WithMessage(output);
 
@@ -227,7 +227,7 @@ public class BudgetValidationTests : BaseTest
             await _budgetValidation.ValidateBudgetGroupForUserIdChangeAsync(userId, budgetGroupId, default);
 
         var output =
-            $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            $"{PersonMessage.PersonId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{PersonMessage.PersonId}')Actual value was {userId}.";
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
             .WithMessage(output);
 
@@ -407,7 +407,7 @@ public class BudgetValidationTests : BaseTest
             await _budgetValidation.ValidateBudgetRowForUserIdChangeAsync(userId, budgetRowId, default);
 
         var output =
-            $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            $"{PersonMessage.PersonId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{PersonMessage.PersonId}')Actual value was {userId}.";
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>("UserId is null or negative")
             .WithMessage(output);
 
@@ -638,7 +638,7 @@ public class BudgetValidationTests : BaseTest
         var action = async () => await _budgetValidation.ValidateForUserIdAsync(userId, default);
 
         var output =
-            $"{UserMessage.UserId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{UserMessage.UserId}')Actual value was {userId}.";
+            $"{PersonMessage.PersonId} ('{userId}') must be a non-negative and non-zero value. (Parameter '{PersonMessage.PersonId}')Actual value was {userId}.";
 
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>("Name is null").WithMessage(output);
     }

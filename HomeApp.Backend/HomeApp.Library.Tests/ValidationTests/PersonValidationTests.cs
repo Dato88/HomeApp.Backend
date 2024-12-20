@@ -3,15 +3,15 @@ using HomeApp.Library.Validations;
 
 namespace HomeApp.Library.Tests.ValidationTests;
 
-public class UserValidationTests
+public class PersonValidationTests
 {
     private readonly HomeAppContext _context;
-    private readonly UserValidation _userValidation;
+    private readonly PersonValidation _personValidation;
 
-    public UserValidationTests()
+    public PersonValidationTests()
     {
         _context = StaticLibraryHelper.CreateInMemoryContext();
-        _userValidation = new UserValidation(_context);
+        _personValidation = new PersonValidation(_context);
     }
 
     [Fact]
@@ -34,10 +34,10 @@ public class UserValidationTests
 
         // Act & Assert
         var action = async () =>
-            await _userValidation.ValidateUsernameDoesNotExistAsync(existingUsername, default);
+            await _personValidation.ValidatePersonnameDoesNotExistAsync(existingUsername, default);
 
         await action.Should().ThrowAsync<InvalidOperationException>("Username already exists")
-            .WithMessage(UserMessage.UserAlreadyExists);
+            .WithMessage(PersonMessage.PersonAlreadyExists);
     }
 
     [Theory]
@@ -46,7 +46,7 @@ public class UserValidationTests
     public void ValidateEmailFormat_ShouldNotThrowException_WhenEmailIsValid(string email)
     {
         // Act & Assert
-        var action = () => _userValidation.ValidateEmailFormat(email);
+        var action = () => _personValidation.ValidateEmailFormat(email);
         action.Should().NotThrow<ValidationException>("Email format is valid");
     }
 
@@ -57,8 +57,8 @@ public class UserValidationTests
     public void ValidateEmailFormat_ShouldThrowException_WhenEmailIsInvalid(string email)
     {
         // Act & Assert
-        var action = () => _userValidation.ValidateEmailFormat(email);
-        action.Should().Throw<ValidationException>("Email format is invalid").WithMessage(UserMessage.InvalidEmail);
+        var action = () => _personValidation.ValidateEmailFormat(email);
+        action.Should().Throw<ValidationException>("Email format is invalid").WithMessage(PersonMessage.InvalidEmail);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class UserValidationTests
         };
 
         // Act & Assert
-        var action = () => _userValidation.ValidateRequiredProperties(person);
+        var action = () => _personValidation.ValidateRequiredProperties(person);
         action.Should().NotThrow<ValidationException>("All required properties are provided");
     }
 
@@ -98,8 +98,8 @@ public class UserValidationTests
         };
 
         // Act & Assert
-        var action = () => _userValidation.ValidateRequiredProperties(person);
+        var action = () => _personValidation.ValidateRequiredProperties(person);
         action.Should().Throw<ValidationException>("Some required properties are missing")
-            .WithMessage(UserMessage.PropertiesMissing);
+            .WithMessage(PersonMessage.PropertiesMissing);
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace HomeApp.Library.Tests.Crud.UserCrudTests;
+﻿namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
-public class PersonCrudTests : BaseUserTest
+public class PersonCrudDeleteTests : BasePersonTest
 {
     [Fact]
-    public async Task DeleteAsync_ShouldDeleteUser_WhenUserExists()
+    public async Task DeleteAsync_ShouldDeletePerson_WhenPersonExists()
     {
         // Arrange
         Person person = new()
@@ -19,7 +19,7 @@ public class PersonCrudTests : BaseUserTest
         await _context.SaveChangesAsync();
 
         // Act
-        await PersonCrud.DeleteAsync(person.Id, default);
+        await _personCrud.DeleteAsync(person.Id, default);
 
         // Assert
         var deletedUser = await _context.People.FindAsync(person.Id);
@@ -27,16 +27,16 @@ public class PersonCrudTests : BaseUserTest
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldThrowException_WhenUserDoesNotExist()
+    public async Task DeleteAsync_ShouldThrowException_WhenPersonDoesNotExist()
     {
         // Arrange
         var nonExistingUserId = 999;
 
         // Act
-        var action = async () => await PersonCrud.DeleteAsync(nonExistingUserId, default);
+        var action = async () => await _personCrud.DeleteAsync(nonExistingUserId, default);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage(UserMessage.UserNotFound);
+            .WithMessage(PersonMessage.PersonNotFound);
     }
 }

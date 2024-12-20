@@ -18,13 +18,13 @@ public interface IPersonCrud
     /// <summary>
     ///     Deletes a Person by its user id.
     /// </summary>
-    /// <param name="userId">The id of the user to delete.</param>
+    /// <param name="id">The id of the user to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous deletion operation. Returns a boolean indicating success.</returns>
     /// <exception cref="System.InvalidOperationException">
-    ///     Thrown when the Person with the given <paramref name="userId" /> is not found.
+    ///     Thrown when the Person with the given <paramref name="id" /> is not found.
     /// </exception>
-    Task DeleteAsync(int userId, CancellationToken cancellationToken);
+    Task DeleteAsync(int id, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Finds a Person by its id.
