@@ -71,7 +71,7 @@ public class TodoCrud(HomeAppContext context)
     public override async Task UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero((int)todo.Priority, nameof(todo.Priority));
+        ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
 
         var existingTodo = await _context.Todos.FindAsync(todo.Id, cancellationToken);
 
@@ -81,7 +81,7 @@ public class TodoCrud(HomeAppContext context)
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.ExecutionDate = todo.ExecutionDate;
+        existingTodo.LastModified = DateTime.Now;
 
         _context.Todos.Update(existingTodo);
         await _context.SaveChangesAsync(cancellationToken);

@@ -27,4 +27,22 @@ public class TodoController(ITodoFacade todoFacade) : ControllerBase
 
         return Ok(todo);
     }
+
+    [HttpDelete("todo")]
+    public async Task<IActionResult> DeleteToDoDtoAsync([FromQuery] int id,
+        CancellationToken cancellationToken)
+    {
+        await _todoFacade.DeleteTodoAsync(id, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPatch("todo")]
+    public async Task<IActionResult> UpdateToDoDtoAsync([FromBody] UpdateToDoDto updateToDoDto,
+        CancellationToken cancellationToken)
+    {
+        await _todoFacade.UpdateTodoAsync(updateToDoDto, cancellationToken);
+
+        return Ok();
+    }
 }

@@ -8,25 +8,17 @@ public class TodoUpdateTests : BaseTodoTest
     public async Task UpdateAsync_UpdatesTodoInContext()
     {
         // Arrange
+        var initialLastModified = DateTime.Now.AddDays(-1);
+
         var todo = new Todo
         {
-            Name = "Initial Todo",
-            Done = false,
-            Priority = TodoPriority.Low,
-            ExecutionDate = DateTime.Now.AddDays(1)
+            Name = "Initial Todo", Done = false, Priority = TodoPriority.Low, LastModified = initialLastModified
         };
 
         _context.Todos.Add(todo);
         await _context.SaveChangesAsync();
 
-        var updatedTodo = new Todo
-        {
-            Id = todo.Id,
-            Name = "Updated Todo",
-            Done = true,
-            Priority = TodoPriority.High,
-            ExecutionDate = DateTime.Now.AddDays(2)
-        };
+        var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 
         // Act
         await _todoCrud.UpdateAsync(updatedTodo, default);
@@ -37,7 +29,7 @@ public class TodoUpdateTests : BaseTodoTest
         result.Name.Should().Be(updatedTodo.Name);
         result.Done.Should().Be(updatedTodo.Done);
         result.Priority.Should().Be(updatedTodo.Priority);
-        result.ExecutionDate.Should().Be(updatedTodo.ExecutionDate);
+        result.LastModified.Should().BeAfter(initialLastModified);
     }
 
     [Fact]
@@ -52,7 +44,7 @@ public class TodoUpdateTests : BaseTodoTest
         // Arrange
         var todo = new Todo
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, ExecutionDate = DateTime.Now.AddDays(1)
+            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.Now
         };
 
         _context.Todos.Add(todo);
@@ -64,14 +56,14 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
-            ExecutionDate = DateTime.Now.AddDays(2)
+            LastModified = DateTime.Now.AddDays(2)
         };
 
         // Act & Assert
         var action = async () => await _todoCrud.UpdateAsync(invalidTodo, default);
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
-                $"Priority ('{invalidTodo.Priority}') must be a non-negative and non-zero value. (Parameter 'Priority')Actual value was {invalidTodo.Priority}.");
+                $"Priority ('{invalidTodo.Priority}') must be a non-negative value. (Parameter 'Priority')Actual value was {invalidTodo.Priority}.");
     }
 
     [Fact]
@@ -83,7 +75,7 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
-            ExecutionDate = DateTime.Now.AddDays(1)
+            LastModified = DateTime.Now.AddDays(1)
         };
 
         // Act & Assert

@@ -10,10 +10,7 @@ public class TodoDeleteTests : BaseTodoTest
         // Arrange
         Todo todo = new()
         {
-            Name = "Test Todo",
-            Done = false,
-            Priority = TodoPriority.Normal,
-            ExecutionDate = DateTime.Now.AddDays(1)
+            Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, LastModified = DateTime.Now.AddDays(1)
         };
 
         _context.Todos.Add(todo);

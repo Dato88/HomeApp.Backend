@@ -2,11 +2,11 @@
 
 namespace HomeApp.Library.Models.Data_Transfer_Objects.TodoDtos;
 
-public class GetToDoDto
+public class UpdateToDoDto
 {
-    public GetToDoDto() { }
+    public UpdateToDoDto() { }
 
-    public GetToDoDto(string name) => Name = name;
+    public UpdateToDoDto(string name) => Name = name;
 
     public int Id { get; set; }
     public int? TodoGroupId { get; set; }
@@ -16,14 +16,13 @@ public class GetToDoDto
     public TodoPriority Priority { get; set; }
     public DateTimeOffset LastModified { get; set; }
 
-    public static implicit operator GetToDoDto(Todo item) =>
+    public static implicit operator Todo(UpdateToDoDto item) =>
         new()
         {
             Id = item.Id,
-            TodoGroupId = item.TodoGroupTodo?.TodoGroupId,
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            LastModified = item.LastModified
+            LastModified = DateTimeOffset.Now
         };
 }

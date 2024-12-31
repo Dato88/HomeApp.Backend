@@ -52,6 +52,30 @@ public class TodoFacade(
         }
     }
 
+    public async Task DeleteTodoAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _todoCrud.DeleteAsync(id, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogException($"Delete todo failed: {ex}", DateTime.Now);
+        }
+    }
+
+    public async Task UpdateTodoAsync(UpdateToDoDto updateToDoDto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _todoCrud.UpdateAsync(updateToDoDto, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            LogException($"Update todo failed: {ex}", DateTime.Now);
+        }
+    }
+
     public async Task<IEnumerable<GetToDoDto>> GetTodosAsync(CancellationToken cancellationToken)
     {
         try
