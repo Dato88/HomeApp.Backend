@@ -68,7 +68,7 @@ public class TodoCrud(HomeAppContext context)
         return todoPeople.Select(s => (GetToDoDto)s.Todo).AsEnumerable();
     }
 
-    public override async Task UpdateAsync(Todo todo, CancellationToken cancellationToken)
+    public override async Task<Todo> UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
@@ -81,10 +81,12 @@ public class TodoCrud(HomeAppContext context)
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.LastModified = DateTime.Now;
+        existingTodo.LastModified = DateTimeOffset.UtcNow;
 
         _context.Todos.Update(existingTodo);
         await _context.SaveChangesAsync(cancellationToken);
+
+        return existingTodo;
     }
 
     protected override IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)

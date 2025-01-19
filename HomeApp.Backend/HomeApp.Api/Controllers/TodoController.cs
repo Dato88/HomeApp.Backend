@@ -41,8 +41,8 @@ public class TodoController(ITodoFacade todoFacade) : ControllerBase
     public async Task<IActionResult> UpdateToDoDtoAsync([FromBody] UpdateToDoDto updateToDoDto,
         CancellationToken cancellationToken)
     {
-        await _todoFacade.UpdateTodoAsync(updateToDoDto, cancellationToken);
+        var updatedTodo = await _todoFacade.UpdateTodoAsync(updateToDoDto, cancellationToken);
 
-        return Ok();
+        return Ok(updatedTodo);
     }
 }

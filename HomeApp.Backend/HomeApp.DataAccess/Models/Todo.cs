@@ -12,7 +12,7 @@ public class Todo : BaseClass
 
     [Required] public TodoPriority Priority { get; set; }
 
-    public DateTimeOffset LastModified { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset LastModified { get; set; } = DateTimeOffset.UtcNow;
 
     public virtual TodoGroupTodo TodoGroupTodo { get; set; }
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();

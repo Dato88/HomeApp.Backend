@@ -64,15 +64,17 @@ public class TodoFacade(
         }
     }
 
-    public async Task UpdateTodoAsync(UpdateToDoDto updateToDoDto, CancellationToken cancellationToken)
+    public async Task<GetToDoDto> UpdateTodoAsync(UpdateToDoDto updateToDoDto, CancellationToken cancellationToken)
     {
         try
         {
-            await _todoCrud.UpdateAsync(updateToDoDto, cancellationToken);
+            return await _todoCrud.UpdateAsync(updateToDoDto, cancellationToken);
         }
         catch (Exception ex)
         {
             LogException($"Update todo failed: {ex}", DateTime.Now);
+
+            return null;
         }
     }
 

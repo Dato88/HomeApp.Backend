@@ -6,5 +6,5 @@ public class BaseClass
 
     [Required]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

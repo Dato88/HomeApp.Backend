@@ -18,5 +18,5 @@ public class CreateToDoDto
     [Required] public TodoPriority Priority { get; set; }
 
     public static implicit operator Todo(CreateToDoDto item) =>
-        new() { Name = item.Name, Done = item.Done, Priority = item.Priority, LastModified = DateTime.Now };
+        new() { Name = item.Name, Done = item.Done, Priority = item.Priority, LastModified = DateTimeOffset.UtcNow };
 }
