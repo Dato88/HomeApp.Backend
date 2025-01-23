@@ -4,5 +4,6 @@ public class BaseTodoGroupTodoCrudTest : BaseTest
 {
     protected readonly TodoGroupTodoCrud _todoGroupTodoCrud;
 
-    public BaseTodoGroupTodoCrudTest() => _todoGroupTodoCrud = new TodoGroupTodoCrud(_context);
+    public BaseTodoGroupTodoCrudTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+        _todoGroupTodoCrud = new TodoGroupTodoCrud(DbContext);
 }

@@ -6,7 +6,8 @@ public class BudgetValidationTests : BaseTest
 {
     private readonly BudgetValidation _budgetValidation;
 
-    public BudgetValidationTests() => _budgetValidation = new BudgetValidation(_context);
+    public BudgetValidationTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+        _budgetValidation = new BudgetValidation(DbContext);
 
     [Fact]
     public async Task ValidateBudgetCellForUserIdChangeAsync_ValidUserId_And_ValidCellId_NoExceptionThrown()
@@ -75,8 +76,8 @@ public class BudgetValidationTests : BaseTest
 
         BudgetCell budgetCell = new() { PersonId = userId, Name = "Cell Name" };
 
-        _context.BudgetCells.Add(budgetCell);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetCells.Add(budgetCell);
+        await DbContext.SaveChangesAsync();
 
         var newUserId = 99;
 
@@ -110,8 +111,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetColumnId = 1;
 
-        _context.BudgetColumns.Add(new BudgetColumn { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetColumns.Add(new BudgetColumn { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -127,8 +128,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetColumnId = 1;
 
-        _context.BudgetColumns.Add(new BudgetColumn { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetColumns.Add(new BudgetColumn { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -176,8 +177,8 @@ public class BudgetValidationTests : BaseTest
         var budgetIndex = 1;
         var budgetName = "January";
 
-        _context.BudgetColumns.Add(new BudgetColumn { Index = budgetIndex, Name = budgetName });
-        _context.SaveChanges();
+        DbContext.BudgetColumns.Add(new BudgetColumn { Index = budgetIndex, Name = budgetName });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -293,8 +294,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetGroupId = 1;
 
-        _context.BudgetGroups.Add(new BudgetGroup { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetGroups.Add(new BudgetGroup { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -310,8 +311,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetGroupId = 1;
 
-        _context.BudgetGroups.Add(new BudgetGroup { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetGroups.Add(new BudgetGroup { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -357,8 +358,8 @@ public class BudgetValidationTests : BaseTest
     {
         // Arrange
         var budgetGroup = new BudgetGroup { Index = 1, Name = "Duplicate Group" };
-        _context.BudgetGroups.Add(budgetGroup);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetGroups.Add(budgetGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act & Assert
         var action = async () =>
@@ -472,8 +473,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetRowId = 1;
 
-        _context.BudgetRows.Add(new BudgetRow { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetRows.Add(new BudgetRow { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -489,8 +490,8 @@ public class BudgetValidationTests : BaseTest
         // Arrange
         var budgetRowId = 1;
 
-        _context.BudgetRows.Add(new BudgetRow { Index = 1, Name = "Test" });
-        _context.SaveChanges();
+        DbContext.BudgetRows.Add(new BudgetRow { Index = 1, Name = "Test" });
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () =>
@@ -614,9 +615,9 @@ public class BudgetValidationTests : BaseTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        _context.People.Add(person);
+        DbContext.People.Add(person);
 
-        _context.SaveChanges();
+        DbContext.SaveChanges();
 
         // Act & Assert
         var action = async () => await _budgetValidation.ValidateForUserIdAsync(userId, default);

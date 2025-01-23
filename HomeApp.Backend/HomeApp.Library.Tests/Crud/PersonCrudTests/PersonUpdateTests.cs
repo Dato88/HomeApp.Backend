@@ -2,6 +2,8 @@
 
 public class PersonUpdateTests : BasePersonTest
 {
+    public PersonUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_ShouldUpdatePerson_WhenPersonExists()
     {
@@ -16,8 +18,8 @@ public class PersonUpdateTests : BasePersonTest
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.People.Add(existingPerson);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(existingPerson);
+        await DbContext.SaveChangesAsync();
 
         Person updatedPerson = new()
         {
@@ -55,8 +57,8 @@ public class PersonUpdateTests : BasePersonTest
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.People.Add(existingPerson);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(existingPerson);
+        await DbContext.SaveChangesAsync();
 
         // Act
         Person updatedPerson = new()
@@ -72,7 +74,7 @@ public class PersonUpdateTests : BasePersonTest
         await _personCrud.UpdateAsync(updatedPerson, default);
 
         // Assert
-        var result = await _context.People.FindAsync(existingPerson.Id);
+        var result = await DbContext.People.FindAsync(existingPerson.Id);
 
         _personValidationMock.Verify(
             v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
@@ -96,8 +98,8 @@ public class PersonUpdateTests : BasePersonTest
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.People.Add(existingPerson);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(existingPerson);
+        await DbContext.SaveChangesAsync();
 
         // Act
         Person updatedPerson = new()
@@ -113,7 +115,7 @@ public class PersonUpdateTests : BasePersonTest
         await _personCrud.UpdateAsync(updatedPerson, default);
 
         // Assert
-        var result = await _context.People.FindAsync(existingPerson.Id);
+        var result = await DbContext.People.FindAsync(existingPerson.Id);
 
         _personValidationMock.Verify(
             v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),

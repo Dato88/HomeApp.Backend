@@ -1,30 +1,19 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
+﻿namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
 
 public class BudgetRowUpdateTests : BaseBudgetRowTest
 {
+    public BudgetRowUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesBudgetRowInContext()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row", Year = 2021 };
 
-        _context.BudgetRows.Add(budgetRow);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetRows.Add(budgetRow);
+        await DbContext.SaveChangesAsync();
 
-        BudgetRow updateBudgetRow = new()
-        {
-            Id = budgetRow.Id,
-            Index = 2,
-            Name = "Updated Budget Row",
-            Year = 2022
-        };
+        BudgetRow updateBudgetRow = new() { Id = budgetRow.Id, Index = 2, Name = "Updated Budget Row", Year = 2022 };
 
         // Act
         await _budgetRowCrud.UpdateAsync(updateBudgetRow, default);
@@ -36,36 +25,25 @@ public class BudgetRowUpdateTests : BaseBudgetRowTest
     }
 
     [Fact]
-    public async Task UpdateAsync_ThrowsException_WhenBudgetRowIsNull()
-    {
+    public async Task UpdateAsync_ThrowsException_WhenBudgetRowIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetRowCrud.UpdateAsync(null, default));
-    }
 
     [Fact]
     public async Task UpdateAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row", Year = 2021 };
 
-        _context.BudgetRows.Add(budgetRow);
+        DbContext.BudgetRows.Add(budgetRow);
 
-        await _context.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
-        BudgetRow budgetRowUpdate = new()
-        {
-            Id = budgetRow.Id,
-            Name = "Test Budget Row Update"
-        };
+        BudgetRow budgetRowUpdate = new() { Id = budgetRow.Id, Name = "Test Budget Row Update" };
 
         // Act & Assert
-        Func<Task> action = async () => await _budgetRowCrud.UpdateAsync(budgetRowUpdate, default);
+        var action = async () => await _budgetRowCrud.UpdateAsync(budgetRowUpdate, default);
 
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
@@ -75,12 +53,7 @@ public class BudgetRowUpdateTests : BaseBudgetRowTest
     [Fact]
     public async Task UpdateAsync_ThrowsException_WhenExistingBudgetRowIsNull()
     {
-        BudgetRow budgetRow = new()
-        {
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row", Year = 2021 };
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -91,16 +64,11 @@ public class BudgetRowUpdateTests : BaseBudgetRowTest
     public async Task UpdateAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            Index = 1,
-            Name = "Test Budget Row",
-            Year = 2021
-        };
+        BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row", Year = 2021 };
 
-        _context.BudgetRows.Add(budgetRow);
+        DbContext.BudgetRows.Add(budgetRow);
 
-        await _context.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
         // Act
         await _budgetRowCrud.UpdateAsync(budgetRow, default);

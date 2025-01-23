@@ -6,12 +6,12 @@ public class BaseBudgetColumnTest : BaseTest
 
     protected readonly Mock<IBudgetValidation> _budgetValidationMock;
 
-    public BaseBudgetColumnTest()
+    public BaseBudgetColumnTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
-        _budgetValidationMock = new();
+        _budgetValidationMock = new Mock<IBudgetValidation>();
         _budgetValidationMock.DefaultValue = DefaultValue.Mock;
         _budgetValidationMock.SetupAllProperties();
 
-        _budgetColumnCrud = new(_context, _budgetValidationMock.Object);
+        _budgetColumnCrud = new BudgetColumnCrud(DbContext, _budgetValidationMock.Object);
     }
 }

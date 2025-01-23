@@ -2,21 +2,23 @@
 
 public class TodoGroupDeleteTests : BaseTodoGroupCrudTest
 {
+    public TodoGroupDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeleteTodoGroup_WhenTodoGroupExists()
     {
         // Arrange
         TodoGroup todoGroup = new() { Name = "Test Todo Group" };
 
-        _context.TodoGroups.Add(todoGroup);
-        await _context.SaveChangesAsync();
+        DbContext.TodoGroups.Add(todoGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoGroupCrud.DeleteAsync(todoGroup.Id, default);
 
         // Assert
         result.Should().BeTrue();
-        var deletedGroup = await _context.TodoGroups.FindAsync(todoGroup.Id);
+        var deletedGroup = await DbContext.TodoGroups.FindAsync(todoGroup.Id);
         deletedGroup.Should().BeNull();
     }
 

@@ -2,6 +2,8 @@
 
 public class PersonDeleteTests : BasePersonTest
 {
+    public PersonDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeletePerson_WhenPersonExists()
     {
@@ -15,14 +17,14 @@ public class PersonDeleteTests : BasePersonTest
             UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
-        _context.People.Add(person);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(person);
+        await DbContext.SaveChangesAsync();
 
         // Act
         await _personCrud.DeleteAsync(person.Id, default);
 
         // Assert
-        var deletedUser = await _context.People.FindAsync(person.Id);
+        var deletedUser = await DbContext.People.FindAsync(person.Id);
         deletedUser.Should().BeNull();
     }
 

@@ -135,3 +135,7 @@ app.UseAuthorization();
 app.MapControllers().RequireCors("CorsPolicy");
 
 app.Run();
+
+public partial class Program
+{
+}

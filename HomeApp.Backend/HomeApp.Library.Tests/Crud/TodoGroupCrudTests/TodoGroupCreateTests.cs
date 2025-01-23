@@ -2,6 +2,8 @@
 
 public class TodoGroupCreateTests : BaseTodoGroupCrudTest
 {
+    public TodoGroupCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsTodoGroupToContext()
     {
@@ -13,7 +15,7 @@ public class TodoGroupCreateTests : BaseTodoGroupCrudTest
         await _todoGroupCrud.CreateAsync(todoGroup, cancellationToken);
 
         // Assert
-        Assert.Contains(todoGroup, _context.TodoGroups);
+        Assert.Contains(todoGroup, DbContext.TodoGroups);
     }
 
     [Fact]

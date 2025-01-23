@@ -2,21 +2,23 @@
 
 public class TodoPersonDeleteTests : BaseTodoPersonCrudTest
 {
+    public TodoPersonDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeleteTodoPerson_WhenTodoPersonExists()
     {
         // Arrange
         TodoPerson todoPerson = new() { TodoId = 1, PersonId = 1 };
 
-        _context.TodoPeople.Add(todoPerson);
-        await _context.SaveChangesAsync();
+        DbContext.TodoPeople.Add(todoPerson);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoPersonCrud.DeleteAsync(todoPerson.Id, default);
 
         // Assert
         result.Should().BeTrue();
-        var deletedTodoPerson = await _context.TodoPeople.FindAsync(todoPerson.Id);
+        var deletedTodoPerson = await DbContext.TodoPeople.FindAsync(todoPerson.Id);
         deletedTodoPerson.Should().BeNull();
     }
 

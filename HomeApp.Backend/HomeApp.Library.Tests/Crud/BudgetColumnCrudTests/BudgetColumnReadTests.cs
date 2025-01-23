@@ -2,14 +2,16 @@
 
 public class BudgetColumnReadTests : BaseBudgetColumnTest
 {
+    public BudgetColumnReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsBudgetColumn_WhenExists()
     {
         // Arrange
         BudgetColumn budgetColumn = new() { Index = 1, Name = "Test Budget Column" };
 
-        _context.BudgetColumns.Add(budgetColumn);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetColumns.Add(budgetColumn);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetColumnCrud.FindByIdAsync(budgetColumn.Id, default);
@@ -52,8 +54,8 @@ public class BudgetColumnReadTests : BaseBudgetColumnTest
             new BudgetColumn { Index = 2, Name = "Test Budget Column2" }
         };
 
-        _context.BudgetColumns.AddRange(budgetColumns);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetColumns.AddRange(budgetColumns);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetColumnCrud.GetAllAsync(default);

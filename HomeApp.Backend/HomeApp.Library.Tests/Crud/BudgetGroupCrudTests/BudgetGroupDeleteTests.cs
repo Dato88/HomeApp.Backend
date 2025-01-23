@@ -2,24 +2,22 @@
 
 public class BudgetGroupDeleteTests : BaseBudgetGroupTest
 {
+    public BudgetGroupDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_RemovesBudgetGroupFromContext()
     {
         // Arrange
-        BudgetGroup budgetGroup = new()
-        {
-            Index = 1,
-            Name = "Test Budget Group"
-        };
+        BudgetGroup budgetGroup = new() { Index = 1, Name = "Test Budget Group" };
 
-        _context.BudgetGroups.Add(budgetGroup);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetGroups.Add(budgetGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
         await _budgetGroupCrud.DeleteAsync(budgetGroup.Id, default);
 
         // Assert
-        _context.BudgetGroups.Should().NotContain(budgetGroup);
+        DbContext.BudgetGroups.Should().NotContain(budgetGroup);
     }
 
     [Theory]

@@ -15,7 +15,7 @@ public class BaseBudgetFacadeTest : BaseTest
     protected readonly Mock<ILogger<BudgetFacade>> _iLogger;
     protected readonly Mock<IPersonFacade> _personFacadeMock;
 
-    public BaseBudgetFacadeTest()
+    public BaseBudgetFacadeTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
         _budgetCellCrudMock = new Mock<IBudgetCellCrud>();
         _budgetCellCrudMock.DefaultValue = DefaultValue.Mock;

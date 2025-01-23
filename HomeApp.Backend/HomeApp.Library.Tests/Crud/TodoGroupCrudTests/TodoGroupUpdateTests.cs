@@ -2,14 +2,16 @@
 
 public class TodoGroupUpdateTests : BaseTodoGroupCrudTest
 {
+    public TodoGroupUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesTodoGroupInContext()
     {
         // Arrange
         var todoGroup = new TodoGroup { Name = "Initial Todo Group" };
 
-        _context.TodoGroups.Add(todoGroup);
-        await _context.SaveChangesAsync();
+        DbContext.TodoGroups.Add(todoGroup);
+        await DbContext.SaveChangesAsync();
 
         var updatedTodoGroup = new TodoGroup { Id = todoGroup.Id, Name = "Updated Todo Group" };
 
@@ -17,7 +19,7 @@ public class TodoGroupUpdateTests : BaseTodoGroupCrudTest
         await _todoGroupCrud.UpdateAsync(updatedTodoGroup, default);
 
         // Assert
-        var result = await _context.TodoGroups.FindAsync(todoGroup.Id);
+        var result = await DbContext.TodoGroups.FindAsync(todoGroup.Id);
         result.Should().NotBeNull();
         result.Name.Should().Be(updatedTodoGroup.Name);
     }

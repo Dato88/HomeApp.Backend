@@ -12,7 +12,7 @@ public class BasePersonFacadeTest : BaseTest
     protected readonly Mock<IPersonCrud> _personCrudMock;
     protected readonly PersonFacade _personFacade;
 
-    public BasePersonFacadeTest()
+    public BasePersonFacadeTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
         _httpContextAccessor.DefaultValue = DefaultValue.Mock;

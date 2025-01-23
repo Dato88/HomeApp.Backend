@@ -2,24 +2,22 @@
 
 public class BudgetRowDeleteTests : BaseBudgetRowTest
 {
+    public BudgetRowDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_RemovesBudgetRowFromContext()
     {
         // Arrange
-        BudgetRow budgetRow = new()
-        {
-            Index = 1,
-            Name = "Test Budget Row"
-        };
+        BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row" };
 
-        _context.BudgetRows.Add(budgetRow);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetRows.Add(budgetRow);
+        await DbContext.SaveChangesAsync();
 
         // Act
         await _budgetRowCrud.DeleteAsync(budgetRow.Id, default);
 
         // Assert
-        _context.BudgetRows.Should().NotContain(budgetRow);
+        DbContext.BudgetRows.Should().NotContain(budgetRow);
     }
 
     [Theory]
@@ -28,7 +26,7 @@ public class BudgetRowDeleteTests : BaseBudgetRowTest
     public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
     {
         // Act & Assert
-        Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(id, default);
+        var action = async () => await _budgetRowCrud.DeleteAsync(id, default);
 
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
@@ -39,7 +37,7 @@ public class BudgetRowDeleteTests : BaseBudgetRowTest
     public async Task DeleteAsync_ThrowsException_WhenBudgetRowNotFound()
     {
         // Act
-        Func<Task> action = async () => await _budgetRowCrud.DeleteAsync(999, default);
+        var action = async () => await _budgetRowCrud.DeleteAsync(999, default);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()

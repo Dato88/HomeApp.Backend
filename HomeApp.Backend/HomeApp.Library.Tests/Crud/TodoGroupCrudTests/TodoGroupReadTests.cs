@@ -2,13 +2,15 @@
 
 public class TodoGroupReadTests : BaseTodoGroupCrudTest
 {
+    public TodoGroupReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsTodoGroup_WhenExists()
     {
         // Arrange
         TodoGroup todoGroup = new() { Name = "Test Todo Group" };
-        _context.TodoGroups.Add(todoGroup);
-        await _context.SaveChangesAsync();
+        DbContext.TodoGroups.Add(todoGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoGroupCrud.FindByIdAsync(todoGroup.Id, default);
@@ -50,8 +52,8 @@ public class TodoGroupReadTests : BaseTodoGroupCrudTest
         // Arrange
         List<TodoGroup> todoGroups = new() { new TodoGroup { Name = "Group 1" }, new TodoGroup { Name = "Group 2" } };
 
-        _context.TodoGroups.AddRange(todoGroups);
-        await _context.SaveChangesAsync();
+        DbContext.TodoGroups.AddRange(todoGroups);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoGroupCrud.GetAllAsync(default);

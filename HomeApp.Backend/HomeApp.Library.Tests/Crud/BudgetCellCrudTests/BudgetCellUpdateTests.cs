@@ -1,9 +1,9 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests;
+﻿namespace HomeApp.Library.Tests.Crud.BudgetCellCrudTests;
 
 public class BudgetCellUpdateTests : BaseBudgetCellTest
 {
+    public BudgetCellUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesBudgetCellInContext()
     {
@@ -17,8 +17,8 @@ public class BudgetCellUpdateTests : BaseBudgetCellTest
             Year = 2021
         };
 
-        _context.BudgetCells.Add(budgetCell);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetCells.Add(budgetCell);
+        await DbContext.SaveChangesAsync();
 
         BudgetCell updateBudgetCell = new()
         {
@@ -42,39 +42,28 @@ public class BudgetCellUpdateTests : BaseBudgetCellTest
     }
 
     [Fact]
-    public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetCellIsNull()
-    {
+    public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetCellIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetCellCrud.UpdateAsync(null, default));
-    }
 
     [Fact]
     public async Task UpdateBudgetCellAsync_ThrowsException_WhenBudgetYearIsNullOrEmpty()
     {
         // Arrange
-        BudgetCell budgetCell = new()
-        {
-            Name = "Test Budget Cell",
-            BudgetRowId = 1,
-            BudgetColumnId = 1,
-            Year = 2021
-        };
+        BudgetCell budgetCell = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1, Year = 2021 };
 
-        _context.BudgetCells.Add(budgetCell);
+        DbContext.BudgetCells.Add(budgetCell);
 
-        _context.SaveChanges();
+        DbContext.SaveChanges();
 
         BudgetCell budgetCellUpdate = new()
         {
-            Id = budgetCell.Id,
-            Name = "Test Budget Cell",
-            BudgetRowId = 1,
-            BudgetColumnId = 1
+            Id = budgetCell.Id, Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1
         };
 
         // Act & Assert
-        Func<Task> action = async () => await _budgetCellCrud.UpdateAsync(budgetCellUpdate, default);
+        var action = async () => await _budgetCellCrud.UpdateAsync(budgetCellUpdate, default);
 
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
@@ -102,17 +91,11 @@ public class BudgetCellUpdateTests : BaseBudgetCellTest
     public async Task UpdateBudgetCellAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetCell budgetCell = new()
-        {
-            Name = "Test Budget Cell",
-            BudgetRowId = 1,
-            BudgetColumnId = 1,
-            Year = 2021
-        };
+        BudgetCell budgetCell = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1, Year = 2021 };
 
-        _context.BudgetCells.Add(budgetCell);
+        DbContext.BudgetCells.Add(budgetCell);
 
-        _context.SaveChanges();
+        DbContext.SaveChanges();
 
         // Act
         await _budgetCellCrud.UpdateAsync(budgetCell, default);

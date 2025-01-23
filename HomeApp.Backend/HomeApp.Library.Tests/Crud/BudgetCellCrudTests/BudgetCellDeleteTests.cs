@@ -2,14 +2,16 @@
 
 public class BudgetCellDeleteTests : BaseBudgetCellTest
 {
+    public BudgetCellDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeleteUser_WhenUserExists()
     {
         // Arrange
         BudgetCell budgetCell = new() { Name = "Test", BudgetRowId = 1, BudgetColumnId = 1 };
 
-        _context.BudgetCells.Add(budgetCell);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetCells.Add(budgetCell);
+        await DbContext.SaveChangesAsync();
 
         // Act
         CancellationToken cancellationToken = new();
@@ -17,7 +19,7 @@ public class BudgetCellDeleteTests : BaseBudgetCellTest
         await _budgetCellCrud.DeleteAsync(budgetCell.Id, cancellationToken);
 
         // Assert
-        var deletedUser = await _context.People.FindAsync(budgetCell.Id);
+        var deletedUser = await DbContext.People.FindAsync(budgetCell.Id);
         deletedUser.Should().BeNull();
     }
 

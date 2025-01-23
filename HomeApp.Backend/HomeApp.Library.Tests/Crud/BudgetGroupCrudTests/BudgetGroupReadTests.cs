@@ -2,13 +2,15 @@
 
 public class BudgetGroupReadTests : BaseBudgetGroupTest
 {
+    public BudgetGroupReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsBudgetGroup_WhenExists()
     {
         // Arrange
         BudgetGroup budgetGroup = new() { Index = 1, Name = "Test Budget Group" };
-        _context.BudgetGroups.Add(budgetGroup);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetGroups.Add(budgetGroup);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetGroupCrud.FindByIdAsync(budgetGroup.Id, default);
@@ -51,8 +53,8 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
             new BudgetGroup { Index = 2, Name = "Test Budget Group 2" }
         };
 
-        _context.BudgetGroups.AddRange(budgetColumns);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetGroups.AddRange(budgetColumns);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetGroupCrud.GetAllAsync(default);
@@ -84,11 +86,11 @@ public class BudgetGroupReadTests : BaseBudgetGroupTest
             new BudgetGroup { PersonId = 3, Name = "Test Budget Group 12" }
         };
 
-        _context.BudgetGroups.AddRange(budgetGroups);
+        DbContext.BudgetGroups.AddRange(budgetGroups);
 
-        await _context.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
-        var expectedGroups = _context.BudgetGroups.Where(x => x.PersonId == selectedUserId);
+        var expectedGroups = DbContext.BudgetGroups.Where(x => x.PersonId == selectedUserId);
 
         // Act
         var result = await _budgetGroupCrud.GetAllAsync(selectedUserId, default);

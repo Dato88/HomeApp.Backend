@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Facades;
 
 public class BudgetFacadeTests : BaseBudgetFacadeTest
 {
+    public BudgetFacadeTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task GetBudgetAsync_CallsAllValidations_Once()
     {

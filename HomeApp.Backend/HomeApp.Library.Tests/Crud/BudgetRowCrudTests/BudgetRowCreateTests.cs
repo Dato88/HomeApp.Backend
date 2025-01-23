@@ -2,6 +2,8 @@
 
 public class BudgetRowCreateTests : BaseBudgetRowTest
 {
+    public BudgetRowCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsBudgetRowToContext()
     {
@@ -12,7 +14,7 @@ public class BudgetRowCreateTests : BaseBudgetRowTest
         await _budgetRowCrud.CreateAsync(budgetRow, default);
 
         // Assert
-        Assert.Contains(budgetRow, _context.BudgetRows);
+        Assert.Contains(budgetRow, DbContext.BudgetRows);
     }
 
     [Fact]

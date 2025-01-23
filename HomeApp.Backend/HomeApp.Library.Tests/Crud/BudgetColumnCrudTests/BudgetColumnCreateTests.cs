@@ -2,40 +2,32 @@
 
 public class BudgetColumnCreateTests : BaseBudgetColumnTest
 {
+    public BudgetColumnCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsBudgetColumnToContext()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 1,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 1, Name = "Test Budget Column" };
 
         // Act
         await _budgetColumnCrud.CreateAsync(budgetColumn, default);
 
         // Assert
-        Assert.Contains(budgetColumn, _context.BudgetColumns);
+        Assert.Contains(budgetColumn, DbContext.BudgetColumns);
     }
 
     [Fact]
-    public async Task CreateAsync_ThrowsException_WhenBudgetColumnIsNull()
-    {
+    public async Task CreateAsync_ThrowsException_WhenBudgetColumnIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetColumnCrud.CreateAsync(null, default));
-    }
 
     [Fact]
     public async Task CreateAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 1,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 1, Name = "Test Budget Column" };
 
         // Act
         await _budgetColumnCrud.CreateAsync(budgetColumn, default);

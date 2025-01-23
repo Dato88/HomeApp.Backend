@@ -2,6 +2,8 @@
 
 public class BudgetRowReadTests : BaseBudgetRowTest
 {
+    public BudgetRowReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public
         async Task FindByIdAsync_ReturnsBudgetRow_WhenExists()
@@ -9,8 +11,8 @@ public class BudgetRowReadTests : BaseBudgetRowTest
         // Arrange
         BudgetRow budgetRow = new() { Index = 1, Name = "Test Budget Row" };
 
-        _context.BudgetRows.Add(budgetRow);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetRows.Add(budgetRow);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetRowCrud.FindByIdAsync(budgetRow.Id, default);
@@ -53,8 +55,8 @@ public class BudgetRowReadTests : BaseBudgetRowTest
             new BudgetRow { Index = 2, Name = "Test Budget Row 2" }
         };
 
-        _context.BudgetRows.AddRange(budgetRows);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetRows.AddRange(budgetRows);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetRowCrud.GetAllAsync(default);
@@ -86,11 +88,11 @@ public class BudgetRowReadTests : BaseBudgetRowTest
             new BudgetRow { PersonId = 3, Index = 12, Name = "Test Budget Row 12" }
         };
 
-        _context.BudgetRows.AddRange(budgetRows);
+        DbContext.BudgetRows.AddRange(budgetRows);
 
-        await _context.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
-        var expectedRows = _context.BudgetRows.Where(x => x.PersonId == selectedUserId);
+        var expectedRows = DbContext.BudgetRows.Where(x => x.PersonId == selectedUserId);
 
         // Act
         var result = await _budgetRowCrud.GetAllAsync(selectedUserId, default);

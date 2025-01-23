@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Crud.PersonCrudTests;
 
 public class PersonReadTests : BasePersonTest
 {
+    public PersonReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsPersonDto_WhenPersonExists()
     {
@@ -17,8 +19,8 @@ public class PersonReadTests : BasePersonTest
             UserId = "safdf-adfdf-dfdsx-vcere-fooOO-1232?"
         };
 
-        _context.People.Add(person);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(person);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _personCrud.FindByIdAsync(person.Id, default);
@@ -60,9 +62,9 @@ public class PersonReadTests : BasePersonTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        _context.People.Add(person1);
-        _context.People.Add(person2);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(person1);
+        DbContext.People.Add(person2);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _personCrud.GetAllAsync(default);

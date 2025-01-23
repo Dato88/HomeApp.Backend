@@ -2,14 +2,31 @@
 
 public class BudgetCellReadTests : BaseBudgetCellTest
 {
+    public BudgetCellReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsBudgetCell_WhenExists()
     {
         // Arrange
+        Person person = new()
+        {
+            FirstName = "TestFirstName", LastName = "TestLastName", Email = "testmail@test.com", UserId = "12345"
+        };
+        DbContext.People.Add(person);
+        await DbContext.SaveChangesAsync();
+
+        BudgetColumn budgetColumn = new() { Name = "Test Budget Cell", Index = 1 };
+        DbContext.BudgetColumns.Add(budgetColumn);
+        await DbContext.SaveChangesAsync();
+
+        BudgetRow budgetRow = new() { Name = "Test Budget Cell", PersonId = 1, Index = 1, Year = 2000 };
+        DbContext.BudgetRows.Add(budgetRow);
+        await DbContext.SaveChangesAsync();
+
         BudgetCell budgetCell = new() { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1 };
 
-        _context.BudgetCells.Add(budgetCell);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetCells.Add(budgetCell);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetCellCrud.FindByIdAsync(budgetCell.Id, default);
@@ -51,8 +68,8 @@ public class BudgetCellReadTests : BaseBudgetCellTest
             new BudgetCell { Name = "Test Budget Cell", BudgetRowId = 1, BudgetColumnId = 1, PersonId = 1 },
             new BudgetCell { Name = "Test Budget Cell2", BudgetRowId = 2, BudgetColumnId = 2, PersonId = 2 }
         };
-        _context.BudgetCells.AddRange(budgetCells);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetCells.AddRange(budgetCells);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetCellCrud.GetAllAsync(default);
@@ -85,11 +102,11 @@ public class BudgetCellReadTests : BaseBudgetCellTest
             new BudgetCell { PersonId = 3, Name = "Test Budget Cell 12" }
         };
 
-        _context.BudgetCells.AddRange(budgetCells);
+        DbContext.BudgetCells.AddRange(budgetCells);
 
-        await _context.SaveChangesAsync();
+        await DbContext.SaveChangesAsync();
 
-        var expectedCells = _context.BudgetCells.Where(x => x.PersonId == selectedUserId);
+        var expectedCells = DbContext.BudgetCells.Where(x => x.PersonId == selectedUserId);
 
         // Act
         var result = await _budgetCellCrud.GetAllAsync(selectedUserId, default);

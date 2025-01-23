@@ -2,6 +2,8 @@
 
 public class TodoPersonCreateTests : BaseTodoPersonCrudTest
 {
+    public TodoPersonCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsTodoPersonToContext()
     {
@@ -13,7 +15,7 @@ public class TodoPersonCreateTests : BaseTodoPersonCrudTest
         await _todoPersonCrud.CreateAsync(todoPerson, cancellationToken);
 
         // Assert
-        Assert.Contains(todoPerson, _context.TodoPeople);
+        Assert.Contains(todoPerson, DbContext.TodoPeople);
     }
 
     [Fact]

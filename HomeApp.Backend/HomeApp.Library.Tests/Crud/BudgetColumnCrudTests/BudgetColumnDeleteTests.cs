@@ -2,25 +2,23 @@
 
 public class BudgetColumnDeleteTests : BaseBudgetColumnTest
 {
+    public BudgetColumnDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeleteBudgetColumn_WhenBudgetColumnExists()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 1,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 1, Name = "Test Budget Column" };
 
-        _context.BudgetColumns.Add(budgetColumn);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetColumns.Add(budgetColumn);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _budgetColumnCrud.DeleteAsync(budgetColumn.Id, default);
 
         // Assert
         result.Should().BeTrue();
-        var deletedBudgetColumn = await _context.BudgetColumns.FindAsync(budgetColumn.Id);
+        var deletedBudgetColumn = await DbContext.BudgetColumns.FindAsync(budgetColumn.Id);
         deletedBudgetColumn.Should().BeNull();
     }
 

@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
 public class TodoReadTests : BaseTodoTest
 {
+    public TodoReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task FindByIdAsync_ReturnsTodo_WhenExists()
     {
@@ -12,8 +14,8 @@ public class TodoReadTests : BaseTodoTest
         {
             Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.Now.AddDays(1)
         };
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync();
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoCrud.FindByIdAsync(todo.Id, default);
@@ -70,8 +72,8 @@ public class TodoReadTests : BaseTodoTest
         var todoPerson1 = new TodoPerson { PersonId = personId, Todo = todo1 };
         var todoPerson2 = new TodoPerson { PersonId = personId, Todo = todo2 };
 
-        _context.TodoPeople.AddRange(todoPerson1, todoPerson2);
-        await _context.SaveChangesAsync();
+        DbContext.TodoPeople.AddRange(todoPerson1, todoPerson2);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoCrud.GetAllAsync(personId, default);
@@ -117,8 +119,8 @@ public class TodoReadTests : BaseTodoTest
         };
         var todoPerson = new TodoPerson { PersonId = personId, Todo = todo };
 
-        _context.TodoPeople.Add(todoPerson);
-        await _context.SaveChangesAsync();
+        DbContext.TodoPeople.Add(todoPerson);
+        await DbContext.SaveChangesAsync();
 
         // Act
         var result = await _todoCrud.GetAllAsync(personId, default);

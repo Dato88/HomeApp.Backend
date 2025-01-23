@@ -2,14 +2,16 @@
 
 public class TodoPersonUpdateTests : BaseTodoPersonCrudTest
 {
+    public TodoPersonUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesTodoPersonInContext()
     {
         // Arrange
         var todoPerson = new TodoPerson { PersonId = 1, TodoId = 1 };
 
-        _context.TodoPeople.Add(todoPerson);
-        await _context.SaveChangesAsync();
+        DbContext.TodoPeople.Add(todoPerson);
+        await DbContext.SaveChangesAsync();
 
         var updatedTodoPerson = new TodoPerson { Id = todoPerson.Id, PersonId = 2, TodoId = 2 };
 
@@ -17,7 +19,7 @@ public class TodoPersonUpdateTests : BaseTodoPersonCrudTest
         await _todoPersonCrud.UpdateAsync(updatedTodoPerson, default);
 
         // Assert
-        var result = await _context.TodoPeople.FindAsync(todoPerson.Id);
+        var result = await DbContext.TodoPeople.FindAsync(todoPerson.Id);
         result.Should().NotBeNull();
         result.PersonId.Should().Be(updatedTodoPerson.PersonId);
         result.TodoId.Should().Be(updatedTodoPerson.TodoId);

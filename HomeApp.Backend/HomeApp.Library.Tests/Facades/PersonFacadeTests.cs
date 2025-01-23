@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Facades;
 
 public class PersonFacadeTests : BasePersonFacadeTest
 {
+    public PersonFacadeTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreatePersonAsync_CreatesPersonSuccessfully()
     {

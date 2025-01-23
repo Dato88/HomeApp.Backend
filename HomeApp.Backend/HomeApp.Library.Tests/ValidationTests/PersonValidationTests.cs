@@ -3,16 +3,12 @@ using HomeApp.Library.Validations;
 
 namespace HomeApp.Library.Tests.ValidationTests;
 
-public class PersonValidationTests
+public class PersonValidationTests : BaseTest
 {
-    private readonly HomeAppContext _context;
     private readonly PersonValidation _personValidation;
 
-    public PersonValidationTests()
-    {
-        _context = StaticLibraryHelper.CreateInMemoryContext();
-        _personValidation = new PersonValidation(_context);
-    }
+    public PersonValidationTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+        _personValidation = new PersonValidation(DbContext);
 
     [Fact]
     public async Task ValidateUsernameDoesNotExistAsync_ShouldThrowException_WhenUsernameExists()
@@ -29,8 +25,8 @@ public class PersonValidationTests
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        _context.People.Add(existingPerson);
-        await _context.SaveChangesAsync();
+        DbContext.People.Add(existingPerson);
+        await DbContext.SaveChangesAsync();
 
         // Act & Assert
         var action = async () =>

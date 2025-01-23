@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
 public class TodoUpdateTests : BaseTodoTest
 {
+    public TodoUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesTodoInContext()
     {
@@ -15,8 +17,8 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Initial Todo", Done = false, Priority = TodoPriority.Low, LastModified = initialLastModified
         };
 
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync();
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync();
 
         var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 
@@ -24,7 +26,7 @@ public class TodoUpdateTests : BaseTodoTest
         await _todoCrud.UpdateAsync(updatedTodo, default);
 
         // Assert
-        var result = await _context.Todos.FindAsync(todo.Id);
+        var result = await DbContext.Todos.FindAsync(todo.Id);
         result.Should().NotBeNull();
         result.Name.Should().Be(updatedTodo.Name);
         result.Done.Should().Be(updatedTodo.Done);
@@ -47,8 +49,8 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.Now
         };
 
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync();
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync();
 
         var invalidTodo = new Todo
         {

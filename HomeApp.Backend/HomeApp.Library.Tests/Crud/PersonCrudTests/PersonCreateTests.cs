@@ -2,6 +2,8 @@
 
 public class PersonCreateTests : BasePersonTest
 {
+    public PersonCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsPersonToContext()
     {
@@ -19,7 +21,7 @@ public class PersonCreateTests : BasePersonTest
         await _personCrud.CreateAsync(person, default);
 
         // Assert
-        Assert.Contains(person, _context.People);
+        Assert.Contains(person, DbContext.People);
     }
 
     [Fact]

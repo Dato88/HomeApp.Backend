@@ -2,25 +2,18 @@
 
 public class BudgetColumnUpdateTests : BaseBudgetColumnTest
 {
+    public BudgetColumnUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task UpdateAsync_UpdatesBudgetColumnInContext()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 0,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 0, Name = "Test Budget Column" };
 
-        _context.BudgetColumns.Add(budgetColumn);
-        await _context.SaveChangesAsync();
+        DbContext.BudgetColumns.Add(budgetColumn);
+        await DbContext.SaveChangesAsync();
 
-        BudgetColumn updateBudgetColumn = new()
-        {
-            Id = budgetColumn.Id,
-            Index = 1,
-            Name = "Updated Name"
-        };
+        BudgetColumn updateBudgetColumn = new() { Id = budgetColumn.Id, Index = 1, Name = "Updated Name" };
 
         // Act
         await _budgetColumnCrud.UpdateAsync(updateBudgetColumn, default);
@@ -32,21 +25,15 @@ public class BudgetColumnUpdateTests : BaseBudgetColumnTest
     }
 
     [Fact]
-    public async Task UpdateAsync_ThrowsException_WhenBudgetColumnIsNull()
-    {
+    public async Task UpdateAsync_ThrowsException_WhenBudgetColumnIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _budgetColumnCrud.UpdateAsync(null, default));
-    }
 
     [Fact]
     public async Task UpdateAsync_ThrowsException_WhenExistingBudgetColumnIsNull()
     {
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 0,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 0, Name = "Test Budget Column" };
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -57,14 +44,10 @@ public class BudgetColumnUpdateTests : BaseBudgetColumnTest
     public async Task UpdateAsync_CallsAllValidations_Once()
     {
         // Arrange
-        BudgetColumn budgetColumn = new()
-        {
-            Index = 0,
-            Name = "Test Budget Column"
-        };
+        BudgetColumn budgetColumn = new() { Index = 0, Name = "Test Budget Column" };
 
-        _context.BudgetColumns.Add(budgetColumn);
-        _context.SaveChanges();
+        DbContext.BudgetColumns.Add(budgetColumn);
+        DbContext.SaveChanges();
 
         // Act
         await _budgetColumnCrud.UpdateAsync(budgetColumn, default);

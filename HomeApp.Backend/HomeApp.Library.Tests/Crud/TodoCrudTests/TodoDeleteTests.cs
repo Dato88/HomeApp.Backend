@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
 public class TodoDeleteTests : BaseTodoTest
 {
+    public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task DeleteAsync_ReturnsTrue_WhenTodoExists()
     {
@@ -13,8 +15,8 @@ public class TodoDeleteTests : BaseTodoTest
             Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, LastModified = DateTime.Now.AddDays(1)
         };
 
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync();
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync();
 
         // Act
         CancellationToken cancellationToken = new();
@@ -22,7 +24,7 @@ public class TodoDeleteTests : BaseTodoTest
 
         // Assert
         result.Should().BeTrue();
-        Assert.DoesNotContain(todo, _context.Todos);
+        Assert.DoesNotContain(todo, DbContext.Todos);
     }
 
     [Theory]

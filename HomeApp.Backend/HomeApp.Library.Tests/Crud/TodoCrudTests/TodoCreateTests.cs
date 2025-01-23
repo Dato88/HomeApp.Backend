@@ -4,6 +4,8 @@ namespace HomeApp.Library.Tests.Crud.TodoCrudTests;
 
 public class TodoCreateTests : BaseTodoTest
 {
+    public TodoCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+
     [Fact]
     public async Task CreateAsync_AddsTodoToContext()
     {
@@ -18,7 +20,7 @@ public class TodoCreateTests : BaseTodoTest
         await _todoCrud.CreateAsync(todo, cancellationToken);
 
         // Assert
-        Assert.Contains(todo, _context.Todos);
+        Assert.Contains(todo, DbContext.Todos);
     }
 
     [Fact]
