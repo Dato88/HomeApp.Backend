@@ -81,7 +81,7 @@ public class TodoCrud(HomeAppContext context)
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.LastModified = DateTime.Now;
+        existingTodo.LastModified = DateTimeOffset.UtcNow;
 
         _context.Todos.Update(existingTodo);
         await _context.SaveChangesAsync(cancellationToken);

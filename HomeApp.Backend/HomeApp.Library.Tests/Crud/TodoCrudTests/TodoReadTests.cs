@@ -12,7 +12,10 @@ public class TodoReadTests : BaseTodoTest
         // Arrange
         var todo = new Todo
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.Now.AddDays(1)
+            Name = "Test Todo",
+            Done = false,
+            Priority = TodoPriority.Low,
+            LastModified = DateTimeOffset.UtcNow.AddDays(1)
         };
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();
@@ -59,14 +62,14 @@ public class TodoReadTests : BaseTodoTest
             Name = "Test Todo 2",
             Done = false,
             Priority = TodoPriority.Normal,
-            LastModified = DateTime.Now.AddDays(1)
+            LastModified = DateTimeOffset.UtcNow.AddDays(1)
         };
         var todo2 = new Todo
         {
             Name = "Test Todo 2",
             Done = false,
             Priority = TodoPriority.Normal,
-            LastModified = DateTime.Now.AddDays(1)
+            LastModified = DateTimeOffset.UtcNow.AddDays(1)
         };
 
         var todoPerson1 = new TodoPerson { PersonId = personId, Todo = todo1 };
@@ -114,7 +117,7 @@ public class TodoReadTests : BaseTodoTest
             Name = "Test Todo 2",
             Done = false,
             Priority = TodoPriority.Normal,
-            LastModified = DateTime.Now.AddDays(1),
+            LastModified = DateTimeOffset.UtcNow.AddDays(1),
             TodoGroupTodo = todoGroupTodo
         };
         var todoPerson = new TodoPerson { PersonId = personId, Todo = todo };

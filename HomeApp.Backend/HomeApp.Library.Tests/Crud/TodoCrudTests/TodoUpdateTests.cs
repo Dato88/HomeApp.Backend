@@ -10,7 +10,7 @@ public class TodoUpdateTests : BaseTodoTest
     public async Task UpdateAsync_UpdatesTodoInContext()
     {
         // Arrange
-        var initialLastModified = DateTime.Now.AddDays(-1);
+        var initialLastModified = DateTimeOffset.UtcNow.AddDays(-1);
 
         var todo = new Todo
         {
@@ -46,7 +46,7 @@ public class TodoUpdateTests : BaseTodoTest
         // Arrange
         var todo = new Todo
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.Now
+            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTimeOffset.UtcNow
         };
 
         DbContext.Todos.Add(todo);
@@ -58,7 +58,7 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
-            LastModified = DateTime.Now.AddDays(2)
+            LastModified = DateTimeOffset.UtcNow.AddDays(2)
         };
 
         // Act & Assert
@@ -77,7 +77,7 @@ public class TodoUpdateTests : BaseTodoTest
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
-            LastModified = DateTime.Now.AddDays(1)
+            LastModified = DateTimeOffset.UtcNow.AddDays(1)
         };
 
         // Act & Assert

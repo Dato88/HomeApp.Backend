@@ -12,7 +12,10 @@ public class TodoCreateTests : BaseTodoTest
         // Arrange
         Todo todo = new()
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, LastModified = DateTime.Now.AddDays(1)
+            Name = "Test Todo",
+            Done = false,
+            Priority = TodoPriority.Normal,
+            LastModified = DateTimeOffset.UtcNow.AddDays(1)
         };
 
         // Act
