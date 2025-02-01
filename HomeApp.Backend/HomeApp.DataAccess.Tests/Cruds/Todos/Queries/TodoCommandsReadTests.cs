@@ -63,28 +63,9 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_ReturnsTodosForSpecificPerson()
     {
         // Arrange
-        var personId = 1;
-
-        var todo1 = new Todo
-        {
-            Name = "Test Todo 2",
-            Done = false,
-            Priority = TodoPriority.Normal,
-            LastModified = DateTimeOffset.UtcNow.AddDays(1)
-        };
-        var todo2 = new Todo
-        {
-            Name = "Test Todo 2",
-            Done = false,
-            Priority = TodoPriority.Normal,
-            LastModified = DateTimeOffset.UtcNow.AddDays(1)
-        };
-
-        var todoPerson1 = new TodoPerson { PersonId = personId, Todo = todo1 };
-        var todoPerson2 = new TodoPerson { PersonId = personId, Todo = todo2 };
-
-        DbContext.TodoPeople.AddRange(todoPerson1, todoPerson2);
-        await DbContext.SaveChangesAsync();
+        var todo1 = await _createDummyTodos.CreateOneDummyTodo();
+        var personId = todo1.TodoPeople.First().PersonId;
+        var todo2 = await _createDummyTodos.CreateOneDummyTodo(personId);
 
         // Act
         var result = await TodoQueries.GetAllAsync(personId, default);

@@ -20,7 +20,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var initialLastModified = DateTimeOffset.UtcNow.AddDays(-1);
 
-        var todo = await _createDummyTodos.CreateOneDummyTodo(initialLastModified);
+        var todo = await _createDummyTodos.CreateOneDummyTodo(null, initialLastModified);
 
         var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 

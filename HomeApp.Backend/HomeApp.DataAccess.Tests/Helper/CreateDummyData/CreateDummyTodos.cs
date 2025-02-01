@@ -11,13 +11,14 @@ public class CreateDummyTodos : BaseTest
     public CreateDummyTodos(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
         _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
 
-    public async Task<Todo> CreateOneDummyTodo(DateTimeOffset? dateTimeOffset = null)
+    public async Task<Todo> CreateOneDummyTodo(int? personId = null, DateTimeOffset? dateTimeOffset = null)
     {
-        var person = await _createDummyPeople.CreateOneDummyPerson();
+        if (personId is null)
+            personId = (await _createDummyPeople.CreateOneDummyPerson()).Id;
 
         Todo todo = new CreateToDoDto
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, PersonId = person.Id
+            Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, PersonId = personId.Value
         };
 
         if (dateTimeOffset.HasValue) todo.LastModified = dateTimeOffset.Value;
