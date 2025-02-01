@@ -1,9 +1,6 @@
-﻿using FluentAssertions;
-using HomeApp.DataAccess.enums;
-using HomeApp.DataAccess.Models;
+﻿using HomeApp.DataAccess.enums;
 using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
-using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 

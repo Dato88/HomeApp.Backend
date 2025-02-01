@@ -1,8 +1,5 @@
-﻿using FluentAssertions;
-using HomeApp.DataAccess.Models;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
+﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
 using HomeApp.DataAccess.Tests.Helper;
-using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.People.Queries;
 

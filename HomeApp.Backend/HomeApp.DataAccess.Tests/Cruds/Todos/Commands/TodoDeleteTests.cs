@@ -1,7 +1,5 @@
-﻿using FluentAssertions;
-using HomeApp.DataAccess.Tests.Helper;
+﻿using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
-using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 

@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
+﻿using Microsoft.Extensions.DependencyInjection;
 using IServiceScope = Microsoft.Extensions.DependencyInjection.IServiceScope;
 
 namespace HomeApp.DataAccess.Tests.Helper;

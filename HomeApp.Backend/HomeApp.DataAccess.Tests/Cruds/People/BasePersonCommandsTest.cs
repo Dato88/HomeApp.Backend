@@ -1,7 +1,6 @@
 ﻿using HomeApp.DataAccess.Cruds.People;
 using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Validations.Interfaces;
-using Moq;
 
 namespace HomeApp.DataAccess.Tests.Cruds.People;
 

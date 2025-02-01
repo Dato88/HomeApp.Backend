@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using HomeApp.DataAccess.Models;
-using HomeApp.DataAccess.Tests.Helper;
-using Moq;
-using Xunit;
+﻿using HomeApp.DataAccess.Tests.Helper;
 
 namespace HomeApp.DataAccess.Tests.Cruds.People.Commands;
 

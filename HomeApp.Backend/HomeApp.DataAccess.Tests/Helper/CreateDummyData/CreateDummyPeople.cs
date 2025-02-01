@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.DataAccess.Tests.Helper.CreateDummyData;
+﻿namespace HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 
 public class CreateDummyPeople : BaseTest
 {
