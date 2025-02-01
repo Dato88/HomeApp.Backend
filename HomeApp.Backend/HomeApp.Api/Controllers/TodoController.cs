@@ -1,5 +1,5 @@
-﻿using HomeApp.Library.Facades.Interfaces;
-using HomeApp.Library.Models.Data_Transfer_Objects.TodoDtos;
+﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+using HomeApp.Library.Facades.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;

@@ -2,8 +2,8 @@
 
 public class BaseTodoTest : BaseTest
 {
-    protected readonly TodoCrud _todoCrud;
-
-    public BaseTodoTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _todoCrud = new TodoCrud(DbContext);
+    // protected readonly TodoCrud _todoCrud;
+    //
+    // public BaseTodoTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+    //     _todoCrud = new TodoCrud(DbContext);
 }

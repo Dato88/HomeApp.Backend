@@ -1,4 +1,4 @@
-﻿using HomeApp.Library.Models.Data_Transfer_Objects.TodoDtos;
+﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 
 namespace HomeApp.Library.Facades.Interfaces;
 

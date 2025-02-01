@@ -1,7 +1,7 @@
-﻿using HomeApp.Library.Cruds.Interfaces;
+﻿using HomeApp.DataAccess.Cruds.Interfaces;
+using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
-using HomeApp.Library.Models.Data_Transfer_Objects.TodoDtos;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Facades;
