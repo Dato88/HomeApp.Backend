@@ -1,4 +1,4 @@
-﻿using HomeApp.DataAccess.Cruds.Interfaces;
+﻿using HomeApp.DataAccess.Cruds.Interfaces.People;
 using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
@@ -8,26 +8,14 @@ using Microsoft.Extensions.Logging;
 namespace HomeApp.Library.Facades;
 
 public class PersonFacade(
-    IPersonCrud personCrud,
+    IPersonCommands personCommands,
+    IPersonQueries personQueries,
     IHttpContextAccessor httpContextAccessor,
     ILogger<PersonFacade> logger) : LoggerExtension<PersonFacade>(logger), IPersonFacade
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly IPersonCrud _personCrud = personCrud;
-
-    public async Task<IEnumerable<PersonDto>> GetPeopleAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            return await _personCrud.GetAllAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            LogException($"Get people failed: {ex}", DateTime.Now);
-
-            return null;
-        }
-    }
+    private readonly IPersonCommands _personCommands = personCommands;
+    private readonly IPersonQueries _personQueries = personQueries;
 
     public async Task<PersonDto> GetUserPersonAsync(CancellationToken cancellationToken)
     {
@@ -35,7 +23,7 @@ public class PersonFacade(
         {
             var email = _httpContextAccessor.HttpContext.User.Identity.Name;
 
-            return await _personCrud.FindByEmailAsync(email, cancellationToken);
+            return await _personQueries.FindByEmailAsync(email, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -49,7 +37,7 @@ public class PersonFacade(
     {
         try
         {
-            return await _personCrud.FindByEmailAsync(email, cancellationToken);
+            return await _personQueries.FindByEmailAsync(email, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -63,7 +51,7 @@ public class PersonFacade(
     {
         try
         {
-            await _personCrud.CreateAsync(person, cancellationToken);
+            await _personCommands.CreateAsync(person, cancellationToken);
 
             LogInformation($"Creating person: {person}", DateTime.Now);
         }
@@ -77,7 +65,7 @@ public class PersonFacade(
     {
         try
         {
-            await _personCrud.UpdateAsync(person, cancellationToken);
+            await _personCommands.UpdateAsync(person, cancellationToken);
 
             LogInformation($"Updating person: {person}", DateTime.Now);
         }
@@ -91,7 +79,7 @@ public class PersonFacade(
     {
         try
         {
-            await _personCrud.DeleteAsync(id, cancellationToken);
+            await _personCommands.DeleteAsync(id, cancellationToken);
 
             LogInformation($"Deleting person: {id}", DateTime.Now);
         }

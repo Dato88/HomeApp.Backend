@@ -1,13 +1,11 @@
 ﻿using FluentAssertions;
-using HomeApp.DataAccess.enums;
-using HomeApp.DataAccess.Models;
 using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
-public class TodoDeleteTests : BaseTodoTest
+public class TodoDeleteTests : BaseTodoCommandsTest
 {
     private readonly CreateDummyTodos _createDummyTodos;
 
@@ -18,11 +16,11 @@ public class TodoDeleteTests : BaseTodoTest
     public async Task DeleteAsync_ReturnsTrue_WhenTodoExists()
     {
         // Arrange
-        var todo = await _createDummyTodos.CreateOneDummyPerson();
+        var todo = await _createDummyTodos.CreateOneDummyTodo();
 
         // Act
         CancellationToken cancellationToken = new();
-        var result = await _todoCommands.DeleteAsync(todo.Id, cancellationToken);
+        var result = await TodoCommands.DeleteAsync(todo.Id, cancellationToken);
 
         // Assert
         result.Should().BeTrue();
@@ -35,7 +33,7 @@ public class TodoDeleteTests : BaseTodoTest
     public async Task DeleteAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
     {
         // Act & Assert
-        Func<Task> action = async () => await _todoCommands.DeleteAsync(id, default);
+        Func<Task> action = async () => await TodoCommands.DeleteAsync(id, default);
 
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
@@ -46,7 +44,7 @@ public class TodoDeleteTests : BaseTodoTest
     public async Task DeleteAsync_ThrowsException_WhenTodoNotFound()
     {
         // Act & Assert
-        Func<Task> action = async () => await _todoCommands.DeleteAsync(999, default);
+        Func<Task> action = async () => await TodoCommands.DeleteAsync(999, default);
 
         await action.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage(TodoMessage.TodoNotFound);

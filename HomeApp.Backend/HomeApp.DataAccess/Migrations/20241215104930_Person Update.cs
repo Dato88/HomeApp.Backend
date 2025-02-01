@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeApp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class PersonUpdate : Migration
+    public partial class PersonCommandsUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

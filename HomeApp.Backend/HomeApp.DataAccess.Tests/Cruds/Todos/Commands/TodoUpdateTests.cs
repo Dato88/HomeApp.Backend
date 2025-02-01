@@ -7,7 +7,7 @@ using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
-public class TodoUpdateTests : BaseTodoTest
+public class TodoUpdateTests : BaseTodoCommandsTest
 {
     private readonly CreateDummyTodos _createDummyTodos;
 
@@ -20,15 +20,12 @@ public class TodoUpdateTests : BaseTodoTest
         // Arrange
         var initialLastModified = DateTimeOffset.UtcNow.AddDays(-1);
 
-        var todo = await _createDummyTodos.CreateOneDummyPerson(initialLastModified);
-
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync();
+        var todo = await _createDummyTodos.CreateOneDummyTodo(initialLastModified);
 
         var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 
         // Act
-        await _todoCommands.UpdateAsync(updatedTodo, default);
+        await TodoCommands.UpdateAsync(updatedTodo, default);
 
         // Assert
         var result = await DbContext.Todos.FindAsync(todo.Id);
@@ -43,7 +40,7 @@ public class TodoUpdateTests : BaseTodoTest
     public async Task UpdateAsync_ThrowsException_WhenTodoIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await _todoCommands.UpdateAsync(null, default));
+            await TodoCommands.UpdateAsync(null, default));
 
     [Fact]
     public async Task UpdateAsync_ThrowsException_WhenTodoPriorityIsInvalid()
@@ -67,7 +64,7 @@ public class TodoUpdateTests : BaseTodoTest
         };
 
         // Act & Assert
-        var action = async () => await _todoCommands.UpdateAsync(invalidTodo, default);
+        var action = async () => await TodoCommands.UpdateAsync(invalidTodo, default);
         await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
             .WithMessage(
                 $"Priority ('{invalidTodo.Priority}') must be a non-negative value. (Parameter 'Priority')Actual value was {invalidTodo.Priority}.");
@@ -87,6 +84,6 @@ public class TodoUpdateTests : BaseTodoTest
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await _todoCommands.UpdateAsync(todo, default));
+            await TodoCommands.UpdateAsync(todo, default));
     }
 }

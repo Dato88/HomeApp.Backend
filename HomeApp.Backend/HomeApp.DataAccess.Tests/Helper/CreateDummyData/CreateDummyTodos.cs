@@ -11,7 +11,7 @@ public class CreateDummyTodos : BaseTest
     public CreateDummyTodos(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
         _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
 
-    public async Task<Todo> CreateOneDummyPerson(DateTimeOffset? dateTimeOffset = null)
+    public async Task<Todo> CreateOneDummyTodo(DateTimeOffset? dateTimeOffset = null)
     {
         var person = await _createDummyPeople.CreateOneDummyPerson();
 
@@ -23,6 +23,18 @@ public class CreateDummyTodos : BaseTest
         if (dateTimeOffset.HasValue) todo.LastModified = dateTimeOffset.Value;
 
         DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync();
+
+        return todo;
+    }
+
+    public async Task<Todo> CreateOneDummyTodoWithGroupAndReturnsTodo(DateTimeOffset? dateTimeOffset = null)
+    {
+        var todo = await CreateOneDummyTodo();
+
+        TodoGroupTodo todoGroupTodo = new() { TodoId = todo.Id, TodoGroup = new TodoGroup { Name = "New Group" } };
+
+        DbContext.TodoGroupTodos.Add(todoGroupTodo);
         await DbContext.SaveChangesAsync();
 
         return todo;

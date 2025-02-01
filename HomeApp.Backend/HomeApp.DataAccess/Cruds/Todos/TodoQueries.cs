@@ -14,13 +14,13 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(Todo.Id));
 
-        var query = DbContext.Todos.AsQueryable();
+        var query = DbContext.Todos;
 
         if (asNoTracking)
-            query = query.AsNoTracking();
+            query.AsNoTracking();
 
         if (includes is { Length: > 0 })
-            query = ApplyIncludes(query, includes);
+            ApplyIncludes(query, includes);
 
         var todo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
@@ -42,7 +42,7 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
         else
-            query.Include(i => i.TodoGroupTodo).Include(i => i.TodoPeople);
+            query = query.Include(i => i.TodoGroupTodo).Include(i => i.TodoPeople);
 
         var todoPeople = await query.Where(x => x.TodoPeople.Select(s => s.PersonId).Contains(personId))
             .ToListAsync(cancellationToken);

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
-public class TodoCreateTests : BaseTodoTest
+public class TodoCreateTests : BaseTodoCommandsTest
 {
     private readonly CreateDummyPeople _createDummyPeople;
 
@@ -28,7 +28,7 @@ public class TodoCreateTests : BaseTodoTest
 
         // Act
         CancellationToken cancellationToken = new();
-        await _todoCommands.CreateAsync(todo, cancellationToken);
+        await TodoCommands.CreateAsync(todo, cancellationToken);
 
         // Assert
         Assert.Contains(todo, DbContext.Todos);
@@ -43,7 +43,7 @@ public class TodoCreateTests : BaseTodoTest
         // Act
         CancellationToken cancellationToken = new();
 
-        Func<Task> action = async () => await _todoCommands.CreateAsync(todo, cancellationToken);
+        Func<Task> action = async () => await TodoCommands.CreateAsync(todo, cancellationToken);
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()
@@ -54,5 +54,5 @@ public class TodoCreateTests : BaseTodoTest
     public async Task CreateAsync_ThrowsException_WhenTodoIsNull() =>
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await _todoCommands.CreateAsync(null, default));
+            await TodoCommands.CreateAsync(null, default));
 }

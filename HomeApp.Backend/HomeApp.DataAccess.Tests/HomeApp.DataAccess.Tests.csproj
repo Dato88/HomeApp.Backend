@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Cruds\Todos\Queries\"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\HomeApp.Library.Tests\HomeApp.Library.Tests.csproj"/>
     </ItemGroup>
 
