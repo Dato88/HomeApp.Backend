@@ -47,7 +47,7 @@ public class TodoCreateTests : BaseTodoTest
 
         // Assert
         await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Should not be null or empty.");
+            .WithMessage("Todo can`t be created without personId.");
     }
 
     [Fact]

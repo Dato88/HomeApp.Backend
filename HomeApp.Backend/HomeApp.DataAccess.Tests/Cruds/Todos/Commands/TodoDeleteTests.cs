@@ -2,28 +2,23 @@
 using HomeApp.DataAccess.enums;
 using HomeApp.DataAccess.Models;
 using HomeApp.DataAccess.Tests.Helper;
+using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
 public class TodoDeleteTests : BaseTodoTest
 {
-    public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+    private readonly CreateDummyTodos _createDummyTodos;
+
+    public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+        _createDummyTodos = new CreateDummyTodos(unitTestingApiFactory);
 
     [Fact]
     public async Task DeleteAsync_ReturnsTrue_WhenTodoExists()
     {
         // Arrange
-        Todo todo = new()
-        {
-            Name = "Test Todo",
-            Done = false,
-            Priority = TodoPriority.Normal,
-            LastModified = DateTimeOffset.UtcNow.AddDays(1)
-        };
-
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync();
+        var todo = await _createDummyTodos.CreateOneDummyPerson();
 
         // Act
         CancellationToken cancellationToken = new();

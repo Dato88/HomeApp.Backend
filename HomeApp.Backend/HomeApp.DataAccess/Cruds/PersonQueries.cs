@@ -7,20 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class PersonCrud(HomeAppContext context, IPersonValidation personValidation)
-    : BaseCrud<Person>(context), IPersonCrud
+public class PersonQueries(HomeAppContext dbContext, IPersonValidation personValidation)
+    : BaseQueriesOld<Person>(dbContext), IPersonCrud
 {
     private readonly IPersonValidation _personValidation = personValidation;
 
     public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var user = await _context.People.FindAsync(id, cancellationToken);
+        var user = await DbContext.People.FindAsync(id, cancellationToken);
 
         if (user == null)
             throw new InvalidOperationException(PersonMessage.PersonNotFound);
 
-        _context.People.Remove(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.People.Remove(user);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
 
@@ -28,7 +28,7 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.People.AsQueryable();
+        var query = DbContext.People.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -48,7 +48,7 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.People.AsQueryable();
+        var query = DbContext.People.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -68,7 +68,7 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.People.AsQueryable();
+        var query = DbContext.People.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -88,9 +88,9 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         await _personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
         _personValidation.ValidateEmailFormat(person.Email);
 
-        _context.People.Add(person);
+        DbContext.People.Add(person);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     public override async Task UpdateAsync(Person person, CancellationToken cancellationToken)
@@ -101,7 +101,7 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         _personValidation.ValidateMaxLength(person);
         _personValidation.ValidateEmailFormat(person.Email);
 
-        var existingUser = await _context.People.FindAsync(person.Id, cancellationToken);
+        var existingUser = await DbContext.People.FindAsync(person.Id, cancellationToken);
 
         if (existingUser == null)
             throw new InvalidOperationException(PersonMessage.PersonNotFound);
@@ -114,8 +114,8 @@ public class PersonCrud(HomeAppContext context, IPersonValidation personValidati
         existingUser.LastName = person.LastName;
         existingUser.Email = person.Email;
 
-        _context.People.Update(existingUser);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.People.Update(existingUser);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<Person> ApplyIncludes(IQueryable<Person> query, params string[] includes)

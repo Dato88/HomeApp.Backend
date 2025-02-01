@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetCell>(context), IBudgetCellCrud
+public class BudgetCellQueries(HomeAppContext dbContext, IBudgetValidation budgetValidation)
+    : BaseQueriesOld<BudgetCell>(dbContext), IBudgetCellCrud
 {
     private readonly IBudgetValidation _budgetValidation = budgetValidation;
 
@@ -15,13 +15,13 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetCell.Id));
 
-        var budgetCell = await _context.BudgetCells.FindAsync(id, cancellationToken);
+        var budgetCell = await DbContext.BudgetCells.FindAsync(id, cancellationToken);
 
         if (budgetCell == null)
             throw new InvalidOperationException(BudgetMessage.CellNotFound);
 
-        _context.BudgetCells.Remove(budgetCell);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetCells.Remove(budgetCell);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -36,8 +36,8 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         await _budgetValidation.ValidateBudgetColumnIdExistsNotAsync(budgetCell.BudgetColumnId, cancellationToken);
         await _budgetValidation.ValidateBudgetGroupIdExistsNotAsync(budgetCell.BudgetGroupId, cancellationToken);
 
-        _context.BudgetCells.Add(budgetCell);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetCells.Add(budgetCell);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return budgetCell;
     }
@@ -48,7 +48,7 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetCell.Id));
 
-        var query = _context.BudgetCells.AsQueryable();
+        var query = DbContext.BudgetCells.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -68,7 +68,7 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetCells.AsQueryable();
+        var query = DbContext.BudgetCells.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -83,7 +83,7 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetCells.AsQueryable();
+        var query = DbContext.BudgetCells.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -105,7 +105,7 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         await _budgetValidation.ValidateBudgetColumnIdExistsAsync(budgetCell.BudgetColumnId, cancellationToken);
         await _budgetValidation.ValidateBudgetGroupIdExistsAsync(budgetCell.BudgetGroupId, cancellationToken);
 
-        var existingBudgetCell = await _context.BudgetCells.FindAsync(budgetCell.Id, cancellationToken);
+        var existingBudgetCell = await DbContext.BudgetCells.FindAsync(budgetCell.Id, cancellationToken);
 
         if (existingBudgetCell == null)
             throw new InvalidOperationException(BudgetMessage.CellNotFound);
@@ -115,8 +115,8 @@ public class BudgetCellCrud(HomeAppContext context, IBudgetValidation budgetVali
         existingBudgetCell.BudgetColumnId = budgetCell.BudgetColumnId;
         existingBudgetCell.BudgetGroupId = budgetCell.BudgetGroupId;
 
-        _context.BudgetCells.Update(existingBudgetCell);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetCells.Update(existingBudgetCell);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<BudgetCell> ApplyIncludes(IQueryable<BudgetCell> query, params string[] includes)

@@ -1,8 +1,9 @@
-﻿using HomeApp.DataAccess.Models;
+﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
+using HomeApp.DataAccess.Models;
 
 namespace HomeApp.DataAccess.Cruds.Todos;
 
-public class TodoCommands(HomeAppContext context) : BaseCommands<Todo>(context)
+public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {
     public override async Task<Todo> CreateAsync(Todo todo, CancellationToken cancellationToken)
     {
@@ -10,10 +11,10 @@ public class TodoCommands(HomeAppContext context) : BaseCommands<Todo>(context)
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
 
         if (!todo.TodoPeople.Any(x => x.PersonId > 0))
-            throw new InvalidOperationException("Should not be null or empty.");
+            throw new InvalidOperationException("Todo can`t be created without personId.");
 
-        _context.Todos.Add(todo);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return todo;
     }
@@ -22,13 +23,13 @@ public class TodoCommands(HomeAppContext context) : BaseCommands<Todo>(context)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(Todo.Id));
 
-        var todo = await _context.Todos.FindAsync(new object[] { id }, cancellationToken);
+        var todo = await DbContext.Todos.FindAsync(new object[] { id }, cancellationToken);
 
         if (todo == null)
             throw new InvalidOperationException(TodoMessage.TodoNotFound);
 
-        _context.Todos.Remove(todo);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.Todos.Remove(todo);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -38,7 +39,7 @@ public class TodoCommands(HomeAppContext context) : BaseCommands<Todo>(context)
         ArgumentNullException.ThrowIfNull(todo);
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
 
-        var existingTodo = await _context.Todos.FindAsync(todo.Id, cancellationToken);
+        var existingTodo = await DbContext.Todos.FindAsync(todo.Id, cancellationToken);
 
         if (existingTodo == null)
             throw new InvalidOperationException(TodoMessage.TodoNotFound);
@@ -48,7 +49,7 @@ public class TodoCommands(HomeAppContext context) : BaseCommands<Todo>(context)
         existingTodo.Priority = todo.Priority;
         existingTodo.LastModified = DateTimeOffset.UtcNow;
 
-        _context.Todos.Update(existingTodo);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.Todos.Update(existingTodo);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Validations;
 
-public class BudgetValidation(HomeAppContext context) : BaseContext(context), IBudgetValidation
+public class BudgetValidation(HomeAppContext dbContext) : BaseContext(dbContext), IBudgetValidation
 {
     public async Task ValidateBudgetCellForUserIdChangeAsync(int userId, int budgetCellId,
         CancellationToken cancellationToken)
@@ -13,13 +13,13 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetCellId, BudgetMessage.BudgetCellId);
 
-        if (await _context.BudgetCells.AnyAsync(x => x.Id == budgetCellId && x.PersonId != userId, cancellationToken))
+        if (await DbContext.BudgetCells.AnyAsync(x => x.Id == budgetCellId && x.PersonId != userId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
     }
 
     public async Task ValidateBudgetColumnIdExistsAsync(int budgetColumnId, CancellationToken cancellationToken)
     {
-        if (await _context.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId, cancellationToken))
+        if (await DbContext.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.ColumnIdExist);
     }
 
@@ -27,14 +27,14 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetColumnId, BudgetMessage.BudgetColumnId);
 
-        if (!await _context.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId, cancellationToken))
+        if (!await DbContext.BudgetColumns.AnyAsync(column => column.Id == budgetColumnId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.ColumnIdNotExist);
     }
 
     public async Task ValidateBudgetColumnIndexAndNameExistsAsync(int index, string name,
         CancellationToken cancellationToken)
     {
-        if (await _context.BudgetColumns.AnyAsync(column => column.Index == index && column.Name.Equals(name),
+        if (await DbContext.BudgetColumns.AnyAsync(column => column.Index == index && column.Name.Equals(name),
                 cancellationToken))
             throw new InvalidOperationException(BudgetMessage.ColumnIndexAlreadyExists);
     }
@@ -45,7 +45,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-        if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.PersonId != userId,
+        if (await DbContext.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId && group.PersonId != userId,
                 cancellationToken))
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
     }
@@ -54,7 +54,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-        if (await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId, cancellationToken))
+        if (await DbContext.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.GroupIdExist);
     }
 
@@ -62,14 +62,14 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetGroupId, BudgetMessage.BudgetGroupId);
 
-        if (!await _context.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId, cancellationToken))
+        if (!await DbContext.BudgetGroups.AnyAsync(group => group.Id == budgetGroupId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.GroupIdNotExist);
     }
 
     public async Task ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(int index, string name,
         CancellationToken cancellationToken)
     {
-        if (await _context.BudgetGroups.AnyAsync(group => group.Index == index && group.Name.Equals(name),
+        if (await DbContext.BudgetGroups.AnyAsync(group => group.Index == index && group.Name.Equals(name),
                 cancellationToken))
             throw new InvalidOperationException(BudgetMessage.GroupIndexAlreadyExists);
     }
@@ -80,7 +80,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
-        if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.PersonId != userId,
+        if (await DbContext.BudgetRows.AnyAsync(row => row.Id == budgetRowId && row.PersonId != userId,
                 cancellationToken))
             throw new InvalidOperationException(BudgetMessage.UserChangeNotAllowed);
     }
@@ -89,7 +89,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
-        if (await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId, cancellationToken))
+        if (await DbContext.BudgetRows.AnyAsync(row => row.Id == budgetRowId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.RowIdExists);
     }
 
@@ -97,7 +97,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(budgetRowId, BudgetMessage.BudgetRowId);
 
-        if (!await _context.BudgetRows.AnyAsync(row => row.Id == budgetRowId, cancellationToken))
+        if (!await DbContext.BudgetRows.AnyAsync(row => row.Id == budgetRowId, cancellationToken))
             throw new InvalidOperationException(BudgetMessage.RowIdNotExist);
     }
 
@@ -119,7 +119,7 @@ public class BudgetValidation(HomeAppContext context) : BaseContext(context), IB
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, PersonMessage.PersonId);
 
-        if (!await _context.People.AnyAsync(user => user.Id == userId, cancellationToken))
+        if (!await DbContext.People.AnyAsync(user => user.Id == userId, cancellationToken))
             throw new InvalidOperationException(PersonMessage.PersonNotFound);
     }
 }

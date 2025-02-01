@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using HomeApp.DataAccess.Cruds;
 using HomeApp.DataAccess.Cruds.Interfaces;
+using HomeApp.DataAccess.Cruds.Interfaces.Todos;
+using HomeApp.DataAccess.Cruds.Todos;
 using HomeApp.DataAccess.Models;
 using HomeApp.DataAccess.Validations;
 using HomeApp.DataAccess.Validations.Interfaces;
@@ -48,17 +50,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
 builder.Services.AddScoped<IPersonValidation, PersonValidation>();
 
-builder.Services.AddScoped<IBudgetCellCrud, BudgetCellCrud>();
-builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnCrud>();
-builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
-builder.Services.AddScoped<IBudgetRowCrud, BudgetRowCrud>();
+builder.Services.AddScoped<IBudgetCellCrud, BudgetCellQueries>();
+builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnQueries>();
+builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
+builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
-builder.Services.AddScoped<IPersonCrud, PersonCrud>();
+builder.Services.AddScoped<IPersonCrud, PersonQueries>();
 builder.Services.AddScoped<IPersonFacade, PersonFacade>();
-builder.Services.AddScoped<ITodoCrud, TodoCrud>();
-builder.Services.AddScoped<ITodoGroupCrud, TodoGroupCrud>();
-builder.Services.AddScoped<ITodoGroupTodoCrud, TodoGroupTodoCrud>();
-builder.Services.AddScoped<ITodoPersonCrud, TodoPersonCrud>();
+builder.Services.AddScoped<ITodoCommands, TodoCommands>();
+builder.Services.AddScoped<ITodoQueries, TodoQueries>();
+builder.Services.AddScoped<ITodoGroupCrud, TodoGroupQueries>();
+builder.Services.AddScoped<ITodoGroupTodoCrud, TodoGroupTodoQueries>();
+builder.Services.AddScoped<ITodoPersonCrud, TodoPersonQueries>();
 builder.Services.AddScoped<ITodoFacade, TodoFacade>();
 
 builder.Services.AddScoped<JwtHandler>();

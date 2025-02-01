@@ -2,13 +2,17 @@
 using HomeApp.DataAccess.enums;
 using HomeApp.DataAccess.Models;
 using HomeApp.DataAccess.Tests.Helper;
+using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 using Xunit;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
 public class TodoUpdateTests : BaseTodoTest
 {
-    public TodoUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
+    private readonly CreateDummyTodos _createDummyTodos;
+
+    public TodoUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+        _createDummyTodos = new CreateDummyTodos(unitTestingApiFactory);
 
     [Fact]
     public async Task UpdateAsync_UpdatesTodoInContext()
@@ -16,10 +20,7 @@ public class TodoUpdateTests : BaseTodoTest
         // Arrange
         var initialLastModified = DateTimeOffset.UtcNow.AddDays(-1);
 
-        var todo = new Todo
-        {
-            Name = "Initial Todo", Done = false, Priority = TodoPriority.Low, LastModified = initialLastModified
-        };
+        var todo = await _createDummyTodos.CreateOneDummyPerson(initialLastModified);
 
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();

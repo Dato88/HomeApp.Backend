@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetColumn>(context), IBudgetColumnCrud
+public class BudgetColumnQueries(HomeAppContext dbContext, IBudgetValidation budgetValidation)
+    : BaseQueriesOld<BudgetColumn>(dbContext), IBudgetColumnCrud
 {
     private readonly IBudgetValidation _budgetValidation = budgetValidation;
 
@@ -15,13 +15,13 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetColumn.Id));
 
-        var budgetColumn = await _context.BudgetColumns.FindAsync(id, cancellationToken);
+        var budgetColumn = await DbContext.BudgetColumns.FindAsync(id, cancellationToken);
 
         if (budgetColumn == null)
             throw new InvalidOperationException(BudgetMessage.ColumnNotFound);
 
-        _context.BudgetColumns.Remove(budgetColumn);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetColumns.Remove(budgetColumn);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -37,8 +37,8 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
         await _budgetValidation.ValidateBudgetColumnIndexAndNameExistsAsync(budgetColumn.Index, budgetColumn.Name,
             cancellationToken);
 
-        _context.BudgetColumns.Add(budgetColumn);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetColumns.Add(budgetColumn);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return budgetColumn;
     }
@@ -49,7 +49,7 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetColumn.Id));
 
-        var query = _context.BudgetColumns.AsQueryable();
+        var query = DbContext.BudgetColumns.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -69,7 +69,7 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetColumns.AsQueryable();
+        var query = DbContext.BudgetColumns.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -91,7 +91,7 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
             cancellationToken);
 
         var existingBudgetColumn =
-            await _context.BudgetColumns.FindAsync(budgetColumn.Id, cancellationToken);
+            await DbContext.BudgetColumns.FindAsync(budgetColumn.Id, cancellationToken);
 
         if (existingBudgetColumn == null)
             throw new InvalidOperationException(BudgetMessage.ColumnNotFound);
@@ -99,8 +99,8 @@ public class BudgetColumnCrud(HomeAppContext context, IBudgetValidation budgetVa
         existingBudgetColumn.Index = budgetColumn.Index;
         existingBudgetColumn.Name = budgetColumn.Name;
 
-        _context.BudgetColumns.Update(existingBudgetColumn);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetColumns.Update(existingBudgetColumn);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<BudgetColumn> ApplyIncludes(IQueryable<BudgetColumn> query, params string[] includes)

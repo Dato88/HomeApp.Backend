@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetGroup>(context), IBudgetGroupCrud
+public class BudgetGroupQueries(HomeAppContext dbContext, IBudgetValidation budgetValidation)
+    : BaseQueriesOld<BudgetGroup>(dbContext), IBudgetGroupCrud
 {
     private readonly IBudgetValidation _budgetValidation = budgetValidation;
 
@@ -15,13 +15,13 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetGroup.Id));
 
-        var budgetGroup = await _context.BudgetGroups.FindAsync(id, cancellationToken);
+        var budgetGroup = await DbContext.BudgetGroups.FindAsync(id, cancellationToken);
 
         if (budgetGroup == null)
             throw new InvalidOperationException(BudgetMessage.GroupNotFound);
 
-        _context.BudgetGroups.Remove(budgetGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetGroups.Remove(budgetGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -38,8 +38,8 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         await _budgetValidation.ValidateBudgetGroupIndexAndNameAlreadyExistsAsync(budgetGroup.Index,
             budgetGroup.Name, cancellationToken);
 
-        _context.BudgetGroups.Add(budgetGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetGroups.Add(budgetGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return budgetGroup;
     }
@@ -50,7 +50,7 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetGroup.Id));
 
-        var query = _context.BudgetGroups.AsQueryable();
+        var query = DbContext.BudgetGroups.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -70,7 +70,7 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetGroups.AsQueryable();
+        var query = DbContext.BudgetGroups.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -85,7 +85,7 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetGroups.AsQueryable();
+        var query = DbContext.BudgetGroups.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -106,7 +106,7 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         await _budgetValidation.ValidateForEmptyStringAsync(budgetGroup.Name);
         await _budgetValidation.ValidateForPositiveIndexAsync(budgetGroup.Index);
 
-        var existingBudgetGroup = await _context.BudgetGroups.FindAsync(budgetGroup.Id, cancellationToken);
+        var existingBudgetGroup = await DbContext.BudgetGroups.FindAsync(budgetGroup.Id, cancellationToken);
 
         if (existingBudgetGroup == null)
             throw new InvalidOperationException(BudgetMessage.GroupNotFound);
@@ -114,8 +114,8 @@ public class BudgetGroupCrud(HomeAppContext context, IBudgetValidation budgetVal
         existingBudgetGroup.Index = budgetGroup.Index;
         existingBudgetGroup.Name = budgetGroup.Name;
 
-        _context.BudgetGroups.Update(existingBudgetGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetGroups.Update(existingBudgetGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<BudgetGroup> ApplyIncludes(IQueryable<BudgetGroup> query, params string[] includes)

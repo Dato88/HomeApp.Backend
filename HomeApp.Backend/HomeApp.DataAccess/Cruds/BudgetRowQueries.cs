@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValidation)
-    : BaseCrud<BudgetRow>(context), IBudgetRowCrud
+public class BudgetRowQueries(HomeAppContext dbContext, IBudgetValidation budgetValidation)
+    : BaseQueriesOld<BudgetRow>(dbContext), IBudgetRowCrud
 {
     private readonly IBudgetValidation _budgetValidation = budgetValidation;
 
@@ -21,8 +21,8 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
         await _budgetValidation.ValidateForPositiveIndexAsync(budgetRow.Index);
 
-        _context.BudgetRows.Add(budgetRow);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetRows.Add(budgetRow);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return budgetRow;
     }
@@ -31,11 +31,11 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
-        var budgetRow = await _context.BudgetRows.FindAsync(id, cancellationToken);
+        var budgetRow = await DbContext.BudgetRows.FindAsync(id, cancellationToken);
         if (budgetRow == null) throw new InvalidOperationException(BudgetMessage.RowNotFound);
 
-        _context.BudgetRows.Remove(budgetRow);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.BudgetRows.Remove(budgetRow);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     public override async Task<BudgetRow> FindByIdAsync(int id, CancellationToken cancellationToken,
@@ -44,7 +44,7 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(BudgetRow.Id));
 
-        var query = _context.BudgetRows.AsQueryable();
+        var query = DbContext.BudgetRows.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -64,7 +64,7 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetRows.AsQueryable();
+        var query = DbContext.BudgetRows.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -79,7 +79,7 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = _context.BudgetRows.AsQueryable();
+        var query = DbContext.BudgetRows.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -101,7 +101,7 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         await _budgetValidation.ValidateForEmptyStringAsync(budgetRow.Name);
         await _budgetValidation.ValidateForPositiveIndexAsync(budgetRow.Index);
 
-        var existingBudgetRow = await _context.BudgetRows.FindAsync(budgetRow.Id, cancellationToken);
+        var existingBudgetRow = await DbContext.BudgetRows.FindAsync(budgetRow.Id, cancellationToken);
 
         if (existingBudgetRow == null)
             throw new InvalidOperationException(BudgetMessage.RowNotFound);
@@ -109,9 +109,9 @@ public class BudgetRowCrud(HomeAppContext context, IBudgetValidation budgetValid
         existingBudgetRow.Index = budgetRow.Index;
         existingBudgetRow.Name = budgetRow.Name;
 
-        _context.BudgetRows.Update(existingBudgetRow);
+        DbContext.BudgetRows.Update(existingBudgetRow);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<BudgetRow> ApplyIncludes(IQueryable<BudgetRow> query, params string[] includes)

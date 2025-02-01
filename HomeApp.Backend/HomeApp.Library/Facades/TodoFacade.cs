@@ -1,4 +1,5 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces;
+using HomeApp.DataAccess.Cruds.Interfaces.Todos;
 using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
@@ -7,7 +8,8 @@ using Microsoft.Extensions.Logging;
 namespace HomeApp.Library.Facades;
 
 public class TodoFacade(
-    ITodoCrud todoCrud,
+    ITodoCommands todoCommands,
+    ITodoQueries todoQueries,
     ITodoGroupCrud todoGroupCrud,
     ITodoGroupTodoCrud todoGroupTodoCrud,
     ITodoPersonCrud todoPersonCrud,
@@ -15,22 +17,20 @@ public class TodoFacade(
     ILogger<TodoFacade> logger) : LoggerExtension<TodoFacade>(logger), ITodoFacade
 {
     private readonly IPersonFacade _personFacade = personFacade;
-    private readonly ITodoCrud _todoCrud = todoCrud;
+    private readonly ITodoCommands _todoCommands = todoCommands;
     private readonly ITodoGroupCrud _todoGroupCrud = todoGroupCrud;
     private readonly ITodoGroupTodoCrud _todoGroupTodoCrud = todoGroupTodoCrud;
-    private readonly ITodoPersonCrud _todoPersonCrud = todoPersonCrud;
+    private readonly ITodoQueries _todoQueries = todoQueries;
 
     public async Task<GetToDoDto> CreateTodoAsync(CreateToDoDto createToDoDto, CancellationToken cancellationToken)
     {
         try
         {
-            var todo = await _todoCrud.CreateAsync(createToDoDto, cancellationToken);
-
             var person = await _personFacade.GetUserPersonAsync(cancellationToken);
 
-            var todoPerson = new CreateToDoPersonDto(person.Id, todo.Id);
+            createToDoDto.PersonId = person.Id;
 
-            await _todoPersonCrud.CreateAsync(todoPerson, cancellationToken);
+            var todo = await _todoCommands.CreateAsync(createToDoDto, cancellationToken);
 
             if (createToDoDto.TodoGroupId is not null)
             {
@@ -56,7 +56,7 @@ public class TodoFacade(
     {
         try
         {
-            await _todoCrud.DeleteAsync(id, cancellationToken);
+            await _todoCommands.DeleteAsync(id, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -68,7 +68,7 @@ public class TodoFacade(
     {
         try
         {
-            await _todoCrud.UpdateAsync(updateToDoDto, cancellationToken);
+            await _todoCommands.UpdateAsync(updateToDoDto, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -82,7 +82,7 @@ public class TodoFacade(
         {
             var person = await _personFacade.GetUserPersonAsync(cancellationToken);
 
-            return await _todoCrud.GetAllAsync(person.Id, cancellationToken);
+            return await _todoQueries.GetAllAsync(person.Id, cancellationToken);
         }
         catch (Exception ex)
         {

@@ -2,7 +2,7 @@
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class BaseContext(HomeAppContext context)
+public class BaseContext(HomeAppContext dbContext)
 {
-    protected readonly HomeAppContext _context = context;
+    protected readonly HomeAppContext DbContext = dbContext;
 }

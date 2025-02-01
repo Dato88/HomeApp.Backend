@@ -5,19 +5,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds;
 
-public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context), ITodoGroupCrud
+public class TodoGroupQueries(HomeAppContext dbContext) : BaseQueriesOld<TodoGroup>(dbContext), ITodoGroupCrud
 {
     public override async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(TodoGroup.Id));
 
-        var todoGroup = await _context.TodoGroups.FindAsync(id, cancellationToken);
+        var todoGroup = await DbContext.TodoGroups.FindAsync(id, cancellationToken);
 
         if (todoGroup == null)
             throw new InvalidOperationException(TodoGroupMessage.TodoGroupNotFound);
 
-        _context.TodoGroups.Remove(todoGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.TodoGroups.Remove(todoGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
     }
@@ -26,8 +26,8 @@ public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context
     {
         ArgumentNullException.ThrowIfNull(todoGroup);
 
-        _context.TodoGroups.Add(todoGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.TodoGroups.Add(todoGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
 
         return todoGroup;
     }
@@ -37,7 +37,7 @@ public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(TodoGroup.Id));
 
-        var query = _context.TodoGroups.AsQueryable();
+        var query = DbContext.TodoGroups.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -56,7 +56,7 @@ public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context
     public override async Task<IEnumerable<TodoGroup>> GetAllAsync(CancellationToken cancellationToken,
         bool asNoTracking = true, params string[] includes)
     {
-        var query = _context.TodoGroups.AsQueryable();
+        var query = DbContext.TodoGroups.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -71,15 +71,15 @@ public class TodoGroupCrud(HomeAppContext context) : BaseCrud<TodoGroup>(context
     {
         ArgumentNullException.ThrowIfNull(todoGroup);
 
-        var existingTodoGroup = await _context.TodoGroups.FindAsync(todoGroup.Id, cancellationToken);
+        var existingTodoGroup = await DbContext.TodoGroups.FindAsync(todoGroup.Id, cancellationToken);
 
         if (existingTodoGroup == null)
             throw new InvalidOperationException(TodoGroupMessage.TodoGroupNotFound);
 
         existingTodoGroup.Name = todoGroup.Name;
 
-        _context.TodoGroups.Update(existingTodoGroup);
-        await _context.SaveChangesAsync(cancellationToken);
+        DbContext.TodoGroups.Update(existingTodoGroup);
+        await DbContext.SaveChangesAsync(cancellationToken);
     }
 
     protected override IQueryable<TodoGroup> ApplyIncludes(IQueryable<TodoGroup> query, params string[] includes)

@@ -2,7 +2,7 @@
 
 namespace HomeApp.DataAccess.Cruds;
 
-public abstract class BaseCommands<T>(HomeAppContext context) : BaseContext(context)
+public abstract class BaseCommands<T>(HomeAppContext dbContext) : BaseContext(dbContext)
 {
     public abstract Task CreateAsync(T t, CancellationToken cancellationToken);
     public abstract Task DeleteAsync(int id, CancellationToken cancellationToken);

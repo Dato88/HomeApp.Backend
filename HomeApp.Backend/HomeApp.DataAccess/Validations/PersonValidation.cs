@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Validations;
 
-public class PersonValidation(HomeAppContext context) : BaseContext(context), IPersonValidation
+public class PersonValidation(HomeAppContext dbContext) : BaseContext(dbContext), IPersonValidation
 {
     public bool IsValidEmail(string email)
     {
@@ -23,7 +23,7 @@ public class PersonValidation(HomeAppContext context) : BaseContext(context), IP
 
     public async Task ValidatePersonnameDoesNotExistAsync(string username, CancellationToken cancellationToken)
     {
-        if (await _context.People.AnyAsync(a => a.Username == username, cancellationToken))
+        if (await DbContext.People.AnyAsync(a => a.Username == username, cancellationToken))
             throw new InvalidOperationException(PersonMessage.PersonAlreadyExists);
     }
 
