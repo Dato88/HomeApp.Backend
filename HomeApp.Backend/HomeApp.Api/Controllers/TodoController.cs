@@ -1,6 +1,5 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
-using HomeApp.Library.Facades.Interfaces;
-using HomeApp.Library.Todos.Commands;
+﻿using HomeApp.Library.Todos.Commands;
+using HomeApp.Library.Todos.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 
@@ -9,43 +8,54 @@ namespace HomeApp.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class TodoController(IMediator mediator, ITodoFacade todoFacade) : ControllerBase
+public class TodoController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    private readonly ITodoFacade _todoFacade = todoFacade;
 
     [HttpGet("todos")]
     public async Task<IActionResult> GetTodos(CancellationToken cancellationToken)
     {
-        var todos = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
+        var response = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
-        return Ok(todos);
+        if (response.Succcess) return Ok(response);
+
+        return BadRequest(response);
     }
 
     [HttpPost("todo")]
-    public async Task<IActionResult> PostGetToDoDtoAsync([FromBody] CreateToDoDto createToDoDto,
+    public async Task<IActionResult> PostGetToDoDtoAsync([FromBody] CreateTodoCommand createTodoCommand,
         CancellationToken cancellationToken)
     {
-        var todo = await _todoFacade.CreateTodoAsync(createToDoDto, cancellationToken);
+        if (createTodoCommand is null) return BadRequest();
 
-        return Ok(todo);
+        var response = await _mediator.Send(createTodoCommand, cancellationToken);
+
+        if (response.Succcess) return Ok(response);
+
+        return BadRequest(response);
     }
 
     [HttpDelete("todo")]
-    public async Task<IActionResult> DeleteToDoDtoAsync([FromQuery] int id,
+    public async Task<IActionResult> DeleteToDoDtoAsync([FromQuery] DeleteTodoCommand deleteTodoCommand,
         CancellationToken cancellationToken)
     {
-        await _todoFacade.DeleteTodoAsync(id, cancellationToken);
+        if (deleteTodoCommand is null) return BadRequest();
 
-        return Ok();
+        var response = await _mediator.Send(deleteTodoCommand, cancellationToken);
+
+        if (response.Succcess) return Ok(response);
+
+        return BadRequest(response);
     }
 
     [HttpPatch("todo")]
-    public async Task<IActionResult> UpdateToDoDtoAsync([FromBody] UpdateToDoDto updateToDoDto,
+    public async Task<IActionResult> UpdateToDoDtoAsync([FromBody] UpdateTodoCommand updateTodoCommand,
         CancellationToken cancellationToken)
     {
-        await _todoFacade.UpdateTodoAsync(updateToDoDto, cancellationToken);
+        if (updateTodoCommand is null) return BadRequest();
 
-        return Ok();
+        var todo = await _mediator.Send(updateTodoCommand, cancellationToken);
+
+        return Ok(todo);
     }
 }

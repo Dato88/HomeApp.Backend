@@ -1,5 +1,5 @@
 ﻿using HomeApp.DataAccess.enums;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+using HomeApp.Library.Todos.Commands;
 
 namespace HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 
@@ -15,7 +15,7 @@ public class CreateDummyTodos : BaseTest
         if (personId is null)
             personId = (await _createDummyPeople.CreateOneDummyPerson()).Id;
 
-        Todo todo = new CreateToDoDto
+        Todo todo = new CreateTodoCommand
         {
             Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, PersonId = personId.Value
         };

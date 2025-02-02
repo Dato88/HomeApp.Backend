@@ -1,13 +1,12 @@
 ﻿using HomeApp.DataAccess.enums;
+using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+using HomeApp.Library.Models.BaseModels;
+using MediatR;
 
-namespace HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+namespace HomeApp.Library.Todos.Commands;
 
-public class UpdateToDoDto
+public class UpdateTodoCommand : IRequest<BaseResponse<GetToDoDto>>
 {
-    public UpdateToDoDto() { }
-
-    public UpdateToDoDto(string name) => Name = name;
-
     public int Id { get; set; }
     public int? TodoGroupId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -16,7 +15,7 @@ public class UpdateToDoDto
     public TodoPriority Priority { get; set; }
     public DateTimeOffset LastModified { get; set; }
 
-    public static implicit operator Todo(UpdateToDoDto item) =>
+    public static implicit operator Todo(UpdateTodoCommand item) =>
         new()
         {
             Id = item.Id,

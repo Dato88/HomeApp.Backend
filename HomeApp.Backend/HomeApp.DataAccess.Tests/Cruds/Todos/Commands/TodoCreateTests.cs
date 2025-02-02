@@ -1,7 +1,7 @@
 ﻿using HomeApp.DataAccess.enums;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
+using HomeApp.Library.Todos.Commands;
 
 namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
 
@@ -18,7 +18,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
         // Arrange
         var dummyPerson = await _createDummyPeople.CreateOneDummyPerson();
 
-        Todo todo = new CreateToDoDto
+        Todo todo = new CreateTodoCommand
         {
             Name = "Test Todo", Done = false, Priority = TodoPriority.Normal, PersonId = dummyPerson.Id
         };
@@ -32,10 +32,37 @@ public class TodoCreateTests : BaseTodoCommandsTest
     }
 
     [Fact]
+    public async Task CreateAsync_Should_Also_Create_TodoGroupTodo()
+    {
+        // Arrange
+        var dummyPerson = await _createDummyPeople.CreateOneDummyPerson();
+
+        var todoGroup = new TodoGroup { Name = "TestGroup" };
+        DbContext.TodoGroups.Add(todoGroup);
+        await DbContext.SaveChangesAsync();
+
+        var newTodo = new CreateTodoCommand
+        {
+            Name = "Test Todo",
+            Done = false,
+            Priority = TodoPriority.Normal,
+            PersonId = dummyPerson.Id,
+            TodoGroupId = todoGroup.Id
+        };
+
+        // Act
+        CancellationToken cancellationToken = new();
+        var createdTodo = await TodoCommands.CreateAsync(newTodo, cancellationToken);
+
+        // Assert
+        Assert.Contains(createdTodo, DbContext.Todos);
+    }
+
+    [Fact]
     public async Task CreateAsync_ShouldNotCreateWithoutPersonId()
     {
         // Arrange
-        Todo todo = new CreateToDoDto { Name = "Test Todo", Done = false, Priority = TodoPriority.Normal };
+        Todo todo = new CreateTodoCommand { Name = "Test Todo", Done = false, Priority = TodoPriority.Normal };
 
         // Act
         CancellationToken cancellationToken = new();

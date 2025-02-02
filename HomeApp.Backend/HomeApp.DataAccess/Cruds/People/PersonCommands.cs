@@ -20,21 +20,7 @@ public class PersonCommands(HomeAppContext dbContext, IPersonValidation personVa
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public override async Task CreateAsync(Person person, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(person);
-
-        _personValidation.ValidateRequiredProperties(person);
-        _personValidation.ValidateMaxLength(person);
-        await _personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
-        _personValidation.ValidateEmailFormat(person.Email);
-
-        DbContext.People.Add(person);
-
-        await DbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public override async Task UpdateAsync(Person person, CancellationToken cancellationToken)
+    public override async Task<Person> UpdateAsync(Person person, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(person);
 
@@ -57,5 +43,23 @@ public class PersonCommands(HomeAppContext dbContext, IPersonValidation personVa
 
         DbContext.People.Update(existingUser);
         await DbContext.SaveChangesAsync(cancellationToken);
+
+        return existingUser;
+    }
+
+    public override async Task<Person> CreateAsync(Person person, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(person);
+
+        _personValidation.ValidateRequiredProperties(person);
+        _personValidation.ValidateMaxLength(person);
+        await _personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
+        _personValidation.ValidateEmailFormat(person.Email);
+
+        DbContext.People.Add(person);
+
+        await DbContext.SaveChangesAsync(cancellationToken);
+
+        return person;
     }
 }

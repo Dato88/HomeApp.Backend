@@ -32,5 +32,5 @@ public interface ITodoCommands
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Todo with the given <paramref name="todo.Id" /> is not found.
     /// </exception>
-    Task UpdateAsync(Todo todo, CancellationToken cancellationToken);
+    Task<Todo> UpdateAsync(Todo todo, CancellationToken cancellationToken);
 }

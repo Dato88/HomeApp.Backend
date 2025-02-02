@@ -34,7 +34,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         return true;
     }
 
-    public override async Task UpdateAsync(Todo todo, CancellationToken cancellationToken)
+    public override async Task<Todo> UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
@@ -51,5 +51,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
 
         DbContext.Todos.Update(existingTodo);
         await DbContext.SaveChangesAsync(cancellationToken);
+
+        return existingTodo;
     }
 }

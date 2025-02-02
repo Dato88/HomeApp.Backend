@@ -66,7 +66,6 @@ builder.Services.AddScoped<ITodoQueries, TodoQueries>();
 builder.Services.AddScoped<ITodoGroupCrud, TodoGroupQueries>();
 builder.Services.AddScoped<ITodoGroupTodoCrud, TodoGroupTodoQueries>();
 builder.Services.AddScoped<ITodoPersonCrud, TodoPersonQueries>();
-builder.Services.AddScoped<ITodoFacade, TodoFacade>();
 
 builder.Services.AddScoped<JwtHandler>();
 

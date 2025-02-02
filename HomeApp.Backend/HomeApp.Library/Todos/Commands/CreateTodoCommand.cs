@@ -1,13 +1,13 @@
-﻿using HomeApp.DataAccess.enums;
+﻿using System.ComponentModel.DataAnnotations;
+using HomeApp.DataAccess.enums;
+using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+using HomeApp.Library.Models.BaseModels;
+using MediatR;
 
-namespace HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+namespace HomeApp.Library.Todos.Commands;
 
-public class CreateToDoDto
+public class CreateTodoCommand : IRequest<BaseResponse<GetToDoDto>>
 {
-    public CreateToDoDto() { }
-
-    public CreateToDoDto(string name) => Name = name;
-
     public int? TodoGroupId { get; set; }
     public int PersonId { get; set; }
 
@@ -17,13 +17,16 @@ public class CreateToDoDto
 
     [Required] public TodoPriority Priority { get; set; }
 
-    public static implicit operator Todo(CreateToDoDto item) =>
+    public static implicit operator Todo(CreateTodoCommand item) =>
         new()
         {
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
             LastModified = DateTimeOffset.UtcNow,
+            TodoGroupTodo = item.TodoGroupId.HasValue
+                ? new TodoGroupTodo { TodoGroupId = item.TodoGroupId.Value }
+                : null,
             TodoPeople = new List<TodoPerson> { new() { PersonId = item.PersonId } }
         };
 }
