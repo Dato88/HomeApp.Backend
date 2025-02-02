@@ -18,11 +18,11 @@ public class DeleteTodoCommandHandler(
         var response = new BaseResponse<bool>();
         try
         {
-            response.Data = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
+            var isDeleted = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
 
-            if (response.Data)
+            if (isDeleted)
             {
-                response.Succcess = true;
+                response.Success = true;
                 response.Message = "Delete succeed!";
             }
         }

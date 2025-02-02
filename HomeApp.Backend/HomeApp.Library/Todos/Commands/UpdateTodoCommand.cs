@@ -5,7 +5,7 @@ using MediatR;
 
 namespace HomeApp.Library.Todos.Commands;
 
-public class UpdateTodoCommand : IRequest<BaseResponse<GetToDoDto>>
+public class UpdateTodoCommand : IRequest<BaseResponse<bool>>
 {
     public int Id { get; set; }
     public int? TodoGroupId { get; set; }

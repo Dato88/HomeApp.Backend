@@ -52,10 +52,12 @@ public class TodoCreateTests : BaseTodoCommandsTest
 
         // Act
         CancellationToken cancellationToken = new();
-        var createdTodo = await TodoCommands.CreateAsync(newTodo, cancellationToken);
+        var createdTodoId = await TodoCommands.CreateAsync(newTodo, cancellationToken);
+
+        var createdTodoExists = DbContext.Todos.Any(x => x.Id == createdTodoId);
 
         // Assert
-        Assert.Contains(createdTodo, DbContext.Todos);
+        Assert.True(createdTodoExists);
     }
 
     [Fact]

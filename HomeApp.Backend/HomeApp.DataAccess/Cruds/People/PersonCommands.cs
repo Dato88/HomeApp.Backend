@@ -20,7 +20,7 @@ public class PersonCommands(HomeAppContext dbContext, IPersonValidation personVa
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public override async Task<Person> UpdateAsync(Person person, CancellationToken cancellationToken)
+    public override async Task<bool> UpdateAsync(Person person, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(person);
 
@@ -44,10 +44,10 @@ public class PersonCommands(HomeAppContext dbContext, IPersonValidation personVa
         DbContext.People.Update(existingUser);
         await DbContext.SaveChangesAsync(cancellationToken);
 
-        return existingUser;
+        return true;
     }
 
-    public override async Task<Person> CreateAsync(Person person, CancellationToken cancellationToken)
+    public override async Task<int> CreateAsync(Person person, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(person);
 
@@ -60,6 +60,6 @@ public class PersonCommands(HomeAppContext dbContext, IPersonValidation personVa
 
         await DbContext.SaveChangesAsync(cancellationToken);
 
-        return person;
+        return person.Id;
     }
 }

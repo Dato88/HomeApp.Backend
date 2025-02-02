@@ -1,7 +1,6 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.Models.TodoDtos;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -9,20 +8,21 @@ namespace HomeApp.Library.Todos.Commands;
 
 public class UpdateTodoCommandHandler(
     ITodoCommands todoCommands,
-    ILogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, BaseResponse<GetToDoDto>>
+    ILogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, BaseResponse<bool>>
 {
     private readonly LoggerExtension<UpdateTodoCommandHandler> _logger = new(logger);
     private readonly ITodoCommands _todoCommands = todoCommands;
 
-    public async Task<BaseResponse<GetToDoDto>> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<bool>> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<GetToDoDto>();
+        var response = new BaseResponse<bool>();
         try
         {
-            response.Data = await _todoCommands.UpdateAsync(request, cancellationToken);
-            if (response.Data is not null)
+            var isUpdated = await _todoCommands.UpdateAsync(request, cancellationToken);
+
+            if (isUpdated)
             {
-                response.Succcess = true;
+                response.Success = true;
                 response.Message = "Update succeed!";
             }
         }

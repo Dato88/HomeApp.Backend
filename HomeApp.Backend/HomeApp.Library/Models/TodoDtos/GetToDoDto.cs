@@ -2,28 +2,22 @@
 
 namespace HomeApp.Library.Models.TodoDtos;
 
-public class GetToDoDto
+public record GetToDoDto(
+    int Id,
+    int? TodoGroupId,
+    string Name,
+    bool Done,
+    TodoPriority Priority,
+    DateTimeOffset LastModified
+)
 {
-    public GetToDoDto() { }
-
-    public GetToDoDto(string name) => Name = name;
-
-    public int Id { get; set; }
-    public int? TodoGroupId { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public bool Done { get; set; }
-
-    public TodoPriority Priority { get; set; }
-    public DateTimeOffset LastModified { get; set; }
-
     public static implicit operator GetToDoDto(Todo item) =>
-        new()
-        {
-            Id = item.Id,
-            TodoGroupId = item.TodoGroupTodo?.TodoGroupId,
-            Name = item.Name,
-            Done = item.Done,
-            Priority = item.Priority,
-            LastModified = item.LastModified
-        };
+        new(
+            item.Id,
+            item.TodoGroupTodo?.TodoGroupId,
+            item.Name,
+            item.Done,
+            item.Priority,
+            item.LastModified
+        );
 }

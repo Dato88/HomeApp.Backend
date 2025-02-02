@@ -5,32 +5,38 @@ namespace HomeApp.DataAccess.Cruds.Interfaces.Todos;
 public interface ITodoCommands
 {
     /// <summary>
-    ///     Creates a new Todo.
+    ///     Creates a new Todo item asynchronously.
     /// </summary>
-    /// <param name="todo">The Todo object to create.</param>
+    /// <param name="todo">The Todo item to create.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task representing the asynchronous operation, with the created Todo object as the result.</returns>
-    Task<Todo> CreateAsync(Todo todo, CancellationToken cancellationToken);
+    /// <returns>A task representing the asynchronous operation, returning the ID of the created Todo item.</returns>
+    Task<int> CreateAsync(Todo todo, CancellationToken cancellationToken);
 
     /// <summary>
-    ///     Deletes a Todo by its id.
+    ///     Deletes a Todo item by its ID asynchronously.
     /// </summary>
-    /// <param name="id">The id of the Todo to delete.</param>
+    /// <param name="id">The ID of the Todo item to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task representing the asynchronous deletion operation. Returns a boolean indicating success.</returns>
+    /// <returns>
+    ///     A task representing the asynchronous deletion operation. Returns <c>true</c> if the item was deleted
+    ///     successfully; otherwise, <c>false</c>.
+    /// </returns>
     /// <exception cref="System.InvalidOperationException">
-    ///     Thrown when the Todo with the given <paramref name="id" /> is not found.
+    ///     Thrown if the Todo item with the specified <paramref name="id" /> does not exist.
     /// </exception>
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
     /// <summary>
-    ///     Updates an existing Todo.
+    ///     Updates an existing Todo item asynchronously.
     /// </summary>
-    /// <param name="todo">The Todo object with updated information.</param>
+    /// <param name="todo">The Todo item containing updated information.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <returns>
+    ///     A task representing the asynchronous update operation. Returns <c>true</c> if the update was successful;
+    ///     otherwise, <c>false</c>.
+    /// </returns>
     /// <exception cref="System.InvalidOperationException">
-    ///     Thrown when the Todo with the given <paramref name="todo.Id" /> is not found.
+    ///     Thrown if the Todo item with the specified <paramref name="todo.Id" /> does not exist.
     /// </exception>
-    Task<Todo> UpdateAsync(Todo todo, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(Todo todo, CancellationToken cancellationToken);
 }

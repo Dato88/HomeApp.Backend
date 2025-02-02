@@ -5,7 +5,7 @@ namespace HomeApp.DataAccess.Cruds.Todos;
 
 public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {
-    public override async Task<Todo> CreateAsync(Todo todo, CancellationToken cancellationToken)
+    public override async Task<int> CreateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
@@ -16,7 +16,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(cancellationToken);
 
-        return todo;
+        return todo.Id;
     }
 
     public override async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         return true;
     }
 
-    public override async Task<Todo> UpdateAsync(Todo todo, CancellationToken cancellationToken)
+    public override async Task<bool> UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(todo);
         ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
@@ -52,6 +52,6 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         DbContext.Todos.Update(existingTodo);
         await DbContext.SaveChangesAsync(cancellationToken);
 
-        return existingTodo;
+        return true;
     }
 }

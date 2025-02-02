@@ -13,7 +13,7 @@ public interface IPersonCommands
     /// <exception cref="System.ArgumentNullException">
     ///     Thrown when the <paramref name="person" /> is null.
     /// </exception>
-    Task<Person> CreateAsync(Person person, CancellationToken cancellationToken);
+    Task<int> CreateAsync(Person person, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Deletes a Person by its user id.
@@ -38,5 +38,5 @@ public interface IPersonCommands
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Person with the given <paramref name="person.Id" /> is not found.
     /// </exception>
-    Task<Person> UpdateAsync(Person person, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(Person person, CancellationToken cancellationToken);
 }

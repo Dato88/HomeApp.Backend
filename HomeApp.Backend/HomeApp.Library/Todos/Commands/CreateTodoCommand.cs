@@ -6,7 +6,7 @@ using MediatR;
 
 namespace HomeApp.Library.Todos.Commands;
 
-public class CreateTodoCommand : IRequest<BaseResponse<GetToDoDto>>
+public class CreateTodoCommand : IRequest<BaseResponse<int>>
 {
     public int? TodoGroupId { get; set; }
     public int PersonId { get; set; }

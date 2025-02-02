@@ -25,7 +25,7 @@ public class GetUserPersonQueryHandler(
             if (person is not null)
             {
                 response.Data = person;
-                response.Succcess = true;
+                response.Success = true;
                 response.Message = "Query succeed!";
             }
         }

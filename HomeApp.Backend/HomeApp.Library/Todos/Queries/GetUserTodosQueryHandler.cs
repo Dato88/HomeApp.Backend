@@ -31,7 +31,7 @@ public class GetUserTodosQueryHandler(
             if (todos is not null)
             {
                 response.Data = todos.Select(s => (GetToDoDto)s);
-                response.Succcess = true;
+                response.Success = true;
                 response.Message = "Query succeed!";
             }
         }
@@ -39,7 +39,7 @@ public class GetUserTodosQueryHandler(
         {
             response.Message = ex.Message;
 
-            _logger.LogException($"Get todo failed: {ex}", DateTime.Now);
+            _logger.LogException($"Get todos failed: {ex}", DateTime.Now);
         }
 
         return response;
