@@ -1,6 +1,6 @@
 ﻿using HomeApp.DataAccess.enums;
 
-namespace HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
+namespace HomeApp.Library.Models.TodoDtos;
 
 public class GetToDoDto
 {

@@ -1,5 +1,4 @@
 ﻿using HomeApp.DataAccess.Models;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 
 namespace HomeApp.DataAccess.Cruds.Interfaces.Todos;
 
@@ -34,7 +33,7 @@ public interface ITodoQueries
     /// </param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
     /// <returns>A list of all TodoPersons.</returns>
-    Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken,
+    Task<IEnumerable<Todo>> GetAllAsync(int personId, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 }

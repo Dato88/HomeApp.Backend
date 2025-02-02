@@ -1,8 +1,8 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
+using HomeApp.Library.Models.TodoDtos;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -26,10 +26,11 @@ public class GetUserTodosQueryHandler(
         {
             var person = await _personFacade.GetUserPersonAsync(cancellationToken);
 
-            response.Data = await _todoQueries.GetAllAsync(person.Id, cancellationToken);
+            var todos = await _todoQueries.GetAllAsync(person.Id, cancellationToken);
 
-            if (response.Data is not null)
+            if (todos is not null)
             {
+                response.Data = todos.Select(s => (GetToDoDto)s);
                 response.Succcess = true;
                 response.Message = "Query succeed!";
             }

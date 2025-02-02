@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using HomeApp.DataAccess.Cruds.Interfaces.Todos;
 using HomeApp.DataAccess.Models;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds.Todos;
@@ -30,7 +29,7 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
         return todo;
     }
 
-    public override async Task<IEnumerable<GetToDoDto>> GetAllAsync(int personId, CancellationToken cancellationToken,
+    public override async Task<IEnumerable<Todo>> GetAllAsync(int personId, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
@@ -47,7 +46,7 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
         var todoPeople = await query.Where(x => x.TodoPeople.Select(s => s.PersonId).Contains(personId))
             .ToListAsync(cancellationToken);
 
-        return todoPeople.Select(s => (GetToDoDto)s);
+        return todoPeople;
     }
 
     protected override IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)

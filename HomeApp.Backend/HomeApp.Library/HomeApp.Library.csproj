@@ -18,4 +18,8 @@
         <ProjectReference Include="..\HomeApp.DataAccess\HomeApp.DataAccess.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="People\Queries\"/>
+    </ItemGroup>
+
 </Project>

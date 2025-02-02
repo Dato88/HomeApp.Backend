@@ -106,6 +106,6 @@ public class TodoReadTests : BaseTodoQueriesTest
         var todoDto = result.First();
 
         todoDto.Should().NotBeNull();
-        todoDto.TodoGroupId.Should().Be(todo.TodoGroupTodo.TodoGroupId);
+        todoDto.TodoGroupTodo.TodoGroupId.Should().Be(todo.TodoGroupTodo.TodoGroupId);
     }
 }

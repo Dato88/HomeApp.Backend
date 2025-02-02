@@ -1,5 +1,5 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
-using HomeApp.Library.Models.BaseModels;
+﻿using HomeApp.Library.Models.BaseModels;
+using HomeApp.Library.Models.TodoDtos;
 using MediatR;
 
 namespace HomeApp.Library.Todos.Queries;

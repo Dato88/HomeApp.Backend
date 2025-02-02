@@ -1,8 +1,8 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
+using HomeApp.Library.Models.TodoDtos;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
