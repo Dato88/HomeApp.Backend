@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
-namespace HomeApp.Library.Tests;
+namespace HomeApp.Library.Tests.Helper;
 
 public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

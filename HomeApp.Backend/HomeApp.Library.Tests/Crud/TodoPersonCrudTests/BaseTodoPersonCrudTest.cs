@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.TodoPersonCrudTests;
 
-public class BaseTodoPersonCrudTest : BaseTest
+public class BaseTodoPersonCrudTest
 {
     // protected readonly TodoPersonCrud _todoPersonCrud;
     //

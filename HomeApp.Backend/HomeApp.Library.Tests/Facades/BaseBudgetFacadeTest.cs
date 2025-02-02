@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Facades;
 
-public class BaseBudgetFacadeTest : BaseTest
+public class BaseBudgetFacadeTest
 {
     // protected readonly Mock<IBudgetCellCrud> _budgetCellCrudMock;
     // protected readonly Mock<IBudgetColumnCrud> _budgetColumnCrudMock;

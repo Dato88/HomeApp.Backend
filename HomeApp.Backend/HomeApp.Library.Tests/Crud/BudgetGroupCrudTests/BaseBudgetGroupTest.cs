@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.BudgetGroupCrudTests;
 
-public class BaseBudgetGroupTest : BaseTest
+public class BaseBudgetGroupTest
 {
     // protected readonly BudgetGroupCrud _budgetGroupCrud;
     //

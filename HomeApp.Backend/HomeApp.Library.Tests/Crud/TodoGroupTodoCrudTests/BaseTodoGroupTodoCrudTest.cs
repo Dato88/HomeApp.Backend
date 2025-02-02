@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.TodoGroupTodoCrudTests;
 
-public class BaseTodoGroupTodoCrudTest : BaseTest
+public class BaseTodoGroupTodoCrudTest
 {
     // protected readonly TodoGroupTodoCrud _todoGroupTodoCrud;
     //

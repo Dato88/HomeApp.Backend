@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.BudgetColumnCrudTests;
 
-public class BaseBudgetColumnTest : BaseTest
+public class BaseBudgetColumnTest
 {
     // protected readonly BudgetColumnCrud _budgetColumnCrud;
     //

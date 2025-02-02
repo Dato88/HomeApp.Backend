@@ -1,6 +1,6 @@
 ﻿namespace HomeApp.Library.Tests.Crud.BudgetRowCrudTests;
 
-public class BaseBudgetRowTest : BaseTest
+public class BaseBudgetRowTest
 {
     // protected readonly BudgetRowCrud _budgetRowCrud;
     //
