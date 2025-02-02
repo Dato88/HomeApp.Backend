@@ -76,19 +76,6 @@ public class TodoFacade(
         }
     }
 
-    public async Task<IEnumerable<GetToDoDto>> GetTodosAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
-
-            return await _todoQueries.GetAllAsync(person.Id, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            LogException($"Get todo failed: {ex}", DateTime.Now);
-
-            return null;
-        }
-    }
+    public Task<IEnumerable<GetToDoDto>> GetTodosAsync(CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

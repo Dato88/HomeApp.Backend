@@ -13,6 +13,7 @@ using HomeApp.Identity.Cruds.Interfaces;
 using HomeApp.Identity.Entities.Models;
 using HomeApp.Identity.Handler;
 using HomeApp.Identity.Utilities;
+using HomeApp.Library;
 using HomeApp.Library.Email;
 using HomeApp.Library.Facades;
 using HomeApp.Library.Facades.Interfaces;
@@ -95,6 +96,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
         })
     .AddEntityFrameworkStores<UserContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
     opt.TokenLifespan = TimeSpan.FromHours(1));

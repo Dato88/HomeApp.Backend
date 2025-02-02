@@ -1,5 +1,7 @@
 ﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.TodoDtos;
 using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Todos.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;
@@ -7,14 +9,15 @@ namespace HomeApp.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class TodoController(ITodoFacade todoFacade) : ControllerBase
+public class TodoController(IMediator mediator, ITodoFacade todoFacade) : ControllerBase
 {
+    private readonly IMediator _mediator = mediator;
     private readonly ITodoFacade _todoFacade = todoFacade;
 
     [HttpGet("todos")]
     public async Task<IActionResult> GetTodos(CancellationToken cancellationToken)
     {
-        var todos = await _todoFacade.GetTodosAsync(cancellationToken);
+        var todos = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
         return Ok(todos);
     }
