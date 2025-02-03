@@ -3,7 +3,4 @@ using MediatR;
 
 namespace HomeApp.Library.Todos.Commands;
 
-public class DeleteTodoCommand(int id) : IRequest<BaseResponse<bool>>
-{
-    public int Id { get; set; } = id;
-}
+public record DeleteTodoCommand(int Id) : IRequest<BaseResponse<bool>>;
