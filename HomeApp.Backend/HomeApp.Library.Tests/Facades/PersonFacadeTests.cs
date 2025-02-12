@@ -1,4 +1,6 @@
-﻿namespace HomeApp.Library.Tests.Facades;
+﻿using HomeApp.Library.People.Dtos;
+
+namespace HomeApp.Library.Tests.Facades;
 
 public class PersonFacadeTests : BasePersonFacadeTest
 {
@@ -29,20 +31,21 @@ public class PersonFacadeTests : BasePersonFacadeTest
     {
         // Arrange
         var email = "john.doe@example.com";
-        var personDto = new Person { Id = 1, Email = email, FirstName = "John", LastName = "Doe" };
+        var person = new Person
+        {
+            Email = email, FirstName = "John", LastName = "Doe", UserId = Guid.NewGuid().ToString()
+        };
 
-        PersonQueriesMock.Setup(x =>
-                x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
-            .ReturnsAsync(personDto);
+        DbContext.People.Add(person);
+        DbContext.SaveChanges();
+        PersonDto personDto = person;
 
         // Act
         var result = await PersonFacade.GetPersonByEmailAsync(email, default);
 
         // Assert
         result.Should().NotBeNull();
-        result.Email.Should().Be(email);
-        PersonQueriesMock.Verify(
-            x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()), Times.Once);
+        result.Should().BeEquivalentTo(personDto);
     }
 
     [Fact]
@@ -51,17 +54,11 @@ public class PersonFacadeTests : BasePersonFacadeTest
         // Arrange
         var email = "nonexistent@example.com";
 
-        PersonQueriesMock.Setup(x =>
-                x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
-            .ReturnsAsync((Person)null);
-
         // Act
         var result = await PersonFacade.GetPersonByEmailAsync(email, default);
 
         // Assert
         result.Should().BeNull();
-        PersonQueriesMock.Verify(
-            x => x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()), Times.Once);
     }
 
     [Fact]

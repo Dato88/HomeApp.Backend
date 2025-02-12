@@ -23,6 +23,16 @@ public class GetUserTodosQueryHandler(
         {
             var person = await _personFacade.GetUserPersonAsync(cancellationToken);
 
+            if (person == null)
+            {
+                response.Success = false;
+                response.Message = "Failed to get user!";
+
+                _logger.LogException("Get todos failed. User Person is Null.", DateTime.Now);
+
+                return response;
+            }
+
             var todos = await _todoQueries.GetAllAsync(person.Id, cancellationToken);
 
             if (todos.Any())

@@ -20,6 +20,16 @@ public class CreateTodoCommandHandler(
         {
             var person = await _personFacade.GetUserPersonAsync(cancellationToken);
 
+            if (person == null)
+            {
+                response.Success = false;
+                response.Message = "Failed to get user for create Todo!";
+
+                _logger.LogException("Create todos failed. User Person is Null.", DateTime.Now);
+
+                return response;
+            }
+
             request.PersonId = person.Id;
 
             response.Data = await _todoCommands.CreateAsync(request, cancellationToken);

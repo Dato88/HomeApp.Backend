@@ -59,7 +59,6 @@ builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
 builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
 builder.Services.AddScoped<IPersonCommands, PersonCommands>();
-builder.Services.AddScoped<IPersonQueries, PersonQueries>();
 builder.Services.AddScoped<IPersonFacade, PersonFacade>();
 builder.Services.AddScoped<ITodoCommands, TodoCommands>();
 builder.Services.AddScoped<ITodoQueries, TodoQueries>();

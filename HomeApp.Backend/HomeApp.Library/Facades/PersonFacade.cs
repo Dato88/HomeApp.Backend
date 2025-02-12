@@ -2,27 +2,30 @@
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.People.Dtos;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Facades;
 
 public class PersonFacade(
+    HomeAppContext dbContext,
     IPersonCommands personCommands,
-    IPersonQueries personQueries,
     IHttpContextAccessor httpContextAccessor,
     ILogger<PersonFacade> logger) : LoggerExtension<PersonFacade>(logger), IPersonFacade
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IPersonCommands _personCommands = personCommands;
-    private readonly IPersonQueries _personQueries = personQueries;
 
-    public async Task<PersonDto> GetUserPersonAsync(CancellationToken cancellationToken)
+    public async Task<PersonDto?> GetUserPersonAsync(CancellationToken cancellationToken)
     {
         try
         {
             var email = _httpContextAccessor.HttpContext.User.Identity.Name;
 
-            return await _personQueries.FindByEmailAsync(email, cancellationToken);
+            var person = await dbContext.People.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+
+            return person;
         }
         catch (Exception ex)
         {
@@ -32,11 +35,14 @@ public class PersonFacade(
         }
     }
 
-    public async Task<PersonDto> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<PersonDto?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
     {
         try
         {
-            return await _personQueries.FindByEmailAsync(email, cancellationToken);
+            var person = await dbContext.People.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+
+            return person;
         }
         catch (Exception ex)
         {

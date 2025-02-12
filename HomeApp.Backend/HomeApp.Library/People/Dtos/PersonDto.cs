@@ -12,6 +12,7 @@ public class PersonDto(int id, string? username, string firstName, string lastNa
     public string LastName { get; set; } = lastName;
     public string Email { get; set; } = email;
 
-    public static implicit operator PersonDto(Person item) =>
-        new(item.Id, item.Username, item.FirstName, item.LastName, item.Email);
+    public static implicit operator PersonDto?(Person? item) => item is not null
+        ? new PersonDto(item.Id, item.Username, item.FirstName, item.LastName, item.Email)
+        : null;
 }

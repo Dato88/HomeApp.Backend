@@ -11,7 +11,6 @@ public class BasePersonFacadeTest : BaseTest
     protected readonly Mock<ILogger<PersonFacade>> ILogger;
     protected readonly Mock<IPersonCommands> PersonCommandsMock;
     protected readonly PersonFacade PersonFacade;
-    protected readonly Mock<IPersonQueries> PersonQueriesMock;
 
     public BasePersonFacadeTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
@@ -23,15 +22,12 @@ public class BasePersonFacadeTest : BaseTest
         PersonCommandsMock.DefaultValue = DefaultValue.Mock;
         PersonCommandsMock.SetupAllProperties();
 
-        PersonQueriesMock = new Mock<IPersonQueries>();
-        PersonQueriesMock.DefaultValue = DefaultValue.Mock;
-        PersonQueriesMock.SetupAllProperties();
-
         ILogger = new Mock<ILogger<PersonFacade>>();
         ILogger.DefaultValue = DefaultValue.Mock;
         ILogger.SetupAllProperties();
 
-        PersonFacade = new PersonFacade(PersonCommandsMock.Object, PersonQueriesMock.Object, HttpContextAccessor.Object,
+        PersonFacade = new PersonFacade(DbContext, PersonCommandsMock.Object,
+            HttpContextAccessor.Object,
             ILogger.Object);
     }
 }
