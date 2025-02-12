@@ -1,5 +1,5 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
-using HomeApp.DataAccess.Tests.Helper;
+﻿using HomeApp.DataAccess.Tests.Helper;
+using HomeApp.Library.People.Dtos;
 
 namespace HomeApp.DataAccess.Tests.Cruds.People.Queries;
 

@@ -1,11 +1,10 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
-using HomeApp.Library.Facades.Interfaces;
+﻿using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
-using MediatR;
+using HomeApp.Library.People.Dtos;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.People.Commands;
+namespace HomeApp.Library.People.Queries;
 
 public class GetUserPersonQueryHandler(
     IPersonFacade personFacade,
@@ -28,10 +27,15 @@ public class GetUserPersonQueryHandler(
                 response.Success = true;
                 response.Message = "Query succeed!";
             }
+            else
+            {
+                response.Success = false;
+                response.Message = "No result found!";
+            }
         }
         catch (Exception ex)
         {
-            response.Message = ex.Message;
+            response.Error = ex;
 
             _logger.LogException($"Get person failed: {ex}", DateTime.Now);
         }

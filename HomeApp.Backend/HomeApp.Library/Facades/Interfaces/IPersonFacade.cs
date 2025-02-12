@@ -1,4 +1,4 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
+﻿using HomeApp.Library.People.Dtos;
 
 namespace HomeApp.Library.Facades.Interfaces;
 

@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
-
-namespace HomeApp.Library.Tests.Facades;
+﻿namespace HomeApp.Library.Tests.Facades;
 
 public class PersonFacadeTests : BasePersonFacadeTest
 {
@@ -31,7 +29,7 @@ public class PersonFacadeTests : BasePersonFacadeTest
     {
         // Arrange
         var email = "john.doe@example.com";
-        var personDto = new PersonDto(1, email, "John", "Doe", email);
+        var personDto = new Person { Id = 1, Email = email, FirstName = "John", LastName = "Doe" };
 
         PersonQueriesMock.Setup(x =>
                 x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
@@ -55,7 +53,7 @@ public class PersonFacadeTests : BasePersonFacadeTest
 
         PersonQueriesMock.Setup(x =>
                 x.FindByEmailAsync(email, It.IsAny<CancellationToken>(), true, It.IsAny<string[]>()))
-            .ReturnsAsync((PersonDto)null);
+            .ReturnsAsync((Person)null);
 
         // Act
         var result = await PersonFacade.GetPersonByEmailAsync(email, default);

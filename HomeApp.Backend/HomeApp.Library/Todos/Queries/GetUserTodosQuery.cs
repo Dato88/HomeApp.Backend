@@ -1,6 +1,5 @@
 ﻿using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.Models.TodoDtos;
-using MediatR;
+using HomeApp.Library.Todos.Dtos;
 
 namespace HomeApp.Library.Todos.Queries;
 

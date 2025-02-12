@@ -1,6 +1,6 @@
-﻿using HomeApp.DataAccess.enums;
+﻿using HomeApp.DataAccess.Enums;
 
-namespace HomeApp.Library.Models.TodoDtos;
+namespace HomeApp.Library.Todos.Dtos;
 
 public record GetToDoDto(
     int Id,

@@ -1,4 +1,4 @@
-﻿using HomeApp.DataAccess.enums;
+﻿using HomeApp.DataAccess.Enums;
 using HomeApp.DataAccess.Tests.Helper;
 using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
 

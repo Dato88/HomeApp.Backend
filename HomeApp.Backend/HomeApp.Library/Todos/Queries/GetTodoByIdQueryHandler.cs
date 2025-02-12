@@ -1,8 +1,7 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.Models.TodoDtos;
-using MediatR;
+using HomeApp.Library.Todos.Dtos;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Todos.Queries;
@@ -29,10 +28,15 @@ public class GetTodoByIdQueryHandler(
                 response.Success = true;
                 response.Message = "Query succeed!";
             }
+            else
+            {
+                response.Success = false;
+                response.Message = "No result found!";
+            }
         }
         catch (Exception ex)
         {
-            response.Message = ex.Message;
+            response.Error = ex;
 
             _logger.LogException($"Get todo failed: {ex}", DateTime.Now);
         }

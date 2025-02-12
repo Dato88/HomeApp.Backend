@@ -1,4 +1,4 @@
-﻿using HomeApp.Library.People.Commands;
+﻿using HomeApp.Library.People.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 

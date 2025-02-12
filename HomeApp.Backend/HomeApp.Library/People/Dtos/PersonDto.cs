@@ -1,4 +1,4 @@
-﻿namespace HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
+﻿namespace HomeApp.Library.People.Dtos;
 
 public class PersonDto(int id, string? username, string firstName, string lastName, string email)
 {

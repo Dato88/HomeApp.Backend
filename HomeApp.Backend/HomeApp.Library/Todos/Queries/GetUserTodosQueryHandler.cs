@@ -2,8 +2,7 @@
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.Models.TodoDtos;
-using MediatR;
+using HomeApp.Library.Todos.Dtos;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Todos.Queries;
@@ -28,16 +27,21 @@ public class GetUserTodosQueryHandler(
 
             var todos = await _todoQueries.GetAllAsync(person.Id, cancellationToken);
 
-            if (todos is not null)
+            if (todos.Any())
             {
                 response.Data = todos.Select(s => (GetToDoDto)s);
                 response.Success = true;
                 response.Message = "Query succeed!";
             }
+            else
+            {
+                response.Success = false;
+                response.Message = "No results found!";
+            }
         }
         catch (Exception ex)
         {
-            response.Message = ex.Message;
+            response.Error = ex;
 
             _logger.LogException($"Get todos failed: {ex}", DateTime.Now);
         }

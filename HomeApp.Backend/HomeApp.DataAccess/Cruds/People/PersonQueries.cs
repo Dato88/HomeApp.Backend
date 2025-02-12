@@ -1,14 +1,13 @@
 ﻿using System.Linq.Expressions;
 using HomeApp.DataAccess.Cruds.Interfaces.People;
 using HomeApp.DataAccess.Models;
-using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeApp.DataAccess.Cruds.People;
 
 public class PersonQueries(HomeAppContext dbContext) : BaseQueries<Person>(dbContext), IPersonQueries
 {
-    public override async Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken,
+    public override async Task<Person> FindByIdAsync(int id, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
@@ -28,7 +27,7 @@ public class PersonQueries(HomeAppContext dbContext) : BaseQueries<Person>(dbCon
         return user;
     }
 
-    public async Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken,
+    public async Task<Person> FindByEmailAsync(string email, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {

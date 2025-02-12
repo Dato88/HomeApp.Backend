@@ -1,4 +1,4 @@
-﻿using HomeApp.DataAccess.Models.Data_Transfer_Objects.PersonDtos;
+﻿using HomeApp.DataAccess.Models;
 
 namespace HomeApp.DataAccess.Cruds.Interfaces.People;
 
@@ -14,11 +14,11 @@ public interface IPersonQueries
     ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
     ///     is true.
     /// </param>
-    /// <returns>The found Person as a <see cref="PersonDto" />.</returns>
+    /// <returns>The found Person as a <see cref="Person" />.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Person with the given <paramref name="id" /> is not found.
     /// </exception>
-    Task<PersonDto> FindByIdAsync(int id, CancellationToken cancellationToken,
+    Task<Person> FindByIdAsync(int id, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 
@@ -32,11 +32,11 @@ public interface IPersonQueries
     ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
     ///     is true.
     /// </param>
-    /// <returns>The found Person as a <see cref="PersonDto" />.</returns>
+    /// <returns>The found Person as a <see cref="Person" />.</returns>
     /// <exception cref="System.InvalidOperationException">
     ///     Thrown when the Person with the given <paramref name="email" /> is not found.
     /// </exception>
-    Task<PersonDto> FindByEmailAsync(string email, CancellationToken cancellationToken, bool asNoTracking = true,
+    Task<Person> FindByEmailAsync(string email, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
@@ -49,7 +49,7 @@ public interface IPersonQueries
     ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
     ///     is true.
     /// </param>
-    /// <returns>A list of all Persons as <see cref="PersonDto" /> objects.</returns>
+    /// <returns>A list of all Persons as <see cref="Person" /> objects.</returns>
     Task GetAllAsync(int id, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);
 }

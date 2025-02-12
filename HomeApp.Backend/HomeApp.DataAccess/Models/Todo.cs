@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using HomeApp.DataAccess.enums;
+using HomeApp.DataAccess.Enums;
 
 namespace HomeApp.DataAccess.Models;
 

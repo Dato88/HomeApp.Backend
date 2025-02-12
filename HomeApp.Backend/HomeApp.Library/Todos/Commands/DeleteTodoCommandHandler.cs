@@ -1,7 +1,6 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
 using HomeApp.Library.Logger;
 using HomeApp.Library.Models.BaseModels;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Todos.Commands;

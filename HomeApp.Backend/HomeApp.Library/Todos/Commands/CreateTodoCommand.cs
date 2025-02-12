@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using HomeApp.DataAccess.enums;
+using HomeApp.DataAccess.Enums;
 using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.Models.TodoDtos;
-using MediatR;
 
 namespace HomeApp.Library.Todos.Commands;
 
