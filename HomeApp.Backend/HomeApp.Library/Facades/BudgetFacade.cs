@@ -1,6 +1,5 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces;
 using HomeApp.Library.Facades.Interfaces;
-using HomeApp.Library.Logger;
 using HomeApp.Library.Models;
 using Microsoft.Extensions.Logging;
 

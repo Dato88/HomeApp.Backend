@@ -5,7 +5,6 @@ using HomeApp.Identity.Entities.Models;
 using HomeApp.Library.Email;
 using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 

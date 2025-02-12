@@ -1,7 +1,5 @@
 ﻿using HomeApp.Library.Todos.Commands;
 using HomeApp.Library.Todos.Queries;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;
 

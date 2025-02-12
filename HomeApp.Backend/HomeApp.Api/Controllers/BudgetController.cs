@@ -1,6 +1,5 @@
 ﻿using HomeApp.DataAccess.Models;
 using HomeApp.Library.Facades.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;
 

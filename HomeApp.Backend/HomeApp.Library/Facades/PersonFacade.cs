@@ -1,6 +1,5 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.People;
 using HomeApp.Library.Facades.Interfaces;
-using HomeApp.Library.Logger;
 using HomeApp.Library.People.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

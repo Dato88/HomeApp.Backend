@@ -1,5 +1,4 @@
 ﻿using HomeApp.Library.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;
 

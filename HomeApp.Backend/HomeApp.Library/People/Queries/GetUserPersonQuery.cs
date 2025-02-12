@@ -1,5 +1,4 @@
-﻿using HomeApp.Library.Models.BaseModels;
-using HomeApp.Library.People.Dtos;
+﻿using HomeApp.Library.People.Dtos;
 
 namespace HomeApp.Library.People.Queries;
 

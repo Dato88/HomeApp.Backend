@@ -1,6 +1,4 @@
 ﻿using HomeApp.Library.Facades.Interfaces;
-using HomeApp.Library.Logger;
-using HomeApp.Library.Models.BaseModels;
 using HomeApp.Library.People.Dtos;
 using Microsoft.Extensions.Logging;
 

@@ -1,6 +1,4 @@
 ﻿using HomeApp.Library.People.Queries;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
 
 namespace HomeApp.Api.Controllers;
 
