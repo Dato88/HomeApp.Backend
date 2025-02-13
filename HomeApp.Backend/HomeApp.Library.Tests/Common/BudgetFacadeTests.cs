@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Library.Tests.Facades;
+﻿namespace HomeApp.Library.Tests.Common;
 
 public class BudgetFacadeTests : BaseBudgetFacadeTest
 {

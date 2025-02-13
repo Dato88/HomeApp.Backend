@@ -2,8 +2,8 @@
 using HomeApp.Identity.Entities.DataTransferObjects.Register;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using HomeApp.Identity.Entities.Models;
+using HomeApp.Library.Common.Interfaces;
 using HomeApp.Library.Email;
-using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -15,12 +15,12 @@ namespace HomeApp.Api.Controllers;
 public class AccountsController(
     IUserCrud userCrud,
     IEmailSender emailSender,
-    IPersonFacade personFacade,
+    ICommonPersonCommands commonPersonCommands,
     UserManager<User> userManager)
     : ControllerBase
 {
+    private readonly ICommonPersonCommands _commonPersonCommands = commonPersonCommands;
     private readonly IEmailSender _emailSender = emailSender;
-    private readonly IPersonFacade _personFacade = personFacade;
     private readonly IUserCrud _userCrud = userCrud;
     private readonly UserManager<User> _userManager = userManager;
 
@@ -87,7 +87,7 @@ public class AccountsController(
             return BadRequest(new RegistrationResponseDto { Errors = errors });
         }
 
-        await _personFacade.CreatePersonAsync(result.Item2, cancellationToken);
+        await _commonPersonCommands.CreatePersonAsync(result.Item2, cancellationToken);
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
         var param = new Dictionary<string, string?> { { "token", token }, { "email", registerUserDto.Email } };

@@ -1,15 +1,15 @@
-﻿using HomeApp.Library.Facades.Interfaces;
+﻿using HomeApp.Library.Common.Interfaces;
 using HomeApp.Library.People.Dtos;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.People.Queries;
 
 public class GetUserPersonQueryHandler(
-    IPersonFacade personFacade,
+    ICommonPersonQueries commonPersonQueries,
     ILogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonDto>>
 {
+    private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
     private readonly LoggerExtension<GetUserPersonQueryHandler> _logger = new(logger);
-    private readonly IPersonFacade _personFacade = personFacade;
 
     public async Task<BaseResponse<PersonDto>> Handle(GetUserPersonQuery request,
         CancellationToken cancellationToken)
@@ -17,7 +17,7 @@ public class GetUserPersonQueryHandler(
         var response = new BaseResponse<PersonDto>();
         try
         {
-            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+            var person = await _commonPersonQueries.GetUserPersonAsync(cancellationToken);
 
             if (person is not null)
             {

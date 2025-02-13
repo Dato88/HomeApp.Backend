@@ -1,29 +1,29 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces;
-using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Common.Interfaces;
 using HomeApp.Library.Models;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Facades;
+namespace HomeApp.Library.Common;
 
 public class BudgetFacade(
     IBudgetCellCrud budgetCellCrud,
     IBudgetColumnCrud budgetColumnCrud,
     IBudgetGroupCrud budgetGroupCrud,
     IBudgetRowCrud budgetRowCrud,
-    IPersonFacade personFacade,
+    ICommonPersonQueries commonPersonQueries,
     ILogger<BudgetFacade> logger) : LoggerExtension<BudgetFacade>(logger), IBudgetFacade
 {
     private readonly IBudgetCellCrud _budgetCellCrud = budgetCellCrud;
     private readonly IBudgetColumnCrud _budgetColumnCrud = budgetColumnCrud;
     private readonly IBudgetGroupCrud _budgetGroupCrud = budgetGroupCrud;
     private readonly IBudgetRowCrud _budgetRowCrud = budgetRowCrud;
-    private readonly IPersonFacade _personFacade = personFacade;
+    private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
 
     public async Task<Budget?> GetBudgetAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+            var person = await _commonPersonQueries.GetUserPersonAsync(cancellationToken);
 
             Budget selectedBudget = new()
             {

@@ -1,5 +1,5 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Common.Interfaces;
 using HomeApp.Library.Todos.Dtos;
 using Microsoft.Extensions.Logging;
 
@@ -7,12 +7,12 @@ namespace HomeApp.Library.Todos.Queries;
 
 public class GetUserTodosQueryHandler(
     ITodoQueries todoQueries,
-    IPersonFacade personFacade,
+    ICommonPersonQueries commonPersonQueries,
     ILogger<GetUserTodosQueryHandler> logger)
     : IRequestHandler<GetUserTodosQuery, BaseResponse<IEnumerable<GetToDoDto>>>
 {
+    private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
     private readonly LoggerExtension<GetUserTodosQueryHandler> _logger = new(logger);
-    private readonly IPersonFacade _personFacade = personFacade;
     private readonly ITodoQueries _todoQueries = todoQueries;
 
     public async Task<BaseResponse<IEnumerable<GetToDoDto>>> Handle(GetUserTodosQuery request,
@@ -21,7 +21,7 @@ public class GetUserTodosQueryHandler(
         var response = new BaseResponse<IEnumerable<GetToDoDto>>();
         try
         {
-            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+            var person = await _commonPersonQueries.GetUserPersonAsync(cancellationToken);
 
             if (person == null)
             {

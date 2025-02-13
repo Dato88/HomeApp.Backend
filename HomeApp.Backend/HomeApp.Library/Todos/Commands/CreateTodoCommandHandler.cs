@@ -1,16 +1,16 @@
 ﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace HomeApp.Library.Todos.Commands;
 
 public class CreateTodoCommandHandler(
-    IPersonFacade personFacade,
+    ICommonPersonQueries commonPersonQueries,
     ITodoCommands todoCommands,
     ILogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, BaseResponse<int>>
 {
+    private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
     private readonly LoggerExtension<CreateTodoCommandHandler> _logger = new(logger);
-    private readonly IPersonFacade _personFacade = personFacade;
     private readonly ITodoCommands _todoCommands = todoCommands;
 
     public async Task<BaseResponse<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
@@ -18,7 +18,7 @@ public class CreateTodoCommandHandler(
         var response = new BaseResponse<int>();
         try
         {
-            var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+            var person = await _commonPersonQueries.GetUserPersonAsync(cancellationToken);
 
             if (person == null)
             {

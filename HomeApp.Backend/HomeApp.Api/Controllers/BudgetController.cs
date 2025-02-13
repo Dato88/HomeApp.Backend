@@ -1,5 +1,5 @@
 ﻿using HomeApp.DataAccess.Models;
-using HomeApp.Library.Facades.Interfaces;
+using HomeApp.Library.Common.Interfaces;
 
 namespace HomeApp.Api.Controllers;
 

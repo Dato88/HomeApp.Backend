@@ -1,6 +1,6 @@
 ﻿using HomeApp.Library.Models;
 
-namespace HomeApp.Library.Facades.Interfaces;
+namespace HomeApp.Library.Common.Interfaces;
 
 public interface IBudgetFacade
 {
