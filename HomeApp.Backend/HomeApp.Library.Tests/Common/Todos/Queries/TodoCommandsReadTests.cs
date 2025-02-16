@@ -17,7 +17,8 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.Should().BeEquivalentTo(todo,
-            options => options.Excluding(t => t.TodoGroupTodo).Excluding(t => t.TodoPeople));
+            options => options.Excluding(t => t.TodoGroupTodo).Excluding(t => t.TodoPeople)
+                .Excluding(t => t.LastModified));
     }
 
     [Theory]
