@@ -3,9 +3,9 @@ using HomeApp.Library.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Tests.Common;
+namespace HomeApp.Library.Tests.Common.People;
 
-public class BasePersonFacadeTest : BaseTest
+public class BaseCommonPersonTest : BaseTest
 {
     protected readonly Mock<ILogger<CommonPersonCommands>> CommandsILogger;
     protected readonly CommonPersonCommands CommonPersonCommands;
@@ -14,7 +14,7 @@ public class BasePersonFacadeTest : BaseTest
     protected readonly Mock<IPersonValidation> PersonValidationMock;
     protected readonly Mock<ILogger<CommonPersonQueries>> QuerriesILogger;
 
-    public BasePersonFacadeTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
+    public BaseCommonPersonTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
         HttpContextAccessor = new Mock<IHttpContextAccessor>();
         HttpContextAccessor.DefaultValue = DefaultValue.Mock;
