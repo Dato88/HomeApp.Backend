@@ -10,7 +10,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
     public async Task UpdateAsync_UpdatesTodoInContext()
     {
         // Arrange
-        var initialLastModified = DateTimeOffset.UtcNow.AddDays(-1);
+        var initialLastModified = DateTimeOffset.UtcNow.AddDays(-7);
 
         var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId(null, initialLastModified);
 
