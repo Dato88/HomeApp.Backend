@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.DataAccess.Cruds;
+﻿namespace HomeApp.Library.Common;
 
 public abstract class BaseQueries<T>(HomeAppContext dbContext) : BaseContext(dbContext)
 {
