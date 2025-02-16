@@ -1,35 +1,23 @@
-﻿using HomeApp.DataAccess.Enums;
-using HomeApp.DataAccess.Tests.Helper;
-using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
+﻿using HomeApp.DataAccess;
 
-namespace HomeApp.DataAccess.Tests.Cruds.Todos.Queries;
+namespace HomeApp.Library.Tests.Common.Todos.Queries;
 
 public class TodoReadTests : BaseTodoQueriesTest
 {
-    private readonly CreateDummyTodos _createDummyTodos;
-
-    public TodoReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _createDummyTodos = new CreateDummyTodos(unitTestingApiFactory);
+    public TodoReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 
     [Fact]
     public async Task FindByIdAsync_ReturnsTodo_WhenExists()
     {
         // Arrange
-        var todo = new Todo
-        {
-            Name = "Test Todo",
-            Done = false,
-            Priority = TodoPriority.Low,
-            LastModified = DateTimeOffset.UtcNow.AddDays(1)
-        };
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync();
+        var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
 
         // Act
         var result = await TodoQueries.FindByIdAsync(todo.Id, default);
 
         // Assert
-        result.Should().BeEquivalentTo(todo);
+        result.Should().BeEquivalentTo(todo,
+            options => options.Excluding(t => t.TodoGroupTodo).Excluding(t => t.TodoPeople));
     }
 
     [Theory]
@@ -60,9 +48,9 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_ReturnsTodosForSpecificPerson()
     {
         // Arrange
-        var todo1 = await _createDummyTodos.CreateOneDummyTodo();
+        var todo1 = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
         var personId = todo1.TodoPeople.First().PersonId;
-        var todo2 = await _createDummyTodos.CreateOneDummyTodo(personId);
+        var todo2 = await CreateDummyTodos.CreateOneDummyTodoWithPersonId(personId);
 
         // Act
         var result = await TodoQueries.GetAllAsync(personId, default);
@@ -95,7 +83,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_IncludesTodoAndTodoGroupTodo()
     {
         // Arrange
-        var todo = await _createDummyTodos.CreateOneDummyTodoWithGroupAndReturnsTodo();
+        var todo = await CreateDummyTodos.CreateOneDummyTodoWithGroupAndReturnsTodo();
         var personId = todo.TodoPeople.First().PersonId;
 
         // Act

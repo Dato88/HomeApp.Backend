@@ -1,4 +1,4 @@
-﻿namespace HomeApp.Library.Common.Interfaces;
+﻿namespace HomeApp.Library.Common.Interfaces.People;
 
 public interface ICommonPersonCommands
 {

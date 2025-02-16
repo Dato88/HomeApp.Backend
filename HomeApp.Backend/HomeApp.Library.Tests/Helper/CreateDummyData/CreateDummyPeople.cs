@@ -22,9 +22,9 @@ public class CreateDummyPeople : BaseTest
     {
         await Task.Delay(0);
 
-        var newPerson = _personFaker.Generate();
+        var person = _personFaker.Generate();
 
-        return newPerson;
+        return person;
     }
 
     public async Task<Person> CreateDummyPersonAsync()

@@ -1,4 +1,4 @@
-﻿using HomeApp.Library.Common.Interfaces;
+﻿using HomeApp.Library.Common.Interfaces.People;
 using HomeApp.Library.People.Dtos;
 using Microsoft.Extensions.Logging;
 

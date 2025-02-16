@@ -1,10 +1,10 @@
-﻿using HomeApp.Library.Common.Interfaces;
+﻿using HomeApp.Library.Common.Interfaces.People;
 using HomeApp.Library.People.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Common;
+namespace HomeApp.Library.Common.People;
 
 public class CommonPersonQueries(
     HomeAppContext dbContext,

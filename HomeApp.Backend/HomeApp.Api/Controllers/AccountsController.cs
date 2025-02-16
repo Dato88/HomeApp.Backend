@@ -2,7 +2,7 @@
 using HomeApp.Identity.Entities.DataTransferObjects.Register;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using HomeApp.Identity.Entities.Models;
-using HomeApp.Library.Common.Interfaces;
+using HomeApp.Library.Common.Interfaces.People;
 using HomeApp.Library.Email;
 using HomeApp.Library.Models.Email;
 using Microsoft.AspNetCore.Identity;

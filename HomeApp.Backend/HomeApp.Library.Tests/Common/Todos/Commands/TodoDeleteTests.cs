@@ -1,20 +1,16 @@
-﻿using HomeApp.DataAccess.Tests.Helper;
-using HomeApp.DataAccess.Tests.Helper.CreateDummyData;
+﻿using HomeApp.DataAccess;
 
-namespace HomeApp.DataAccess.Tests.Cruds.Todos.Commands;
+namespace HomeApp.Library.Tests.Common.Todos.Commands;
 
 public class TodoDeleteTests : BaseTodoCommandsTest
 {
-    private readonly CreateDummyTodos _createDummyTodos;
-
-    public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _createDummyTodos = new CreateDummyTodos(unitTestingApiFactory);
+    public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 
     [Fact]
     public async Task DeleteAsync_ReturnsTrue_WhenTodoExists()
     {
         // Arrange
-        var todo = await _createDummyTodos.CreateOneDummyTodo();
+        var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
 
         // Act
         CancellationToken cancellationToken = new();

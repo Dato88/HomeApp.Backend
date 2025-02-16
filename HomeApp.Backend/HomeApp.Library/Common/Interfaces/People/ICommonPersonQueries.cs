@@ -1,6 +1,6 @@
 ﻿using HomeApp.Library.People.Dtos;
 
-namespace HomeApp.Library.Common.Interfaces;
+namespace HomeApp.Library.Common.Interfaces.People;
 
 public interface ICommonPersonQueries
 {

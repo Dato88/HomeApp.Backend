@@ -1,6 +1,4 @@
-﻿using HomeApp.DataAccess.Models;
-
-namespace HomeApp.DataAccess.Cruds.Interfaces.Todos;
+﻿namespace HomeApp.Library.Common.Interfaces.Todos;
 
 public interface ITodoCommands
 {

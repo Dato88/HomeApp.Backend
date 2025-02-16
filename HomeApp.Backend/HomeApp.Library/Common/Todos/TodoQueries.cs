@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
-using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.DataAccess.Models;
+using HomeApp.DataAccess;
+using HomeApp.DataAccess.Cruds;
+using HomeApp.Library.Common.Interfaces.Todos;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeApp.DataAccess.Cruds.Todos;
+namespace HomeApp.Library.Common.Todos;
 
 public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
 {

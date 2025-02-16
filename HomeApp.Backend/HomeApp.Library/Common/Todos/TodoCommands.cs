@@ -1,7 +1,8 @@
-﻿using HomeApp.DataAccess.Cruds.Interfaces.Todos;
-using HomeApp.DataAccess.Models;
+﻿using HomeApp.DataAccess;
+using HomeApp.DataAccess.Cruds;
+using HomeApp.Library.Common.Interfaces.Todos;
 
-namespace HomeApp.DataAccess.Cruds.Todos;
+namespace HomeApp.Library.Common.Todos;
 
 public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {

@@ -1,9 +1,9 @@
 ﻿using HomeApp.DataAccess;
 using HomeApp.DataAccess.Validations.Interfaces;
-using HomeApp.Library.Common.Interfaces;
+using HomeApp.Library.Common.Interfaces.People;
 using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Common;
+namespace HomeApp.Library.Common.People;
 
 public class CommonPersonCommands(
     HomeAppContext dbContext,
