@@ -19,6 +19,6 @@ public class UpdateTodoCommand : IRequest<BaseResponse<bool>>
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            LastModified = DateTimeOffset.Now
+            LastModified = DateTime.Now
         };
 }

@@ -20,7 +20,7 @@ public class CreateTodoCommand : IRequest<BaseResponse<int>>
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            LastModified = DateTimeOffset.UtcNow,
+            LastModified = DateTime.UtcNow,
             TodoGroupTodo = item.TodoGroupId.HasValue
                 ? new TodoGroupTodo { TodoGroupId = item.TodoGroupId.Value }
                 : null,

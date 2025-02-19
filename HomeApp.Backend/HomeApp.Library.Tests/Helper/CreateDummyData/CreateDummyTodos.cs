@@ -31,14 +31,14 @@ public class CreateDummyTodos : BaseTest
         return todo;
     }
 
-    public async Task<Todo> CreateOneDummyTodoWithPersonId(int? personId = null, DateTimeOffset? dateTimeOffset = null)
+    public async Task<Todo> CreateOneDummyTodoWithPersonId(int? personId = null, DateTime? dateTime = null)
     {
         if (personId is null)
             personId = (await _createDummyPeople.CreateDummyPersonAsync()).Id;
 
         var todo = await GenereateDummyTodo(personId);
 
-        if (dateTimeOffset.HasValue) todo.LastModified = dateTimeOffset.Value;
+        if (dateTime.HasValue) todo.LastModified = dateTime.Value;
 
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();

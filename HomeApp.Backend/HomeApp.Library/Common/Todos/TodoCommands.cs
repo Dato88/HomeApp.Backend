@@ -1,5 +1,4 @@
 ﻿using HomeApp.DataAccess;
-using HomeApp.DataAccess.Cruds;
 using HomeApp.Library.Common.Interfaces.Todos;
 
 namespace HomeApp.Library.Common.Todos;
@@ -48,7 +47,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.LastModified = DateTimeOffset.UtcNow;
+        existingTodo.LastModified = DateTime.UtcNow;
 
         DbContext.Todos.Update(existingTodo);
         await DbContext.SaveChangesAsync(cancellationToken);
