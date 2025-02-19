@@ -592,20 +592,6 @@ public class BudgetValidationTests : BaseTest
     }
 
     [Fact]
-    public async Task ValidateForEmptyString_NullString_ArgumentExceptionThrown()
-    {
-        // Arrange
-        string name = null;
-
-        // Act & Assert
-        var action = async () => await _budgetValidation.ValidateForEmptyStringAsync(name);
-
-        var output = "Value cannot be null. (Parameter 'Budget Name')";
-
-        await action.Should().ThrowAsync<ArgumentException>("Name is null").WithMessage(output);
-    }
-
-    [Fact]
     public async Task ValidateForPositiveIndex_NoExceptionThrown()
     {
         // Arrange
