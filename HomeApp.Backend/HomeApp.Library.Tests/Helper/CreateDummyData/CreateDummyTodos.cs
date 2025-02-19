@@ -43,9 +43,7 @@ public class CreateDummyTodos : BaseTest
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();
 
-        var result = await DbContext.Todos.FindAsync(todo.Id);
-
-        return result ?? new Todo();
+        return todo;
     }
 
     public async Task<Todo> CreateOneDummyTodoWithGroupAndReturnsTodo(DateTimeOffset? dateTimeOffset = null)
