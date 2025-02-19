@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using HomeApp.DataAccess.enums;
+using HomeApp.DataAccess.Enums;
 
 namespace HomeApp.DataAccess.Models;
 
@@ -12,7 +12,7 @@ public class Todo : BaseClass
 
     [Required] public TodoPriority Priority { get; set; }
 
-    public DateTimeOffset LastModified { get; set; } = DateTimeOffset.Now;
+    public DateTime LastModified { get; set; } = DateTime.UtcNow;
 
     public virtual TodoGroupTodo TodoGroupTodo { get; set; }
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();

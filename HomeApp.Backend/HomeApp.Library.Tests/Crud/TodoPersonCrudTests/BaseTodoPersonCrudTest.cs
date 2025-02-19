@@ -1,8 +1,9 @@
 ﻿namespace HomeApp.Library.Tests.Crud.TodoPersonCrudTests;
 
-public class BaseTodoPersonCrudTest : BaseTest
+public class BaseTodoPersonCrudTest
 {
-    protected readonly TodoPersonCrud _todoPersonCrud;
-
-    public BaseTodoPersonCrudTest() => _todoPersonCrud = new TodoPersonCrud(_context);
+    // protected readonly TodoPersonCrud _todoPersonCrud;
+    //
+    // public BaseTodoPersonCrudTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
+    //     _todoPersonCrud = new TodoPersonCrud(DbContext);
 }

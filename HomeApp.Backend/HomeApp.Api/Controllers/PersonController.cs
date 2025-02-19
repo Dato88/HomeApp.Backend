@@ -1,20 +1,21 @@
-﻿using HomeApp.Library.Facades.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using HomeApp.Library.People.Queries;
 
 namespace HomeApp.Api.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("[controller]")]
-public class PersonController(IPersonFacade personFacade) : ControllerBase
+public class PersonController(IMediator mediator) : ControllerBase
 {
-    private readonly IPersonFacade _personFacade = personFacade;
+    private readonly IMediator _mediator = mediator;
 
     [HttpGet("person")]
     public async Task<IActionResult> GetPerson(CancellationToken cancellationToken)
     {
-        var person = await _personFacade.GetUserPersonAsync(cancellationToken);
+        var response = await _mediator.Send(new GetUserPersonQuery(), cancellationToken);
 
-        return Ok(person);
+        if (response.Success) return Ok(response);
+
+        return BadRequest(response);
     }
 }

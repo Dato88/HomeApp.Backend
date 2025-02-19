@@ -13,7 +13,7 @@ namespace HomeApp.DataAccess.Migrations
 {
     [DbContext(typeof(HomeAppContext))]
     [Migration("20241215104930_Person Update")]
-    partial class PersonUpdate
+    partial class PersonCommandsUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

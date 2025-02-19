@@ -1,4 +1,4 @@
-﻿namespace HomeApp.DataAccess.enums;
+﻿namespace HomeApp.DataAccess.Enums;
 
 public enum TodoPriority
 {

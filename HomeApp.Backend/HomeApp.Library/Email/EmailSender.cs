@@ -1,5 +1,4 @@
 ﻿using System.Security.Authentication;
-using HomeApp.Library.Logger;
 using HomeApp.Library.Models.Email;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;

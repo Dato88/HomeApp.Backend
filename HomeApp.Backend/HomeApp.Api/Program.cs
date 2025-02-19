@@ -1,18 +1,23 @@
 ﻿using System.Text;
+using HomeApp.DataAccess.Cruds;
+using HomeApp.DataAccess.Cruds.Interfaces;
 using HomeApp.DataAccess.Models;
+using HomeApp.DataAccess.Validations;
+using HomeApp.DataAccess.Validations.Interfaces;
 using HomeApp.Identity.Cruds;
 using HomeApp.Identity.Cruds.Interfaces;
 using HomeApp.Identity.Entities.Models;
 using HomeApp.Identity.Handler;
 using HomeApp.Identity.Utilities;
-using HomeApp.Library.Cruds;
-using HomeApp.Library.Cruds.Interfaces;
+using HomeApp.Library;
+using HomeApp.Library.Common;
+using HomeApp.Library.Common.Interfaces;
+using HomeApp.Library.Common.Interfaces.People;
+using HomeApp.Library.Common.Interfaces.Todos;
+using HomeApp.Library.Common.People;
+using HomeApp.Library.Common.Todos;
 using HomeApp.Library.Email;
-using HomeApp.Library.Facades;
-using HomeApp.Library.Facades.Interfaces;
 using HomeApp.Library.Models.Email;
-using HomeApp.Library.Validations;
-using HomeApp.Library.Validations.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,18 +53,15 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IBudgetValidation, BudgetValidation>();
 builder.Services.AddScoped<IPersonValidation, PersonValidation>();
 
-builder.Services.AddScoped<IBudgetCellCrud, BudgetCellCrud>();
-builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnCrud>();
-builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupCrud>();
-builder.Services.AddScoped<IBudgetRowCrud, BudgetRowCrud>();
+builder.Services.AddScoped<IBudgetCellCrud, BudgetCellQueries>();
+builder.Services.AddScoped<IBudgetColumnCrud, BudgetColumnQueries>();
+builder.Services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
+builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
 builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
-builder.Services.AddScoped<IPersonCrud, PersonCrud>();
-builder.Services.AddScoped<IPersonFacade, PersonFacade>();
-builder.Services.AddScoped<ITodoCrud, TodoCrud>();
-builder.Services.AddScoped<ITodoGroupCrud, TodoGroupCrud>();
-builder.Services.AddScoped<ITodoGroupTodoCrud, TodoGroupTodoCrud>();
-builder.Services.AddScoped<ITodoPersonCrud, TodoPersonCrud>();
-builder.Services.AddScoped<ITodoFacade, TodoFacade>();
+builder.Services.AddScoped<ICommonPersonCommands, CommonPersonCommands>();
+builder.Services.AddScoped<ICommonPersonQueries, CommonPersonQueries>();
+builder.Services.AddScoped<ITodoCommands, TodoCommands>();
+builder.Services.AddScoped<ITodoQueries, TodoQueries>();
 
 builder.Services.AddScoped<JwtHandler>();
 
@@ -89,6 +91,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
         })
     .AddEntityFrameworkStores<UserContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
     opt.TokenLifespan = TimeSpan.FromHours(1));
@@ -135,3 +139,7 @@ app.UseAuthorization();
 app.MapControllers().RequireCors("CorsPolicy");
 
 app.Run();
+
+public partial class Program
+{
+}
