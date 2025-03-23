@@ -1,6 +1,6 @@
-using Domain.Budgets;
-using Domain.People;
-using Domain.Todos;
+using Domain.Entities.Budgets;
+using Domain.Entities.People;
+using Domain.Entities.Todos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database;

@@ -1,5 +1,5 @@
-﻿using Domain.Todos;
-using Domain.Todos.Enums;
+﻿using Domain.Entities.Todos;
+using Domain.Entities.Todos.Enums;
 
 namespace Application.Todos.Dtos;
 

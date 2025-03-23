@@ -1,25 +1,12 @@
 ﻿using Application.Common.Interfaces.Todos;
-using Domain.Todos;
+using Domain.Entities.Todos;
+using Domain.PredefinedMessages;
 using Infrastructure.Database;
 
 namespace Application.Common.Todos;
 
 public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {
-    public override async Task<int> CreateAsync(Todo todo, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(todo);
-        ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
-
-        if (!todo.TodoPeople.Any(x => x.PersonId > 0))
-            throw new InvalidOperationException("Todo can`t be created without personId.");
-
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync(cancellationToken);
-
-        return todo.Id;
-    }
-
     public override async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(Todo.Id));
@@ -33,6 +20,20 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         await DbContext.SaveChangesAsync(cancellationToken);
 
         return true;
+    }
+
+    public override async Task<int> CreateAsync(Todo todo, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(todo);
+        ArgumentOutOfRangeException.ThrowIfNegative((int)todo.Priority, nameof(todo.Priority));
+
+        if (!todo.TodoPeople.Any(x => x.PersonId > 0))
+            throw new InvalidOperationException("Todo can`t be created without personId.");
+
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync(cancellationToken);
+
+        return todo.Id;
     }
 
     public override async Task<bool> UpdateAsync(Todo todo, CancellationToken cancellationToken)

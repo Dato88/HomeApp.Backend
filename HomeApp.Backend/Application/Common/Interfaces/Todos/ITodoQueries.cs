@@ -1,4 +1,4 @@
-﻿using Domain.Todos;
+﻿using Domain.Entities.Todos;
 
 namespace Application.Common.Interfaces.Todos;
 

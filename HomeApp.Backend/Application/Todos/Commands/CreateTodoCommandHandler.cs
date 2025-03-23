@@ -1,6 +1,8 @@
 ﻿using Application.Common.Interfaces.People;
 using Application.Common.Interfaces.Todos;
+using HomeApp.Library.Logger;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Todos.Commands;

@@ -1,4 +1,4 @@
-﻿using Domain.Budgets;
+﻿using Domain.Entities.Budgets;
 
 namespace Application.Common.Interfaces;
 

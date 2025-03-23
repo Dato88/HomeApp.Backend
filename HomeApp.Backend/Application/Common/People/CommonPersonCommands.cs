@@ -1,6 +1,10 @@
 ﻿using Application.Common.Interfaces.People;
-using Domain.People;
+using Application.Common.People.Validations.Interfaces;
+using Domain.Entities.People;
+using Domain.PredefinedMessages;
+using HomeApp.Library.Logger;
 using Infrastructure.Database;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Common.People;
 
@@ -9,6 +13,26 @@ public class CommonPersonCommands(
     IPersonValidation personValidation,
     ILogger<CommonPersonCommands> logger) : LoggerExtension<CommonPersonCommands>(logger), ICommonPersonCommands
 {
+    public async Task DeletePersonAsync(int id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var user = await dbContext.People.FindAsync(id, cancellationToken);
+
+            if (user == null)
+                throw new InvalidOperationException(PersonMessage.PersonNotFound);
+
+            dbContext.People.Remove(user);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            LogInformation($"Deleting person: {id}", DateTime.Now);
+        }
+        catch (Exception ex)
+        {
+            LogError($"Deleting person failed: {ex.Message}", DateTime.Now);
+        }
+    }
+
     public async Task<int> CreatePersonAsync(Person person, CancellationToken cancellationToken)
     {
         try
@@ -71,26 +95,6 @@ public class CommonPersonCommands(
             LogError($"Updating person failed: {ex.Message}", DateTime.Now);
 
             return false;
-        }
-    }
-
-    public async Task DeletePersonAsync(int id, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var user = await dbContext.People.FindAsync(id, cancellationToken);
-
-            if (user == null)
-                throw new InvalidOperationException(PersonMessage.PersonNotFound);
-
-            dbContext.People.Remove(user);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            LogInformation($"Deleting person: {id}", DateTime.Now);
-        }
-        catch (Exception ex)
-        {
-            LogError($"Deleting person failed: {ex.Message}", DateTime.Now);
         }
     }
 }

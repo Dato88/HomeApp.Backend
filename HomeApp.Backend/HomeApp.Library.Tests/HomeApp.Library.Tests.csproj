@@ -30,12 +30,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HomeApp.Api\HomeApp.Api.csproj"/>
-        <ProjectReference Include="..\HomeApp.DataAccess\HomeApp.DataAccess.csproj"/>
-        <ProjectReference Include="..\HomeApp.Library\HomeApp.Library.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Application.Common.Interfaces.Todos;
-using Domain.Todos;
+using Domain.Entities.Todos;
+using Domain.PredefinedMessages;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
