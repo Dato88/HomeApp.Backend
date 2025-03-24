@@ -1,6 +1,6 @@
 ﻿using Application.Common.Interfaces.Todos;
 using Application.Todos.Dtos;
-using HomeApp.Library.Logger;
+using Infrastructure.Logger;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SharedKernel;

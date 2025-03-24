@@ -1,8 +1,7 @@
-﻿using Application.Common.Interfaces.People;
-using Application.Cruds.Interfaces;
-using Application.DTOs.Register;
+﻿using Application.Cruds.Interfaces;
 using Application.Email;
 using Application.Models.Email;
+using Application.Users.Register;
 using Domain.Entities.User;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +14,10 @@ namespace Web.Api.Controllers;
 public class AccountsController(
     IUserCrud userCrud,
     IEmailSender emailSender,
-    ICommonPersonCommands commonPersonCommands,
+    IMediator mediator,
     UserManager<User> userManager)
     : ControllerBase
 {
-    private readonly ICommonPersonCommands _commonPersonCommands = commonPersonCommands;
     private readonly IEmailSender _emailSender = emailSender;
     private readonly IUserCrud _userCrud = userCrud;
     private readonly UserManager<User> _userManager = userManager;
@@ -72,33 +70,17 @@ public class AccountsController(
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto registerUserDto,
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserCommand registerUserCommand,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var result = await _userCrud.RegisterAsync(registerUserDto, cancellationToken);
+        var response = await mediator.Send(registerUserCommand, cancellationToken);
 
-        if (!result.Item1.Succeeded)
-        {
-            var errors = result.Item1.Errors.Select(e => e.Description);
+        if (response.IsSuccessfulRegistration) return Ok(response);
 
-            return BadRequest(new RegistrationResponseDto { Errors = errors });
-        }
-
-        await _commonPersonCommands.CreatePersonAsync(result.Item2, cancellationToken);
-
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(registerUserDto);
-        var param = new Dictionary<string, string?> { { "token", token }, { "email", registerUserDto.Email } };
-        var callback = registerUserDto.ClientUri is null
-            ? string.Empty
-            : QueryHelpers.AddQueryString(registerUserDto.ClientUri, param);
-        var message = new Message(new[] { registerUserDto.Email }, "Email Confirmation token", callback);
-
-        await _emailSender.SendEmailAsync(message, cancellationToken);
-
-        return StatusCode(201);
+        return BadRequest(response);
     }
 
     [Authorize]

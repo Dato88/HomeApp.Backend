@@ -1,6 +1,6 @@
 ﻿using System.Security.Authentication;
 using Application.Models.Email;
-using HomeApp.Library.Logger;
+using Infrastructure.Logger;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;

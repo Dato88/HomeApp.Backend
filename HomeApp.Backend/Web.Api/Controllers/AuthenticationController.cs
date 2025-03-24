@@ -1,6 +1,5 @@
 ﻿using Application.DTOs.Authentication;
-using Application.Email;
-using Application.Models.Email;
+using Application.Users.Login;
 using Domain.Entities.User;
 using Infrastructure.Authorization.Handler;
 using Microsoft.AspNetCore.Identity;
@@ -12,63 +11,21 @@ namespace Web.Api.Controllers;
 public class AuthenticationController(
     JwtHandler jwtHandler,
     UserManager<User> userManager,
-    IEmailSender emailSender)
+    IMediator mediator)
     : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthenticationDto,
+    public async Task<IActionResult> Login([FromBody] LoginUserCommand loginUserCommand,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
-            BadRequest(ModelState);
+            return BadRequest(ModelState);
 
-        var user = await userManager.FindByEmailAsync(userForAuthenticationDto.Email);
+        var response = await mediator.Send(loginUserCommand, cancellationToken);
 
-        if (user is null)
-            BadRequest("Invalid Request");
+        if (response.IsAuthSuccessful) return Ok(response);
 
-        if (!await userManager.IsEmailConfirmedAsync(user))
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "Email is not confirmed" });
-
-        if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password))
-        {
-            await userManager.AccessFailedAsync(user);
-
-            if (!await userManager.IsLockedOutAsync(user))
-                return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
-
-            var content =
-                $"Your account is locked out. To reset the password click this link: {userForAuthenticationDto.ClientUri}";
-            var message = new Message(new[] { userForAuthenticationDto.Email },
-                "Locked out account information", content);
-
-            await emailSender.SendEmailAsync(message, cancellationToken);
-
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "The account is locked out" });
-        }
-
-        if (await userManager.GetTwoFactorEnabledAsync(user))
-            return await GenerateOtpFor2StepVerification(user, cancellationToken);
-
-        var token = await jwtHandler.GenerateToken(user);
-
-        await userManager.ResetAccessFailedCountAsync(user);
-
-        return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
-    }
-
-    private async Task<IActionResult> GenerateOtpFor2StepVerification(User user, CancellationToken cancellationToken)
-    {
-        var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
-        if (!providers.Contains("Email"))
-            return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid 2-Step Verification Provider." });
-
-        var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
-        var message = new Message(new[] { user.Email }, "Authentication token", token);
-
-        await emailSender.SendEmailAsync(message, cancellationToken);
-
-        return Ok(new AuthResponseDto { Is2StepVerificationRequired = true, Provider = "Email" });
+        return BadRequest(response);
     }
 
     [HttpPost("2fa-verify")]

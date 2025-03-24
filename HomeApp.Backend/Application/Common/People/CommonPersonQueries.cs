@@ -1,7 +1,7 @@
 ﻿using Application.Common.Interfaces.People;
 using Application.People.Dtos;
-using HomeApp.Library.Logger;
 using Infrastructure.Database;
+using Infrastructure.Logger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

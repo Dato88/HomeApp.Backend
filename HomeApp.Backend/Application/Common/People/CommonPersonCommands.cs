@@ -2,8 +2,8 @@
 using Application.Common.People.Validations.Interfaces;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
-using HomeApp.Library.Logger;
 using Infrastructure.Database;
+using Infrastructure.Logger;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Common.People;

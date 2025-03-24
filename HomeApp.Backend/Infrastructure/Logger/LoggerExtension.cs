@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace HomeApp.Library.Logger;
+namespace Infrastructure.Logger;
 
 public partial class LoggerExtension<T>(ILogger<T> logger)
 {
