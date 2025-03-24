@@ -1,7 +1,7 @@
 ﻿using Application.Cruds.Interfaces;
 using Application.Email;
 using Application.Models.Email;
-using Application.Users.Register;
+using Application.Users.Commands.Register;
 using Domain.Entities.User;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using Microsoft.AspNetCore.Identity;
@@ -78,7 +78,7 @@ public class AccountsController(
 
         var response = await mediator.Send(registerUserCommand, cancellationToken);
 
-        if (response.IsSuccessfulRegistration) return Ok(response);
+        if (response.IsSuccess) return Ok(response.IsSuccess);
 
         return BadRequest(response);
     }

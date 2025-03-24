@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Authentication;
+﻿using Application.Abstractions.Messaging;
+using Application.DTOs.Authentication;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
@@ -7,18 +8,19 @@ using Infrastructure.Logger;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using SharedKernel;
 
-namespace Application.Users.Login;
+namespace Application.Users.Commands.Login;
 
 internal sealed class LoginUserCommandHandler(
     JwtHandler jwtHandler,
     UserManager<User> userManager,
     IEmailSender emailSender,
-    ILogger<LoginUserCommandHandler> logger) : IRequestHandler<LoginUserCommand, AuthResponseDto>
+    ILogger<LoginUserCommandHandler> logger) : ICommandHandler<LoginUserCommand, AuthResponseDto>
 {
     private readonly LoggerExtension<LoginUserCommandHandler> _logger = new(logger);
 
-    public async Task<AuthResponseDto> Handle(LoginUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponseDto>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
         var response = new AuthResponseDto();
         var user = await userManager.FindByEmailAsync(command.Email);

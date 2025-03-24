@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Authentication;
-using Application.Users.Login;
+using Application.Users.Commands.Login;
 using Domain.Entities.User;
 using Infrastructure.Authorization.Handler;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +23,7 @@ public class AuthenticationController(
 
         var response = await mediator.Send(loginUserCommand, cancellationToken);
 
-        if (response.IsAuthSuccessful) return Ok(response);
+        if (response.IsSuccess) return Ok(response.Value);
 
         return BadRequest(response);
     }

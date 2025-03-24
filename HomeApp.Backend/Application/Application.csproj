@@ -8,6 +8,8 @@
 
     <ItemGroup>
         <Folder Include="People\Commands\"/>
+        <Folder Include="Users\Commands\"/>
+        <Folder Include="Users\Queries\"/>
     </ItemGroup>
 
     <ItemGroup>

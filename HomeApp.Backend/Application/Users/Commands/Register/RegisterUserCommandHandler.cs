@@ -1,42 +1,40 @@
-﻿using Application.Common.Interfaces.People;
-using Application.DTOs.Register;
+﻿using Application.Abstractions.Messaging;
+using Application.Common.Interfaces.People;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
 using Infrastructure.Logger;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SharedKernel;
 
-namespace Application.Users.Register;
+namespace Application.Users.Commands.Register;
 
 internal sealed class RegisterUserCommandHandler(
     IEmailSender emailSender,
     ICommonPersonCommands commonPersonCommands,
     UserManager<User> userManager,
     ILogger<RegisterUserCommandHandler> logger)
-    : IRequestHandler<RegisterUserCommand, RegistrationResponseDto>
+    : ICommandHandler<RegisterUserCommand, Guid>
 {
     private readonly LoggerExtension<RegisterUserCommandHandler> _logger = new(logger);
 
-    public async Task<RegistrationResponseDto> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
-        var response = new RegistrationResponseDto();
         User user = command;
+
+        if (await userManager.Users.AnyAsync(u => u.Email == command.Email, cancellationToken))
+            return Result.Failure<Guid>(UserErrors.EmailNotUnique);
 
         var result = await userManager.CreateAsync(user, command.Password);
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(e => e.Description);
-
-            response.IsSuccessfulRegistration = false;
-            response.Errors = errors;
-
             _logger.LogException("Email is not confirmed", DateTime.Now);
 
-            return response;
+            return Result.Failure<Guid>(UserErrors.EmailNotUnique);
         }
 
         await commonPersonCommands.CreatePersonAsync(user, cancellationToken);
@@ -50,8 +48,6 @@ internal sealed class RegisterUserCommandHandler(
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
-        response.IsSuccessfulRegistration = true;
-
-        return response;
+        return Result.Success(new Guid(user.Id));
     }
 }

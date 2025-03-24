@@ -1,8 +1,8 @@
-﻿using Application.DTOs.Register;
+﻿using Application.Abstractions.Messaging;
+using Application.DTOs.Register;
 using Domain.Entities.User;
-using MediatR;
 
-namespace Application.Users.Register;
+namespace Application.Users.Commands.Register;
 
 public sealed record RegisterUserCommand(
     string Email,
@@ -11,7 +11,7 @@ public sealed record RegisterUserCommand(
     string Password,
     string? ConfirmPassword,
     string? ClientUri)
-    : IRequest<RegistrationResponseDto>
+    : ICommand<Guid>
 {
     public static implicit operator RegisterUserDto(RegisterUserCommand item) => new()
     {
