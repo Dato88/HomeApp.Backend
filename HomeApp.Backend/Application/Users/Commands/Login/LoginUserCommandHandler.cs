@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.DTOs.Authentication;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
@@ -15,23 +14,19 @@ internal sealed class LoginUserCommandHandler(
     JwtHandler jwtHandler,
     UserManager<User> userManager,
     IEmailSender emailSender,
-    ILogger<LoginUserCommandHandler> logger) : ICommandHandler<LoginUserCommand, AuthResponseDto>
+    ILogger<LoginUserCommandHandler> logger) : ICommandHandler<LoginUserCommand, AuthResponse>
 {
     private readonly LoggerExtension<LoginUserCommandHandler> _logger = new(logger);
 
-    public async Task<Result<AuthResponseDto>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
+    public async Task<Result<AuthResponse>> Handle(LoginUserCommand command, CancellationToken cancellationToken)
     {
-        var response = new AuthResponseDto();
         var user = await userManager.FindByEmailAsync(command.Email);
 
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
-            response.IsAuthSuccessful = false;
-            response.ErrorMessage = "Email is not confirmed";
-
             _logger.LogInformation("Email is not confirmed", DateTime.Now);
 
-            return response;
+            return Result.Failure<AuthResponse>(UserErrors.EmailNotConfirmed);
         }
 
         if (!await userManager.CheckPasswordAsync(user, command.Password))
@@ -40,12 +35,9 @@ internal sealed class LoginUserCommandHandler(
 
             if (!await userManager.IsLockedOutAsync(user))
             {
-                response.IsAuthSuccessful = false;
-                response.ErrorMessage = "Invalid Authentication";
-
                 _logger.LogInformation("Invalid Authentication", DateTime.Now);
 
-                return response;
+                return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
             }
 
             var content =
@@ -55,12 +47,9 @@ internal sealed class LoginUserCommandHandler(
 
             await emailSender.SendEmailAsync(message, cancellationToken);
 
-            response.IsAuthSuccessful = false;
-            response.ErrorMessage = "The account is locked out";
-
             _logger.LogException("The account is locked out", DateTime.Now);
 
-            return response;
+            return Result.Failure<AuthResponse>(UserErrors.LockedOut(new Guid(user.Id)));
         }
 
         if (await userManager.GetTwoFactorEnabledAsync(user))
@@ -70,25 +59,22 @@ internal sealed class LoginUserCommandHandler(
 
         await userManager.ResetAccessFailedCountAsync(user);
 
-        response.IsAuthSuccessful = true;
+        var response = new AuthResponse();
         response.Token = token;
 
-        return response;
+        return Result.Success(response);
     }
 
-    private async Task<AuthResponseDto> GenerateOtpFor2StepVerification(User user, CancellationToken cancellationToken)
+    private async Task<Result<AuthResponse>> GenerateOtpFor2StepVerification(User user,
+        CancellationToken cancellationToken)
     {
-        var response = new AuthResponseDto();
         var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
 
         if (!providers.Contains("Email"))
         {
-            response.IsAuthSuccessful = false;
-            response.ErrorMessage = "Invalid 2-Step Verification Provider.";
-
             _logger.LogException("Invalid 2-Step Verification Provider.", DateTime.Now);
 
-            return response;
+            return Result.Failure<AuthResponse>(UserErrors.Invalid2Step(new Guid(user.Id)));
         }
 
         var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -96,9 +82,10 @@ internal sealed class LoginUserCommandHandler(
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
+        var response = new AuthResponse();
         response.Is2StepVerificationRequired = true;
         response.Provider = "Email";
 
-        return response;
+        return Result.Success(response);
     }
 }
