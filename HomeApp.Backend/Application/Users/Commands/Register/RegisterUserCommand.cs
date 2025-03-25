@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.DTOs.Register;
 using Domain.Entities.User;
 
 namespace Application.Users.Commands.Register;
@@ -13,15 +12,6 @@ public sealed record RegisterUserCommand(
     string? ClientUri)
     : ICommand<Guid>
 {
-    public static implicit operator RegisterUserDto(RegisterUserCommand item) => new()
-    {
-        FirstName = item.FirstName,
-        LastName = item.LastName,
-        Email = item.Email,
-        Password = item.Password,
-        ConfirmPassword = item.ConfirmPassword
-    };
-
     public static implicit operator User(RegisterUserCommand item) =>
         new() { FirstName = item.FirstName, LastName = item.LastName, Email = item.Email, UserName = item.Email };
 }

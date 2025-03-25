@@ -6,8 +6,6 @@ using Application.Common.People;
 using Application.Common.People.Validations;
 using Application.Common.People.Validations.Interfaces;
 using Application.Common.Todos;
-using Application.Cruds;
-using Application.Cruds.Interfaces;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
@@ -64,8 +62,6 @@ builder.Services.AddScoped<JwtHandler>();
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-
-builder.Services.AddScoped<IUserCrud, UserCrud>();
 
 builder.Services.AddAuthorization(options =>
 {
