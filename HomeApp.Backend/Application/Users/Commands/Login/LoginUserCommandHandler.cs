@@ -5,7 +5,6 @@ using Application.Models.Email;
 using Domain.Entities.User;
 using Infrastructure.Authorization.Handler;
 using Infrastructure.Logger;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using SharedKernel;
@@ -30,7 +29,7 @@ internal sealed class LoginUserCommandHandler(
             response.IsAuthSuccessful = false;
             response.ErrorMessage = "Email is not confirmed";
 
-            _logger.LogException("Email is not confirmed", DateTime.Now);
+            _logger.LogInformation("Email is not confirmed", DateTime.Now);
 
             return response;
         }
@@ -44,7 +43,7 @@ internal sealed class LoginUserCommandHandler(
                 response.IsAuthSuccessful = false;
                 response.ErrorMessage = "Invalid Authentication";
 
-                _logger.LogException("Invalid Authentication", DateTime.Now);
+                _logger.LogInformation("Invalid Authentication", DateTime.Now);
 
                 return response;
             }

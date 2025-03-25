@@ -1,26 +1,19 @@
-﻿using Application.Cruds.Interfaces;
-using Application.Email;
-using Application.Models.Email;
+﻿using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.Register;
 using Application.Users.Queries.GetAllUser;
 using Domain.Entities.User;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Web.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class AccountsController(
-    IUserCrud userCrud,
-    IEmailSender emailSender,
     IMediator mediator,
     UserManager<User> userManager)
     : ControllerBase
 {
-    private readonly IEmailSender _emailSender = emailSender;
-    private readonly IUserCrud _userCrud = userCrud;
     private readonly UserManager<User> _userManager = userManager;
 
     [HttpGet("confirm-email")]
@@ -39,27 +32,17 @@ public class AccountsController(
     }
 
     [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto,
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand forgotPasswordDto,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
+        var response = await mediator.Send(forgotPasswordDto, cancellationToken);
 
-        if (user?.Email is null)
-            return BadRequest("Invalid Request");
+        if (response.IsSuccess) return Ok(response.Value);
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var param = new Dictionary<string, string?> { { "token", token }, { "email", forgotPasswordDto.Email } };
-
-        var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
-
-        var message = new Message(new[] { user.Email }, "Reset password token", callback);
-
-        await _emailSender.SendEmailAsync(message, cancellationToken);
-
-        return Ok();
+        return BadRequest(response);
     }
 
     [Authorize]
