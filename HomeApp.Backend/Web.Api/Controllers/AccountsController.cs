@@ -1,8 +1,8 @@
 ﻿using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.Register;
+using Application.Users.Commands.ResetPassword;
 using Application.Users.Queries.GetAllUser;
 using Domain.Entities.User;
-using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using Microsoft.AspNetCore.Identity;
 
 namespace Web.Api.Controllers;
@@ -72,27 +72,16 @@ public class AccountsController(
 
     [Authorize]
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand resetPasswordDto,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
-        if (user is null || string.IsNullOrWhiteSpace(resetPasswordDto.Token))
-            return BadRequest("Invalid Request");
+        var response = await mediator.Send(resetPasswordDto, cancellationToken);
 
-        var resetPassResult =
-            await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+        if (response.IsSuccess) return Ok(response.IsSuccess);
 
-        if (!resetPassResult.Succeeded)
-        {
-            var errors = resetPassResult.Errors.Select(x => x.Description);
-
-            return BadRequest(new { Errors = errors });
-        }
-
-        await _userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
-
-        return Ok();
+        return BadRequest(response);
     }
 }

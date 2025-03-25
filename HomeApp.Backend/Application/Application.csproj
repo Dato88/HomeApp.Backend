@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <Folder Include="People\Commands\"/>
-        <Folder Include="Users\Commands\ResetPassword\" />
     </ItemGroup>
 
     <ItemGroup>
