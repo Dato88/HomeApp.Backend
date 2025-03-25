@@ -8,6 +8,10 @@ public static class UserErrors
         "Users.NotFoundByEmail",
         "The user with the specified email was not found");
 
+    public static readonly Error NotFoundAll = Error.NotFound(
+        "Users.NotFoundAll",
+        "There are no users in the database");
+
     public static readonly Error EmailNotUnique = Error.Conflict(
         "Users.EmailNotUnique",
         "The provided email is not unique");

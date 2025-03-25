@@ -2,6 +2,7 @@
 using Application.Email;
 using Application.Models.Email;
 using Application.Users.Commands.Register;
+using Application.Users.Queries.GetAllUser;
 using Domain.Entities.User;
 using HomeApp.Identity.Entities.DataTransferObjects.ResetPassword;
 using Microsoft.AspNetCore.Identity;
@@ -63,10 +64,13 @@ public class AccountsController(
 
     [Authorize]
     [HttpGet("users")]
-    public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllUsersAsync(CancellationToken cancellationToken)
     {
-        var allUsers = await _userCrud.GetAllUsersAsync(cancellationToken);
-        return Ok(allUsers);
+        var response = await mediator.Send(new GetAllUserQuery(), cancellationToken);
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response);
     }
 
     [HttpPost("register")]
