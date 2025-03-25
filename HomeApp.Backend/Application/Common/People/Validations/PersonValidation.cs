@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
+using Application.Abstractions.Data;
 using Application.Common.People.Validations.Interfaces;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
-using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.People.Validations;
 
-public class PersonValidation(HomeAppContext dbContext) : BaseContext(dbContext), IPersonValidation
+public class PersonValidation(IHomeAppContext dbContext) : BaseContext(dbContext), IPersonValidation
 {
     public bool IsValidEmail(string email)
     {

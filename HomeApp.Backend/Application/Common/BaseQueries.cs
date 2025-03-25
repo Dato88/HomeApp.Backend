@@ -1,8 +1,8 @@
-﻿using Infrastructure.Database;
+﻿using Application.Abstractions.Data;
 
 namespace Application.Common;
 
-public abstract class BaseQueries<T>(HomeAppContext dbContext) : BaseContext(dbContext)
+public abstract class BaseQueries<T>(IHomeAppContext dbContext) : BaseContext(dbContext)
 {
     public abstract Task FindByIdAsync(int id, CancellationToken cancellationToken, bool asNoTracking = true,
         params string[] includes);

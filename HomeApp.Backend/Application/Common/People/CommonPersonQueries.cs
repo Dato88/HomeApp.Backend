@@ -1,17 +1,16 @@
-﻿using Application.Common.Interfaces.People;
+﻿using Application.Abstractions.Data;
+using Application.Abstractions.Logging;
+using Application.Common.Interfaces.People;
 using Application.People.Dtos;
-using Infrastructure.Database;
-using Infrastructure.Logger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Common.People;
 
 public class CommonPersonQueries(
-    HomeAppContext dbContext,
+    IHomeAppContext dbContext,
     IHttpContextAccessor httpContextAccessor,
-    ILogger<CommonPersonQueries> logger) : LoggerExtension<CommonPersonQueries>(logger), ICommonPersonQueries
+    IAppLogger<CommonPersonQueries> logger) : ICommonPersonQueries
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
@@ -28,7 +27,7 @@ public class CommonPersonQueries(
         }
         catch (Exception ex)
         {
-            LogException($"Get person failed: {ex}", DateTime.Now);
+            logger.LogException($"Get person failed: {ex}");
 
             return null;
         }
@@ -45,7 +44,7 @@ public class CommonPersonQueries(
         }
         catch (Exception ex)
         {
-            LogException($"Get person failed: {ex}", DateTime.Now);
+            logger.LogException($"Get person failed: {ex}");
 
             return null;
         }

@@ -1,17 +1,16 @@
-﻿using Application.Common.Interfaces.People;
+﻿using Application.Abstractions.Data;
+using Application.Abstractions.Logging;
+using Application.Common.Interfaces.People;
 using Application.Common.People.Validations.Interfaces;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
-using Infrastructure.Database;
-using Infrastructure.Logger;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Common.People;
 
 public class CommonPersonCommands(
-    HomeAppContext dbContext,
+    IHomeAppContext dbContext,
     IPersonValidation personValidation,
-    ILogger<CommonPersonCommands> logger) : LoggerExtension<CommonPersonCommands>(logger), ICommonPersonCommands
+    IAppLogger<CommonPersonCommands> logger) : ICommonPersonCommands
 {
     public async Task DeletePersonAsync(int id, CancellationToken cancellationToken)
     {
@@ -25,11 +24,11 @@ public class CommonPersonCommands(
             dbContext.People.Remove(user);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            LogInformation($"Deleting person: {id}", DateTime.Now);
+            logger.LogInformation($"Deleting person: {id}");
         }
         catch (Exception ex)
         {
-            LogError($"Deleting person failed: {ex.Message}", DateTime.Now);
+            logger.LogError($"Deleting person failed: {ex.Message}");
         }
     }
 
@@ -48,13 +47,13 @@ public class CommonPersonCommands(
 
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            LogInformation($"Creating person: {person}", DateTime.Now);
+            logger.LogInformation($"Creating person: {person}");
 
             return person.Id;
         }
         catch (Exception ex)
         {
-            LogError($"Creating person failed: {ex.Message}", DateTime.Now);
+            logger.LogError($"Creating person failed: {ex.Message}");
 
             return 0;
         }
@@ -86,13 +85,13 @@ public class CommonPersonCommands(
             dbContext.People.Update(existingUser);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            LogInformation($"Updating person: {person}", DateTime.Now);
+            logger.LogInformation($"Updating person: {person}");
 
             return true;
         }
         catch (Exception ex)
         {
-            LogError($"Updating person failed: {ex.Message}", DateTime.Now);
+            logger.LogError($"Updating person failed: {ex.Message}");
 
             return false;
         }
