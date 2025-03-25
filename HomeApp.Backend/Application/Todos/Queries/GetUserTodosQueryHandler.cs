@@ -1,9 +1,8 @@
-﻿using Application.Common.Interfaces.People;
+﻿using Application.Abstractions.Logging;
+using Application.Common.Interfaces.People;
 using Application.Common.Interfaces.Todos;
 using Application.Todos.Dtos;
-using Infrastructure.Logger;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Todos.Queries;
@@ -11,11 +10,10 @@ namespace Application.Todos.Queries;
 public class GetUserTodosQueryHandler(
     ITodoQueries todoQueries,
     ICommonPersonQueries commonPersonQueries,
-    ILogger<GetUserTodosQueryHandler> logger)
+    IAppLogger<GetUserTodosQueryHandler> logger)
     : IRequestHandler<GetUserTodosQuery, BaseResponse<IEnumerable<GetToDoDto>>>
 {
     private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
-    private readonly LoggerExtension<GetUserTodosQueryHandler> _logger = new(logger);
     private readonly ITodoQueries _todoQueries = todoQueries;
 
     public async Task<BaseResponse<IEnumerable<GetToDoDto>>> Handle(GetUserTodosQuery request,
@@ -31,7 +29,7 @@ public class GetUserTodosQueryHandler(
                 response.Success = false;
                 response.Message = "Failed to get user!";
 
-                _logger.LogException("Get todos failed. User Person is Null.", DateTime.Now);
+                logger.LogException("Get todos failed. User Person is Null.");
 
                 return response;
             }
@@ -54,7 +52,7 @@ public class GetUserTodosQueryHandler(
         {
             response.Error = ex;
 
-            _logger.LogException($"Get todos failed: {ex}", DateTime.Now);
+            logger.LogException($"Get todos failed: {ex}");
         }
 
         return response;

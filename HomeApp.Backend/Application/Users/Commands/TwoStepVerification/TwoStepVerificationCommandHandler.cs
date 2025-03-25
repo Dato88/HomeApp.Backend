@@ -1,18 +1,17 @@
-﻿using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.Messaging;
 using Domain.Entities.User;
-using Infrastructure.Authorization.Handler;
 using Microsoft.AspNetCore.Identity;
 using SharedKernel;
 
 namespace Application.Users.Commands.TwoStepVerification;
 
-internal sealed class TwoStepVerificationCommandHandler(UserManager<User> userManager, JwtHandler jwtHandler)
+internal sealed class TwoStepVerificationCommandHandler(UserManager<User> userManager, ITokenProvider tokenProvider)
     : ICommandHandler<TwoStepVerificationCommand, string>
 {
     public async Task<Result<string>> Handle(TwoStepVerificationCommand query, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(query.Email);
-
 
         if (user is null) return Result.Failure<string>(UserErrors.NotFoundByEmail);
 
@@ -22,7 +21,7 @@ internal sealed class TwoStepVerificationCommandHandler(UserManager<User> userMa
         if (!validVerification)
             return Result.Failure<string>(UserErrors.Unauthorized());
 
-        var token = await jwtHandler.GenerateToken(user);
+        var token = tokenProvider.Create(user);
 
         return Result.Success(token);
     }

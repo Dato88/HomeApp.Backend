@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using Application.Abstractions.Authentication;
 using Domain.Entities.User;
-using Infrastructure.Authorization.Handler;
+using Infrastructure.Authentication;
 using Infrastructure.Authorization.Utilities;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using UserContext = Infrastructure.Database.UserContext;
 
 namespace Infrastructure;
 
@@ -121,7 +123,7 @@ public static class DependencyInjection
                 options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
         });
 
-        services.AddScoped<JwtHandler>();
+        services.AddScoped<ITokenProvider, TokenProvider>();
 
         services.AddIdentity<User, IdentityRole>(
                 opt =>

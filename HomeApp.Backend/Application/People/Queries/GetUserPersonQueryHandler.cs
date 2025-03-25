@@ -1,18 +1,16 @@
-﻿using Application.Common.Interfaces.People;
+﻿using Application.Abstractions.Logging;
+using Application.Common.Interfaces.People;
 using Application.People.Dtos;
-using Infrastructure.Logger;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.People.Queries;
 
 public class GetUserPersonQueryHandler(
     ICommonPersonQueries commonPersonQueries,
-    ILogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonDto>>
+    IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonDto>>
 {
     private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
-    private readonly LoggerExtension<GetUserPersonQueryHandler> _logger = new(logger);
 
     public async Task<BaseResponse<PersonDto>> Handle(GetUserPersonQuery request,
         CancellationToken cancellationToken)
@@ -38,7 +36,7 @@ public class GetUserPersonQueryHandler(
         {
             response.Error = ex;
 
-            _logger.LogException($"Get person failed: {ex}", DateTime.Now);
+            logger.LogException($"Get person failed: {ex}");
         }
 
         return response;

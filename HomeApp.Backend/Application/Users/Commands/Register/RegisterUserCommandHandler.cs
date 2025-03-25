@@ -1,13 +1,12 @@
-﻿using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Logging;
+using Application.Abstractions.Messaging;
 using Application.Common.Interfaces.People;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
-using Infrastructure.Logger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Users.Commands.Register;
@@ -16,11 +15,9 @@ internal sealed class RegisterUserCommandHandler(
     IEmailSender emailSender,
     ICommonPersonCommands commonPersonCommands,
     UserManager<User> userManager,
-    ILogger<RegisterUserCommandHandler> logger)
+    IAppLogger<RegisterUserCommandHandler> logger)
     : ICommandHandler<RegisterUserCommand, Guid>
 {
-    private readonly LoggerExtension<RegisterUserCommandHandler> _logger = new(logger);
-
     public async Task<Result<Guid>> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
         User user = command;
@@ -32,7 +29,7 @@ internal sealed class RegisterUserCommandHandler(
 
         if (!result.Succeeded)
         {
-            _logger.LogException("Email is not confirmed", DateTime.Now);
+            logger.LogException("Email is not confirmed");
 
             return Result.Failure<Guid>(UserErrors.EmailNotUnique);
         }

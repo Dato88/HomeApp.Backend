@@ -1,16 +1,14 @@
-﻿using Application.Common.Interfaces.Todos;
-using Infrastructure.Logger;
+﻿using Application.Abstractions.Logging;
+using Application.Common.Interfaces.Todos;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Todos.Commands;
 
 public class DeleteTodoCommandHandler(
     ITodoCommands todoCommands,
-    ILogger<DeleteTodoCommandHandler> logger) : IRequestHandler<DeleteTodoCommand, BaseResponse<bool>>
+    IAppLogger<DeleteTodoCommandHandler> logger) : IRequestHandler<DeleteTodoCommand, BaseResponse<bool>>
 {
-    private readonly LoggerExtension<DeleteTodoCommandHandler> _logger = new(logger);
     private readonly ITodoCommands _todoCommands = todoCommands;
 
     public async Task<BaseResponse<bool>> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
@@ -30,7 +28,7 @@ public class DeleteTodoCommandHandler(
         {
             response.Message = ex.Message;
 
-            _logger.LogException($"Delete todo failed: {ex}", DateTime.Now);
+            logger.LogException($"Delete todo failed: {ex}");
         }
 
         return response;

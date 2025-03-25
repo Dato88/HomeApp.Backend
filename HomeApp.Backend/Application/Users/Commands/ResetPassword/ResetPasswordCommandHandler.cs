@@ -1,26 +1,23 @@
-﻿using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Logging;
+using Application.Abstractions.Messaging;
 using Domain.Entities.User;
-using Infrastructure.Logger;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Users.Commands.ResetPassword;
 
 internal sealed class ResetPasswordCommandHandler(
     UserManager<User> userManager,
-    ILogger<ResetPasswordCommandHandler> logger)
+    IAppLogger<ResetPasswordCommandHandler> logger)
     : ICommandHandler<ResetPasswordCommand, Guid>
 {
-    private readonly LoggerExtension<ResetPasswordCommandHandler> _logger = new(logger);
-
     public async Task<Result<Guid>> Handle(ResetPasswordCommand command, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
         if (user == null)
         {
-            _logger.LogWarning("Email is not found", DateTime.Now);
+            logger.LogWarning("Email is not found");
 
             return Result.Failure<Guid>(UserErrors.NotFoundByEmail);
         }
@@ -30,14 +27,14 @@ internal sealed class ResetPasswordCommandHandler(
 
         if (!resetPassResult.Succeeded)
         {
-            _logger.LogWarning("Reset Password failed", DateTime.Now);
+            logger.LogWarning("Reset Password failed");
 
             return Result.Failure<Guid>(UserErrors.Unauthorized());
         }
 
         await userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
 
-        _logger.LogInformation($"Password reset by {user.Id}", DateTime.Now);
+        logger.LogInformation($"Password reset by {user.Id}");
 
         return Result.Success(new Guid(user.Id));
     }

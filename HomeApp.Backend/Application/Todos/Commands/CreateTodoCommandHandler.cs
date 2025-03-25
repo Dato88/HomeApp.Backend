@@ -1,8 +1,7 @@
-﻿using Application.Common.Interfaces.People;
+﻿using Application.Abstractions.Logging;
+using Application.Common.Interfaces.People;
 using Application.Common.Interfaces.Todos;
-using Infrastructure.Logger;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Todos.Commands;
@@ -10,10 +9,9 @@ namespace Application.Todos.Commands;
 public class CreateTodoCommandHandler(
     ICommonPersonQueries commonPersonQueries,
     ITodoCommands todoCommands,
-    ILogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, BaseResponse<int>>
+    IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, BaseResponse<int>>
 {
     private readonly ICommonPersonQueries _commonPersonQueries = commonPersonQueries;
-    private readonly LoggerExtension<CreateTodoCommandHandler> _logger = new(logger);
     private readonly ITodoCommands _todoCommands = todoCommands;
 
     public async Task<BaseResponse<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
@@ -28,7 +26,7 @@ public class CreateTodoCommandHandler(
                 response.Success = false;
                 response.Message = "Failed to get user for create Todo!";
 
-                _logger.LogException("Create todos failed. User Person is Null.", DateTime.Now);
+                logger.LogException("Create todos failed. User Person is Null.");
 
                 return response;
             }
@@ -43,13 +41,13 @@ public class CreateTodoCommandHandler(
                 response.Message = "Create succeed!";
             }
 
-            _logger.LogInformation($"Creating todo: {response.Data}", DateTime.Now);
+            logger.LogInformation($"Creating todo: {response.Data}");
         }
         catch (Exception ex)
         {
             response.Message = ex.Message;
 
-            _logger.LogException($"Creating todo failed: {ex.Message}", DateTime.Now);
+            logger.LogException($"Creating todo failed: {ex.Message}");
         }
 
 

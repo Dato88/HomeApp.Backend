@@ -1,15 +1,14 @@
 ﻿using System.Security.Authentication;
+using Application.Abstractions.Logging;
 using Application.Models.Email;
-using Infrastructure.Logger;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Text;
 
 namespace Application.Email;
 
-public class EmailSender(EmailConfiguration emailConfig, ILogger<EmailSender> logger)
-    : LoggerExtension<EmailSender>(logger), IEmailSender
+public class EmailSender(EmailConfiguration emailConfig, IAppLogger<EmailSender> logger)
+    : IEmailSender
 {
     public async Task SendEmailAsync(Message message, CancellationToken cancellationToken)
     {
@@ -42,23 +41,23 @@ public class EmailSender(EmailConfiguration emailConfig, ILogger<EmailSender> lo
         }
         catch (AuthenticationException ex)
         {
-            LogError($"Authentication failed: {ex.Message}", DateTime.UtcNow);
+            logger.LogError($"Authentication failed: {ex.Message}");
             throw;
         }
         catch (SmtpCommandException ex)
         {
-            LogError($"SMTP command error: {ex.Message}", DateTime.UtcNow);
+            logger.LogError($"SMTP command error: {ex.Message}");
             throw;
         }
         catch (Exception ex)
         {
-            LogException($"Unexpected error: {ex.Message}", DateTime.UtcNow);
+            logger.LogException($"Unexpected error: {ex.Message}");
             throw;
         }
         finally
         {
             await client.DisconnectAsync(true, cancellationToken);
-            LogInformation("Disconnected from the SMTP server.", DateTime.UtcNow);
+            logger.LogInformation("Disconnected from the SMTP server.");
 
             client.Dispose();
         }

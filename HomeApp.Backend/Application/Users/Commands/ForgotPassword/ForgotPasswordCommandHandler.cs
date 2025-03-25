@@ -1,11 +1,10 @@
-﻿using Application.Abstractions.Messaging;
+﻿using Application.Abstractions.Logging;
+using Application.Abstractions.Messaging;
 using Application.Email;
 using Application.Models.Email;
 using Domain.Entities.User;
-using Infrastructure.Logger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Users.Commands.ForgotPassword;
@@ -13,18 +12,16 @@ namespace Application.Users.Commands.ForgotPassword;
 internal sealed class ForgotPasswordCommandHandler(
     IEmailSender emailSender,
     UserManager<User> userManager,
-    ILogger<ForgotPasswordCommandHandler> logger)
+    IAppLogger<ForgotPasswordCommandHandler> logger)
     : ICommandHandler<ForgotPasswordCommand, Guid>
 {
-    private readonly LoggerExtension<ForgotPasswordCommandHandler> _logger = new(logger);
-
     public async Task<Result<Guid>> Handle(ForgotPasswordCommand command, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
         if (user == null)
         {
-            _logger.LogInformation("Email is not found", DateTime.Now);
+            logger.LogInformation("Email is not found");
 
             return Result.Failure<Guid>(UserErrors.NotFoundByEmail);
         }
@@ -38,7 +35,7 @@ internal sealed class ForgotPasswordCommandHandler(
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
-        _logger.LogInformation($"Forgot password E-mail is being sent by {user.Id}", DateTime.Now);
+        logger.LogInformation($"Forgot password E-mail is being sent by {user.Id}");
 
         return Result.Success(new Guid(user.Id));
     }

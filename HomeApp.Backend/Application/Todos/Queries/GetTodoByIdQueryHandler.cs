@@ -1,18 +1,16 @@
-﻿using Application.Common.Interfaces.Todos;
+﻿using Application.Abstractions.Logging;
+using Application.Common.Interfaces.Todos;
 using Application.Todos.Dtos;
-using Infrastructure.Logger;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SharedKernel;
 
 namespace Application.Todos.Queries;
 
 public class GetTodoByIdQueryHandler(
     ITodoQueries todoQueries,
-    ILogger<GetTodoByIdQueryHandler> logger)
+    IAppLogger<GetTodoByIdQueryHandler> logger)
     : IRequestHandler<GetTodoByIdQuery, BaseResponse<GetToDoDto>>
 {
-    private readonly LoggerExtension<GetTodoByIdQueryHandler> _logger = new(logger);
     private readonly ITodoQueries _todoQueries = todoQueries;
 
     public async Task<BaseResponse<GetToDoDto>> Handle(GetTodoByIdQuery request,
@@ -39,7 +37,7 @@ public class GetTodoByIdQueryHandler(
         {
             response.Error = ex;
 
-            _logger.LogException($"Get todo failed: {ex}", DateTime.Now);
+            logger.LogException($"Get todo failed: {ex}");
         }
 
         return response;
