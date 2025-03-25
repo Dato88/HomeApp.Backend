@@ -1,34 +1,26 @@
-﻿using Application.Users.Commands.ForgotPassword;
+﻿using Application.Users.Commands.EmailConfirmation;
+using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.Register;
 using Application.Users.Commands.ResetPassword;
 using Application.Users.Queries.GetAllUser;
-using Domain.Entities.User;
-using Microsoft.AspNetCore.Identity;
 
 namespace Web.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class AccountsController(
-    IMediator mediator,
-    UserManager<User> userManager)
+    IMediator mediator)
     : ControllerBase
 {
-    private readonly UserManager<User> _userManager = userManager;
-
     [HttpGet("confirm-email")]
-    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token,
+        CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user is null)
-            return BadRequest("Invalid Email Confirmation Request");
+        var response = await mediator.Send(new EmailConfirmationCommand(email, token), cancellationToken);
 
-        var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+        if (response.IsSuccess) return Ok(response.Value);
 
-        if (!confirmResult.Succeeded)
-            return BadRequest("Invalid Email Confirmation Request");
-
-        return Ok();
+        return BadRequest(response);
     }
 
     [HttpPost("forgot-password")]
