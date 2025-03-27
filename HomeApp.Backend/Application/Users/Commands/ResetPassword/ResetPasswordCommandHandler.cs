@@ -17,24 +17,24 @@ internal sealed class ResetPasswordCommandHandler(
 
         if (user == null)
         {
-            logger.LogWarning("Email is not found");
+            logger.LogWarning($"Password reset failed – no user found with email: {command.Email}");
 
             return Result.Failure<Guid>(UserErrors.NotFoundByEmail);
         }
 
-        var resetPassResult =
-            await userManager.ResetPasswordAsync(user, command.Token, command.Password);
+        var resetPassResult = await userManager.ResetPasswordAsync(user, command.Token, command.Password);
 
         if (!resetPassResult.Succeeded)
         {
-            logger.LogWarning("Reset Password failed");
+            var errors = string.Join(", ", resetPassResult.Errors.Select(e => e.Description));
+            logger.LogWarning($"Password reset failed for {command.Email} (UserId: {user.Id}). Reason(s): {errors}");
 
             return Result.Failure<Guid>(UserErrors.Unauthorized());
         }
 
         await userManager.SetLockoutEndDateAsync(user, new DateTime(2000, 1, 1));
 
-        logger.LogInformation($"Password reset by {user.Id}");
+        logger.LogInformation($"Password reset successful for {command.Email} (UserId: {user.Id})");
 
         return Result.Success(new Guid(user.Id));
     }

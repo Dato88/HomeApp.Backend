@@ -19,10 +19,15 @@ internal sealed class LoginUserCommandHandler(
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
+        if (user is null)
+        {
+            logger.LogWarning($"Login attempt failed. No user found with email: {command.Email}");
+            return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
+        }
+
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
-            logger.LogInformation("Email is not confirmed");
-
+            logger.LogWarning($"Login attempt with unconfirmed email: {command.Email}");
             return Result.Failure<AuthResponse>(UserErrors.EmailNotConfirmed);
         }
 
@@ -32,34 +37,33 @@ internal sealed class LoginUserCommandHandler(
 
             if (!await userManager.IsLockedOutAsync(user))
             {
-                logger.LogInformation("Invalid Authentication");
-
+                logger.LogWarning($"Invalid password attempt for user {command.Email}");
                 return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
             }
 
             var content =
                 $"Your account is locked out. To reset the password click this link: {command.ClientUri}";
-            var message = new Message(new[] { command.Email },
-                "Locked out account information", content);
+            var message = new Message(new[] { command.Email }, "Locked out account information", content);
 
             await emailSender.SendEmailAsync(message, cancellationToken);
 
-            logger.LogException("The account is locked out");
-
+            logger.LogError($"User {command.Email} is locked out due to multiple failed login attempts.");
             return Result.Failure<AuthResponse>(UserErrors.LockedOut(new Guid(user.Id)));
         }
 
         if (await userManager.GetTwoFactorEnabledAsync(user))
+        {
+            logger.LogInformation($"User {command.Email} requires 2FA. Sending verification email...");
             return await GenerateOtpFor2StepVerification(user, cancellationToken);
+        }
 
         var token = tokenProvider.Create(user);
 
         await userManager.ResetAccessFailedCountAsync(user);
 
-        var response = new AuthResponse();
-        response.Token = token;
+        logger.LogInformation($"User {command.Email} successfully logged in.");
 
-        return Result.Success(response);
+        return Result.Success(new AuthResponse { Token = token });
     }
 
     private async Task<Result<AuthResponse>> GenerateOtpFor2StepVerification(User user,
@@ -69,7 +73,7 @@ internal sealed class LoginUserCommandHandler(
 
         if (!providers.Contains("Email"))
         {
-            logger.LogException("Invalid 2-Step Verification Provider.");
+            logger.LogWarning($"User {user.Email} has no valid 2FA email provider.");
 
             return Result.Failure<AuthResponse>(UserErrors.Invalid2Step(new Guid(user.Id)));
         }
@@ -79,10 +83,8 @@ internal sealed class LoginUserCommandHandler(
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
-        var response = new AuthResponse();
-        response.Is2StepVerificationRequired = true;
-        response.Provider = "Email";
+        logger.LogInformation($"2FA email token sent to user {user.Email}.");
 
-        return Result.Success(response);
+        return Result.Success(new AuthResponse { Is2StepVerificationRequired = true, Provider = "Email" });
     }
 }

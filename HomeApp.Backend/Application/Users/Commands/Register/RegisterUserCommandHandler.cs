@@ -29,7 +29,8 @@ internal sealed class RegisterUserCommandHandler(
 
         if (!result.Succeeded)
         {
-            logger.LogException("Email is not confirmed");
+            logger.LogWarning(
+                $"User registration failed for email {command.Email}. Reason(s): {string.Join(", ", result.Errors.Select(e => e.Description))}");
 
             return Result.Failure<Guid>(UserErrors.EmailNotUnique);
         }
@@ -44,6 +45,8 @@ internal sealed class RegisterUserCommandHandler(
         var message = new Message(new[] { command.Email }, "Email Confirmation token", callback);
 
         await emailSender.SendEmailAsync(message, cancellationToken);
+
+        logger.LogInformation($"User registered successfully with email {command.Email}");
 
         return Result.Success(new Guid(user.Id));
     }

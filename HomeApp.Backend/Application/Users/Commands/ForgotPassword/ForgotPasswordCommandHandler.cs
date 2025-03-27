@@ -21,7 +21,7 @@ internal sealed class ForgotPasswordCommandHandler(
 
         if (user == null)
         {
-            logger.LogInformation("Email is not found");
+            logger.LogWarning($"Password reset requested for unknown email: {command.Email}");
 
             return Result.Failure<Guid>(UserErrors.NotFoundByEmail);
         }
@@ -35,7 +35,7 @@ internal sealed class ForgotPasswordCommandHandler(
 
         await emailSender.SendEmailAsync(message, cancellationToken);
 
-        logger.LogInformation($"Forgot password E-mail is being sent by {user.Id}");
+        logger.LogInformation($"Password reset email sent to {user.Email} (UserId: {user.Id})");
 
         return Result.Success(new Guid(user.Id));
     }

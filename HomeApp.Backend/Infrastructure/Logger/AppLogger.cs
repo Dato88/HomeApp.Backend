@@ -15,12 +15,6 @@ public class AppLogger<T> : IAppLogger<T>
         _userContext = userContext;
     }
 
-    private string Format(string message)
-    {
-        var userId = _userContext.UserId;
-        return $"[UserId: {userId}] {message}";
-    }
-
     public void LogTrace(string message) => _loggerExt.LogTrace(Format(message), DateTime.UtcNow);
     public void LogDebug(string message) => _loggerExt.LogDebug(Format(message), DateTime.UtcNow);
     public void LogInformation(string message) => _loggerExt.LogInformation(Format(message), DateTime.UtcNow);
@@ -28,4 +22,10 @@ public class AppLogger<T> : IAppLogger<T>
     public void LogError(string message) => _loggerExt.LogError(Format(message), DateTime.UtcNow);
     public void LogCritical(string message) => _loggerExt.LogCritical(Format(message), DateTime.UtcNow);
     public void LogException(string message) => _loggerExt.LogException(Format(message), DateTime.UtcNow);
+
+    private string Format(string message)
+    {
+        var userId = _userContext.UserId;
+        return $"[UserId: {userId}] {message}";
+    }
 }

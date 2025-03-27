@@ -17,7 +17,7 @@ internal sealed class EmailConfirmationCommandHandler(
 
         if (user == null)
         {
-            logger.LogWarning("Email is not found");
+            logger.LogWarning($"Email confirmation attempt failed – no user found with email: {command.Email}");
 
             return Result.Failure<Guid>(UserErrors.NotFoundByEmail);
         }
@@ -26,10 +26,13 @@ internal sealed class EmailConfirmationCommandHandler(
 
         if (!confirmResult.Succeeded)
         {
-            logger.LogWarning("Invalid Email Confirmation Request");
+            logger.LogWarning(
+                $"Email confirmation failed for {command.Email} (UserId: {user.Id}). Possibly invalid or expired token.");
 
             return Result.Failure<Guid>(UserErrors.Unauthorized());
         }
+
+        logger.LogInformation($"Email successfully confirmed for {command.Email} (UserId: {user.Id})");
 
         return Result.Success(new Guid(user.Id));
     }
