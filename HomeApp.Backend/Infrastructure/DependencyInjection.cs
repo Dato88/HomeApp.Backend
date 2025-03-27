@@ -1,9 +1,12 @@
 ﻿using System.Text;
 using Application.Abstractions.Authentication;
+using Application.Abstractions.Data;
+using Application.Abstractions.Logging;
 using Domain.Entities.User;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization.Utilities;
 using Infrastructure.Database;
+using Infrastructure.Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +40,8 @@ public static class DependencyInjection
 
         services.AddSingleton(logger);
 
+        services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
+
         return services;
     }
 
@@ -60,6 +65,9 @@ public static class DependencyInjection
                     })
                 .UseSnakeCaseNamingConvention());
 
+        services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
+
+        services.AddScoped<IUserContext, Authentication.UserContext>();
 
         return services;
     }
