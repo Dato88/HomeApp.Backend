@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
     <ItemGroup>
         <Folder Include="People\Commands\"/>
     </ItemGroup>
@@ -16,12 +10,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.11.0"/>
-        <PackageReference Include="MediatR" Version="12.4.1"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14"/>
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.14"/>
-        <PackageReference Include="MimeKit" Version="4.11.0"/>
-        <PackageReference Include="NETCore.MailKit" Version="2.1.0"/>
+        <PackageReference Include="FluentValidation"/>
+        <PackageReference Include="MediatR"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Microsoft.AspNetCore.WebUtilities"/>
+        <PackageReference Include="MimeKit"/>
+        <PackageReference Include="NETCore.MailKit"/>
     </ItemGroup>
 
 </Project>
