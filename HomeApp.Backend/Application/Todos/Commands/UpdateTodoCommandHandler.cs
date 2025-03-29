@@ -28,7 +28,7 @@ public class UpdateTodoCommandHandler(
         {
             response.Message = ex.Message;
 
-            logger.LogCritical($"Update todo failed: {ex}");
+            logger.LogError($"Update todo failed: {ex}");
         }
 
         return response;

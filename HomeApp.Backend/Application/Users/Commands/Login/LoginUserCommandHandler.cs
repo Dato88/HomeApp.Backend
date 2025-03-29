@@ -22,12 +22,14 @@ internal sealed class LoginUserCommandHandler(
         if (user is null)
         {
             logger.LogWarning($"Login attempt failed. No user found with email: {command.Email}");
+
             return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
         }
 
         if (!await userManager.IsEmailConfirmedAsync(user))
         {
             logger.LogWarning($"Login attempt with unconfirmed email: {command.Email}");
+
             return Result.Failure<AuthResponse>(UserErrors.EmailNotConfirmed);
         }
 
@@ -38,6 +40,7 @@ internal sealed class LoginUserCommandHandler(
             if (!await userManager.IsLockedOutAsync(user))
             {
                 logger.LogWarning($"Invalid password attempt for user {command.Email}");
+
                 return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
             }
 
@@ -48,12 +51,14 @@ internal sealed class LoginUserCommandHandler(
             await emailSender.SendEmailAsync(message, cancellationToken);
 
             logger.LogError($"User {command.Email} is locked out due to multiple failed login attempts.");
+
             return Result.Failure<AuthResponse>(UserErrors.LockedOut(new Guid(user.Id)));
         }
 
         if (await userManager.GetTwoFactorEnabledAsync(user))
         {
             logger.LogInformation($"User {command.Email} requires 2FA. Sending verification email...");
+
             return await GenerateOtpFor2StepVerification(user, cancellationToken);
         }
 

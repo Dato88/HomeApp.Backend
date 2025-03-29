@@ -47,7 +47,7 @@ public class CreateTodoCommandHandler(
         {
             response.Message = ex.Message;
 
-            logger.LogCritical($"Creating todo failed: {ex.Message}");
+            logger.LogError($"Creating todo failed: {ex.Message}");
         }
 
 

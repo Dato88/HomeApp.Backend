@@ -28,7 +28,7 @@ public class DeleteTodoCommandHandler(
         {
             response.Message = ex.Message;
 
-            logger.LogCritical($"Delete todo failed: {ex}");
+            logger.LogError($"Delete todo failed: {ex}");
         }
 
         return response;

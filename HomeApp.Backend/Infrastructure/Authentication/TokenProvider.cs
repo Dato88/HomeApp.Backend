@@ -20,7 +20,7 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(GetClaims(user).Result),
+            Subject = GetClaims(user).Result,
             Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("JWTSettings:expiryInMinutes")),
             SigningCredentials = credentials,
             Issuer = configuration["JWTSettings:validIssuer"],
@@ -34,7 +34,7 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
         return token;
     }
 
-    private async Task<List<Claim>> GetClaims(User user)
+    private async Task<ClaimsIdentity> GetClaims(User user)
     {
         var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id), new(ClaimTypes.Name, user.Email) };
 
@@ -43,6 +43,6 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
         foreach (var role in roles)
             claims.Add(new Claim(ClaimTypes.Role, role));
 
-        return claims;
+        return new ClaimsIdentity(claims);
     }
 }

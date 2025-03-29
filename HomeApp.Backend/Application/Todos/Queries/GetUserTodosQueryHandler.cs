@@ -52,7 +52,7 @@ public class GetUserTodosQueryHandler(
         {
             response.Error = ex;
 
-            logger.LogCritical($"Get todos failed: {ex}");
+            logger.LogError($"Get todos failed: {ex}");
         }
 
         return response;

@@ -27,7 +27,7 @@ public class CommonPersonQueries(
         }
         catch (Exception ex)
         {
-            logger.LogCritical($"Get person failed: {ex}");
+            logger.LogError($"Get person failed: {ex}");
 
             return null;
         }
@@ -44,7 +44,7 @@ public class CommonPersonQueries(
         }
         catch (Exception ex)
         {
-            logger.LogCritical($"Get person failed: {ex}");
+            logger.LogError($"Get person failed: {ex}");
 
             return null;
         }
