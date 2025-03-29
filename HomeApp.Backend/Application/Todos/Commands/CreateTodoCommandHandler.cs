@@ -26,7 +26,7 @@ public class CreateTodoCommandHandler(
                 response.Success = false;
                 response.Message = "Failed to get user for create Todo!";
 
-                logger.LogException("Create todos failed. User Person is Null.");
+                logger.LogError("Create todos failed. User Person is Null.");
 
                 return response;
             }
@@ -47,7 +47,7 @@ public class CreateTodoCommandHandler(
         {
             response.Message = ex.Message;
 
-            logger.LogException($"Creating todo failed: {ex.Message}");
+            logger.LogCritical($"Creating todo failed: {ex.Message}");
         }
 
 

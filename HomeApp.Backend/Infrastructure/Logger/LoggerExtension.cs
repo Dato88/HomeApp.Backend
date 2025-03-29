@@ -2,28 +2,23 @@
 
 namespace Infrastructure.Logger;
 
-public partial class LoggerExtension<T>(ILogger<T> logger)
+public static partial class LoggerExtension
 {
-    private readonly ILogger<T> _logger = logger;
+    [LoggerMessage(EventId = 0, Level = LogLevel.Trace, Message = "{when} => {message}")]
+    static partial void LogTrace(this ILogger logger, string message, DateTime when);
 
-    [LoggerMessage(0, LogLevel.Trace, "{when} => {message}")]
-    public partial void LogTrace(string message, DateTime when);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{when} => {message}")]
+    static partial void LogDebug(this ILogger logger, string message, DateTime when);
 
-    [LoggerMessage(1, LogLevel.Debug, "{when} => {message}")]
-    public partial void LogDebug(string message, DateTime when);
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "{when} => {message}")]
+    static partial void LogInformation(this ILogger logger, string message, DateTime when);
 
-    [LoggerMessage(2, LogLevel.Information, "{when} => {message}")]
-    public partial void LogInformation(string message, DateTime when);
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "{when} => {message}")]
+    static partial void LogWarning(this ILogger logger, string message, DateTime when);
 
-    [LoggerMessage(3, LogLevel.Warning, "{when} => {message}")]
-    public partial void LogWarning(string message, DateTime when);
+    [LoggerMessage(EventId = 4, Level = LogLevel.Error, Message = "{when} => {message}")]
+    static partial void LogError(this ILogger logger, string message, DateTime when);
 
-    [LoggerMessage(4, LogLevel.Error, "{when} => {message}")]
-    public partial void LogError(string message, DateTime when);
-
-    [LoggerMessage(5, LogLevel.Critical, "{when} => {message}")]
-    public partial void LogCritical(string message, DateTime when);
-
-    [LoggerMessage(6, LogLevel.Critical, "{when} => {message}")]
-    public partial void LogException(string message, DateTime when);
+    [LoggerMessage(EventId = 5, Level = LogLevel.Critical, Message = "{when} => {message}")]
+    static partial void LogCritical(this ILogger logger, string message, DateTime when);
 }

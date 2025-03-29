@@ -8,5 +8,4 @@ public interface IAppLogger<T>
     void LogWarning(string message);
     void LogError(string message);
     void LogCritical(string message);
-    void LogException(string message);
 }

@@ -37,7 +37,7 @@ public class GetTodoByIdQueryHandler(
         {
             response.Error = ex;
 
-            logger.LogException($"Get todo failed: {ex}");
+            logger.LogCritical($"Get todo failed: {ex}");
         }
 
         return response;

@@ -36,11 +36,12 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
 
     private async Task<List<Claim>> GetClaims(User user)
     {
-        var claims = new List<Claim> { new(ClaimTypes.Name, user.Email) };
+        var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id), new(ClaimTypes.Name, user.Email) };
 
         var roles = await userManager.GetRolesAsync(user);
 
-        foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));
+        foreach (var role in roles)
+            claims.Add(new Claim(ClaimTypes.Role, role));
 
         return claims;
     }

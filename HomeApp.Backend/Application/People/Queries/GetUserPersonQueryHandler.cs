@@ -36,7 +36,7 @@ public class GetUserPersonQueryHandler(
         {
             response.Error = ex;
 
-            logger.LogException($"Get person failed: {ex}");
+            logger.LogCritical($"Get person failed: {ex}");
         }
 
         return response;

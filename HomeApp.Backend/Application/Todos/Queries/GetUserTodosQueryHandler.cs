@@ -29,7 +29,7 @@ public class GetUserTodosQueryHandler(
                 response.Success = false;
                 response.Message = "Failed to get user!";
 
-                logger.LogException("Get todos failed. User Person is Null.");
+                logger.LogError("Get todos failed. User Person is Null.");
 
                 return response;
             }
@@ -52,7 +52,7 @@ public class GetUserTodosQueryHandler(
         {
             response.Error = ex;
 
-            logger.LogException($"Get todos failed: {ex}");
+            logger.LogCritical($"Get todos failed: {ex}");
         }
 
         return response;

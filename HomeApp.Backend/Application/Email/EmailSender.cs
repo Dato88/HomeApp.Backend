@@ -51,7 +51,7 @@ public class EmailSender(EmailConfiguration emailConfig, IAppLogger<EmailSender>
         }
         catch (Exception ex)
         {
-            logger.LogException($"Unexpected error: {ex.Message}");
+            logger.LogCritical($"Unexpected error: {ex.Message}");
             throw;
         }
         finally
