@@ -1,7 +1,7 @@
 ﻿using Bogus;
-using Person = Domain.Entities.People;
+using Person = Domain.Entities.People.Person;
 
-namespace HomeApp.Library.Tests.Helper.CreateDummyData;
+namespace ApplicationTests.IntegrationTests.Helper.CreateDummyData;
 
 public class CreateDummyPeople : BaseTest
 {
