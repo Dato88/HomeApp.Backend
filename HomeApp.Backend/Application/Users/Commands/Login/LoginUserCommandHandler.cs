@@ -23,7 +23,7 @@ internal sealed class LoginUserCommandHandler(
         {
             logger.LogWarning($"Login attempt failed. No user found with email: {command.Email}");
 
-            return Result.Failure<AuthResponse>(UserErrors.Unauthorized());
+            return Result.Failure<AuthResponse>(UserErrors.NotFoundByEmail);
         }
 
         if (!await userManager.IsEmailConfirmedAsync(user))

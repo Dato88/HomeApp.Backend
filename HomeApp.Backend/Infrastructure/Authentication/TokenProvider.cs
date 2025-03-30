@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
-internal sealed class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
+public class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
 {
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JwtSettings");
 
@@ -27,19 +27,20 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
     {
         var key = Encoding.UTF8.GetBytes(_jwtSettings["securityKey"]!);
         var secret = new SymmetricSecurityKey(key);
+
         return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }
 
     private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
     {
-        var tokenOptions = new JwtSecurityToken(
+        var jwtSecurityToken = new JwtSecurityToken(
             _jwtSettings["validIssuer"],
             _jwtSettings["validAudience"],
             claims,
             expires: DateTime.Now.AddMinutes(_jwtSettings.GetValue<int>("expiryInMinutes")),
             signingCredentials: signingCredentials);
 
-        return tokenOptions;
+        return jwtSecurityToken;
     }
 
     private async Task<List<Claim>> GetClaims(User user)
