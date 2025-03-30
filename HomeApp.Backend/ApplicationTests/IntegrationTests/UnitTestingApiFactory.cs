@@ -41,12 +41,6 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
             // Interface (IHomeAppContext) zur DI hinzufügen
             services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
-            // // Migrationen anwenden und ggf. initiale Testdaten seeden
-            // var serviceProvider = services.BuildServiceProvider();
-            // using var scope = serviceProvider.CreateScope();
-            // var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
-            // context.Database.Migrate();
-
             // Optional: SeedTestData(context);
         });
 }
