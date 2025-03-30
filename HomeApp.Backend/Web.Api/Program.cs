@@ -1,5 +1,7 @@
 using Application;
+using HealthChecks.UI.Client;
 using Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Web.Api;
 using Web.Api.Extensions;
 
@@ -13,6 +15,8 @@ builder.Services
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
+
+app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
 app.UseAuthenticationExtension();
 

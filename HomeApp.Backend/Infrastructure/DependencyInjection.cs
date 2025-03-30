@@ -67,7 +67,6 @@ public static class DependencyInjection
 
         services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
-
         return services;
     }
 
