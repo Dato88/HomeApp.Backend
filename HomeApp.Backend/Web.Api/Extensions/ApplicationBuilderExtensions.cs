@@ -11,4 +11,17 @@ public static class ApplicationBuilderExtensions
 
         return app;
     }
+
+    public static IApplicationBuilder UseAuthenticationExtension(this WebApplication app)
+    {
+        app.UseHttpsRedirection();
+
+        app.UseCors("CorsPolicy");
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        return app;
+    }
 }

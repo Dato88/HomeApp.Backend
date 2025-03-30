@@ -14,13 +14,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
 
-app.UseHttpsRedirection();
-
-app.UseCors("CorsPolicy");
-
-app.UseAuthentication();
-
-app.UseAuthorization();
+app.UseAuthenticationExtension();
 
 app.MapControllers().RequireCors("CorsPolicy");
 
