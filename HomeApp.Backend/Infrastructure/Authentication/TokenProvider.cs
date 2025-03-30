@@ -1,40 +1,47 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Application.Abstractions.Authentication;
 using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Authentication;
 
 internal sealed class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
 {
-    public string Create(User user)
+    private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JwtSettings");
+
+    public async Task<string> Create(User user)
     {
-        var secretKey = configuration["JWTSettings:securityKey"]!;
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = GetClaims(user).Result,
-            Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("JWTSettings:expiryInMinutes")),
-            SigningCredentials = credentials,
-            Issuer = configuration["JWTSettings:validIssuer"],
-            Audience = configuration["JWTSettings:validAudience"]
-        };
-
-        var handler = new JsonWebTokenHandler();
-
-        var token = handler.CreateToken(tokenDescriptor);
+        var signingCredentials = GetSigningCredentials();
+        var claims = await GetClaims(user);
+        var token = new JwtSecurityTokenHandler().WriteToken(GenerateTokenOptions(signingCredentials, claims));
 
         return token;
     }
 
-    private async Task<ClaimsIdentity> GetClaims(User user)
+    private SigningCredentials GetSigningCredentials()
+    {
+        var key = Encoding.UTF8.GetBytes(_jwtSettings["securityKey"]!);
+        var secret = new SymmetricSecurityKey(key);
+        return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+    }
+
+    private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+    {
+        var tokenOptions = new JwtSecurityToken(
+            _jwtSettings["validIssuer"],
+            _jwtSettings["validAudience"],
+            claims,
+            expires: DateTime.Now.AddMinutes(_jwtSettings.GetValue<int>("expiryInMinutes")),
+            signingCredentials: signingCredentials);
+
+        return tokenOptions;
+    }
+
+    private async Task<List<Claim>> GetClaims(User user)
     {
         var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id), new(ClaimTypes.Name, user.Email) };
 
@@ -43,6 +50,6 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
         foreach (var role in roles)
             claims.Add(new Claim(ClaimTypes.Role, role));
 
-        return new ClaimsIdentity(claims);
+        return claims;
     }
 }

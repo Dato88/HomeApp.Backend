@@ -62,7 +62,7 @@ internal sealed class LoginUserCommandHandler(
             return await GenerateOtpFor2StepVerification(user, cancellationToken);
         }
 
-        var token = tokenProvider.Create(user);
+        var token = await tokenProvider.Create(user);
 
         await userManager.ResetAccessFailedCountAsync(user);
 

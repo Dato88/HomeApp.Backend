@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
@@ -14,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using UserContext = Infrastructure.Database.UserContext;
 
 namespace Infrastructure;
 
@@ -56,7 +56,7 @@ public static class DependencyInjection
                     })
                 .UseSnakeCaseNamingConvention());
 
-        services.AddDbContext<UserContext>(options =>
+        services.AddDbContext<HomeAppUserContext>(options =>
             options.UseNpgsql(
                     configuration.GetConnectionString("HomeAppUserConnection"),
                     npgsqlOptions =>
@@ -67,7 +67,6 @@ public static class DependencyInjection
 
         services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
-        services.AddScoped<IUserContext, Authentication.UserContext>();
 
         return services;
     }
@@ -114,11 +113,14 @@ public static class DependencyInjection
                 ValidIssuer = jwtSettings["validIssuer"],
                 ValidAudience = jwtSettings["validAudience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                    .GetBytes(jwtSettings.GetSection("securityKey").Value))
+                    .GetBytes(jwtSettings["securityKey"]!)),
+                NameClaimType = ClaimTypes.Name
             };
         });
 
         services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<ITokenProvider, TokenProvider>();
 
         return services;
     }
@@ -130,8 +132,6 @@ public static class DependencyInjection
             foreach (var item in ClaimStore.AllClaims)
                 options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
         });
-
-        services.AddScoped<ITokenProvider, TokenProvider>();
 
         services.AddIdentity<User, IdentityRole>(
                 opt =>
@@ -145,7 +145,7 @@ public static class DependencyInjection
                     opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
                     opt.Lockout.MaxFailedAccessAttempts = 3;
                 })
-            .AddEntityFrameworkStores<UserContext>()
+            .AddEntityFrameworkStores<HomeAppUserContext>()
             .AddDefaultTokenProviders();
 
         services.Configure<DataProtectionTokenProviderOptions>(opt =>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database;
 
-public class UserContext(DbContextOptions<UserContext> options) : IdentityDbContext<User>(options)
+public class HomeAppUserContext(DbContextOptions<HomeAppUserContext> options) : IdentityDbContext<User>(options)
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -14,7 +14,7 @@ public class UserContext(DbContextOptions<UserContext> options) : IdentityDbCont
         builder.HasDefaultSchema("identity");
 
         builder.Entity<IdentityRole>().HasData(
-            new IdentityRole { Id = "e47e06f0-25a5-4dd1-a54b-1f20d680ae6d", Name = "Admin", NormalizedName = "ADMIN" }
+            new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" }
         );
     }
 }

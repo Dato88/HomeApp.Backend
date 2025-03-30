@@ -18,18 +18,16 @@ public class AppLogger<T> : IAppLogger<T>
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public void LogTrace(string message) => _logger.LogTrace(Format(message), DateTime.UtcNow);
-    public void LogDebug(string message) => _logger.LogDebug(Format(message), DateTime.UtcNow);
-    public void LogInformation(string message) => _logger.LogInformation(Format(message), DateTime.UtcNow);
-    public void LogWarning(string message) => _logger.LogWarning(Format(message), DateTime.UtcNow);
-    public void LogError(string message) => _logger.LogError(Format(message), DateTime.UtcNow);
-    public void LogCritical(string message) => _logger.LogCritical(Format(message), DateTime.UtcNow);
+    public void LogTrace(string message) => _logger.LogTrace(message, DateTime.UtcNow);
+    public void LogDebug(string message) => _logger.LogDebug(message, DateTime.UtcNow);
+    public void LogInformation(string message) => _logger.LogInformation(message, DateTime.UtcNow);
+    public void LogWarning(string message) => _logger.LogWarning(message, DateTime.UtcNow);
+    public void LogError(string message) => _logger.LogError(message, DateTime.UtcNow);
+    public void LogCritical(string message) => _logger.LogCritical(message, DateTime.UtcNow);
 
     private string Format(string message)
     {
-        var userId = _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated == true
-            ? _userContext.UserId.ToString()
-            : "Unauthenticated";
+        var userId = _userContext.UserId.ToString();
 
         return $"[UserId: {userId}] {message}";
     }

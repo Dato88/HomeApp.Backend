@@ -1,27 +1,25 @@
-﻿using Application.Abstractions.Data;
+﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
 using Application.Common.Interfaces.People;
 using Application.People.Dtos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common.People;
 
 public class CommonPersonQueries(
     IHomeAppContext dbContext,
-    IHttpContextAccessor httpContextAccessor,
+    IUserContext userContext,
     IAppLogger<CommonPersonQueries> logger) : ICommonPersonQueries
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-
     public async Task<PersonDto?> GetUserPersonAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var email = _httpContextAccessor.HttpContext.User.Identity.Name;
+            var userId = userContext.UserId.ToString();
 
             var person = await dbContext.People.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
+                .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
             return person;
         }

@@ -32,7 +32,7 @@ internal sealed class TwoStepVerificationCommandHandler(
             return Result.Failure<string>(UserErrors.Unauthorized());
         }
 
-        var token = tokenProvider.Create(user);
+        var token = await tokenProvider.Create(user);
 
         logger.LogInformation($"2FA succeeded for user {query.Email} (UserId: {user.Id}). Token issued.");
 

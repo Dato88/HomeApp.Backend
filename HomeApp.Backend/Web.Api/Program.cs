@@ -19,11 +19,12 @@ app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers().RequireCors("CorsPolicy");
 
-app.Run();
+await app.RunAsync();
 
 public partial class Program
 {
