@@ -17,7 +17,8 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
     {
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims(user);
-        var token = new JwtSecurityTokenHandler().WriteToken(GenerateTokenOptions(signingCredentials, claims));
+        var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+        var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         return token;
     }
