@@ -13,7 +13,7 @@ public class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGroup>
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.CreatedAt)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(x => x.Name)
             .IsRequired()

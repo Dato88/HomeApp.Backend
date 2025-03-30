@@ -3,7 +3,7 @@ using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
 
 namespace ApplicationTests.IntegrationTests.Todos;
 
-public class BaseTodoQueriesTest : BaseTest
+public abstract class BaseTodoQueriesTest : BaseTest
 {
     protected readonly CreateDummyPeople CreateDummyPeople;
     protected readonly CreateDummyTodos CreateDummyTodos;

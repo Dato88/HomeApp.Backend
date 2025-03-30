@@ -13,7 +13,7 @@ public class BudgetGroupConfiguration : IEntityTypeConfiguration<BudgetGroup>
         builder.HasKey(bg => bg.Id);
 
         builder.Property(bg => bg.CreatedAt)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(bg => bg.PersonId)
             .IsRequired();

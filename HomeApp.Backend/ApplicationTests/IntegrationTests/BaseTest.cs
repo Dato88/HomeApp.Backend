@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ApplicationTests.IntegrationTests;
 
-public class BaseTest : IClassFixture<UnitTestingApiFactory>
+public abstract class BaseTest : IClassFixture<UnitTestingApiFactory>, IDisposable
 {
     private readonly IServiceScope _scope;
     protected readonly IHomeAppContext DbContext;
@@ -14,4 +14,6 @@ public class BaseTest : IClassFixture<UnitTestingApiFactory>
         DbContext = _scope.ServiceProvider
             .GetRequiredService<IHomeAppContext>();
     }
+
+    public void Dispose() => _scope.Dispose();
 }

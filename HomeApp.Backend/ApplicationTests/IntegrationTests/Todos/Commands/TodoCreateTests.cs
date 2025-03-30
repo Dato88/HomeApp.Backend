@@ -4,8 +4,8 @@ namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
 public class TodoCreateTests : BaseTodoCommandsTest
 {
-    public TodoCreateTests(UnitTestingApiFactory unitTestingApiFactory) :
-        base(unitTestingApiFactory)
+    public TodoCreateTests(UnitTestingApiFactory unitTestingApiFactory)
+        : base(unitTestingApiFactory)
     {
     }
 

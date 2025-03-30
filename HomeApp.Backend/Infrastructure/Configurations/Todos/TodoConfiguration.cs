@@ -13,7 +13,7 @@ public class TodoConfiguration : IEntityTypeConfiguration<Todo>
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.CreatedAt)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(t => t.Name)
             .IsRequired()
@@ -26,7 +26,7 @@ public class TodoConfiguration : IEntityTypeConfiguration<Todo>
             .IsRequired();
 
         builder.Property(t => t.LastModified)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         // Indices
         builder.HasIndex(t => t.Id)

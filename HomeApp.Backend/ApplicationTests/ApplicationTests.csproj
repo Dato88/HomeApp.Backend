@@ -34,6 +34,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
+        <ProjectReference Include="..\Web.Api\Web.Api.csproj"/>
     </ItemGroup>
 
 </Project>

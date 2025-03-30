@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Testcontainers.PostgreSql;
 
 namespace ApplicationTests.IntegrationTests;
@@ -19,7 +18,13 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
         .WithUsername("testuser")
         .WithPassword("780234iicx5213").Build();
 
-    public async Task InitializeAsync() => await _dbContainer.StartAsync();
+    public async Task InitializeAsync()
+    {
+        await _dbContainer.StartAsync();
+        using var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
+        context.Database.Migrate();
+    }
 
     public async Task DisposeAsync() => await _dbContainer.StopAsync();
 
@@ -36,11 +41,11 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
             // Interface (IHomeAppContext) zur DI hinzufügen
             services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
-            // Migrationen anwenden und ggf. initiale Testdaten seeden
-            var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
-            context.Database.Migrate();
+            // // Migrationen anwenden und ggf. initiale Testdaten seeden
+            // var serviceProvider = services.BuildServiceProvider();
+            // using var scope = serviceProvider.CreateScope();
+            // var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
+            // context.Database.Migrate();
 
             // Optional: SeedTestData(context);
         });

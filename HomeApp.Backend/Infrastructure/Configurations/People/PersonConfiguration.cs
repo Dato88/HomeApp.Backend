@@ -13,7 +13,7 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.CreatedAt)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(p => p.Username)
             .HasMaxLength(150);

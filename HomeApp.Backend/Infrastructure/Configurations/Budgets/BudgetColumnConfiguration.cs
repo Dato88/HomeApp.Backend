@@ -13,7 +13,7 @@ public class BudgetColumnConfiguration : IEntityTypeConfiguration<BudgetColumn>
         builder.HasKey(bc => bc.Id);
 
         builder.Property(bc => bc.CreatedAt)
-            .HasDefaultValue(DateTime.UtcNow);
+            .HasDefaultValueSql("NOW()");
 
         builder.Property(bc => bc.Index)
             .IsRequired();
