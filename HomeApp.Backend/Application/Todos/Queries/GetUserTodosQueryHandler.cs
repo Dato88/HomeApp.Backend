@@ -39,14 +39,14 @@ public class GetUserTodosQueryHandler(
             if (todos.Any())
             {
                 response.Data = todos.Select(s => (GetToDoDto)s);
-                response.Success = true;
                 response.Message = "Query succeed!";
             }
             else
             {
-                response.Success = false;
                 response.Message = "No results found!";
             }
+
+            response.Success = true;
         }
         catch (Exception ex)
         {
