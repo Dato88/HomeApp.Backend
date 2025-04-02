@@ -1,11 +1,13 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
+using Application.Common.People.Validations;
+using Application.Common.People.Validations.Interfaces;
 using Domain.Entities.User;
-using Infrastructure.Authentication;
 using Infrastructure.Authorization.Utilities;
 using Infrastructure.Database;
 using Infrastructure.Logger;
+using Infrastructure.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,8 @@ public static class DependencyInjection
         services.AddSingleton(logger);
 
         services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
+
+        services.AddScoped<IPersonValidation, PersonValidation>();
 
         return services;
     }

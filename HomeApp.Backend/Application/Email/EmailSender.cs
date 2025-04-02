@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using Application.Abstractions.Logging;
+using Application.Configurations;
 using Application.Models.Email;
 using MailKit.Net.Smtp;
 using MimeKit;

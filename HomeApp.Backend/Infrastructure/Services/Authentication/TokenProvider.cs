@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Authentication;
+namespace Infrastructure.Services.Authentication;
 
 public class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
 {

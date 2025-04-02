@@ -1,4 +1,4 @@
-﻿namespace Application.Models.Email;
+﻿namespace Application.Configurations;
 
 public class EmailConfiguration
 {

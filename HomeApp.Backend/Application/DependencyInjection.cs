@@ -1,11 +1,9 @@
 ﻿using Application.Common.Interfaces.People;
 using Application.Common.Interfaces.Todos;
 using Application.Common.People;
-using Application.Common.People.Validations;
-using Application.Common.People.Validations.Interfaces;
 using Application.Common.Todos;
+using Application.Configurations;
 using Application.Email;
-using Application.Models.Email;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +26,6 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         // services.AddScoped<IBudgetValidation, BudgetValidation>();
-        services.AddScoped<IPersonValidation, PersonValidation>();
 
         // services.AddScoped<IBudgetCellCrud, BudgetCellQueries>();
         // services.AddScoped<IBudgetColumnCrud, BudgetColumnQueries>();
