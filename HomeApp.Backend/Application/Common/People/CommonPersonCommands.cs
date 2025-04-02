@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
 using Application.Common.Interfaces.People;
-using Application.Common.People.Validations.Interfaces;
+using Application.Common.Interfaces.Validations;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
 

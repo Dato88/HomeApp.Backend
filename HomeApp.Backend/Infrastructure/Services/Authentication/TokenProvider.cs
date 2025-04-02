@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services.Authentication;
 
-public class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
+internal sealed class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
 {
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JwtSettings");
 

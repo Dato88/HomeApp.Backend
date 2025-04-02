@@ -1,13 +1,13 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
+using Application.Common.Interfaces.Validations;
 using Application.Common.People.Validations;
-using Application.Common.People.Validations.Interfaces;
 using Domain.Entities.User;
-using Infrastructure.Authorization.Utilities;
 using Infrastructure.Database;
-using Infrastructure.Logger;
 using Infrastructure.Services.Authentication;
+using Infrastructure.Services.Authorization.Utilities;
+using Infrastructure.Services.Logger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

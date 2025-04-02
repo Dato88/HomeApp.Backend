@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services.Authentication;
 
-public class UserContext : IUserContext
+internal sealed class UserContext : IUserContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
+using Application.Common.Interfaces.Validations;
 using Application.Common.People;
-using Application.Common.People.Validations.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace ApplicationTests.IntegrationTests.People;

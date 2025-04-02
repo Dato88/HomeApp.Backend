@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Infrastructure.Authorization.Utilities;
+namespace Infrastructure.Services.Authorization.Utilities;
 
 public static class ClaimStore
 {

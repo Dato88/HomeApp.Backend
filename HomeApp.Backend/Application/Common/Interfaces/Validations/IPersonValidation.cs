@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.People;
 
-namespace Application.Common.People.Validations.Interfaces;
+namespace Application.Common.Interfaces.Validations;
 
 public interface IPersonValidation
 {

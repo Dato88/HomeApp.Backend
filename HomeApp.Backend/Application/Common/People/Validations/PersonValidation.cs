@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using Application.Abstractions.Data;
-using Application.Common.People.Validations.Interfaces;
+using Application.Common.Interfaces.Validations;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
 using Microsoft.EntityFrameworkCore;
