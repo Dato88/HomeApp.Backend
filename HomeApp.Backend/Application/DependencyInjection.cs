@@ -1,8 +1,4 @@
-﻿using Application.Common.Interfaces.People;
-using Application.Common.Interfaces.Todos;
-using Application.Common.People;
-using Application.Common.Todos;
-using Application.Configurations;
+﻿using Application.Configurations;
 using Application.Email;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,10 +28,7 @@ public static class DependencyInjection
         // services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
         // builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
         // builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
-        services.AddScoped<ICommonPersonCommands, CommonPersonCommands>();
-        services.AddScoped<ICommonPersonQueries, CommonPersonQueries>();
-        services.AddScoped<ITodoCommands, TodoCommands>();
-        services.AddScoped<ITodoQueries, TodoQueries>();
+
 
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
         services.AddSingleton(emailConfig);

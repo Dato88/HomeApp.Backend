@@ -1,10 +1,16 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
-using Application.Common.Interfaces.Validations;
-using Application.Common.People.Validations;
+using Application.Common.Interfaces.People;
+using Application.Common.Interfaces.People.Validations;
+using Application.Common.Interfaces.Todos;
 using Domain.Entities.User;
 using Infrastructure.Database;
+using Infrastructure.Features.People.Commands;
+using Infrastructure.Features.People.Queries;
+using Infrastructure.Features.People.Validations;
+using Infrastructure.Features.Todos.Commands;
+using Infrastructure.Features.Todos.Queries;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.Authorization.Utilities;
 using Infrastructure.Services.Logger;
@@ -41,6 +47,11 @@ public static class DependencyInjection
         services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
 
         services.AddScoped<IPersonValidation, PersonValidation>();
+
+        services.AddScoped<IPersonCommands, PersonCommands>();
+        services.AddScoped<IPersonQueries, PersonQueries>();
+        services.AddScoped<ITodoCommands, TodoCommands>();
+        services.AddScoped<ITodoQueries, TodoQueries>();
 
         return services;
     }

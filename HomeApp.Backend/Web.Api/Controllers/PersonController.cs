@@ -1,4 +1,4 @@
-﻿using Application.People.Queries;
+﻿using Application.Features.People.Queries;
 
 namespace Web.Api.Controllers;
 

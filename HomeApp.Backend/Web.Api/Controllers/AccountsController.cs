@@ -1,8 +1,8 @@
-﻿using Application.Users.Commands.EmailConfirmation;
-using Application.Users.Commands.ForgotPassword;
-using Application.Users.Commands.Register;
-using Application.Users.Commands.ResetPassword;
-using Application.Users.Queries.GetAllUser;
+﻿using Application.Features.Users.Commands.EmailConfirmation;
+using Application.Features.Users.Commands.ForgotPassword;
+using Application.Features.Users.Commands.Register;
+using Application.Features.Users.Commands.ResetPassword;
+using Application.Features.Users.Queries.GetAllUser;
 
 namespace Web.Api.Controllers;
 

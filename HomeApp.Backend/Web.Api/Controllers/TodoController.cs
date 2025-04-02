@@ -1,5 +1,5 @@
-﻿using Application.Todos.Commands;
-using Application.Todos.Queries;
+﻿using Application.Features.Todos.Commands;
+using Application.Features.Todos.Queries;
 
 namespace Web.Api.Controllers;
 

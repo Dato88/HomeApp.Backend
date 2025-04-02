@@ -1,19 +1,20 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
-using Application.Common.Interfaces.Validations;
-using Application.Common.People;
+using Application.Common.Interfaces.People.Validations;
+using Infrastructure.Features.People.Commands;
+using Infrastructure.Features.People.Queries;
 using Microsoft.AspNetCore.Http;
 
 namespace ApplicationTests.IntegrationTests.People;
 
 public class BaseCommonPersonTest : BaseTest
 {
-    protected readonly Mock<IAppLogger<CommonPersonCommands>> CommandsILogger;
-    protected readonly CommonPersonCommands CommonPersonCommands;
-    protected readonly CommonPersonQueries CommonPersonQueries;
+    protected readonly Mock<IAppLogger<PersonCommands>> CommandsILogger;
+    protected readonly PersonCommands CommonPersonCommands;
     protected readonly Mock<IHttpContextAccessor> HttpContextAccessor;
+    protected readonly PersonQueries PersonQueries;
     protected readonly Mock<IPersonValidation> PersonValidationMock;
-    protected readonly Mock<IAppLogger<CommonPersonQueries>> QuerriesILogger;
+    protected readonly Mock<IAppLogger<PersonQueries>> QuerriesILogger;
     protected readonly Mock<IUserContext> UserContext;
 
     public BaseCommonPersonTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
@@ -22,11 +23,11 @@ public class BaseCommonPersonTest : BaseTest
         HttpContextAccessor.DefaultValue = DefaultValue.Mock;
         HttpContextAccessor.SetupAllProperties();
 
-        QuerriesILogger = new Mock<IAppLogger<CommonPersonQueries>>();
+        QuerriesILogger = new Mock<IAppLogger<PersonQueries>>();
         QuerriesILogger.DefaultValue = DefaultValue.Mock;
         QuerriesILogger.SetupAllProperties();
 
-        CommandsILogger = new Mock<IAppLogger<CommonPersonCommands>>();
+        CommandsILogger = new Mock<IAppLogger<PersonCommands>>();
         CommandsILogger.DefaultValue = DefaultValue.Mock;
         CommandsILogger.SetupAllProperties();
 
@@ -38,11 +39,11 @@ public class BaseCommonPersonTest : BaseTest
         UserContext.DefaultValue = DefaultValue.Mock;
         UserContext.SetupAllProperties();
 
-        CommonPersonCommands = new CommonPersonCommands(DbContext,
+        CommonPersonCommands = new PersonCommands(DbContext,
             PersonValidationMock.Object,
             CommandsILogger.Object);
 
-        CommonPersonQueries = new CommonPersonQueries(DbContext, UserContext.Object,
+        PersonQueries = new PersonQueries(DbContext, UserContext.Object,
             QuerriesILogger.Object);
     }
 }

@@ -1,5 +1,5 @@
-﻿using Application.Common.Todos;
-using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+using Infrastructure.Features.Todos.Queries;
 
 namespace ApplicationTests.IntegrationTests.Todos;
 
