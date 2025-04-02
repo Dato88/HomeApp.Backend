@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Application.Abstractions.Data;
-using Application.Common.Interfaces.Todos;
+using Application.Features.Todos.Queries;
 using Domain.Entities.Todos;
 using Domain.PredefinedMessages;
 using Infrastructure.Database;

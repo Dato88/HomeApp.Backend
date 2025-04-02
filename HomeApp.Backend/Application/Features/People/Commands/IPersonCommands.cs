@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.People;
 
-namespace Application.Common.Interfaces.People;
+namespace Application.Features.People.Commands;
 
 public interface IPersonCommands
 {

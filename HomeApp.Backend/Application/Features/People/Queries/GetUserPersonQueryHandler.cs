@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.Logging;
-using Application.Common.Interfaces.People;
 using Application.Features.People.Dtos;
 using MediatR;
 using SharedKernel;

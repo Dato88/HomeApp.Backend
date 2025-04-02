@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
-using Application.Common.Interfaces.People.Validations;
+using Application.Features.People.Validations;
 using Infrastructure.Features.People.Commands;
 using Infrastructure.Features.People.Queries;
 using Microsoft.AspNetCore.Http;

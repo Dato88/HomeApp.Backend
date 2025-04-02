@@ -1,6 +1,6 @@
 ﻿using Application.Features.People.Dtos;
 
-namespace Application.Common.Interfaces.People;
+namespace Application.Features.People.Queries;
 
 public interface IPersonQueries
 {

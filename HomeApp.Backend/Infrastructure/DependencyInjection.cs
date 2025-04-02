@@ -1,9 +1,11 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
-using Application.Common.Interfaces.People;
-using Application.Common.Interfaces.People.Validations;
-using Application.Common.Interfaces.Todos;
+using Application.Features.People.Commands;
+using Application.Features.People.Queries;
+using Application.Features.People.Validations;
+using Application.Features.Todos.Commands;
+using Application.Features.Todos.Queries;
 using Domain.Entities.User;
 using Infrastructure.Database;
 using Infrastructure.Features.People.Commands;

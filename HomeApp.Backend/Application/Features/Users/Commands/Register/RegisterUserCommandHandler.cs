@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Logging;
 using Application.Abstractions.Messaging;
-using Application.Common.Interfaces.People;
 using Application.Email;
+using Application.Features.People.Commands;
 using Application.Models.Email;
 using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;

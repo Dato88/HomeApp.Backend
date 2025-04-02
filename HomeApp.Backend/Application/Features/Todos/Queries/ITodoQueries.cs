@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Todos;
 
-namespace Application.Common.Interfaces.Todos;
+namespace Application.Features.Todos.Queries;
 
 public interface ITodoQueries
 {

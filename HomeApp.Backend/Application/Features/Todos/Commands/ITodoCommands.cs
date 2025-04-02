@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Todos;
 
-namespace Application.Common.Interfaces.Todos;
+namespace Application.Features.Todos.Commands;
 
 public interface ITodoCommands
 {
