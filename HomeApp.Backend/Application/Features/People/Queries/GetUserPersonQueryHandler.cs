@@ -7,14 +7,14 @@ namespace Application.Features.People.Queries;
 
 public class GetUserPersonQueryHandler(
     IPersonQueries personQueries,
-    IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonDto>>
+    IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonResponse>>
 {
     private readonly IPersonQueries _personQueries = personQueries;
 
-    public async Task<BaseResponse<PersonDto>> Handle(GetUserPersonQuery request,
+    public async Task<BaseResponse<PersonResponse>> Handle(GetUserPersonQuery request,
         CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<PersonDto>();
+        var response = new BaseResponse<PersonResponse>();
         try
         {
             var person = await _personQueries.GetUserPersonAsync(cancellationToken);

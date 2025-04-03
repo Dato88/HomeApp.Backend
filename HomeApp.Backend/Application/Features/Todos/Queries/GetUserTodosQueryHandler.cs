@@ -10,15 +10,15 @@ public class GetUserTodosQueryHandler(
     ITodoQueries todoQueries,
     IPersonQueries personQueries,
     IAppLogger<GetUserTodosQueryHandler> logger)
-    : IRequestHandler<GetUserTodosQuery, BaseResponse<IEnumerable<GetToDoDto>>>
+    : IRequestHandler<GetUserTodosQuery, BaseResponse<IEnumerable<GetToDoResponse>>>
 {
     private readonly IPersonQueries _personQueries = personQueries;
     private readonly ITodoQueries _todoQueries = todoQueries;
 
-    public async Task<BaseResponse<IEnumerable<GetToDoDto>>> Handle(GetUserTodosQuery request,
+    public async Task<BaseResponse<IEnumerable<GetToDoResponse>>> Handle(GetUserTodosQuery request,
         CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<IEnumerable<GetToDoDto>>();
+        var response = new BaseResponse<IEnumerable<GetToDoResponse>>();
         try
         {
             var person = await _personQueries.GetUserPersonAsync(cancellationToken);
@@ -37,7 +37,7 @@ public class GetUserTodosQueryHandler(
 
             if (todos.Any())
             {
-                response.Data = todos.Select(s => (GetToDoDto)s);
+                response.Data = todos.Select(s => (GetToDoResponse)s);
                 response.Message = "Query succeed!";
             }
             else

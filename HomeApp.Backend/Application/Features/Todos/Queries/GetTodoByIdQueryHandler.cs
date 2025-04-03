@@ -8,14 +8,14 @@ namespace Application.Features.Todos.Queries;
 public class GetTodoByIdQueryHandler(
     ITodoQueries todoQueries,
     IAppLogger<GetTodoByIdQueryHandler> logger)
-    : IRequestHandler<GetTodoByIdQuery, BaseResponse<GetToDoDto>>
+    : IRequestHandler<GetTodoByIdQuery, BaseResponse<GetToDoResponse>>
 {
     private readonly ITodoQueries _todoQueries = todoQueries;
 
-    public async Task<BaseResponse<GetToDoDto>> Handle(GetTodoByIdQuery request,
+    public async Task<BaseResponse<GetToDoResponse>> Handle(GetTodoByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<GetToDoDto>();
+        var response = new BaseResponse<GetToDoResponse>();
         try
         {
             var todo = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);

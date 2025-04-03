@@ -3,7 +3,7 @@ using Domain.Entities.Todos.Enums;
 
 namespace Application.Features.Todos.Dtos;
 
-public record GetToDoDto(
+public record GetToDoResponse(
     int Id,
     int? TodoGroupId,
     string Name,
@@ -12,7 +12,7 @@ public record GetToDoDto(
     DateTimeOffset LastModified
 )
 {
-    public static implicit operator GetToDoDto(Todo item) =>
+    public static implicit operator GetToDoResponse(Todo item) =>
         new(
             item.Id,
             item.TodoGroupTodo?.TodoGroupId,

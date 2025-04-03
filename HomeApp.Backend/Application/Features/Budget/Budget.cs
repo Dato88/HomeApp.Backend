@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Budgets;
 
-namespace Application.Models;
+namespace Application.Features.Budget;
 
 public class Budget
 {

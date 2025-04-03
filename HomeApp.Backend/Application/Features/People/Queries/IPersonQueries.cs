@@ -4,6 +4,6 @@ namespace Application.Features.People.Queries;
 
 public interface IPersonQueries
 {
-    Task<PersonDto?> GetUserPersonAsync(CancellationToken cancellationToken);
-    Task<PersonDto?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<PersonResponse?> GetUserPersonAsync(CancellationToken cancellationToken);
+    Task<PersonResponse?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken);
 }

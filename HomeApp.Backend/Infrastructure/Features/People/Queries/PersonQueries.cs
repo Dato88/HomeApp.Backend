@@ -12,7 +12,7 @@ public class PersonQueries(
     IUserContext userContext,
     IAppLogger<PersonQueries> logger) : IPersonQueries
 {
-    public async Task<PersonDto?> GetUserPersonAsync(CancellationToken cancellationToken)
+    public async Task<PersonResponse?> GetUserPersonAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -31,7 +31,7 @@ public class PersonQueries(
         }
     }
 
-    public async Task<PersonDto?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<PersonResponse?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
     {
         try
         {

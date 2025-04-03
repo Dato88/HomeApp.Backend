@@ -4,4 +4,4 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
 
-public record GetTodoByIdQuery(int Id) : IRequest<BaseResponse<GetToDoDto>>;
+public record GetTodoByIdQuery(int Id) : IRequest<BaseResponse<GetToDoResponse>>;
