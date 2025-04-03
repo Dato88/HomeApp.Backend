@@ -14,7 +14,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
         var todo = await DbContext.Todos.FindAsync(new object[] { id }, cancellationToken);
 
         if (todo == null)
-            throw new InvalidOperationException(TodoMessage.TodoNotFound);
+            return false;
 
         DbContext.Todos.Remove(todo);
         await DbContext.SaveChangesAsync(cancellationToken);

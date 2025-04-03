@@ -17,7 +17,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Code);
     }
 
     [HttpGet("todo")]
@@ -28,7 +28,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Code);
     }
 
     [HttpPost("todo")]
@@ -41,7 +41,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Code);
     }
 
     [HttpDelete("todo")]
@@ -54,7 +54,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Code);
     }
 
     [HttpPatch("todo")]

@@ -7,7 +7,6 @@ namespace Infrastructure.Services.Logger;
 
 public class AppLogger<T> : IAppLogger<T>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<T> _logger;
     private readonly IUserContext _userContext;
 
@@ -15,20 +14,26 @@ public class AppLogger<T> : IAppLogger<T>
     {
         _logger = logger;
         _userContext = userContext;
-        _httpContextAccessor = httpContextAccessor;
     }
 
-    public void LogTrace(string message) => _logger.LogTrace(message, DateTime.UtcNow);
-    public void LogDebug(string message) => _logger.LogDebug(message, DateTime.UtcNow);
-    public void LogInformation(string message) => _logger.LogInformation(message, DateTime.UtcNow);
-    public void LogWarning(string message) => _logger.LogWarning(message, DateTime.UtcNow);
-    public void LogError(string message) => _logger.LogError(message, DateTime.UtcNow);
-    public void LogCritical(string message) => _logger.LogCritical(message, DateTime.UtcNow);
+    public void LogTrace(string message) => _logger.LogTraceFormatted(Format(message));
+    public void LogDebug(string message) => _logger.LogDebugFormatted(Format(message));
+    public void LogInformation(string message) => _logger.LogInformationFormatted(Format(message));
+    public void LogWarning(string message) => _logger.LogWarningFormatted(Format(message));
+    public void LogError(string message) => _logger.LogErrorFormatted(Format(message));
+    public void LogCritical(string message) => _logger.LogCriticalFormatted(Format(message));
 
     private string Format(string message)
     {
-        var userId = _userContext.UserId.ToString();
+        try
+        {
+            var personId = _userContext.PersonId.ToString();
 
-        return $"[UserId: {userId}] {message}";
+            return $"[PersonId: {personId}] {message}";
+        }
+        catch (Exception ex)
+        {
+            return message;
+        }
     }
 }
