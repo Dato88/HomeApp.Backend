@@ -11,7 +11,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("todos")]
-    public async Task<IActionResult> GetTodos(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetTodosAsync(CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
@@ -21,7 +21,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("todo")]
-    public async Task<IActionResult> GetTodo([FromQuery] GetTodoByIdQuery getTodoByIdQuery,
+    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoByIdQuery getTodoByIdQuery,
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(getTodoByIdQuery, cancellationToken);
@@ -32,7 +32,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("todo")]
-    public async Task<IActionResult> PostGetToDoDtoAsync([FromBody] CreateTodoCommand createTodoCommand,
+    public async Task<IActionResult> CreateToDoAsync([FromBody] CreateTodoCommand createTodoCommand,
         CancellationToken cancellationToken)
     {
         if (createTodoCommand is null) return BadRequest();
@@ -45,7 +45,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("todo")]
-    public async Task<IActionResult> DeleteToDoDtoAsync([FromQuery] DeleteTodoCommand deleteTodoCommand,
+    public async Task<IActionResult> DeleteToDoAsync([FromQuery] DeleteTodoCommand deleteTodoCommand,
         CancellationToken cancellationToken)
     {
         if (deleteTodoCommand is null) return BadRequest();
@@ -58,7 +58,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     }
 
     [HttpPatch("todo")]
-    public async Task<IActionResult> UpdateToDoDtoAsync([FromBody] UpdateTodoCommand updateTodoCommand,
+    public async Task<IActionResult> UpdateToDoAsync([FromBody] UpdateTodoCommand updateTodoCommand,
         CancellationToken cancellationToken)
     {
         if (updateTodoCommand is null) return BadRequest();
