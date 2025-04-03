@@ -15,7 +15,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
-        if (response.Success) return Ok(response);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response);
     }
@@ -26,7 +26,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(getTodoByIdQuery, cancellationToken);
 
-        if (response.Success) return Ok(response);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response);
     }
@@ -39,7 +39,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send(createTodoCommand, cancellationToken);
 
-        if (response.Success) return Ok(response);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response);
     }
@@ -52,7 +52,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send(deleteTodoCommand, cancellationToken);
 
-        if (response.Success) return Ok(response);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response);
     }

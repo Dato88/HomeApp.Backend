@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Logging;
+using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -6,30 +7,25 @@ namespace Application.Features.Todos.Commands;
 
 public class UpdateTodoCommandHandler(
     ITodoCommands todoCommands,
-    IAppLogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, BaseResponse<bool>>
+    IAppLogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, Result<bool>>
 {
     private readonly ITodoCommands _todoCommands = todoCommands;
 
-    public async Task<BaseResponse<bool>> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<bool>();
         try
         {
             var isUpdated = await _todoCommands.UpdateAsync(request, cancellationToken);
 
-            if (isUpdated)
-            {
-                response.Success = true;
-                response.Message = "Update succeed!";
-            }
+            if (!isUpdated) return Result.Failure<bool>(TodoErrors.UpdateFailed(request.Id));
+
+            return isUpdated;
         }
         catch (Exception ex)
         {
-            response.Message = ex.Message;
-
             logger.LogError($"Update todo failed: {ex}");
-        }
 
-        return response;
+            return Result.Failure<bool>(TodoErrors.UpdateFailedWithMessage(ex.Message));
+        }
     }
 }

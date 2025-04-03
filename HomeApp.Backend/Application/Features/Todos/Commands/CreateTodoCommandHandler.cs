@@ -1,55 +1,37 @@
-﻿using Application.Abstractions.Logging;
-using Application.Features.People.Queries;
+﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.Logging;
+using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
 public class CreateTodoCommandHandler(
-    IPersonQueries personQueries,
     ITodoCommands todoCommands,
-    IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, BaseResponse<int>>
+    IUserContext userContext,
+    IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, Result<int>>
 {
-    private readonly IPersonQueries _personQueries = personQueries;
     private readonly ITodoCommands _todoCommands = todoCommands;
 
-    public async Task<BaseResponse<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<int>();
         try
         {
-            var person = await _personQueries.GetUserPersonAsync(cancellationToken);
+            request.PersonId = userContext.PersonId;
 
-            if (person == null)
-            {
-                response.Success = false;
-                response.Message = "Failed to get user for create Todo!";
+            var response = await _todoCommands.CreateAsync(request, cancellationToken);
 
-                logger.LogError("Create todos failed. User Person is Null.");
+            if (response == 0) return Result.Failure<int>(TodoErrors.CreateFailed);
 
-                return response;
-            }
+            logger.LogInformation($"Creating todo: {response}");
 
-            request.PersonId = person.Id;
-
-            response.Data = await _todoCommands.CreateAsync(request, cancellationToken);
-
-            if (response.Data > 0)
-            {
-                response.Success = true;
-                response.Message = "Create succeed!";
-            }
-
-            logger.LogInformation($"Creating todo: {response.Data}");
+            return response;
         }
         catch (Exception ex)
         {
-            response.Message = ex.Message;
+            logger.LogError($"Creating todo failed: {ex}");
 
-            logger.LogError($"Creating todo failed: {ex.Message}");
+            return Result.Failure<int>(TodoErrors.CreateFailedWithMessage(ex.Message));
         }
-
-
-        return response;
     }
 }

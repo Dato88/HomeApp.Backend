@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Logging;
 using Application.Features.People.Dtos;
+using Domain.Entities.People;
 using MediatR;
 using SharedKernel;
 
@@ -7,37 +8,26 @@ namespace Application.Features.People.Queries;
 
 public class GetUserPersonQueryHandler(
     IPersonQueries personQueries,
-    IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, BaseResponse<PersonResponse>>
+    IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, Result<PersonResponse>>
 {
     private readonly IPersonQueries _personQueries = personQueries;
 
-    public async Task<BaseResponse<PersonResponse>> Handle(GetUserPersonQuery request,
+    public async Task<Result<PersonResponse>> Handle(GetUserPersonQuery request,
         CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<PersonResponse>();
         try
         {
             var person = await _personQueries.GetUserPersonAsync(cancellationToken);
 
-            if (person is not null)
-            {
-                response.Data = person;
-                response.Success = true;
-                response.Message = "Query succeed!";
-            }
-            else
-            {
-                response.Success = false;
-                response.Message = "No result found!";
-            }
+            if (person == null) return Result.Failure<PersonResponse>(PersonErrors.NotFound);
+
+            return person;
         }
         catch (Exception ex)
         {
-            response.Error = ex;
-
             logger.LogError($"Get person failed: {ex}");
-        }
 
-        return response;
+            return Result.Failure<PersonResponse>(PersonErrors.NotFound);
+        }
     }
 }

@@ -3,13 +3,18 @@ using System.Security.Claims;
 using System.Text;
 using Application.Abstractions.Authentication;
 using Domain.Entities.User;
+using Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services.Authentication;
 
-internal sealed class TokenProvider(UserManager<User> userManager, IConfiguration configuration) : ITokenProvider
+internal sealed class TokenProvider(
+    HomeAppContext homeAppContext,
+    UserManager<User> userManager,
+    IConfiguration configuration) : ITokenProvider
 {
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JwtSettings");
 
@@ -45,7 +50,14 @@ internal sealed class TokenProvider(UserManager<User> userManager, IConfiguratio
 
     private async Task<List<Claim>> GetClaims(User user)
     {
-        var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, user.Id), new(ClaimTypes.Name, user.Email) };
+        var person = await homeAppContext.People.FirstOrDefaultAsync(x => x.Email == user.Email);
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Email, user.Email),
+            new("personId", person.Id.ToString())
+        };
 
         var roles = await userManager.GetRolesAsync(user);
 

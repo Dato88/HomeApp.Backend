@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Logging;
 using Application.Features.Todos.Dtos;
+using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -8,37 +9,26 @@ namespace Application.Features.Todos.Queries;
 public class GetTodoByIdQueryHandler(
     ITodoQueries todoQueries,
     IAppLogger<GetTodoByIdQueryHandler> logger)
-    : IRequestHandler<GetTodoByIdQuery, BaseResponse<GetToDoResponse>>
+    : IRequestHandler<GetTodoByIdQuery, Result<GetToDoResponse>>
 {
     private readonly ITodoQueries _todoQueries = todoQueries;
 
-    public async Task<BaseResponse<GetToDoResponse>> Handle(GetTodoByIdQuery request,
+    public async Task<Result<GetToDoResponse>> Handle(GetTodoByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var response = new BaseResponse<GetToDoResponse>();
         try
         {
             var todo = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);
 
-            if (todo is not null)
-            {
-                response.Data = todo;
-                response.Success = true;
-                response.Message = "Query succeed!";
-            }
-            else
-            {
-                response.Success = false;
-                response.Message = "No result found!";
-            }
+            if (todo is null) return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.Id));
+
+            return (GetToDoResponse)todo;
         }
         catch (Exception ex)
         {
-            response.Error = ex;
-
             logger.LogError($"Get todo failed: {ex}");
-        }
 
-        return response;
+            return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundWithMessage(ex.Message));
+        }
     }
 }
