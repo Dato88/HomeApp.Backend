@@ -1,12 +1,11 @@
-﻿using Application.Abstractions.Data;
-using Application.Features.Todos.Commands;
+﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos;
 using Domain.PredefinedMessages;
 using Infrastructure.Database;
 
 namespace Infrastructure.Features.Todos.Commands;
 
-public class TodoCommands(IHomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
+public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {
     public override async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {

@@ -1,8 +1,6 @@
-﻿using Application.Abstractions.Data;
+﻿namespace Infrastructure.Database;
 
-namespace Infrastructure.Database;
-
-public class BaseContext(IHomeAppContext dbContext)
+public class BaseContext(HomeAppContext dbContext)
 {
-    protected readonly IHomeAppContext DbContext = dbContext;
+    protected readonly HomeAppContext DbContext = dbContext;
 }

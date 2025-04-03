@@ -1,14 +1,14 @@
-﻿using Application.Abstractions.Data;
-using Application.Abstractions.Logging;
+﻿using Application.Abstractions.Logging;
 using Application.Features.People.Commands;
 using Application.Features.People.Validations;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
+using Infrastructure.Database;
 
 namespace Infrastructure.Features.People.Commands;
 
 public class PersonCommands(
-    IHomeAppContext dbContext,
+    HomeAppContext dbContext,
     IPersonValidation personValidation,
     IAppLogger<PersonCommands> logger) : IPersonCommands
 {

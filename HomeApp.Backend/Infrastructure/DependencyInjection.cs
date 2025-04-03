@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.Authentication;
-using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
 using Application.Features.People.Commands;
 using Application.Features.People.Queries;
@@ -77,8 +76,6 @@ public static class DependencyInjection
                         npgsqlOptions.MigrationsHistoryTable("__ef_migrations_user", "public");
                     })
                 .UseSnakeCaseNamingConvention());
-
-        services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
         return services;
     }

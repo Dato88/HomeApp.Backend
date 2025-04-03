@@ -1,4 +1,3 @@
-using Application.Abstractions.Data;
 using Domain.Entities.Budgets;
 using Domain.Entities.People;
 using Domain.Entities.Todos;
@@ -6,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database;
 
-public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : DbContext(options), IHomeAppContext
+public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : DbContext(options)
 {
     public DbSet<Person> People { get; set; }
     public DbSet<BudgetCell> BudgetCells { get; set; }

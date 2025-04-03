@@ -1,14 +1,14 @@
 ﻿using Application.Abstractions.Authentication;
-using Application.Abstractions.Data;
 using Application.Abstractions.Logging;
 using Application.Features.People.Dtos;
 using Application.Features.People.Queries;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.People.Queries;
 
 public class PersonQueries(
-    IHomeAppContext dbContext,
+    HomeAppContext dbContext,
     IUserContext userContext,
     IAppLogger<PersonQueries> logger) : IPersonQueries
 {

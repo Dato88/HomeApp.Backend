@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Application.Abstractions.Data;
 using Application.Features.Todos.Queries;
 using Domain.Entities.Todos;
 using Domain.PredefinedMessages;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.Todos.Queries;
 
-public class TodoQueries(IHomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
+public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
 {
     public override async Task<Todo> FindByIdAsync(int id, CancellationToken cancellationToken,
         bool asNoTracking = true,

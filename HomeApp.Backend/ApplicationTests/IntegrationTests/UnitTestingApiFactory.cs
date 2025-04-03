@@ -1,4 +1,3 @@
-using Application.Abstractions.Data;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -33,13 +32,13 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
         {
             // Bestehende Registrierung entfernen
             services.RemoveAll<DbContextOptions<HomeAppContext>>();
-            services.RemoveAll<IHomeAppContext>();
+            services.RemoveAll<HomeAppContext>();
 
             // HomeAppContext mit PostgreSQL (Testcontainer) registrieren
             services.AddDbContext<HomeAppContext>(options => options.UseNpgsql(_dbContainer.GetConnectionString()));
 
             // Interface (IHomeAppContext) zur DI hinzufügen
-            services.AddScoped<IHomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
+            // services.AddScoped<HomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
 
             // Optional: SeedTestData(context);
         });
