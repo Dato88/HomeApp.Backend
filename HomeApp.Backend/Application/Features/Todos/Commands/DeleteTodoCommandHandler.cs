@@ -17,7 +17,12 @@ public class DeleteTodoCommandHandler(
         {
             var isDeleted = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
 
-            if (!isDeleted) return Result.Failure<bool>(TodoErrors.DeleteFailed(request.Id));
+            if (!isDeleted)
+            {
+                logger.LogWarning(TodoErrors.DeleteFailed(request.Id).Description);
+
+                return Result.Failure<bool>(TodoErrors.DeleteFailed(request.Id));
+            }
 
             return isDeleted;
         }

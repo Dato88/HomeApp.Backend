@@ -19,7 +19,12 @@ public class GetUserPersonQueryHandler(
         {
             var person = await _personQueries.GetUserPersonAsync(cancellationToken);
 
-            if (person == null) return Result.Failure<PersonResponse>(PersonErrors.NotFound);
+            if (person == null)
+            {
+                logger.LogWarning(PersonErrors.NotFound.Description);
+
+                return Result.Failure<PersonResponse>(PersonErrors.NotFound);
+            }
 
             return person;
         }

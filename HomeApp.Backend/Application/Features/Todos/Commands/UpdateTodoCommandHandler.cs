@@ -17,7 +17,12 @@ public class UpdateTodoCommandHandler(
         {
             var isUpdated = await _todoCommands.UpdateAsync(request, cancellationToken);
 
-            if (!isUpdated) return Result.Failure<bool>(TodoErrors.UpdateFailed(request.Id));
+            if (!isUpdated)
+            {
+                logger.LogWarning(TodoErrors.UpdateFailed(request.Id).Description);
+
+                return Result.Failure<bool>(TodoErrors.UpdateFailed(request.Id));
+            }
 
             return isUpdated;
         }

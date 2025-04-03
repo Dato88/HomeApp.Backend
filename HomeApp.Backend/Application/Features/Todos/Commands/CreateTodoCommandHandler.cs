@@ -21,7 +21,12 @@ public class CreateTodoCommandHandler(
 
             var response = await _todoCommands.CreateAsync(request, cancellationToken);
 
-            if (response == 0) return Result.Failure<int>(TodoErrors.CreateFailed);
+            if (response == 0)
+            {
+                logger.LogWarning(TodoErrors.CreateFailed.Description);
+
+                return Result.Failure<int>(TodoErrors.CreateFailed);
+            }
 
             logger.LogInformation($"Creating todo: {response}");
 

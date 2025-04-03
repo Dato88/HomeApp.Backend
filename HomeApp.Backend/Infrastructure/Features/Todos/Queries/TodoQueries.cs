@@ -25,9 +25,6 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
 
         var todo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-        if (todo == null)
-            throw new InvalidOperationException(TodoMessage.TodoNotFound);
-
         return todo;
     }
 

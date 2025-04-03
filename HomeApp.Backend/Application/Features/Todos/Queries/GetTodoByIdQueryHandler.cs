@@ -20,7 +20,12 @@ public class GetTodoByIdQueryHandler(
         {
             var todo = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);
 
-            if (todo is null) return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.Id));
+            if (todo is null)
+            {
+                logger.LogWarning(TodoErrors.NotFoundById(request.Id).Description);
+
+                return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.Id));
+            }
 
             return (GetToDoResponse)todo;
         }
