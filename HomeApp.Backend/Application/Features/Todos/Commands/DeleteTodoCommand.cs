@@ -3,4 +3,4 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public record DeleteTodoCommand(int Id) : IRequest<Result<bool>>;
+public record DeleteTodoCommand(int Id) : IRequest<Result>;

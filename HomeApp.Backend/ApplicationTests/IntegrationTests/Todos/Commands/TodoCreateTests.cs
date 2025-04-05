@@ -17,9 +17,10 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var todo = await CreateDummyTodos.GenereateDummyTodo(person.Id);
 
         // Act
-        await TodoCommands.CreateAsync(todo, default);
+        var result = await TodoCommands.CreateAsync(todo, default);
 
         // Assert
+        Assert.True(result.IsSuccess);
         Assert.Contains(todo, DbContext.Todos);
     }
 
@@ -37,11 +38,11 @@ public class TodoCreateTests : BaseTodoCommandsTest
         newTodo.TodoGroupTodo = new TodoGroupTodo { TodoGroupId = todoGroup.Id };
 
         // Act
-        var createdTodoId = await TodoCommands.CreateAsync(newTodo, default);
-
-        var createdTodoExists = DbContext.Todos.Any(x => x.Id == createdTodoId);
+        var result = await TodoCommands.CreateAsync(newTodo, default);
 
         // Assert
+        Assert.True(result.IsSuccess);
+        var createdTodoExists = DbContext.Todos.Any(x => x.Id == result.Value);
         Assert.True(createdTodoExists);
     }
 
@@ -52,18 +53,23 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var todo = await CreateDummyTodos.GenereateDummyTodo();
 
         // Act
-        CancellationToken cancellationToken = new();
-
-        Func<Task> action = async () => await TodoCommands.CreateAsync(todo, cancellationToken);
+        var result = await TodoCommands.CreateAsync(todo, default);
 
         // Assert
-        await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage("Todo can`t be created without personId.");
+        Assert.True(result.IsFailure);
+        Assert.Equal("Todo.CreateFailedWithMessage", result.Error.Code);
+        Assert.Contains("person", result.Error.Description, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public async Task CreateAsync_ThrowsException_WhenTodoIsNull() =>
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await TodoCommands.CreateAsync(null, default));
+    public async Task CreateAsync_Fails_WhenTodoIsNull()
+    {
+        // Act
+        var result = await TodoCommands.CreateAsync(null, default);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("Todo.CreateFailedWithMessage", result.Error.Code);
+        Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+    }
 }

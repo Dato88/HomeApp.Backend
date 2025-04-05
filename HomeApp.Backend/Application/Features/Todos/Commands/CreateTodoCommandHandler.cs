@@ -1,6 +1,5 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
-using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -15,28 +14,19 @@ public class CreateTodoCommandHandler(
 
     public async Task<Result<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
     {
-        try
+        request.PersonId = userContext.PersonId;
+
+        var result = await _todoCommands.CreateAsync(request, cancellationToken);
+
+        if (result.IsFailure)
         {
-            request.PersonId = userContext.PersonId;
+            logger.LogWarning($"Creating todo failed: {result.Error}");
 
-            var response = await _todoCommands.CreateAsync(request, cancellationToken);
-
-            if (response == 0)
-            {
-                logger.LogWarning(TodoErrors.CreateFailed.Description);
-
-                return Result.Failure<int>(TodoErrors.CreateFailed);
-            }
-
-            logger.LogInformation($"Creating todo: {response}");
-
-            return response;
+            return Result.Failure<int>(result.Error);
         }
-        catch (Exception ex)
-        {
-            logger.LogError($"Creating todo failed: {ex}");
 
-            return Result.Failure<int>(TodoErrors.CreateFailedWithMessage(ex.Message));
-        }
+        logger.LogInformation($"Creating todo: {result.Value}");
+
+        return result;
     }
 }

@@ -4,13 +4,13 @@ namespace Domain.Entities.Todos;
 
 public static class TodoErrors
 {
-    public static readonly Error CreateFailed = Error.NotFound(
+    public static readonly Error CreateFailed = Error.Failure(
         "Todo.CreateFailed",
-        "The todo with the could not be created");
+        "The todo could not be created");
 
     public static readonly Error NotFoundAll = Error.NotFound(
         "Todo.NotFoundAll",
-        "There are no todos in the database");
+        "There are no todos available");
 
     public static Error NotFoundById(int id) => Error.NotFound(
         "Todo.NotFoundById",
@@ -18,25 +18,25 @@ public static class TodoErrors
 
     public static Error NotFoundWithMessage(string message) => Error.NotFound(
         "Todo.NotFoundWithMessage",
-        $"The todo could not be found with message = '{message}'");
+        $"The todo could not be found: {message}");
 
-    public static Error CreateFailedWithMessage(string message) => Error.NotFound(
+    public static Error CreateFailedWithMessage(string message) => Error.Failure(
         "Todo.CreateFailedWithMessage",
         $"The todo could not be created with message = '{message}'");
 
-    public static Error DeleteFailedWithMessage(string message) => Error.NotFound(
+    public static Error DeleteFailedWithMessage(string message) => Error.Failure(
         "Todo.DeleteFailedWithMessage",
         $"The todo could not be deleted with message = '{message}'");
 
-    public static Error DeleteFailed(int id) => Error.NotFound(
+    public static Error DeleteFailed(int id) => Error.Failure(
         "Todo.DeleteFailed",
         $"The todo with the id = '{id}' could not be deleted");
 
-    public static Error UpdateFailedWithMessage(string message) => Error.NotFound(
+    public static Error UpdateFailedWithMessage(string message) => Error.Failure(
         "Todo.UpdateFailedWithMessage",
         $"The todo could not be updated with message = '{message}'");
 
-    public static Error UpdateFailed(int id) => Error.NotFound(
+    public static Error UpdateFailed(int id) => Error.Failure(
         "Todo.UpdateFailed",
         $"The todo with the id = '{id}' could not be updated");
 }

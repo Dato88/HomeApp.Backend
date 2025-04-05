@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.Logging;
-using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -7,30 +6,22 @@ namespace Application.Features.Todos.Commands;
 
 public class DeleteTodoCommandHandler(
     ITodoCommands todoCommands,
-    IAppLogger<DeleteTodoCommandHandler> logger) : IRequestHandler<DeleteTodoCommand, Result<bool>>
+    IAppLogger<DeleteTodoCommandHandler> logger) : IRequestHandler<DeleteTodoCommand, Result>
 {
     private readonly ITodoCommands _todoCommands = todoCommands;
 
-    public async Task<Result<bool>> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
     {
-        try
+        var result = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
+
+        if (result.IsFailure)
         {
-            var isDeleted = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
-
-            if (!isDeleted)
-            {
-                logger.LogWarning(TodoErrors.DeleteFailed(request.Id).Description);
-
-                return Result.Failure<bool>(TodoErrors.DeleteFailed(request.Id));
-            }
-
-            return isDeleted;
+            logger.LogWarning($"Deleting todo failed: {result.Error}");
+            return Result.Failure(result.Error);
         }
-        catch (Exception ex)
-        {
-            logger.LogError($"Delete todo failed: {ex}");
 
-            return Result.Failure<bool>(TodoErrors.DeleteFailedWithMessage(ex.Message));
-        }
+        logger.LogInformation($"Todo with ID {request.Id} deleted successfully.");
+
+        return Result.Success();
     }
 }

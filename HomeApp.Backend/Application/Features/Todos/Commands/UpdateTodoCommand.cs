@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class UpdateTodoCommand : IRequest<Result<bool>>
+public class UpdateTodoCommand : IRequest<Result>
 {
     public int Id { get; set; }
     public int? TodoGroupId { get; set; }
