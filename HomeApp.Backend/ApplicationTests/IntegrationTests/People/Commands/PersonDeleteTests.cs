@@ -16,10 +16,40 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
         var person = await _createDummyPeople.CreateDummyPersonAsync();
 
         // Act
-        await CommonPersonCommands.DeletePersonAsync(person.Id, default);
+        var result = await CommonPersonCommands.DeletePersonAsync(person.Id, default);
 
         // Assert
+        Assert.True(result.IsSuccess);
         var deletedUser = await DbContext.People.FindAsync(person.Id);
         deletedUser.Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-10)]
+    public async Task DeleteAsync_ShouldReturn_Failure_WhenIdIsInvalid(int invalidId)
+    {
+        // Act
+        var result = await CommonPersonCommands.DeletePersonAsync(invalidId, default);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("Person.DeleteFailedWithMessage", result.Error.Code);
+        Assert.Contains("Invalid", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldReturn_Failure_WhenPersonDoesNotExist()
+    {
+        // Arrange
+        const int nonExistentId = 9999;
+
+        // Act
+        var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, default);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("Person.NotFound", result.Error.Code);
+        Assert.Contains(nonExistentId.ToString(), result.Error.Description);
     }
 }

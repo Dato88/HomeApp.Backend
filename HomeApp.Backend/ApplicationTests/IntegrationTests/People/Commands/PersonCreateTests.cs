@@ -19,17 +19,20 @@ public class PersonCommandsCreateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.CreatePersonAsync(person, default);
 
         // Assert
-        result.Should().BeGreaterThan(0);
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value > 0);
     }
 
     [Fact]
-    public async Task CreateAsync_Returns_0_WhenPersonIsNull()
+    public async Task CreateAsync_ReturnsFailure_WhenPersonIsNull()
     {
         // Act
         var result = await CommonPersonCommands.CreatePersonAsync(null, default);
 
         // Assert
-        result.Should().Be(0);
+        Assert.True(result.IsFailure);
+        Assert.Equal("Person.CreateFailedWithMessage", result.Error.Code);
+        Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -39,9 +42,10 @@ public class PersonCommandsCreateTests : BaseCommonPersonTest
         var person = await _createDummyPeople.CreateDummyPersonModelAsync();
 
         // Act
-        await CommonPersonCommands.CreatePersonAsync(person, default);
+        var result = await CommonPersonCommands.CreatePersonAsync(person, default);
 
         // Assert
+        Assert.True(result.IsSuccess);
         PersonValidationMock.Verify(x => x.ValidateRequiredProperties(person), Times.Once);
         PersonValidationMock.Verify(x => x.ValidateMaxLength(person), Times.Once);
         PersonValidationMock.Verify(

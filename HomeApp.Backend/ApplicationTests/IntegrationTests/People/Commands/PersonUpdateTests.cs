@@ -27,17 +27,19 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         };
 
         // Act
-        await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
-
-        var result = DbContext.People.Find(updatedPerson.Id);
+        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
 
         // Assert
-        result.Id.Should().Be(updatedPerson.Id);
-        result.Username.Should().Be(updatedPerson.Username);
-        result.FirstName.Should().Be(updatedPerson.FirstName);
-        result.LastName.Should().Be(updatedPerson.LastName);
-        result.Email.Should().Be(updatedPerson.Email);
-        result.UserId.Should().NotBe(updatedPerson.UserId);
+        Assert.True(result.IsSuccess);
+
+        var updated = await DbContext.People.FindAsync(updatedPerson.Id);
+
+        updated!.Id.Should().Be(updatedPerson.Id);
+        updated.Username.Should().Be(updatedPerson.Username);
+        updated.FirstName.Should().Be(updatedPerson.FirstName);
+        updated.LastName.Should().Be(updatedPerson.LastName);
+        updated.Email.Should().Be(updatedPerson.Email);
+        updated.UserId.Should().NotBe(updatedPerson.UserId);
     }
 
     [Fact]
@@ -46,8 +48,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         // Arrange
         var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
 
-        // Act
-        Person updatedPerson = new()
+        var updatedPerson = new Person
         {
             Id = existingPerson.Id,
             Username = "updateduser",
@@ -57,9 +58,12 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
+        // Act
+        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
 
         // Assert
+        Assert.True(result.IsSuccess);
+
         PersonValidationMock.Verify(
             v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Once);
@@ -69,13 +73,12 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync()
+    public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync_WhenUsernameIsUnchanged()
     {
         // Arrange
         var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
 
-        // Act
-        Person updatedPerson = new()
+        var updatedPerson = new Person
         {
             Id = existingPerson.Id,
             Username = existingPerson.Username,
@@ -85,31 +88,33 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
+        // Act
+        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
 
         // Assert
-        var result = await DbContext.People.FindAsync(existingPerson.Id);
-
+        Assert.True(result.IsSuccess);
         PersonValidationMock.Verify(
             v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldReturn_False_WhenPersonIsNull()
+    public async Task UpdateAsync_ShouldReturn_Failure_WhenPersonIsNull()
     {
         // Act
         var result = await CommonPersonCommands.UpdatePersonAsync(null, default);
 
         // Assert
-        result.Should().BeFalse();
+        Assert.True(result.IsFailure);
+        Assert.Equal("Person.UpdateFailedWithMessage", result.Error.Code);
+        Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldReturn_False_WhenPersonNotFound()
+    public async Task UpdateAsync_ShouldReturn_Failure_WhenPersonNotFound()
     {
         // Arrange
-        Person nonExistingPerson = new()
+        var nonExistingPerson = new Person
         {
             Id = 999,
             Username = "nonexistinguser",
@@ -123,6 +128,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.UpdatePersonAsync(nonExistingPerson, default);
 
         // Assert
-        result.Should().BeFalse();
+        Assert.True(result.IsFailure);
+        Assert.Equal("Person.NotFound", result.Error.Code);
     }
 }

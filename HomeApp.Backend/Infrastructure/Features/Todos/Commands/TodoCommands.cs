@@ -51,7 +51,7 @@ public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbConte
     public override async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         if (id <= 0)
-            return Result.Failure(TodoErrors.DeleteFailedWithMessage("Invalid ID"));
+            return Result.Failure(TodoErrors.DeleteFailed(id));
 
         var todo = await DbContext.Todos.FindAsync(new object[] { id }, cancellationToken);
 

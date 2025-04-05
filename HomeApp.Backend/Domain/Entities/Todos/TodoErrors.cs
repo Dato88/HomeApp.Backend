@@ -24,10 +24,6 @@ public static class TodoErrors
         "Todo.CreateFailedWithMessage",
         $"The todo could not be created with message = '{message}'");
 
-    public static Error DeleteFailedWithMessage(string message) => Error.Failure(
-        "Todo.DeleteFailedWithMessage",
-        $"The todo could not be deleted with message = '{message}'");
-
     public static Error DeleteFailed(int id) => Error.Failure(
         "Todo.DeleteFailed",
         $"The todo with the id = '{id}' could not be deleted");
