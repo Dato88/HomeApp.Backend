@@ -106,7 +106,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("Person.UpdateFailedWithMessage", result.Error.Code);
+        Assert.Equal(PersonErrors.UpdateFailedWithMessage("").Code, result.Error.Code);
         Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -129,6 +129,6 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("Person.NotFound", result.Error.Code);
+        Assert.Equal(PersonErrors.NotFoundById(nonExistingPerson.Id).Code, result.Error.Code);
     }
 }

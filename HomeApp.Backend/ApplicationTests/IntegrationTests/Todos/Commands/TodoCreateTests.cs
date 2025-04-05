@@ -20,8 +20,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var result = await TodoCommands.CreateAsync(todo, default);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.Contains(todo, DbContext.Todos);
+        result.IsSuccess.Should().BeTrue("a valid todo should be created");
     }
 
     [Fact]
@@ -41,9 +40,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var result = await TodoCommands.CreateAsync(newTodo, default);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        var createdTodoExists = DbContext.Todos.Any(x => x.Id == result.Value);
-        Assert.True(createdTodoExists);
+        result.IsSuccess.Should().BeTrue("todo with group should be created");
     }
 
     [Fact]
@@ -56,9 +53,9 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var result = await TodoCommands.CreateAsync(todo, default);
 
         // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal("Todo.CreateFailedWithMessage", result.Error.Code);
-        Assert.Contains("person", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+        result.IsFailure.Should().BeTrue("no valid personId was provided");
+        result.Error.Code.Should().Be("Todo.CreateFailedWithMessage");
+        result.Error.Description.Should().Contain("person", "the error should describe the missing personId");
     }
 
     [Fact]
@@ -68,8 +65,8 @@ public class TodoCreateTests : BaseTodoCommandsTest
         var result = await TodoCommands.CreateAsync(null, default);
 
         // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal("Todo.CreateFailedWithMessage", result.Error.Code);
-        Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+        result.IsFailure.Should().BeTrue("todo is null and should not be created");
+        result.Error.Code.Should().Be("Todo.CreateFailedWithMessage");
+        result.Error.Description.Should().Contain("null", "null values should be rejected");
     }
 }

@@ -18,25 +18,33 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 
         // Act
-        await TodoCommands.UpdateAsync(updatedTodo, default);
+        var result = await TodoCommands.UpdateAsync(updatedTodo, default);
 
         // Assert
-        var result = await DbContext.Todos.FindAsync(todo.Id);
-        result.Should().NotBeNull();
-        result.Name.Should().Be(updatedTodo.Name);
-        result.Done.Should().Be(updatedTodo.Done);
-        result.Priority.Should().Be(updatedTodo.Priority);
-        result.LastModified.Should().BeAfter(initialLastModified);
+        result.IsSuccess.Should().BeTrue();
+
+        var dbTodo = await DbContext.Todos.FindAsync(todo.Id);
+        dbTodo.Should().NotBeNull();
+        dbTodo!.Name.Should().Be(updatedTodo.Name);
+        dbTodo.Done.Should().Be(updatedTodo.Done);
+        dbTodo.Priority.Should().Be(updatedTodo.Priority);
+        dbTodo.LastModified.Should().BeAfter(initialLastModified);
     }
 
     [Fact]
-    public async Task UpdateAsync_ThrowsException_WhenTodoIsNull() =>
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await TodoCommands.UpdateAsync(null, default));
+    public async Task UpdateAsync_Fails_WhenTodoIsNull()
+    {
+        // Act
+        var result = await TodoCommands.UpdateAsync(null, default);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
+        result.Error.Description.Should().Contain("null");
+    }
 
     [Fact]
-    public async Task UpdateAsync_ThrowsException_WhenTodoPriorityIsInvalid()
+    public async Task UpdateAsync_Fails_WhenTodoPriorityIsInvalid()
     {
         // Arrange
         var todo = new Todo
@@ -56,27 +64,33 @@ public class TodoUpdateTests : BaseTodoCommandsTest
             LastModified = DateTime.UtcNow.AddDays(2)
         };
 
-        // Act & Assert
-        var action = async () => await TodoCommands.UpdateAsync(invalidTodo, default);
-        await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-            .WithMessage(
-                $"Priority ('{invalidTodo.Priority}') must be a non-negative value. (Parameter 'Priority')Actual value was {invalidTodo.Priority}.");
+        // Act
+        var result = await TodoCommands.UpdateAsync(invalidTodo, default);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
     }
 
     [Fact]
-    public async Task UpdateAsync_ThrowsException_WhenTodoDoesNotExist()
+    public async Task UpdateAsync_Fails_WhenTodoDoesNotExist()
     {
+        // Arrange
         var todo = new Todo
         {
-            Id = 999, // Non-existing ID
+            Id = 999,
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
             LastModified = DateTime.UtcNow.AddDays(1)
         };
 
-        // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await TodoCommands.UpdateAsync(todo, default));
+        // Act
+        var result = await TodoCommands.UpdateAsync(todo, default);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(TodoErrors.UpdateFailed(todo.Id).Code);
+        result.Error.Description.Should().Contain("999");
     }
 }

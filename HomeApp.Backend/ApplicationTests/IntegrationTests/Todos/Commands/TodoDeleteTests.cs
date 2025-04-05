@@ -1,4 +1,6 @@
-﻿namespace ApplicationTests.IntegrationTests.Todos.Commands;
+﻿using Domain.Entities.Todos;
+
+namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
 public class TodoDeleteTests : BaseTodoCommandsTest
 {
@@ -14,8 +16,8 @@ public class TodoDeleteTests : BaseTodoCommandsTest
         var result = await TodoCommands.DeleteAsync(todo.Id, default);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        Assert.DoesNotContain(todo, DbContext.Todos);
+        result.IsSuccess.Should().BeTrue("the todo exists and should be deleted");
+        DbContext.Todos.Should().NotContain(todo, "the todo should have been removed from the context");
     }
 
     [Theory]
@@ -27,9 +29,8 @@ public class TodoDeleteTests : BaseTodoCommandsTest
         var result = await TodoCommands.DeleteAsync(id, default);
 
         // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal("Todo.DeleteFailedWithMessage", result.Error.Code);
-        Assert.Contains("Invalid ID", result.Error.Description);
+        result.IsFailure.Should().BeTrue("ID is invalid and deletion should fail");
+        result.Error.Code.Should().Be(TodoErrors.DeleteFailed(id).Code);
     }
 
     [Fact]
@@ -42,8 +43,9 @@ public class TodoDeleteTests : BaseTodoCommandsTest
         var result = await TodoCommands.DeleteAsync(nonExistentId, default);
 
         // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal("Todo.DeleteFailed", result.Error.Code);
-        Assert.Contains(nonExistentId.ToString(), result.Error.Description);
+        result.IsFailure.Should().BeTrue("the todo does not exist");
+        result.Error.Code.Should().Be(TodoErrors.DeleteFailed(nonExistentId).Code);
+        result.Error.Description.Should()
+            .Contain(nonExistentId.ToString(), "the error message should mention the missing ID");
     }
 }

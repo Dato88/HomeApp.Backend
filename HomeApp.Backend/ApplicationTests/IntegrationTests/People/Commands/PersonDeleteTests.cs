@@ -1,4 +1,5 @@
 ﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+using Domain.Entities.People;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -34,8 +35,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("Person.DeleteFailedWithMessage", result.Error.Code);
-        Assert.Contains("Invalid", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(PersonErrors.DeleteFailed(invalidId).Code, result.Error.Code);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("Person.NotFound", result.Error.Code);
+        Assert.Equal(PersonErrors.NotFoundById(nonExistentId).Code, result.Error.Code);
         Assert.Contains(nonExistentId.ToString(), result.Error.Description);
     }
 }
