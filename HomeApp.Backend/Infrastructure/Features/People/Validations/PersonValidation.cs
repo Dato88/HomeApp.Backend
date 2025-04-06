@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using Application.Features.People.Validations;
 using Domain.Entities.People;
 using Domain.PredefinedMessages;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using SharedKernel;
 
 namespace Infrastructure.Features.People.Validations;
 
@@ -23,34 +23,33 @@ public class PersonValidation(HomeAppContext dbContext) : BaseContext(dbContext)
         }
     }
 
-    public async Task ValidatePersonnameDoesNotExistAsync(string username, CancellationToken cancellationToken)
+    public async Task<Result> ValidatePersonnameDoesNotExistAsync(string username, CancellationToken cancellationToken)
     {
-        if (await DbContext.People.AnyAsync(a => a.Username == username, cancellationToken))
-            throw new InvalidOperationException(PersonMessage.PersonAlreadyExists);
+        var exists = await DbContext.People.AnyAsync(a => a.Username == username, cancellationToken);
+        return exists
+            ? Result.Failure(PersonErrors.CreateFailedWithMessage(PersonMessage.PersonAlreadyExists))
+            : Result.Success();
     }
 
-    public void ValidateEmailFormat(string email)
-    {
-        if (!IsValidEmail(email))
-            throw new ValidationException(PersonMessage.InvalidEmail);
-    }
+    public Result ValidateEmailFormat(string email) =>
+        IsValidEmail(email)
+            ? Result.Success()
+            : Result.Failure(PersonErrors.CreateFailedWithMessage(PersonMessage.InvalidEmail));
 
-    public void ValidateRequiredProperties(Person person)
-    {
-        if (string.IsNullOrWhiteSpace(person.FirstName) ||
-            string.IsNullOrWhiteSpace(person.LastName) ||
-            string.IsNullOrWhiteSpace(person.Email) ||
-            string.IsNullOrWhiteSpace(person.UserId))
-            throw new ValidationException(PersonMessage.PropertiesMissing);
-    }
+    public Result ValidateRequiredProperties(Person person) =>
+        string.IsNullOrWhiteSpace(person.FirstName) ||
+        string.IsNullOrWhiteSpace(person.LastName) ||
+        string.IsNullOrWhiteSpace(person.Email) ||
+        string.IsNullOrWhiteSpace(person.UserId)
+            ? Result.Failure(PersonErrors.CreateFailedWithMessage(PersonMessage.PropertiesMissing))
+            : Result.Success();
 
-    public void ValidateMaxLength(Person person)
-    {
-        if (person.Username.Length > 150 ||
-            person.FirstName.Length > 150 ||
-            person.LastName.Length > 150 ||
-            person.Email.Length > 150 ||
-            person.UserId.Length < 36)
-            throw new ValidationException(PersonMessage.MaxLengthExeed);
-    }
+    public Result ValidateMaxLength(Person person) =>
+        person.Username.Length > 150 ||
+        person.FirstName.Length > 150 ||
+        person.LastName.Length > 150 ||
+        person.Email.Length > 150 ||
+        person.UserId.Length < 36
+            ? Result.Failure(PersonErrors.CreateFailedWithMessage(PersonMessage.MaxLengthExeed))
+            : Result.Success();
 }

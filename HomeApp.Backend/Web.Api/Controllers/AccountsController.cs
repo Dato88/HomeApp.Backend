@@ -49,13 +49,13 @@ public class AccountsController(
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserCommand registerUserCommand,
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterAccountCommand registerAccountCommand,
         CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var response = await mediator.Send(registerUserCommand, cancellationToken);
+        var response = await mediator.Send(registerAccountCommand, cancellationToken);
 
         if (response.IsSuccess) return Ok(response.IsSuccess);
 

@@ -1,5 +1,6 @@
 ﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
 using Domain.Entities.People;
+using SharedKernel;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -11,9 +12,8 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
 
     [Fact]
-    public async Task UpdateAsync_ShouldUpdatePerson_WhenPersonExists()
+    public async Task UpdateAsync_ShouldSucceed_WhenPersonExists()
     {
-        // Arrange
         var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
 
         var updatedPerson = new Person
@@ -23,32 +23,36 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             FirstName = "Jane",
             LastName = "Doe",
             Email = "updated@example.com",
-            UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
+            UserId = "new-user-id"
         };
 
-        // Act
-        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
+        // Setup validation mocks
+        PersonValidationMock.Setup(x => x.ValidateRequiredProperties(updatedPerson)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateMaxLength(updatedPerson)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateEmailFormat(updatedPerson.Email)).Returns(Result.Success());
+        PersonValidationMock.Setup(x =>
+                x.ValidatePersonnameDoesNotExistAsync(updatedPerson.Username, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
 
-        // Assert
-        Assert.True(result.IsSuccess);
+        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
 
         var updated = await DbContext.People.FindAsync(updatedPerson.Id);
-
-        updated!.Id.Should().Be(updatedPerson.Id);
-        updated.Username.Should().Be(updatedPerson.Username);
+        updated.Should().NotBeNull();
+        updated!.Username.Should().Be(updatedPerson.Username);
         updated.FirstName.Should().Be(updatedPerson.FirstName);
         updated.LastName.Should().Be(updatedPerson.LastName);
         updated.Email.Should().Be(updatedPerson.Email);
-        updated.UserId.Should().NotBe(updatedPerson.UserId);
+        updated.UserId.Should().NotBe(updatedPerson.UserId); // bleibt unverändert
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldCall_AllValidations()
+    public async Task UpdateAsync_ShouldCallAllValidations()
     {
-        // Arrange
         var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
 
-        var updatedPerson = new Person
+        var updated = new Person
         {
             Id = existingPerson.Id,
             Username = "updateduser",
@@ -58,27 +62,30 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        // Act
-        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
+        PersonValidationMock.Setup(x => x.ValidateRequiredProperties(updated)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateMaxLength(updated)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateEmailFormat(updated.Email)).Returns(Result.Success());
+        PersonValidationMock.Setup(x =>
+                x.ValidatePersonnameDoesNotExistAsync(updated.Username, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
 
-        // Assert
-        Assert.True(result.IsSuccess);
+        var result = await CommonPersonCommands.UpdatePersonAsync(updated, CancellationToken.None);
 
+        result.IsSuccess.Should().BeTrue();
+
+        PersonValidationMock.Verify(x => x.ValidateRequiredProperties(updated), Times.Once);
+        PersonValidationMock.Verify(x => x.ValidateMaxLength(updated), Times.Once);
+        PersonValidationMock.Verify(x => x.ValidateEmailFormat(updated.Email), Times.Once);
         PersonValidationMock.Verify(
-            v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
-            Times.Once);
-        PersonValidationMock.Verify(v => v.ValidateEmailFormat(It.IsAny<string>()), Times.Once);
-        PersonValidationMock.Verify(v => v.ValidateRequiredProperties(It.IsAny<Person>()), Times.Once);
-        PersonValidationMock.Verify(v => v.ValidateMaxLength(It.IsAny<Person>()), Times.Once);
+            x => x.ValidatePersonnameDoesNotExistAsync(updated.Username, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync_WhenUsernameIsUnchanged()
+    public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync_WhenUsernameUnchanged()
     {
-        // Arrange
         var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
 
-        var updatedPerson = new Person
+        var updated = new Person
         {
             Id = existingPerson.Id,
             Username = existingPerson.Username,
@@ -88,47 +95,50 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
-        // Act
-        var result = await CommonPersonCommands.UpdatePersonAsync(updatedPerson, default);
+        PersonValidationMock.Setup(x => x.ValidateRequiredProperties(updated)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateMaxLength(updated)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateEmailFormat(updated.Email)).Returns(Result.Success());
+        PersonValidationMock.Setup(x =>
+                x.ValidatePersonnameDoesNotExistAsync(updated.Username, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success());
 
-        // Assert
-        Assert.True(result.IsSuccess);
+        var result = await CommonPersonCommands.UpdatePersonAsync(updated, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+
         PersonValidationMock.Verify(
-            v => v.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
-            Times.Never);
+            x => x.ValidatePersonnameDoesNotExistAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldReturn_Failure_WhenPersonIsNull()
+    public async Task UpdateAsync_ShouldFail_WhenPersonIsNull()
     {
-        // Act
-        var result = await CommonPersonCommands.UpdatePersonAsync(null, default);
+        var result = await CommonPersonCommands.UpdatePersonAsync(null, CancellationToken.None);
 
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(PersonErrors.UpdateFailedWithMessage("").Code, result.Error.Code);
-        Assert.Contains("null", result.Error.Description, StringComparison.OrdinalIgnoreCase);
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(PersonErrors.UpdateFailedWithMessage("").Code);
     }
 
     [Fact]
-    public async Task UpdateAsync_ShouldReturn_Failure_WhenPersonNotFound()
+    public async Task UpdateAsync_ShouldFail_WhenPersonNotFound()
     {
-        // Arrange
-        var nonExistingPerson = new Person
+        var nonExisting = new Person
         {
-            Id = 999,
-            Username = "nonexistinguser",
-            FirstName = "John",
-            LastName = "Doe",
-            Email = "nonexisting@example.com",
-            UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
+            Id = 9999,
+            Username = "nonexistent",
+            FirstName = "Ghost",
+            LastName = "User",
+            Email = "ghost@example.com",
+            UserId = "ghost-id"
         };
 
-        // Act
-        var result = await CommonPersonCommands.UpdatePersonAsync(nonExistingPerson, default);
+        PersonValidationMock.Setup(x => x.ValidateRequiredProperties(nonExisting)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateMaxLength(nonExisting)).Returns(Result.Success());
+        PersonValidationMock.Setup(x => x.ValidateEmailFormat(nonExisting.Email)).Returns(Result.Success());
 
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(PersonErrors.NotFoundById(nonExistingPerson.Id).Code, result.Error.Code);
+        var result = await CommonPersonCommands.UpdatePersonAsync(nonExisting, CancellationToken.None);
+
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(PersonErrors.NotFoundById(nonExisting.Id).Code);
     }
 }

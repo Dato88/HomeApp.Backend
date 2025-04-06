@@ -35,17 +35,25 @@ public class PersonCommands(
         if (person is null)
             return Result.Failure<int>(PersonErrors.CreateFailedWithMessage("Person is null"));
 
-        try
+        var validations = new[]
         {
-            personValidation.ValidateRequiredProperties(person);
-            personValidation.ValidateMaxLength(person);
+            personValidation.ValidateRequiredProperties(person), personValidation.ValidateMaxLength(person),
+            personValidation.ValidateEmailFormat(person.Email)
+        };
+
+        foreach (var validation in validations)
+            if (validation.IsFailure)
+            {
+                logger.LogWarning($"Validation failed: {validation.Error}");
+                return Result.Failure<int>(validation.Error);
+            }
+
+        var usernameCheck =
             await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
-            personValidation.ValidateEmailFormat(person.Email);
-        }
-        catch (Exception ex)
+        if (usernameCheck.IsFailure)
         {
-            logger.LogWarning($"Validation failed while creating person: {ex.Message}");
-            return Result.Failure<int>(PersonErrors.CreateFailedWithMessage(ex.Message));
+            logger.LogWarning($"Username validation failed: {usernameCheck.Error}");
+            return Result.Failure<int>(usernameCheck.Error);
         }
 
         dbContext.People.Add(person);
@@ -61,17 +69,18 @@ public class PersonCommands(
         if (person is null)
             return Result.Failure(PersonErrors.UpdateFailedWithMessage("Person is null"));
 
-        try
+        var validations = new[]
         {
-            personValidation.ValidateRequiredProperties(person);
-            personValidation.ValidateMaxLength(person);
-            personValidation.ValidateEmailFormat(person.Email);
-        }
-        catch (Exception ex)
-        {
-            logger.LogWarning($"Validation failed while updating person: {ex.Message}");
-            return Result.Failure(PersonErrors.UpdateFailedWithMessage(ex.Message));
-        }
+            personValidation.ValidateRequiredProperties(person), personValidation.ValidateMaxLength(person),
+            personValidation.ValidateEmailFormat(person.Email)
+        };
+
+        foreach (var validation in validations)
+            if (validation.IsFailure)
+            {
+                logger.LogWarning($"Validation failed: {validation.Error}");
+                return Result.Failure(validation.Error);
+            }
 
         var existingUser = await dbContext.People.FindAsync(person.Id, cancellationToken);
 
@@ -79,14 +88,15 @@ public class PersonCommands(
             return Result.Failure(PersonErrors.NotFoundById(person.Id));
 
         if (person.Username != existingUser.Username)
-            try
-            {
+        {
+            var usernameCheck =
                 await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
-            }
-            catch (Exception ex)
+            if (usernameCheck.IsFailure)
             {
-                return Result.Failure(PersonErrors.UpdateFailedWithMessage(ex.Message));
+                logger.LogWarning($"Username validation failed during update: {usernameCheck.Error}");
+                return Result.Failure(usernameCheck.Error);
             }
+        }
 
         existingUser.Username = person.Username;
         existingUser.FirstName = person.FirstName;

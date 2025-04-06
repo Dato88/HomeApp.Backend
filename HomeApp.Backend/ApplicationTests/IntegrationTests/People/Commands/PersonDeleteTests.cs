@@ -11,45 +11,37 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
         _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
 
     [Fact]
-    public async Task DeleteAsync_ShouldDeletePerson_WhenPersonExists()
+    public async Task DeleteAsync_ShouldSucceed_WhenPersonExists()
     {
-        // Arrange
         var person = await _createDummyPeople.CreateDummyPersonAsync();
 
-        // Act
-        var result = await CommonPersonCommands.DeletePersonAsync(person.Id, default);
+        var result = await CommonPersonCommands.DeletePersonAsync(person.Id, CancellationToken.None);
 
-        // Assert
-        Assert.True(result.IsSuccess);
-        var deletedUser = await DbContext.People.FindAsync(person.Id);
-        deletedUser.Should().BeNull();
+        result.IsSuccess.Should().BeTrue();
+        var deleted = await DbContext.People.FindAsync(person.Id);
+        deleted.Should().BeNull();
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-10)]
-    public async Task DeleteAsync_ShouldReturn_Failure_WhenIdIsInvalid(int invalidId)
+    public async Task DeleteAsync_ShouldFail_WhenIdIsInvalid(int invalidId)
     {
-        // Act
-        var result = await CommonPersonCommands.DeletePersonAsync(invalidId, default);
+        var result = await CommonPersonCommands.DeletePersonAsync(invalidId, CancellationToken.None);
 
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(PersonErrors.DeleteFailed(invalidId).Code, result.Error.Code);
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(PersonErrors.DeleteFailed(invalidId).Code);
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldReturn_Failure_WhenPersonDoesNotExist()
+    public async Task DeleteAsync_ShouldFail_WhenPersonDoesNotExist()
     {
-        // Arrange
         const int nonExistentId = 9999;
 
-        // Act
-        var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, default);
+        var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, CancellationToken.None);
 
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(PersonErrors.NotFoundById(nonExistentId).Code, result.Error.Code);
-        Assert.Contains(nonExistentId.ToString(), result.Error.Description);
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be(PersonErrors.NotFoundById(nonExistentId).Code);
+        result.Error.Description.Should().Contain(nonExistentId.ToString());
     }
 }

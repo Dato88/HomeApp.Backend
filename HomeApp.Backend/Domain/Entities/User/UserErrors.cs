@@ -24,6 +24,10 @@ public static class UserErrors
         "Users.NotFound",
         $"The user with the Id = '{userId}' was not found");
 
+    public static Error CreateFailedWithMessage(string message) => Error.Failure(
+        "Users.CreateFailedWithMessage",
+        $"The user could not be created with message = '{message}'");
+
     public static Error Invalid2Step(Guid userId) => Error.NotFound(
         "Users.Invalid2Step",
         $"The user with the Id = '{userId}' send invalid 2 step verification");
