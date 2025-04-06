@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.PostgreSql;
 
 namespace ApplicationTests.IntegrationTests;
@@ -17,29 +16,24 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
         .WithUsername("testuser")
         .WithPassword("780234iicx5213").Build();
 
-    public async Task InitializeAsync()
-    {
-        await _dbContainer.StartAsync();
-        using var scope = Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
-        context.Database.Migrate();
-    }
+    public async Task InitializeAsync() => await _dbContainer.StartAsync();
 
-    public async Task DisposeAsync() => await _dbContainer.StopAsync();
+    public new async Task DisposeAsync() => await _dbContainer.StopAsync();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder.ConfigureTestServices(services =>
         {
-            // Bestehende Registrierung entfernen
-            services.RemoveAll<DbContextOptions<HomeAppContext>>();
-            services.RemoveAll<HomeAppContext>();
+            var descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<HomeAppContext>));
 
-            // HomeAppContext mit PostgreSQL (Testcontainer) registrieren
+            if (descriptor is not null) services.Remove(descriptor);
+
             services.AddDbContext<HomeAppContext>(options => options.UseNpgsql(_dbContainer.GetConnectionString()));
 
-            // Interface (IHomeAppContext) zur DI hinzufügen
-            // services.AddScoped<HomeAppContext>(provider => provider.GetRequiredService<HomeAppContext>());
-
-            // Optional: SeedTestData(context);
+            var serviceProvider = services.BuildServiceProvider();
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
+                context.Database.Migrate(); // This applies pending migrations
+            }
         });
 }

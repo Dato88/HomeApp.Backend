@@ -44,7 +44,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         updated.FirstName.Should().Be(updatedPerson.FirstName);
         updated.LastName.Should().Be(updatedPerson.LastName);
         updated.Email.Should().Be(updatedPerson.Email);
-        updated.UserId.Should().NotBe(updatedPerson.UserId); // bleibt unverändert
+        updated.UserId.Should().NotBe(updatedPerson.UserId);
     }
 
     [Fact]
