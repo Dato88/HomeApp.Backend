@@ -47,10 +47,10 @@ jobs:
             "HomeAppConnection": "${{ secrets.DB_HOMEAPP_CONNECTION }}",
             "HomeAppUserConnection": "${{ secrets.DB_HOMEAPP_USER_CONNECTION }}"
           }
-        }' > ./HomeApp.Backend/HomeApp.Api/appsettings.json
+        }' > ./HomeApp.Backend/src/Web.Api/appsettings.json
 
     - name: Debug appsettings.json
-      run: cat ./HomeApp.Backend/HomeApp.Api/appsettings.json
+      run: cat ./HomeApp.Backend/src/Web.Api/appsettings.json
         
     - name: Restore dependencies
       run: dotnet restore ./HomeApp.Backend/HomeApp.Backend.sln
