@@ -1,19 +1,19 @@
-﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
 public class PersonCommandsDeleteTests : BaseCommonPersonTest
 {
-    private readonly CreateDummyPeople _createDummyPeople;
+    private readonly PeopleDataSeeder _peopleDataSeeder;
 
     public PersonCommandsDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
+        _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
 
     [Fact]
     public async Task DeleteAsync_ShouldSucceed_WhenPersonExists()
     {
-        var person = await _createDummyPeople.CreateDummyPersonAsync();
+        var person = await _peopleDataSeeder.SeedPersonAsync();
 
         var result = await CommonPersonCommands.DeletePersonAsync(person.Id, CancellationToken.None);
 

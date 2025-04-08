@@ -1,18 +1,18 @@
-﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+﻿using ApplicationTests.IntegrationTests.TestData;
 using Infrastructure.Features.Todos.Queries;
 
 namespace ApplicationTests.IntegrationTests.Todos;
 
 public abstract class BaseTodoQueriesTest : BaseTest
 {
-    protected readonly CreateDummyPeople CreateDummyPeople;
-    protected readonly CreateDummyTodos CreateDummyTodos;
+    protected readonly PeopleDataSeeder PeopleDataSeeder;
     protected readonly TodoQueries TodoQueries;
+    protected readonly TodosDataSeeder TodosDataSeeder;
 
     public BaseTodoQueriesTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
-        CreateDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
-        CreateDummyTodos = new CreateDummyTodos(unitTestingApiFactory);
+        PeopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
+        TodosDataSeeder = new TodosDataSeeder(unitTestingApiFactory);
         TodoQueries = new TodoQueries(DbContext);
     }
 }

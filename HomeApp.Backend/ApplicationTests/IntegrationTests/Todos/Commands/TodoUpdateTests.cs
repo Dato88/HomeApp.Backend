@@ -13,7 +13,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var initialLastModified = DateTime.UtcNow.AddDays(-7);
 
-        var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId(null, initialLastModified);
+        var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId(null, initialLastModified);
 
         var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
 

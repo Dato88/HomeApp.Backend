@@ -2,18 +2,16 @@
 using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
 
-namespace ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+namespace ApplicationTests.IntegrationTests.TestData;
 
-public class CreateDummyTodos : BaseTest
+public class TodosDataSeeder : BaseTest
 {
-    private readonly CreateDummyPeople _createDummyPeople;
+    private readonly PeopleDataSeeder _peopleDataSeeder;
     private readonly Faker<Todo> _todoFaker;
 
-    public CreateDummyTodos(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
+    public TodosDataSeeder(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
-        _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
-
-        Randomizer.Seed = new Random(1337);
+        _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
 
         _todoFaker = new Faker<Todo>()
             .RuleFor(u => u.Name, f => f.Name.FirstName())
@@ -35,7 +33,7 @@ public class CreateDummyTodos : BaseTest
     public async Task<Todo> CreateOneDummyTodoWithPersonId(int? personId = null, DateTime? dateTime = null)
     {
         if (personId is null)
-            personId = (await _createDummyPeople.CreateDummyPersonAsync()).Id;
+            personId = (await _peopleDataSeeder.SeedPersonAsync()).Id;
 
         var todo = await GenereateDummyTodo(personId);
 

@@ -13,8 +13,8 @@ public class TodoCreateTests : BaseTodoCommandsTest
     public async Task CreateAsync_AddsTodoToContext()
     {
         // Arrange
-        var person = await CreateDummyPeople.CreateDummyPersonAsync();
-        var todo = await CreateDummyTodos.GenereateDummyTodo(person.Id);
+        var person = await PeopleDataSeeder.SeedPersonAsync();
+        var todo = await TodosDataSeeder.GenereateDummyTodo(person.Id);
 
         // Act
         var result = await TodoCommands.CreateAsync(todo, default);
@@ -27,13 +27,13 @@ public class TodoCreateTests : BaseTodoCommandsTest
     public async Task CreateAsync_Should_Also_Create_TodoGroupTodo()
     {
         // Arrange
-        var person = await CreateDummyPeople.CreateDummyPersonAsync();
+        var person = await PeopleDataSeeder.SeedPersonAsync();
 
         var todoGroup = new TodoGroup { Name = "TestGroup" };
         DbContext.TodoGroups.Add(todoGroup);
         await DbContext.SaveChangesAsync();
 
-        var newTodo = await CreateDummyTodos.GenereateDummyTodo(person.Id);
+        var newTodo = await TodosDataSeeder.GenereateDummyTodo(person.Id);
         newTodo.TodoGroupTodo = new TodoGroupTodo { TodoGroupId = todoGroup.Id };
 
         // Act
@@ -47,7 +47,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
     public async Task CreateAsync_ShouldNotCreateWithoutPersonId()
     {
         // Arrange
-        var todo = await CreateDummyTodos.GenereateDummyTodo();
+        var todo = await TodosDataSeeder.GenereateDummyTodo();
 
         // Act
         var result = await TodoCommands.CreateAsync(todo, default);

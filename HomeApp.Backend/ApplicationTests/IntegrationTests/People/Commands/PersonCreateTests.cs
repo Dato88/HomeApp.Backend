@@ -1,4 +1,4 @@
-﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
 using SharedKernel;
 
@@ -6,15 +6,15 @@ namespace ApplicationTests.IntegrationTests.People.Commands;
 
 public class PersonCommandsCreateTests : BaseCommonPersonTest
 {
-    private readonly CreateDummyPeople _createDummyPeople;
+    private readonly PeopleDataSeeder _peopleDataSeeder;
 
     public PersonCommandsCreateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
+        _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
 
     [Fact]
     public async Task CreateAsync_ShouldSucceed_WhenPersonIsValid()
     {
-        var person = await _createDummyPeople.CreateDummyPersonModelAsync();
+        var person = await _peopleDataSeeder.CreatePersonModelAsync();
 
         // Setup validation mocks
         PersonValidationMock.Setup(x => x.ValidateRequiredProperties(person)).Returns(Result.Success());
@@ -42,7 +42,7 @@ public class PersonCommandsCreateTests : BaseCommonPersonTest
     [Fact]
     public async Task CreateAsync_ShouldCallAllValidationsOnce()
     {
-        var person = await _createDummyPeople.CreateDummyPersonModelAsync();
+        var person = await _peopleDataSeeder.CreatePersonModelAsync();
 
         // Setup validation mocks
         PersonValidationMock.Setup(x => x.ValidateRequiredProperties(person)).Returns(Result.Success());

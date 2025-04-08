@@ -10,7 +10,7 @@ public class TodoDeleteTests : BaseTodoCommandsTest
     public async Task DeleteAsync_ReturnsSuccess_WhenTodoExists()
     {
         // Arrange
-        var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
+        var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         // Act
         var result = await TodoCommands.DeleteAsync(todo.Id, default);

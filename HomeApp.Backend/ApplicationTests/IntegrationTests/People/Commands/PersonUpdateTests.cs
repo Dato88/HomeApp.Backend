@@ -1,4 +1,4 @@
-﻿using ApplicationTests.IntegrationTests.Helper.CreateDummyData;
+﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
 using SharedKernel;
 
@@ -6,15 +6,15 @@ namespace ApplicationTests.IntegrationTests.People.Commands;
 
 public class PersonCommandsUpdateTests : BaseCommonPersonTest
 {
-    private readonly CreateDummyPeople _createDummyPeople;
+    private readonly PeopleDataSeeder _peopleDataSeeder;
 
     public PersonCommandsUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) =>
-        _createDummyPeople = new CreateDummyPeople(unitTestingApiFactory);
+        _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
 
     [Fact]
     public async Task UpdateAsync_ShouldSucceed_WhenPersonExists()
     {
-        var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
+        var existingPerson = await _peopleDataSeeder.SeedPersonAsync();
 
         var updatedPerson = new Person
         {
@@ -50,7 +50,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
     [Fact]
     public async Task UpdateAsync_ShouldCallAllValidations()
     {
-        var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
+        var existingPerson = await _peopleDataSeeder.SeedPersonAsync();
 
         var updated = new Person
         {
@@ -58,7 +58,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = "updateduser",
             FirstName = "Jane",
             LastName = "Doe",
-            Email = "updated@example.com",
+            Email = "updated212@example.com",
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
@@ -83,7 +83,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
     [Fact]
     public async Task UpdateAsync_ShouldNotCall_ValidatePersonnameDoesNotExistAsync_WhenUsernameUnchanged()
     {
-        var existingPerson = await _createDummyPeople.CreateDummyPersonAsync();
+        var existingPerson = await _peopleDataSeeder.SeedPersonAsync();
 
         var updated = new Person
         {
@@ -91,7 +91,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = existingPerson.Username,
             FirstName = "Jane",
             LastName = "Doe",
-            Email = "updated@example.com",
+            Email = "updated3@example.com",
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 

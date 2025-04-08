@@ -10,7 +10,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task FindByIdAsync_ReturnsTodo_WhenExists()
     {
         // Arrange
-        var todo = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
+        var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         // Act
         var result = await TodoQueries.FindByIdAsync(todo.Id, default);
@@ -49,9 +49,9 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_ReturnsTodosForSpecificPerson()
     {
         // Arrange
-        var todo1 = await CreateDummyTodos.CreateOneDummyTodoWithPersonId();
+        var todo1 = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
         var personId = todo1.TodoPeople.First().PersonId;
-        var todo2 = await CreateDummyTodos.CreateOneDummyTodoWithPersonId(personId);
+        var todo2 = await TodosDataSeeder.CreateOneDummyTodoWithPersonId(personId);
 
         // Act
         var result = await TodoQueries.GetAllAsync(personId, default);
@@ -84,7 +84,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_IncludesTodoAndTodoGroupTodo()
     {
         // Arrange
-        var todo = await CreateDummyTodos.CreateOneDummyTodoWithGroupAndReturnsTodo();
+        var todo = await TodosDataSeeder.CreateOneDummyTodoWithGroupAndReturnsTodo();
         var personId = todo.TodoPeople.First().PersonId;
 
         // Act
