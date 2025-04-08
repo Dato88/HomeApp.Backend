@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Todos;
+using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
 
@@ -10,30 +11,29 @@ public interface ITodoQueries
     /// <param name="id">The id of the Todo to find.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <param name="asNoTracking">
-    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
-    ///     is true.
+    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default is true.
     /// </param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
-    /// <returns>The found Todo object.</returns>
-    /// <exception cref="System.InvalidOperationException">
-    ///     Thrown when the Todo with the given <paramref name="id" /> is not found.
-    /// </exception>
-    Task<Todo> FindByIdAsync(int id, CancellationToken cancellationToken,
+    /// <returns>
+    ///     A <see cref="Result{Todo}" /> representing the operation result. Contains the found Todo or an error if not found.
+    /// </returns>
+    Task<Result<Todo>> FindByIdAsync(int id, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 
     /// <summary>
-    ///     Retrieves all Todos by Person id.
+    ///     Retrieves all Todos for a specific Person.
     /// </summary>
-    /// <param name="personId"></param>
+    /// <param name="personId">The id of the Person whose Todos should be retrieved.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <param name="asNoTracking">
-    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default
-    ///     is true.
+    ///     Optional flag to enable or disable the use of <c>AsNoTracking()</c> for the query. Default is true.
     /// </param>
     /// <param name="includes">Optional additional properties to include in the result (e.g. related entities).</param>
-    /// <returns>A list of all TodoPersons.</returns>
-    Task<IEnumerable<Todo>> GetAllAsync(int personId, CancellationToken cancellationToken,
+    /// <returns>
+    ///     A <see cref="Result{IEnumerable{Todo}}" /> containing the list of Todos or an error if none are found.
+    /// </returns>
+    Task<Result<IEnumerable<Todo>>> GetAllAsync(int personId, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 }

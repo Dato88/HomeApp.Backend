@@ -1,37 +1,42 @@
 ﻿using System.Linq.Expressions;
 using Application.Features.Todos.Queries;
 using Domain.Entities.Todos;
-using Domain.PredefinedMessages;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using SharedKernel;
 
 namespace Infrastructure.Features.Todos.Queries;
 
 public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
 {
-    public override async Task<Todo> FindByIdAsync(int id, CancellationToken cancellationToken,
+    public override async Task<Result<Todo>> FindByIdAsync(
+        int id,
+        CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(Todo.Id));
+        if (id <= 0)
+            return Result.Failure<Todo>(TodoErrors.NotFoundById(id));
 
-        var query = DbContext.Todos;
+        var query = DbContext.Todos.AsQueryable();
 
         if (asNoTracking)
-            query.AsNoTracking();
+            query = query.AsNoTracking();
 
         if (includes is { Length: > 0 })
-            ApplyIncludes(query, includes);
+            query = ApplyIncludes(query, includes);
 
         var todo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
-        if (todo == null)
-            throw new InvalidOperationException(TodoMessage.TodoNotFound);
+        if (todo is null)
+            return Result.Failure<Todo>(TodoErrors.NotFoundById(id));
 
-        return todo;
+        return Result.Success(todo);
     }
 
-    public override async Task<IEnumerable<Todo>> GetAllAsync(int personId, CancellationToken cancellationToken,
+    public override async Task<Result<IEnumerable<Todo>>> GetAllAsync(
+        int personId,
+        CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
@@ -43,12 +48,17 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
         else
-            query = query.Include(i => i.TodoGroupTodo).Include(i => i.TodoPeople);
+            query = query.Include(i => i.TodoGroupTodo)
+                .Include(i => i.TodoPeople);
 
-        var todoPeople = await query.Where(x => x.TodoPeople.Select(s => s.PersonId).Contains(personId))
+        var todoPeople = await query
+            .Where(x => x.TodoPeople.Any(p => p.PersonId == personId))
             .ToListAsync(cancellationToken);
 
-        return todoPeople;
+        if (!todoPeople.Any())
+            return Result.Failure<IEnumerable<Todo>>(TodoErrors.NotFoundAll);
+
+        return Result.Success<IEnumerable<Todo>>(todoPeople);
     }
 
     protected override IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)
@@ -59,8 +69,8 @@ public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext
         };
 
         foreach (var include in includes)
-            if (includeMappings.ContainsKey(include))
-                query = query.Include(includeMappings[include]);
+            if (includeMappings.TryGetValue(include, out var expression))
+                query = query.Include(expression);
 
         return query;
     }

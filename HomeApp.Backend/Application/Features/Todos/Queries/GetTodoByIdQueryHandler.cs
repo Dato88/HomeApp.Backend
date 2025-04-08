@@ -18,16 +18,16 @@ public class GetTodoByIdQueryHandler(
     {
         try
         {
-            var todo = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);
+            var todoResult = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);
 
-            if (todo is null)
+            if (todoResult.IsFailure)
             {
                 logger.LogWarning(TodoErrors.NotFoundById(request.Id).Description);
 
                 return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.Id));
             }
 
-            return (GetToDoResponse)todo;
+            return (GetToDoResponse)todoResult.Value;
         }
         catch (Exception ex)
         {

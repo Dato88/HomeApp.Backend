@@ -20,9 +20,9 @@ public class GetUserTodosQueryHandler(
     {
         try
         {
-            var todos = await todoQueries.GetAllAsync(userContext.PersonId, cancellationToken);
+            var todosResult = await todoQueries.GetAllAsync(userContext.PersonId, cancellationToken);
 
-            var result = todos.Select(s => (GetToDoResponse)s);
+            var result = todosResult.Value.Select(s => (GetToDoResponse)s);
 
             return Result.Success(result);
         }

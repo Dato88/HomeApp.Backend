@@ -1,6 +1,4 @@
-﻿using Domain.PredefinedMessages;
-
-namespace ApplicationTests.IntegrationTests.Todos.Queries;
+﻿namespace ApplicationTests.IntegrationTests.Todos.Queries;
 
 public class TodoReadTests : BaseTodoQueriesTest
 {
@@ -16,33 +14,39 @@ public class TodoReadTests : BaseTodoQueriesTest
         var result = await TodoQueries.FindByIdAsync(todo.Id, default);
 
         // Assert
-        result.Should().BeEquivalentTo(todo,
-            options => options.Excluding(t => t.CreatedAt).Excluding(t => t.TodoGroupTodo).Excluding(t => t.TodoPeople)
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeEquivalentTo(todo,
+            options => options
+                .Excluding(t => t.CreatedAt)
+                .Excluding(t => t.TodoGroupTodo)
+                .Excluding(t => t.TodoPeople)
                 .Excluding(t => t.LastModified));
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-3)]
-    public async Task FindByIdAsync_ThrowsException_WhenIdIsNullOrEmpty(int id)
+    public async Task FindByIdAsync_ReturnsFailure_WhenIdIsInvalid(int id)
     {
-        // Act & Assert
-        Func<Task> action = async () => await TodoQueries.FindByIdAsync(id, default);
+        // Act
+        var result = await TodoQueries.FindByIdAsync(id, default);
 
-        await action.Should().ThrowAsync<ArgumentOutOfRangeException>()
-            .WithMessage(
-                $"id ('{id}') must be a non-negative and non-zero value. (Parameter 'id')Actual value was {id}.");
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Todo.NotFoundById");
+        result.Error.Description.Should().Contain(id.ToString());
     }
 
     [Fact]
-    public async Task FindByIdAsync_ThrowsException_WhenNotExists()
+    public async Task FindByIdAsync_ReturnsFailure_WhenTodoDoesNotExist()
     {
-        // Assert
-        Func<Task> action = async () => await TodoQueries.FindByIdAsync(999, default);
+        // Act
+        var result = await TodoQueries.FindByIdAsync(999, default);
 
         // Assert
-        await action.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage(TodoMessage.TodoNotFound);
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Todo.NotFoundById");
+        result.Error.Description.Should().Contain("999");
     }
 
     [Fact]
@@ -57,27 +61,26 @@ public class TodoReadTests : BaseTodoQueriesTest
         var result = await TodoQueries.GetAllAsync(personId, default);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().HaveCount(2);
 
-        var resultList = result.ToList();
+        var resultList = result.Value.ToList();
         resultList[0].Id.Should().Be(todo1.Id);
-
         resultList[1].Id.Should().Be(todo2.Id);
     }
 
     [Fact]
-    public async Task GetAllAsync_ReturnsEmptyList_WhenNoTodosForPersonExist()
+    public async Task GetAllAsync_ReturnsFailure_WhenNoTodosForPersonExist()
     {
         // Arrange
-        var personId = 999; // Nicht existierende Person
+        const int personId = 999;
 
         // Act
         var result = await TodoQueries.GetAllAsync(personId, default);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEmpty();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Code.Should().Be("Todo.NotFoundAll");
     }
 
     [Fact]
@@ -91,10 +94,11 @@ public class TodoReadTests : BaseTodoQueriesTest
         var result = await TodoQueries.GetAllAsync(personId, default);
 
         // Assert
-        result.Should().NotBeNullOrEmpty();
-        var todoDto = result.First();
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNullOrEmpty();
 
-        todoDto.Should().NotBeNull();
-        todoDto.TodoGroupTodo.TodoGroupId.Should().Be(todo.TodoGroupTodo.TodoGroupId);
+        var first = result.Value.First();
+        first.TodoGroupTodo.Should().NotBeNull();
+        first.TodoGroupTodo.TodoGroupId.Should().Be(todo.TodoGroupTodo.TodoGroupId);
     }
 }
