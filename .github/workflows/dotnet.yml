@@ -1,27 +1,25 @@
-name: .NET
+name: .NET CI & Docker
 
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [ "main" ]
 
 env: 
   DOTNET_VERSION: "9.0.x"
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/homeapp-backend
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: docker:dind
-        options: --privileged
-
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -51,12 +49,50 @@ jobs:
 
     - name: Debug appsettings.json
       run: cat ./HomeApp.Backend/Web.Api/appsettings.json
-        
+
     - name: Restore dependencies
       run: dotnet restore ./HomeApp.Backend/HomeApp.Backend.sln
-      
+
     - name: Build
       run: dotnet build ./HomeApp.Backend/HomeApp.Backend.sln --no-restore
-      
+
     - name: Run All Tests
       run: dotnet test ./HomeApp.Backend/HomeApp.Backend.sln --no-build --verbosity normal
+
+    - name: Prepare Docker tags
+      if: github.event_name == 'push'
+      id: docker_tags
+      run: |
+        SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+        echo "tag_latest=${{ env.IMAGE_NAME }}:latest" >> $GITHUB_OUTPUT
+        echo "tag_sha=${{ env.IMAGE_NAME }}:main-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"
+          echo "tag_release=${{ env.IMAGE_NAME }}:${VERSION_TAG}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Log in to GitHub Container Registry
+      if: github.event_name == 'push'
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Docker image
+      if: github.event_name == 'push'
+      run: |
+        docker build \
+          -t ${{ steps.docker_tags.outputs.tag_latest }} \
+          -t ${{ steps.docker_tags.outputs.tag_sha }} \
+          $([[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]] && echo "-t ${{ steps.docker_tags.outputs.tag_release }}") \
+          -f ./HomeApp.Backend/Web.Api/Dockerfile ./HomeApp.Backend
+
+    - name: Push Docker images
+      if: github.event_name == 'push'
+      run: |
+        docker push ${{ steps.docker_tags.outputs.tag_latest }}
+        docker push ${{ steps.docker_tags.outputs.tag_sha }}
+        if [[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]]; then
+          docker push ${{ steps.docker_tags.outputs.tag_release }}
+        fi
