@@ -8,13 +8,11 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env: 
+env:
   DOTNET_VERSION: "9.0.x"
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}.toLowerCase()/homeapp-backend
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -63,12 +61,15 @@ jobs:
       if: github.event_name == 'push'
       id: docker_tags
       run: |
-        SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-        echo "tag_latest=${{ env.IMAGE_NAME }}:latest" >> $GITHUB_OUTPUT
-        echo "tag_sha=${{ env.IMAGE_NAME }}:main-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+        REPO_LOWER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+        IMAGE="ghcr.io/${REPO_LOWER}/homeapp-backend"
+        echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+        echo "tag_latest=${IMAGE}:latest" >> $GITHUB_OUTPUT
+        echo "tag_sha=${IMAGE}:main-${SHORT_SHA}" >> $GITHUB_OUTPUT
         if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
           VERSION_TAG="${GITHUB_REF#refs/tags/}"
-          echo "tag_release=${{ env.IMAGE_NAME }}:${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "tag_release=${IMAGE}:${VERSION_TAG}" >> $GITHUB_OUTPUT
         fi
 
     - name: Log in to GitHub Container Registry
@@ -82,10 +83,14 @@ jobs:
     - name: Build Docker image
       if: github.event_name == 'push'
       run: |
+        TAG_LATEST="${{ steps.docker_tags.outputs.tag_latest }}"
+        TAG_SHA="${{ steps.docker_tags.outputs.tag_sha }}"
+        TAG_RELEASE="${{ steps.docker_tags.outputs.tag_release }}"
+
         docker build \
-          -t ${{ steps.docker_tags.outputs.tag_latest }} \
-          -t ${{ steps.docker_tags.outputs.tag_sha }} \
-          $([[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]] && echo "-t ${{ steps.docker_tags.outputs.tag_release }}") \
+          -t "$TAG_LATEST" \
+          -t "$TAG_SHA" \
+          ${TAG_RELEASE:+-t $TAG_RELEASE} \
           -f ./HomeApp.Backend/Web.Api/Dockerfile ./HomeApp.Backend
 
     - name: Push Docker images
@@ -93,6 +98,23 @@ jobs:
       run: |
         docker push ${{ steps.docker_tags.outputs.tag_latest }}
         docker push ${{ steps.docker_tags.outputs.tag_sha }}
-        if [[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]]; then
-          docker push ${{ steps.docker_tags.outputs.tag_release }}
+
+        TAG_RELEASE="${{ steps.docker_tags.outputs.tag_release }}"
+        if [ -n "$TAG_RELEASE" ]; then
+          docker push "$TAG_RELEASE"
         fi
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
