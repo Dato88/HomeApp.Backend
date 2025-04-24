@@ -3,6 +3,8 @@ name: .NET CI & Docker
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [ "main" ]
 
@@ -57,17 +59,20 @@ jobs:
     - name: Run All Tests
       run: dotnet test ./HomeApp.Backend/HomeApp.Backend.sln --no-build --verbosity normal
 
-    # Nur bei Push auf main: Docker vorbereiten & pushen
-    - name: Extract Docker tags
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    - name: Prepare Docker tags
+      if: github.event_name == 'push'
       id: docker_tags
       run: |
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         echo "tag_latest=${{ env.IMAGE_NAME }}:latest" >> $GITHUB_OUTPUT
         echo "tag_sha=${{ env.IMAGE_NAME }}:main-${SHORT_SHA}" >> $GITHUB_OUTPUT
+        if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"
+          echo "tag_release=${{ env.IMAGE_NAME }}:${VERSION_TAG}" >> $GITHUB_OUTPUT
+        fi
 
     - name: Log in to GitHub Container Registry
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
@@ -75,13 +80,19 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker image
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push'
       run: |
-        docker build -t ${{ steps.docker_tags.outputs.tag_latest }} -t ${{ steps.docker_tags.outputs.tag_sha }} \
+        docker build \
+          -t ${{ steps.docker_tags.outputs.tag_latest }} \
+          -t ${{ steps.docker_tags.outputs.tag_sha }} \
+          $([[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]] && echo "-t ${{ steps.docker_tags.outputs.tag_release }}") \
           -f ./HomeApp.Backend/Web.Api/Dockerfile ./HomeApp.Backend
 
     - name: Push Docker images
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push'
       run: |
         docker push ${{ steps.docker_tags.outputs.tag_latest }}
         docker push ${{ steps.docker_tags.outputs.tag_sha }}
+        if [[ -n "${{ steps.docker_tags.outputs.tag_release }}" ]]; then
+          docker push ${{ steps.docker_tags.outputs.tag_release }}
+        fi
