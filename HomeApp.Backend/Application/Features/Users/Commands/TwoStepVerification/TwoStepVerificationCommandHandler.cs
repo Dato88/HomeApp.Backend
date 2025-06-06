@@ -5,7 +5,7 @@ using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using SharedKernel;
 
-namespace Application.Users.Commands.TwoStepVerification;
+namespace Application.Features.Users.Commands.TwoStepVerification;
 
 internal sealed class TwoStepVerificationCommandHandler(
     UserManager<User> userManager,

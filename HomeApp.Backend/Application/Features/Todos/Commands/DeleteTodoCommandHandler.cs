@@ -4,7 +4,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class DeleteTodoCommandHandler(
+internal sealed class DeleteTodoCommandHandler(
     ITodoCommands todoCommands,
     IAppLogger<DeleteTodoCommandHandler> logger) : IRequestHandler<DeleteTodoCommand, Result>
 {

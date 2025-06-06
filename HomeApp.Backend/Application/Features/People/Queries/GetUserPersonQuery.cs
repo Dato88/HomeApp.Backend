@@ -4,6 +4,6 @@ using SharedKernel;
 
 namespace Application.Features.People.Queries;
 
-public class GetUserPersonQuery : IRequest<Result<PersonResponse>>
+public sealed record GetUserPersonQuery : IRequest<Result<PersonResponse>>
 {
 }

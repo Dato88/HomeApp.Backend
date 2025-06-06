@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
 
-public class GetTodoByIdQueryHandler(
+internal sealed class GetTodoByIdQueryHandler(
     ITodoQueries todoQueries,
     IAppLogger<GetTodoByIdQueryHandler> logger)
     : IRequestHandler<GetTodoByIdQuery, Result<GetToDoResponse>>

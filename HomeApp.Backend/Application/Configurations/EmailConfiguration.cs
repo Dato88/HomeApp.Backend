@@ -1,6 +1,6 @@
 ﻿namespace Application.Configurations;
 
-public class EmailConfiguration
+internal sealed class EmailConfiguration
 {
     public string From { get; set; } = string.Empty;
     public string SmtpServer { get; set; } = string.Empty;

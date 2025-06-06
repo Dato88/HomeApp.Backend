@@ -2,7 +2,7 @@
 
 namespace Application.Features.People.Dtos;
 
-public class PersonResponse(int id, string? username, string firstName, string lastName, string email)
+public sealed record PersonResponse(int id, string? username, string firstName, string lastName, string email)
 {
     public PersonResponse() : this(0, null, string.Empty, string.Empty, string.Empty)
     {

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Features.Users.Commands.EmailConfirmation;
 
-public class EmailConfirmationCommandValidator : AbstractValidator<EmailConfirmationCommand>
+internal sealed class EmailConfirmationCommandValidator : AbstractValidator<EmailConfirmationCommand>
 {
     public EmailConfirmationCommandValidator()
     {

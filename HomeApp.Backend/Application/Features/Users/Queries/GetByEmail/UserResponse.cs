@@ -1,4 +1,4 @@
-﻿namespace Application.Users.Queries.GetByEmail;
+﻿namespace Application.Features.Users.Queries.GetByEmail;
 
 public sealed record UserResponse
 {

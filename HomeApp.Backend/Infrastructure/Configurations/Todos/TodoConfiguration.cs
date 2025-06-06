@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations.Todos;
 
-public class TodoConfiguration : IEntityTypeConfiguration<Todo>
+internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
 {
     public void Configure(EntityTypeBuilder<Todo> builder)
     {

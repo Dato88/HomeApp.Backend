@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Services.Authorization.Utilities;
 
-public static class ClaimStore
+internal static class ClaimStore
 {
     public static List<Claim> AllClaims = new()
     {

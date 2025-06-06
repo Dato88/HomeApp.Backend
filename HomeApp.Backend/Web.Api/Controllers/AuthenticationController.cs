@@ -1,5 +1,5 @@
 ﻿using Application.Features.Users.Commands.Login;
-using Application.Users.Commands.TwoStepVerification;
+using Application.Features.Users.Commands.TwoStepVerification;
 
 namespace Web.Api.Controllers;
 
@@ -20,7 +20,7 @@ public class AuthenticationController(
 
         if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 
     [HttpPost("2fa-verify")]
@@ -34,6 +34,6 @@ public class AuthenticationController(
 
         if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 }

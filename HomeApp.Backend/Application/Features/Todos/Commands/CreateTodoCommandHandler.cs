@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class CreateTodoCommandHandler(
+internal sealed class CreateTodoCommandHandler(
     ITodoCommands todoCommands,
     IUserContext userContext,
     IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, Result<int>>

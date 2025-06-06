@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Features.Users.Commands.ResetPassword;
 
-public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
+internal sealed class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
 {
     public ResetPasswordCommandValidator()
     {

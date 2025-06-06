@@ -4,7 +4,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class UpdateTodoCommandHandler(
+internal sealed class UpdateTodoCommandHandler(
     ITodoCommands todoCommands,
     IAppLogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, Result>
 {

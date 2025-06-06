@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Features.People.Queries;
 
-public class PersonQueries(
+public sealed class PersonQueries(
     HomeAppContext dbContext,
     IUserContext userContext,
     IAppLogger<PersonQueries> logger) : IPersonQueries

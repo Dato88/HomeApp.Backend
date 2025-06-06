@@ -7,7 +7,7 @@ using SharedKernel;
 
 namespace Infrastructure.Features.People.Commands;
 
-public class PersonCommands(
+public sealed class PersonCommands(
     HomeAppContext dbContext,
     IPersonValidation personValidation,
     IAppLogger<PersonCommands> logger) : IPersonCommands

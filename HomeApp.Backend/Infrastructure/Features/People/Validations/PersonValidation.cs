@@ -8,7 +8,7 @@ using SharedKernel;
 
 namespace Infrastructure.Features.People.Validations;
 
-public class PersonValidation(HomeAppContext dbContext) : BaseContext(dbContext), IPersonValidation
+internal sealed class PersonValidation(HomeAppContext dbContext) : BaseContext(dbContext), IPersonValidation
 {
     public bool IsValidEmail(string email)
     {

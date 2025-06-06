@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.Logger;
 
-public class AppLogger<T> : IAppLogger<T>
+internal class AppLogger<T> : IAppLogger<T>
 {
     private readonly ILogger<T> _logger;
     private readonly IUserContext _userContext;

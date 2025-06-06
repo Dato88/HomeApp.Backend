@@ -2,7 +2,7 @@
 
 namespace Application.Models.Email;
 
-public class Message
+public sealed class Message
 {
     public Message(IEnumerable<string> to, string subject, string content)
     {

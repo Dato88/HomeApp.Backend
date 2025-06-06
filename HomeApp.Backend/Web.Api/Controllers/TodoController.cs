@@ -1,5 +1,6 @@
 ﻿using Application.Features.Todos.Commands;
 using Application.Features.Todos.Queries;
+using Web.Api.Requests.Todo;
 
 namespace Web.Api.Controllers;
 
@@ -17,56 +18,56 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 
     [HttpGet("todo")]
-    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoByIdQuery getTodoByIdQuery,
+    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(getTodoByIdQuery, cancellationToken);
+        var response = await _mediator.Send((GetTodoByIdQuery)request, cancellationToken);
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 
     [HttpPost("todo")]
-    public async Task<IActionResult> CreateToDoAsync([FromBody] CreateTodoCommand createTodoCommand,
+    public async Task<IActionResult> CreateToDoAsync([FromBody] CreateTodoRequest? createTodoRequest,
         CancellationToken cancellationToken)
     {
-        if (createTodoCommand is null) return BadRequest();
+        if (createTodoRequest is null) return BadRequest();
 
-        var response = await _mediator.Send(createTodoCommand, cancellationToken);
+        var response = await _mediator.Send((CreateTodoCommand)createTodoRequest, cancellationToken);
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 
     [HttpDelete("todo")]
-    public async Task<IActionResult> DeleteToDoAsync([FromQuery] DeleteTodoCommand deleteTodoCommand,
+    public async Task<IActionResult> DeleteToDoAsync([FromQuery] DeleteTodoRequest? deleteTodoRequest,
         CancellationToken cancellationToken)
     {
-        if (deleteTodoCommand is null) return BadRequest();
+        if (deleteTodoRequest is null) return BadRequest();
 
-        var response = await _mediator.Send(deleteTodoCommand, cancellationToken);
+        var response = await _mediator.Send((DeleteTodoCommand)deleteTodoRequest, cancellationToken);
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 
     [HttpPatch("todo")]
-    public async Task<IActionResult> UpdateToDoAsync([FromBody] UpdateTodoCommand updateTodoCommand,
+    public async Task<IActionResult> UpdateToDoAsync([FromBody] UpdateTodoRequest? updateTodoRequest,
         CancellationToken cancellationToken)
     {
-        if (updateTodoCommand is null) return BadRequest();
+        if (updateTodoRequest is null) return BadRequest();
 
-        var response = await _mediator.Send(updateTodoCommand, cancellationToken);
+        var response = await _mediator.Send((UpdateTodoCommand)updateTodoRequest, cancellationToken);
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error.Description);
     }
 }

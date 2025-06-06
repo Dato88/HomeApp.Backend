@@ -8,7 +8,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
 
-public class GetUserTodosQueryHandler(
+internal sealed class GetUserTodosQueryHandler(
     ITodoQueries todoQueries,
     IUserContext userContext,
     IPersonQueries personQueries,
