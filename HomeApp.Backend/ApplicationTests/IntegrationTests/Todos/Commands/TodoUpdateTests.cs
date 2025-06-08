@@ -39,8 +39,8 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
-        result.Error.Description.Should().Contain("null");
+        result.Errors.Select(c => c.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code));
+        result.Errors.Select(c => c.Description.Should().Contain("null"));
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
+        result.Errors.Select(c => c.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code));
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be(TodoErrors.UpdateFailed(todo.Id).Code);
-        result.Error.Description.Should().Contain("999");
+        result.Errors.Select(c => c.Should().Be(TodoErrors.UpdateFailed(todo.Id).Code));
+        result.Errors.Select(c => c.Description.Should().Contain("999"));
     }
 }

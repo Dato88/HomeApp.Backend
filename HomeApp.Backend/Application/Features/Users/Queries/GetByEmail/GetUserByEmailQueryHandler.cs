@@ -22,6 +22,6 @@ internal sealed class GetUserByEmailQueryHandler(UserManager<User> userManager, 
 
         if (user.Id != userContext.UserId) return Result.Failure<UserResponse>(UserErrors.Unauthorized());
 
-        return user;
+        return Result.Success(user);
     }
 }

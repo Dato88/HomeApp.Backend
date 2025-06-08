@@ -33,8 +33,8 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be("Todo.NotFoundById");
-        result.Error.Description.Should().Contain(id.ToString());
+        result.Errors.Select(c => c.Should().Be("Todo.NotFoundById"));
+        result.Errors.Select(c => c.Description.Should().Contain(id.ToString()));
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be("Todo.NotFoundById");
-        result.Error.Description.Should().Contain("999");
+        result.Errors.Select(c => c.Should().Be("Todo.NotFoundById"));
+        result.Errors.Select(c => c.Description.Should().Contain("999"));
     }
 
     [Fact]
@@ -80,7 +80,8 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be("Todo.NotFoundAll");
+        result.Errors.Select(c => c.Should().Be("Todo.NotFoundAll"));
+        result.Errors.Select(c => c.Description.Should().Contain("999"));
     }
 
     [Fact]

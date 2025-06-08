@@ -20,7 +20,7 @@ public class AuthenticationController(
 
         if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response.Error.Description);
+        return BadRequest(response);
     }
 
     [HttpPost("2fa-verify")]
@@ -34,6 +34,6 @@ public class AuthenticationController(
 
         if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response.Error.Description);
+        return BadRequest(response);
     }
 }

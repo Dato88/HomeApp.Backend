@@ -11,7 +11,6 @@ public class UpdateTodoRequest
     public bool Done { get; set; }
 
     public TodoPriority Priority { get; set; }
-    public DateTimeOffset LastModified { get; set; }
 
     public static explicit operator UpdateTodoCommand(UpdateTodoRequest item)
         => new()

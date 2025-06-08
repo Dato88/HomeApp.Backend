@@ -1,5 +1,6 @@
 using System.Text;
 using Application;
+using FluentValidation;
 using HealthChecks.UI.Client;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Web.Api;
 using Web.Api.Extensions;
+using Web.Api.Middleware;
+using AssemblyReference = Web.Api.AssemblyReference;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,8 @@ builder.Services
     .AddApplication(builder.Configuration)
     .AddInfrastructure(builder.Configuration)
     .AddPresentation();
+
+builder.Services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.AddAuthentication(opt =>
@@ -38,6 +43,8 @@ builder.Services.AddAuthentication(opt =>
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
+
+app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
 
 app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 

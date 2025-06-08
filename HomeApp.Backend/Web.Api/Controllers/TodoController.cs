@@ -22,10 +22,12 @@ public class TodoController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet("todo")]
-    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoRequest request,
+    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoRequest? getTodoRequest,
         CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send((GetTodoByIdQuery)request, cancellationToken);
+        if (getTodoRequest is null) return BadRequest();
+
+        var response = await _mediator.Send((GetTodoByIdQuery)getTodoRequest, cancellationToken);
 
         if (response.IsSuccess) return Ok(response);
 
