@@ -55,6 +55,6 @@ public class Result<TValue> : Result
     public static implicit operator Result<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
 
-    public static Result<TValue> Failure(params Error[] errors) =>
+    public static new Result<TValue> Failure(params Error[] errors) =>
         new(default, false, errors.ToList());
 }
