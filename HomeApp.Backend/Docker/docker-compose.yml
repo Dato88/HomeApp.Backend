@@ -2,12 +2,24 @@ services:
   homeapp-backend:
     image: homeapp-backend:alpine
     container_name: homeapp-backend
+    build:
+      context: ../
+      dockerfile: Web.Api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__HomeAppConnection: "${HOMEAPP_DATA_CONN}"
       ConnectionStrings__HomeAppUserConnection: "${HOMEAPP_USER_CONN}"
+      JWTSettings__securityKey: "${JWTSettings__securityKey}"
+      JWTSettings__validIssuer: "${JWTSettings__validIssuer}"
+      JWTSettings__validAudience: "${JWTSettings__validAudience}"
+      JWTSettings__expiryInMinutes: "${JWTSettings__expiryInMinutes}"
+      EmailConfiguration__From: "${EmailConfiguration__From}"
+      EmailConfiguration__SmtpServer: "${EmailConfiguration__SmtpServer}"
+      EmailConfiguration__Port: "${EmailConfiguration__Port}"
+      EmailConfiguration__Username: "${EmailConfiguration__Username}"
+      EmailConfiguration__Password: "${EmailConfiguration__Password}"
     expose:
-      - "5018:8080"
+      - "8080"
     networks:
       - webnet
 
