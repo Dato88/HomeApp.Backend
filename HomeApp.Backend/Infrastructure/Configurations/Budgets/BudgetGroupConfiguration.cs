@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations.Budgets;
 
-public class BudgetGroupConfiguration : IEntityTypeConfiguration<BudgetGroup>
+internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<BudgetGroup>
 {
     public void Configure(EntityTypeBuilder<BudgetGroup> builder)
     {

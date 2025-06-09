@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class CreateTodoCommand : IRequest<Result<int>>
+public sealed record CreateTodoCommand : IRequest<Result<int>>
 {
     public int? TodoGroupId { get; set; }
     public int PersonId { get; set; }

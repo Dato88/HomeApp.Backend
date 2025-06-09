@@ -8,7 +8,7 @@ using MimeKit.Text;
 
 namespace Application.Email;
 
-public class EmailSender(EmailConfiguration emailConfig, IAppLogger<EmailSender> logger)
+internal sealed class EmailSender(EmailConfiguration emailConfig, IAppLogger<EmailSender> logger)
     : IEmailSender
 {
     public async Task SendEmailAsync(Message message, CancellationToken cancellationToken)

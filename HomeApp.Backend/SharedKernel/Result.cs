@@ -1,56 +1,60 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace SharedKernel;
 
 public class Result
 {
-    public Result(bool isSuccess, Error error)
+    protected Result(bool isSuccess, List<Error>? errors = null)
     {
-        if (isSuccess && error != Error.None ||
-            !isSuccess && error == Error.None)
-        {
-            throw new ArgumentException("Invalid error", nameof(error));
-        }
+        if ((isSuccess && errors is { Count: > 0 }) ||
+            (!isSuccess && (errors == null || errors.Count == 0)))
+            throw new ArgumentException("Invalid error state", nameof(errors));
 
         IsSuccess = isSuccess;
-        Error = error;
+        Errors = errors ?? new List<Error>();
     }
 
     public bool IsSuccess { get; }
 
-    public bool IsFailure => !IsSuccess;
+    [JsonIgnore] public bool IsFailure => !IsSuccess;
 
-    public Error Error { get; }
+    [JsonIgnore] public List<Error> Errors { get; }
 
-    public static Result Success() => new(true, Error.None);
+    [JsonPropertyName("errors")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<Error>? SerializableErrors => IsSuccess ? null : Errors;
+
+    public static Result Success() => new(true);
 
     public static Result<TValue> Success<TValue>(TValue value) =>
-        new(value, true, Error.None);
+        new(value, true);
 
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(params Error[] errors) => new(false, errors.ToList());
 
-    public static Result<TValue> Failure<TValue>(Error error) =>
-        new(default, false, error);
+    public static Result<TValue> Failure<TValue>(params Error[] errors) =>
+        new(default, false, errors.ToList());
 }
 
 public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    public Result(TValue? value, bool isSuccess, Error error)
-        : base(isSuccess, error)
-    {
+    public Result(TValue? value, bool isSuccess, List<Error>? errors = null)
+        : base(isSuccess, errors) =>
         _value = value;
-    }
 
+    [JsonIgnore]
     [NotNull]
     public TValue Value => IsSuccess
         ? _value!
-        : throw new InvalidOperationException("The value of a failure result can't be accessed.");
+        : throw new InvalidOperationException("Cannot access value of failed result.");
+
+    [JsonPropertyName("value")] public TValue? SerializableValue => IsSuccess ? _value : default;
 
     public static implicit operator Result<TValue>(TValue? value) =>
         value is not null ? Success(value) : Failure<TValue>(Error.NullValue);
 
-    public static Result<TValue> ValidationFailure(Error error) =>
-        new(default, false, error);
+    public static new Result<TValue> Failure(params Error[] errors) =>
+        new(default, false, errors.ToList());
 }

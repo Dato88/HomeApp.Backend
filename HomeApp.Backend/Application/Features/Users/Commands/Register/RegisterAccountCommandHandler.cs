@@ -40,11 +40,13 @@ internal sealed class RegisterAccountCommandHandler(
         var createPersonResult = await personCommands.CreatePersonAsync(user, cancellationToken);
         if (createPersonResult.IsFailure)
         {
-            logger.LogWarning($"Creating Person entity for user {command.Email} failed: {createPersonResult.Error}");
+            foreach (var error in createPersonResult.Errors)
+                logger.LogWarning(
+                    $"Creating Person entity for user {command.Email} failed: {error.Description} ({error.Code})");
 
             await userManager.DeleteAsync(user);
 
-            return Result.Failure<Guid>(createPersonResult.Error);
+            return Result.Failure<Guid>(createPersonResult.Errors.ToArray());
         }
 
         // Generate email confirmation token

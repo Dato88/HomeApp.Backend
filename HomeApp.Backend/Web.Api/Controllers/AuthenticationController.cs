@@ -1,5 +1,5 @@
 ﻿using Application.Features.Users.Commands.Login;
-using Application.Users.Commands.TwoStepVerification;
+using Application.Features.Users.Commands.TwoStepVerification;
 
 namespace Web.Api.Controllers;
 

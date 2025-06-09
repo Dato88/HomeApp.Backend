@@ -2,7 +2,7 @@
 
 namespace Application.Features.Budget;
 
-public class Budget
+internal sealed class Budget
 {
     public Budget()
     {

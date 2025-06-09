@@ -7,7 +7,7 @@ using SharedKernel;
 
 namespace Infrastructure.Features.Todos.Queries;
 
-public class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
+public sealed class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
 {
     public override async Task<Result<Todo>> FindByIdAsync(
         int id,

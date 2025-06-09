@@ -7,7 +7,7 @@ using SharedKernel;
 
 namespace Infrastructure.Features.People.Commands;
 
-public class PersonCommands(
+public sealed class PersonCommands(
     HomeAppContext dbContext,
     IPersonValidation personValidation,
     IAppLogger<PersonCommands> logger) : IPersonCommands
@@ -18,7 +18,6 @@ public class PersonCommands(
             return Result.Failure(PersonErrors.DeleteFailed(id));
 
         var person = await dbContext.People.FindAsync(id, cancellationToken);
-
         if (person == null)
             return Result.Failure(PersonErrors.NotFoundById(id));
 
@@ -35,25 +34,29 @@ public class PersonCommands(
         if (person is null)
             return Result.Failure<int>(PersonErrors.CreateFailedWithMessage("Person is null"));
 
-        var validations = new[]
+        var validationResults = new[]
         {
             personValidation.ValidateRequiredProperties(person), personValidation.ValidateMaxLength(person),
             personValidation.ValidateEmailFormat(person.Email)
         };
 
-        foreach (var validation in validations)
-            if (validation.IsFailure)
-            {
-                logger.LogWarning($"Validation failed: {validation.Error}");
-                return Result.Failure<int>(validation.Error);
-            }
+        var validationErrors = validationResults
+            .Where(r => r.IsFailure)
+            .SelectMany(r => r.Errors)
+            .ToList();
 
         var usernameCheck =
             await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
+
         if (usernameCheck.IsFailure)
+            validationErrors.AddRange(usernameCheck.Errors);
+
+        if (validationErrors.Any())
         {
-            logger.LogWarning($"Username validation failed: {usernameCheck.Error}");
-            return Result.Failure<int>(usernameCheck.Error);
+            foreach (var error in validationErrors)
+                logger.LogWarning($"Validation failed: {error.Description}");
+
+            return Result.Failure<int>(validationErrors.ToArray());
         }
 
         dbContext.People.Add(person);
@@ -69,36 +72,39 @@ public class PersonCommands(
         if (person is null)
             return Result.Failure(PersonErrors.UpdateFailedWithMessage("Person is null"));
 
-        var validations = new[]
+        var errors = new List<Error>();
+
+        var validationResults = new[]
         {
             personValidation.ValidateRequiredProperties(person), personValidation.ValidateMaxLength(person),
             personValidation.ValidateEmailFormat(person.Email)
         };
 
-        foreach (var validation in validations)
-            if (validation.IsFailure)
-            {
-                logger.LogWarning($"Validation failed: {validation.Error}");
-                return Result.Failure(validation.Error);
-            }
+        errors.AddRange(validationResults
+            .Where(r => r.IsFailure)
+            .SelectMany(r => r.Errors));
 
         var existingUser = await dbContext.People.FindAsync(person.Id, cancellationToken);
-
         if (existingUser == null)
-            return Result.Failure(PersonErrors.NotFoundById(person.Id));
+            errors.Add(PersonErrors.NotFoundById(person.Id));
 
-        if (person.Username != existingUser.Username)
+        if (existingUser != null && person.Username != existingUser.Username)
         {
             var usernameCheck =
                 await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
             if (usernameCheck.IsFailure)
-            {
-                logger.LogWarning($"Username validation failed during update: {usernameCheck.Error}");
-                return Result.Failure(usernameCheck.Error);
-            }
+                errors.AddRange(usernameCheck.Errors);
         }
 
-        existingUser.Username = person.Username;
+        if (errors.Any())
+        {
+            foreach (var error in errors)
+                logger.LogWarning($"Update validation failed: {error.Description}");
+
+            return Result.Failure(errors.ToArray());
+        }
+
+        existingUser!.Username = person.Username;
         existingUser.FirstName = person.FirstName;
         existingUser.LastName = person.LastName;
         existingUser.Email = person.Email;

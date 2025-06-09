@@ -4,7 +4,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class UpdateTodoCommandHandler(
+internal sealed class UpdateTodoCommandHandler(
     ITodoCommands todoCommands,
     IAppLogger<UpdateTodoCommandHandler> logger) : IRequestHandler<UpdateTodoCommand, Result>
 {
@@ -16,8 +16,10 @@ public class UpdateTodoCommandHandler(
 
         if (result.IsFailure)
         {
-            logger.LogWarning($"Updating todo failed: {result.Error}");
-            return Result.Failure(result.Error);
+            foreach (var error in result.Errors)
+                logger.LogWarning($"Updating todo failed: {error.Description} ({error.Code})");
+
+            return Result.Failure(result.Errors.ToArray());
         }
 
         logger.LogInformation($"Todo with ID {request.Id} updated successfully.");

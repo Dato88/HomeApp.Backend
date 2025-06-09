@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Services.Logger;
 
-public static partial class LoggerExtension
+internal static partial class LoggerExtension
 {
     // Internal LoggerMessage methods (must be private static partial)
     [LoggerMessage(EventId = 0, Level = LogLevel.Trace, Message = "{when} => {message}")]

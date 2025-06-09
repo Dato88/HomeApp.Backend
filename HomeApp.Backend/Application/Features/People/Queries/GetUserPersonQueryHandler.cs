@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Features.People.Queries;
 
-public class GetUserPersonQueryHandler(
+public sealed class GetUserPersonQueryHandler(
     IPersonQueries personQueries,
     IAppLogger<GetUserPersonQueryHandler> logger) : IRequestHandler<GetUserPersonQuery, Result<PersonResponse>>
 {

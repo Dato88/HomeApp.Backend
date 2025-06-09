@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Infrastructure.Features.Todos.Commands;
 
-public class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
+public sealed class TodoCommands(HomeAppContext dbContext) : BaseCommands<Todo>(dbContext), ITodoCommands
 {
     public override async Task<Result<int>> CreateAsync(Todo todo, CancellationToken cancellationToken)
     {

@@ -36,7 +36,7 @@ public class PersonCommandsCreateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.CreatePersonAsync(null, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Code.Should().Be(PersonErrors.CreateFailedWithMessage("").Code);
+        result.Errors.Select(c => c.Code.Should().Be(PersonErrors.CreateFailedWithMessage("").Code));
     }
 
     [Fact]

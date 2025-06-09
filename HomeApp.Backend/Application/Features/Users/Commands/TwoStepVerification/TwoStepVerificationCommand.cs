@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Messaging;
 
-namespace Application.Users.Commands.TwoStepVerification;
+namespace Application.Features.Users.Commands.TwoStepVerification;
 
 public sealed record TwoStepVerificationCommand(
     string Email,

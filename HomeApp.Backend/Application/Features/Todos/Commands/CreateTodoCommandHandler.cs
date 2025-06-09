@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Commands;
 
-public class CreateTodoCommandHandler(
+internal sealed class CreateTodoCommandHandler(
     ITodoCommands todoCommands,
     IUserContext userContext,
     IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, Result<int>>
@@ -20,9 +20,10 @@ public class CreateTodoCommandHandler(
 
         if (result.IsFailure)
         {
-            logger.LogWarning($"Creating todo failed: {result.Error}");
+            foreach (var error in result.Errors)
+                logger.LogWarning($"Creating todo failed: {error.Description} ({error.Code})");
 
-            return Result.Failure<int>(result.Error);
+            return Result.Failure<int>(result.Errors.ToArray());
         }
 
         logger.LogInformation($"Creating todo: {result.Value}");

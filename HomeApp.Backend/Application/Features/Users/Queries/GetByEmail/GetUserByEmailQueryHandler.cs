@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
-namespace Application.Users.Queries.GetByEmail;
+namespace Application.Features.Users.Queries.GetByEmail;
 
 internal sealed class GetUserByEmailQueryHandler(UserManager<User> userManager, IUserContext userContext)
     : IQueryHandler<GetUserByEmailQuery, UserResponse>
@@ -22,6 +22,6 @@ internal sealed class GetUserByEmailQueryHandler(UserManager<User> userManager, 
 
         if (user.Id != userContext.UserId) return Result.Failure<UserResponse>(UserErrors.Unauthorized());
 
-        return user;
+        return Result.Success(user);
     }
 }

@@ -3,7 +3,7 @@ using Domain.Entities.Todos.Enums;
 
 namespace Application.Features.Todos.Dtos;
 
-public record GetToDoResponse(
+public sealed record GetToDoResponse(
     int Id,
     int? TodoGroupId,
     string Name,

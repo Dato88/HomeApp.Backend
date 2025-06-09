@@ -1,8 +1,8 @@
 using FluentValidation;
 
-namespace Application.Users.Commands.TwoStepVerification;
+namespace Application.Features.Users.Commands.TwoStepVerification;
 
-public class TwoStepVerificationCommandValidator : AbstractValidator<TwoStepVerificationCommand>
+internal sealed class TwoStepVerificationCommandValidator : AbstractValidator<TwoStepVerificationCommand>
 {
     public TwoStepVerificationCommandValidator()
     {
