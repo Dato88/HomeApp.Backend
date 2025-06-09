@@ -1,0 +1,30 @@
+services:
+  homeapp-backend:
+    image: homeapp-backend:alpine
+    container_name: homeapp-backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__HomeAppConnection: "${HOMEAPP_DATA_CONN}"
+      ConnectionStrings__HomeAppUserConnection: "${HOMEAPP_USER_CONN}"
+    expose:
+      - "5018:8080"
+    networks:
+      - webnet
+
+  nginx:
+    image: nginx:alpine
+    container_name: homeapp-nginx
+    depends_on:
+      - homeapp-backend
+    ports:
+      - "5018:5018"  # <- wichtig: öffentlich erreichbarer HTTPS-Port
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/cert.pem:/etc/nginx/cert.pem:ro
+      - ./nginx/cert.key:/etc/nginx/cert.key:ro
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
