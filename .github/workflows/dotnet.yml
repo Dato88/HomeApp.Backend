@@ -4,14 +4,10 @@ on:
   push:
     branches-ignore:
       - main
+    tags:
+      - 'v*.*.*'
   pull_request:
-  workflow_run:
-    workflows: [".NET CI & Docker"]
-    types:
-      - completed
-  merge_group:
-    branches:
-      - main
+    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
 
 env:
@@ -19,7 +15,7 @@ env:
 
 jobs:
   build-only:
-    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/heads/main')
+    if: ${{ github.event_name == 'push' && !startsWith(github.ref, 'refs/heads/main') }}
     runs-on: ubuntu-latest
     name: Build (non-main branches)
     steps:
@@ -34,9 +30,9 @@ jobs:
         run: dotnet build ./HomeApp.Backend/HomeApp.Backend.sln --no-restore
 
   build-and-test:
-    if: github.event_name == 'pull_request'
+    if: ${{ (github.event_name == 'pull_request' && github.event.action != 'closed') || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    name: Build & Test (PRs)
+    name: Build & Test (Pull Requests)
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -51,16 +47,19 @@ jobs:
         run: dotnet test ./HomeApp.Backend/HomeApp.Backend.sln --no-build --verbosity normal
 
   release-build:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main') && startsWith(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'release/')
-    name: Build, Test, Docker & Tag (Release → Main)
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v') && github.event.pull_request.base.ref == 'main' }}
     runs-on: ubuntu-latest
+    name: Build, Test, Docker & Tag (Release → Main)
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
       - name: Restore dependencies
         run: dotnet restore ./HomeApp.Backend/HomeApp.Backend.sln
       - name: Build
@@ -71,7 +70,8 @@ jobs:
       - name: Extract Version from Release Branch Name
         id: extract_version
         run: |
-          VERSION=$(git log -1 --pretty=%B | grep -oE 'release/v[0-9]+\.[0-9]+\.[0-9]+' | sed 's/release\///')
+          VERSION="${{ github.event.pull_request.head.ref }}"
+          VERSION="${VERSION#release/}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Tag
@@ -86,7 +86,7 @@ jobs:
         run: |
           VERSION=${{ steps.extract_version.outputs.version }}
           IMAGE="ghcr.io/${{ github.repository_owner }}/homeapp-backend"
-          echo "image=${IMAGE}" >> $GITHUB_OUTPUT
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
           echo "tag_latest=${IMAGE}:latest" >> $GITHUB_OUTPUT
           echo "tag_version=${IMAGE}:${VERSION}" >> $GITHUB_OUTPUT
 
@@ -110,13 +110,14 @@ jobs:
           docker push ${{ steps.docker_tags.outputs.tag_version }}
 
   create-release:
-    name: GitHub Release
+    name: Create GitHub Release
     needs: release-build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: ${{ needs.release-build.outputs.version }}
     steps:
       - uses: actions/checkout@v4
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ needs.release-build.outputs.version }}
           generate_release_notes: true
