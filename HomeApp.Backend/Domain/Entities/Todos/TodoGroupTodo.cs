@@ -1,11 +1,13 @@
-﻿using SharedKernel;
+﻿using SharedKernel.ValueObjects;
 
 namespace Domain.Entities.Todos;
 
-public class TodoGroupTodo : BaseClass
+public class TodoGroupTodo
 {
-    public int TodoId { get; set; }
-    public int TodoGroupId { get; set; }
+    public TodoGroupTodoId TodoGroupTodoId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public TodoId TodoId { get; set; }
+    public TodoGroupId TodoGroupId { get; set; }
 
     public virtual Todo Todo { get; set; }
     public virtual TodoGroup TodoGroup { get; set; }

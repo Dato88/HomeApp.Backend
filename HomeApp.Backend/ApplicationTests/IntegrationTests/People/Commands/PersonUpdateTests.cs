@@ -1,6 +1,7 @@
 ﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
 using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -18,7 +19,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         var updatedPerson = new Person
         {
-            Id = existingPerson.Id,
+            PersonId = existingPerson.PersonId,
             Username = "updateduser",
             FirstName = "Jane",
             LastName = "Doe",
@@ -38,7 +39,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         result.IsSuccess.Should().BeTrue();
 
-        var updated = await DbContext.People.FindAsync(updatedPerson.Id);
+        var updated = await DbContext.People.FindAsync(updatedPerson.PersonId);
         updated.Should().NotBeNull();
         updated!.Username.Should().Be(updatedPerson.Username);
         updated.FirstName.Should().Be(updatedPerson.FirstName);
@@ -54,7 +55,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         var updated = new Person
         {
-            Id = existingPerson.Id,
+            PersonId = existingPerson.PersonId,
             Username = "updateduser",
             FirstName = "Jane",
             LastName = "Doe",
@@ -87,7 +88,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
 
         var updated = new Person
         {
-            Id = existingPerson.Id,
+            PersonId = existingPerson.PersonId,
             Username = existingPerson.Username,
             FirstName = "Jane",
             LastName = "Doe",
@@ -124,7 +125,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
     {
         var nonExisting = new Person
         {
-            Id = 9999,
+            PersonId = new PersonId(9999),
             Username = "nonexistent",
             FirstName = "Ghost",
             LastName = "User",
@@ -139,6 +140,6 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.UpdatePersonAsync(nonExisting, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Errors.Select(c => c.Should().Be(PersonErrors.NotFoundById(nonExisting.Id).Code));
+        result.Errors.Select(c => c.Should().Be(PersonErrors.NotFoundById(nonExisting.PersonId).Code));
     }
 }

@@ -10,7 +10,7 @@ internal sealed class TodoPersonConfiguration : IEntityTypeConfiguration<TodoPer
     {
         builder.ToTable("TodoPeople");
 
-        builder.HasKey(t => t.Id);
+        builder.HasKey(t => t.TodoPersonId);
 
         builder.Property(t => t.CreatedAt)
             .HasDefaultValueSql("NOW()");

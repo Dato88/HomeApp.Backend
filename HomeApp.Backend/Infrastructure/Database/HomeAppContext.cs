@@ -2,6 +2,8 @@ using Domain.Entities.Budgets;
 using Domain.Entities.People;
 using Domain.Entities.Todos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Database;
 
@@ -19,6 +21,25 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        foreach (var prop in entityType.ClrType.GetProperties())
+        {
+            var propType = prop.PropertyType;
+            if (propType.IsValueType && propType.Name.EndsWith("Id"))
+            {
+                var converterType = typeof(StronglyTypedIdConverter<>).MakeGenericType(propType);
+                var converter = (ValueConverter)Activator.CreateInstance(converterType)!;
+
+                var propertyBuilder = modelBuilder.Entity(entityType.ClrType)
+                    .Property(prop.Name)
+                    .HasConversion(converter);
+
+                propertyBuilder
+                    .ValueGeneratedOnAdd()
+                    .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            }
+        }
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(HomeAppContext).Assembly);
 
         modelBuilder.HasDefaultSchema(Schemas.Default);

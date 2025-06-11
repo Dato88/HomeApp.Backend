@@ -1,10 +1,12 @@
 ﻿using Domain.Entities.Todos.Enums;
-using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Domain.Entities.Todos;
 
-public class Todo : BaseClass
+public class Todo
 {
+    public TodoId TodoId { get; set; }
+    public DateTime CreatedAt { get; set; }
     public string Name { get; set; }
     public bool Done { get; set; }
     public TodoPriority Priority { get; set; }

@@ -12,7 +12,7 @@ internal sealed class DeleteTodoCommandHandler(
 
     public async Task<Result> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
     {
-        var result = await _todoCommands.DeleteAsync(request.Id, cancellationToken);
+        var result = await _todoCommands.DeleteAsync(request.TodoId, cancellationToken);
 
         if (result.IsFailure)
         {
@@ -22,7 +22,7 @@ internal sealed class DeleteTodoCommandHandler(
             return Result.Failure(result.Errors.ToArray());
         }
 
-        logger.LogInformation($"Todo with ID {request.Id} deleted successfully.");
+        logger.LogInformation($"Todo with ID {request.TodoId} deleted successfully.");
 
         return Result.Success();
     }

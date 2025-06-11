@@ -3,17 +3,20 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations.HomeApp
 {
     [DbContext(typeof(HomeAppContext))]
-    partial class HomeAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250611192721_IdentityForStrongIds")]
+    partial class IdentityForStrongIds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -367,12 +370,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
                 {
-                    b.Property<int>("TodoGroupTodoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_group_todo_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoGroupTodoId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -392,7 +395,7 @@ namespace Infrastructure.Migrations
                         .HasColumnName("todo_id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
-                    b.HasKey("TodoGroupTodoId")
+                    b.HasKey("Id")
                         .HasName("pk_todo_group_todos");
 
                     b.HasIndex("TodoGroupId")
@@ -407,12 +410,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoPerson", b =>
                 {
-                    b.Property<int>("TodoPersonId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_person_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoPersonId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -432,7 +435,7 @@ namespace Infrastructure.Migrations
                         .HasColumnName("todo_id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
 
-                    b.HasKey("TodoPersonId")
+                    b.HasKey("Id")
                         .HasName("pk_todo_people");
 
                     b.HasIndex("PersonId")

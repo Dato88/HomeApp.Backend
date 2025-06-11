@@ -10,7 +10,7 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
     {
         builder.ToTable("TodoGroups");
 
-        builder.HasKey(t => t.Id);
+        builder.HasKey(t => t.TodoGroupId);
 
         builder.Property(t => t.CreatedAt)
             .HasDefaultValueSql("NOW()");
@@ -20,7 +20,7 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
             .HasMaxLength(150);
 
         // Indices
-        builder.HasIndex(x => x.Id)
+        builder.HasIndex(x => x.TodoGroupId)
             .IsUnique();
         builder.HasIndex(x => x.Name);
 

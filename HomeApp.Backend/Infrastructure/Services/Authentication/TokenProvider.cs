@@ -56,7 +56,7 @@ internal sealed class TokenProvider(
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, user.Email),
-            new("personId", person.Id.ToString())
+            new("personId", person.PersonId.Value.ToString())
         };
 
         var roles = await userManager.GetRolesAsync(user);

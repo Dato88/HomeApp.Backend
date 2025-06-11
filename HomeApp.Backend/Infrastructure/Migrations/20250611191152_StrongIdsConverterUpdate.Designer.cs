@@ -3,17 +3,20 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations.HomeApp
 {
     [DbContext(typeof(HomeAppContext))]
-    partial class HomeAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250611191152_StrongIdsConverterUpdate")]
+    partial class StrongIdsConverterUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,10 +59,8 @@ namespace Infrastructure.Migrations
                         .HasColumnName("name");
 
                     b.Property<int>("PersonId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("person_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("person_id");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer")
@@ -149,10 +150,8 @@ namespace Infrastructure.Migrations
                         .HasColumnName("name");
 
                     b.Property<int>("PersonId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("person_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("person_id");
 
                     b.HasKey("Id")
                         .HasName("pk_budget_groups");
@@ -192,10 +191,8 @@ namespace Infrastructure.Migrations
                         .HasColumnName("name");
 
                     b.Property<int>("PersonId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("person_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("person_id");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer")
@@ -219,11 +216,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.People.Person", b =>
                 {
                     b.Property<int>("PersonId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("person_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PersonId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -277,11 +271,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Todos.Todo", b =>
                 {
                     b.Property<int>("TodoId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("todo_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -334,11 +325,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroup", b =>
                 {
                     b.Property<int>("TodoGroupId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("todo_group_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoGroupId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -367,12 +355,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
                 {
-                    b.Property<int>("TodoGroupTodoId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_group_todo_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoGroupTodoId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -381,18 +369,14 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("NOW()");
 
                     b.Property<int>("TodoGroupId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_group_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("todo_group_id");
 
                     b.Property<int>("TodoId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("todo_id");
 
-                    b.HasKey("TodoGroupTodoId")
+                    b.HasKey("Id")
                         .HasName("pk_todo_group_todos");
 
                     b.HasIndex("TodoGroupId")
@@ -407,12 +391,12 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoPerson", b =>
                 {
-                    b.Property<int>("TodoPersonId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_person_id");
+                        .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoPersonId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -421,18 +405,14 @@ namespace Infrastructure.Migrations
                         .HasDefaultValueSql("NOW()");
 
                     b.Property<int>("PersonId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("person_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("person_id");
 
                     b.Property<int>("TodoId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("todo_id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.None);
+                        .HasColumnName("todo_id");
 
-                    b.HasKey("TodoPersonId")
+                    b.HasKey("Id")
                         .HasName("pk_todo_people");
 
                     b.HasIndex("PersonId")

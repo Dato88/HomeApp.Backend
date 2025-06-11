@@ -10,7 +10,7 @@ internal sealed class TodoGroupTodoConfiguration : IEntityTypeConfiguration<Todo
     {
         builder.ToTable("TodoGroupTodos");
 
-        builder.HasKey(t => t.Id);
+        builder.HasKey(t => t.TodoGroupTodoId);
 
         builder.Property(t => t.CreatedAt)
             .HasDefaultValueSql("NOW()");

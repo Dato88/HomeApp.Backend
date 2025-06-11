@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Todos;
+using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
@@ -13,7 +14,7 @@ public class TodoDeleteTests : BaseTodoCommandsTest
         var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         // Act
-        var result = await TodoCommands.DeleteAsync(todo.Id, default);
+        var result = await TodoCommands.DeleteAsync(todo.TodoId, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue("the todo exists and should be deleted");
@@ -26,18 +27,19 @@ public class TodoDeleteTests : BaseTodoCommandsTest
     public async Task DeleteAsync_Fails_WhenIdIsInvalid(int id)
     {
         // Act
-        var result = await TodoCommands.DeleteAsync(id, default);
+        var todoId = new TodoId(id);
+        var result = await TodoCommands.DeleteAsync(todoId, default);
 
         // Assert
         result.IsFailure.Should().BeTrue("ID is invalid and deletion should fail");
-        result.Errors.Select(c => c.Should().Be(TodoErrors.DeleteFailed(id).Code));
+        result.Errors.Select(c => c.Should().Be(TodoErrors.DeleteFailed(todoId).Code));
     }
 
     [Fact]
     public async Task DeleteAsync_Fails_WhenTodoDoesNotExist()
     {
         // Arrange
-        const int nonExistentId = 999;
+        var nonExistentId = new TodoId(999);
 
         // Act
         var result = await TodoCommands.DeleteAsync(nonExistentId, default);

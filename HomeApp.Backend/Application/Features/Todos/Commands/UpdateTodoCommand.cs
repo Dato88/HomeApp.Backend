@@ -2,12 +2,13 @@
 using Domain.Entities.Todos.Enums;
 using MediatR;
 using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 
 public sealed class UpdateTodoCommand : IRequest<Result>
 {
-    public int Id { get; set; }
+    public TodoId TodoId { get; set; }
     public int? TodoGroupId { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool Done { get; set; }
@@ -18,7 +19,7 @@ public sealed class UpdateTodoCommand : IRequest<Result>
     public static implicit operator Todo(UpdateTodoCommand item) =>
         new()
         {
-            Id = item.Id,
+            TodoId = item.TodoId,
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,

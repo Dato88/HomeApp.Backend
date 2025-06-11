@@ -1,11 +1,12 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
+using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Dtos;
 
 public sealed record GetToDoResponse(
-    int Id,
-    int? TodoGroupId,
+    TodoId TodoId,
+    TodoGroupId? TodoGroupId,
     string Name,
     bool Done,
     TodoPriority Priority,
@@ -14,7 +15,7 @@ public sealed record GetToDoResponse(
 {
     public static implicit operator GetToDoResponse(Todo item) =>
         new(
-            item.Id,
+            item.TodoId,
             item.TodoGroupTodo?.TodoGroupId,
             item.Name,
             item.Done,

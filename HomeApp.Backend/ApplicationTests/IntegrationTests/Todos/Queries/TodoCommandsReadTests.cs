@@ -1,4 +1,6 @@
-﻿namespace ApplicationTests.IntegrationTests.Todos.Queries;
+﻿using SharedKernel.ValueObjects;
+
+namespace ApplicationTests.IntegrationTests.Todos.Queries;
 
 public class TodoReadTests : BaseTodoQueriesTest
 {
@@ -11,7 +13,7 @@ public class TodoReadTests : BaseTodoQueriesTest
         var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         // Act
-        var result = await TodoQueries.FindByIdAsync(todo.Id, default);
+        var result = await TodoQueries.FindByIdAsync(todo.TodoId, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -29,19 +31,20 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task FindByIdAsync_ReturnsFailure_WhenIdIsInvalid(int id)
     {
         // Act
-        var result = await TodoQueries.FindByIdAsync(id, default);
+        var todoId = new TodoId(id);
+        var result = await TodoQueries.FindByIdAsync(todoId, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
         result.Errors.Select(c => c.Should().Be("Todo.NotFoundById"));
-        result.Errors.Select(c => c.Description.Should().Contain(id.ToString()));
+        result.Errors.Select(c => c.Description.Should().Contain(todoId.ToString()));
     }
 
     [Fact]
     public async Task FindByIdAsync_ReturnsFailure_WhenTodoDoesNotExist()
     {
         // Act
-        var result = await TodoQueries.FindByIdAsync(999, default);
+        var result = await TodoQueries.FindByIdAsync(new TodoId(999), default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -65,18 +68,18 @@ public class TodoReadTests : BaseTodoQueriesTest
         result.Value.Should().HaveCount(2);
 
         var resultList = result.Value.ToList();
-        resultList[0].Id.Should().Be(todo1.Id);
-        resultList[1].Id.Should().Be(todo2.Id);
+        resultList[0].TodoId.Should().Be(todo1.TodoId);
+        resultList[1].TodoId.Should().Be(todo2.TodoId);
     }
 
     [Fact]
     public async Task GetAllAsync_ReturnsFailure_WhenNoTodosForPersonExist()
     {
         // Arrange
-        const int personId = 999;
+        var userId = new PersonId(999);
 
         // Act
-        var result = await TodoQueries.GetAllAsync(personId, default);
+        var result = await TodoQueries.GetAllAsync(userId, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();

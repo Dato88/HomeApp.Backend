@@ -14,7 +14,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
     {
         // Arrange
         var person = await PeopleDataSeeder.SeedPersonAsync();
-        var todo = await TodosDataSeeder.GenereateDummyTodo(person.Id);
+        var todo = await TodosDataSeeder.GenereateDummyTodo(person.PersonId);
 
         // Act
         var result = await TodoCommands.CreateAsync(todo, default);
@@ -33,8 +33,8 @@ public class TodoCreateTests : BaseTodoCommandsTest
         DbContext.TodoGroups.Add(todoGroup);
         await DbContext.SaveChangesAsync();
 
-        var newTodo = await TodosDataSeeder.GenereateDummyTodo(person.Id);
-        newTodo.TodoGroupTodo = new TodoGroupTodo { TodoGroupId = todoGroup.Id };
+        var newTodo = await TodosDataSeeder.GenereateDummyTodo(person.PersonId);
+        newTodo.TodoGroupTodo = new TodoGroupTodo { TodoGroupId = todoGroup.TodoGroupId };
 
         // Act
         var result = await TodoCommands.CreateAsync(newTodo, default);

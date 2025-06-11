@@ -1,8 +1,10 @@
-﻿namespace Application.Abstractions.Authentication;
+﻿using SharedKernel.ValueObjects;
+
+namespace Application.Abstractions.Authentication;
 
 public interface IUserContext
 {
-    int PersonId { get; }
-    string UserEmail { get; }
-    Guid UserId { get; }
+    PersonId PersonId { get; }
+    UserEmail UserEmail { get; }
+    UserId UserId { get; }
 }

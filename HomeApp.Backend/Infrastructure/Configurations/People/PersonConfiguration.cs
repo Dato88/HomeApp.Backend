@@ -10,7 +10,7 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
     {
         builder.ToTable("People");
 
-        builder.HasKey(p => p.Id);
+        builder.HasKey(p => p.PersonId);
 
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("NOW()");

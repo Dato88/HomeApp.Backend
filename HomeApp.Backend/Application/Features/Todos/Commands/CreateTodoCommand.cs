@@ -3,13 +3,14 @@ using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
 using MediatR;
 using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 
 public sealed record CreateTodoCommand : IRequest<Result<int>>
 {
-    public int? TodoGroupId { get; set; }
-    public int PersonId { get; set; }
+    public TodoGroupId? TodoGroupId { get; set; }
+    public PersonId PersonId { get; set; }
 
     [Required] [StringLength(150)] public string Name { get; set; } = string.Empty;
 

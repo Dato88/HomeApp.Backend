@@ -10,7 +10,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
     {
         builder.ToTable("Todos");
 
-        builder.HasKey(t => t.Id);
+        builder.HasKey(t => t.TodoId);
 
         builder.Property(t => t.CreatedAt)
             .HasDefaultValueSql("NOW()");
@@ -29,7 +29,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
             .HasDefaultValueSql("NOW()");
 
         // Indices
-        builder.HasIndex(t => t.Id)
+        builder.HasIndex(t => t.TodoId)
             .IsUnique();
         builder.HasIndex(t => t.Name);
         builder.HasIndex(t => t.Done);

@@ -18,13 +18,13 @@ internal sealed class GetTodoByIdQueryHandler(
     {
         try
         {
-            var todoResult = await _todoQueries.FindByIdAsync(request.Id, cancellationToken);
+            var todoResult = await _todoQueries.FindByIdAsync(request.TodoId, cancellationToken);
 
             if (todoResult.IsFailure)
             {
-                logger.LogWarning(TodoErrors.NotFoundById(request.Id).Description);
+                logger.LogWarning(TodoErrors.NotFoundById(request.TodoId).Description);
 
-                return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.Id));
+                return Result.Failure<GetToDoResponse>(TodoErrors.NotFoundById(request.TodoId));
             }
 
             return (GetToDoResponse)todoResult.Value;

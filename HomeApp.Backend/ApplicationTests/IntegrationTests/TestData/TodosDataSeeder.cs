@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
+using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.TestData;
 
@@ -19,7 +20,7 @@ public class TodosDataSeeder : BaseTest
             .RuleFor(u => u.Priority, f => f.PickRandom<TodoPriority>());
     }
 
-    public async Task<Todo> GenereateDummyTodo(int? personId = null)
+    public async Task<Todo> GenereateDummyTodo(PersonId? personId = null)
     {
         await Task.Delay(0);
 
@@ -30,10 +31,10 @@ public class TodosDataSeeder : BaseTest
         return todo;
     }
 
-    public async Task<Todo> CreateOneDummyTodoWithPersonId(int? personId = null, DateTime? dateTime = null)
+    public async Task<Todo> CreateOneDummyTodoWithPersonId(PersonId? personId = null, DateTime? dateTime = null)
     {
-        if (personId is null)
-            personId = (await _peopleDataSeeder.SeedPersonAsync()).Id;
+        // if (userId is null)
+        //     userId = (await _peopleDataSeeder.SeedPersonAsync()).UserId;
 
         var todo = await GenereateDummyTodo(personId);
 
@@ -49,7 +50,7 @@ public class TodosDataSeeder : BaseTest
     {
         var todo = await CreateOneDummyTodoWithPersonId();
 
-        TodoGroupTodo todoGroupTodo = new() { TodoId = todo.Id, TodoGroup = new TodoGroup { Name = "New Group" } };
+        TodoGroupTodo todoGroupTodo = new() { TodoId = todo.TodoId, TodoGroup = new TodoGroup { Name = "New Group" } };
 
         DbContext.TodoGroupTodos.Add(todoGroupTodo);
         await DbContext.SaveChangesAsync();

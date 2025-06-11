@@ -22,7 +22,7 @@ internal sealed class UpdateTodoCommandHandler(
             return Result.Failure(result.Errors.ToArray());
         }
 
-        logger.LogInformation($"Todo with ID {request.Id} updated successfully.");
+        logger.LogInformation($"Todo with ID {request.TodoId} updated successfully.");
 
         return Result.Success();
     }

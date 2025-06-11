@@ -27,7 +27,7 @@ public class PersonCommandsCreateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.CreatePersonAsync(person, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().BeGreaterThan(0);
+        result.Value.Value.Should().BeGreaterThan(0);
     }
 
     [Fact]

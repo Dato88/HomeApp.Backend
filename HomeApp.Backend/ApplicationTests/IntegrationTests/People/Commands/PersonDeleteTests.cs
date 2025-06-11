@@ -1,5 +1,6 @@
 ﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
+using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -15,18 +16,19 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
     {
         var person = await _peopleDataSeeder.SeedPersonAsync();
 
-        var result = await CommonPersonCommands.DeletePersonAsync(person.Id, CancellationToken.None);
+        var result = await CommonPersonCommands.DeletePersonAsync(person.PersonId, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        var deleted = await DbContext.People.FindAsync(person.Id);
+        var deleted = await DbContext.People.FindAsync(person.PersonId);
         deleted.Should().BeNull();
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-10)]
-    public async Task DeleteAsync_ShouldFail_WhenIdIsInvalid(int invalidId)
+    public async Task DeleteAsync_ShouldFail_WhenIdIsInvalid(int id)
     {
+        var invalidId = new PersonId(id);
         var result = await CommonPersonCommands.DeletePersonAsync(invalidId, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
@@ -36,7 +38,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
     [Fact]
     public async Task DeleteAsync_ShouldFail_WhenPersonDoesNotExist()
     {
-        const int nonExistentId = 9999;
+        var nonExistentId = new PersonId(9999);
 
         var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, CancellationToken.None);
 

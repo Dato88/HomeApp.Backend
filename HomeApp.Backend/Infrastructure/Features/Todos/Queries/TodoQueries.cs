@@ -4,21 +4,22 @@ using Domain.Entities.Todos;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Features.Todos.Queries;
 
-public sealed class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(dbContext), ITodoQueries
+public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
 {
-    public override async Task<Result<Todo>> FindByIdAsync(
-        int id,
+    public async Task<Result<Todo>> FindByIdAsync(
+        TodoId todoId,
         CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
-        if (id <= 0)
-            return Result.Failure<Todo>(TodoErrors.NotFoundById(id));
+        if (todoId == null)
+            return Result.Failure<Todo>(TodoErrors.NotFoundById(todoId));
 
-        var query = DbContext.Todos.AsQueryable();
+        var query = dbContext.Todos.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -26,21 +27,21 @@ public sealed class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(db
         if (includes is { Length: > 0 })
             query = ApplyIncludes(query, includes);
 
-        var todo = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var todo = await query.FirstOrDefaultAsync(x => x.TodoId == todoId, cancellationToken);
 
         if (todo is null)
-            return Result.Failure<Todo>(TodoErrors.NotFoundById(id));
+            return Result.Failure<Todo>(TodoErrors.NotFoundById(todoId));
 
         return Result.Success(todo);
     }
 
-    public override async Task<Result<IEnumerable<Todo>>> GetAllAsync(
-        int personId,
+    public async Task<Result<IEnumerable<Todo>>> GetAllAsync(
+        PersonId personId,
         CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
     {
-        var query = DbContext.Todos.AsQueryable();
+        var query = dbContext.Todos.AsQueryable();
 
         if (asNoTracking)
             query = query.AsNoTracking();
@@ -61,7 +62,7 @@ public sealed class TodoQueries(HomeAppContext dbContext) : BaseQueries<Todo>(db
         return Result.Success<IEnumerable<Todo>>(todoPeople);
     }
 
-    protected override IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)
+    protected IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)
     {
         var includeMappings = new Dictionary<string, Expression<Func<Todo, object>>>
         {

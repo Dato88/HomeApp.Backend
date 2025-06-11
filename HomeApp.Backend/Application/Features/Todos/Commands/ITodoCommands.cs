@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Todos;
 using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 
@@ -19,12 +20,12 @@ public interface ITodoCommands
     /// <summary>
     ///     Deletes a Todo item by its ID asynchronously.
     /// </summary>
-    /// <param name="id">The ID of the Todo item to delete.</param>
+    /// <param name="todoId">The ID of the Todo item to delete.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     ///     A <see cref="Result" /> indicating success or containing an error if the deletion failed.
     /// </returns>
-    Task<Result> DeleteAsync(int id, CancellationToken cancellationToken);
+    Task<Result> DeleteAsync(TodoId todoId, CancellationToken cancellationToken);
 
     /// <summary>
     ///     Updates an existing Todo item asynchronously.

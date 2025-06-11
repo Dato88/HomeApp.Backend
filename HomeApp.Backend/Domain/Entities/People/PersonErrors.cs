@@ -1,4 +1,5 @@
 ﻿using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Domain.Entities.People;
 
@@ -16,17 +17,17 @@ public static class PersonErrors
         "People.NotFound",
         "There is no person in the database");
 
-    public static Error NotFoundById(int id) => Error.NotFound(
+    public static Error NotFoundById(PersonId personId) => Error.NotFound(
         "People.NotFoundById",
-        $"The person with the Id = '{id}' was not found");
+        $"The person with the Id = '{personId}' was not found");
 
     public static Error CreateFailedWithMessage(string message) => Error.Failure(
         "Person.CreateFailedWithMessage",
         $"The person could not be created with message = '{message}'");
 
-    public static Error DeleteFailed(int id) => Error.Failure(
+    public static Error DeleteFailed(PersonId personId) => Error.Failure(
         "Person.DeleteFailed",
-        $"The person with the id = '{id}' could not be deleted");
+        $"The person with the id = '{personId}' could not be deleted");
 
     public static Error UpdateFailedWithMessage(string message) => Error.Failure(
         "Person.UpdateFailedWithMessage",

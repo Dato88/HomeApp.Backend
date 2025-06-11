@@ -1,11 +1,13 @@
 ﻿using Domain.Entities.Budgets;
 using Domain.Entities.Todos;
-using SharedKernel;
+using SharedKernel.ValueObjects;
 
 namespace Domain.Entities.People;
 
-public class Person : BaseClass
+public class Person
 {
+    public PersonId PersonId { get; set; }
+    public DateTime CreatedAt { get; set; }
     public string? Username { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

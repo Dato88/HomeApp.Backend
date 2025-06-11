@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Http;
+using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Services.Authentication;
 
@@ -9,21 +10,21 @@ internal sealed class UserContext : IUserContext
 
     public UserContext(IHttpContextAccessor httpContextAccessor) => _httpContextAccessor = httpContextAccessor;
 
-    public int PersonId =>
+    public PersonId PersonId =>
         _httpContextAccessor
             .HttpContext?
             .User
             .GetPersonId() ??
         throw new ApplicationException("User context is unavailable");
 
-    public string UserEmail =>
+    public UserEmail UserEmail =>
         _httpContextAccessor
             .HttpContext?
             .User
             .GetUserEmail() ??
         throw new ApplicationException("User context is unavailable");
 
-    public Guid UserId =>
+    public UserId UserId =>
         _httpContextAccessor
             .HttpContext?
             .User

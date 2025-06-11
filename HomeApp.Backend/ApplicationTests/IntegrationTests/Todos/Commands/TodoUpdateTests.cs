@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
+using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
@@ -15,7 +16,10 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId(null, initialLastModified);
 
-        var updatedTodo = new Todo { Id = todo.Id, Name = "Updated Todo", Done = true, Priority = TodoPriority.High };
+        var updatedTodo = new Todo
+        {
+            TodoId = todo.TodoId, Name = "Updated Todo", Done = true, Priority = TodoPriority.High
+        };
 
         // Act
         var result = await TodoCommands.UpdateAsync(updatedTodo, default);
@@ -23,7 +27,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Assert
         result.IsSuccess.Should().BeTrue();
 
-        var dbTodo = await DbContext.Todos.FindAsync(todo.Id);
+        var dbTodo = await DbContext.Todos.FindAsync(todo.TodoId);
         dbTodo.Should().NotBeNull();
         dbTodo!.Name.Should().Be(updatedTodo.Name);
         dbTodo.Done.Should().Be(updatedTodo.Done);
@@ -57,7 +61,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var invalidTodo = new Todo
         {
-            Id = todo.Id,
+            TodoId = todo.TodoId,
             Name = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
@@ -78,7 +82,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var todo = new Todo
         {
-            Id = 999,
+            TodoId = new TodoId(999),
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
@@ -90,7 +94,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Errors.Select(c => c.Should().Be(TodoErrors.UpdateFailed(todo.Id).Code));
+        result.Errors.Select(c => c.Should().Be(TodoErrors.UpdateFailed(todo.TodoId).Code));
         result.Errors.Select(c => c.Description.Should().Contain("999"));
     }
 }

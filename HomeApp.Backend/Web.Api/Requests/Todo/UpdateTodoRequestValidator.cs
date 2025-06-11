@@ -6,7 +6,7 @@ public class UpdateTodoRequestValidator : AbstractValidator<UpdateTodoRequest>
 {
     public UpdateTodoRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.TodoId.Value)
             .GreaterThan(0).WithMessage("The todo ID must be greater than zero.");
 
         RuleFor(x => x.Name)
