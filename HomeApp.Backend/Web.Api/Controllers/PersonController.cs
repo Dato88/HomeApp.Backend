@@ -14,8 +14,8 @@ public class PersonController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetUserPersonQuery(), cancellationToken);
 
-        if (response.IsSuccess) return Ok(response);
+        if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response);
+        return BadRequest(response.Errors);
     }
 }

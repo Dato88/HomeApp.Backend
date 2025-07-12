@@ -32,7 +32,7 @@ public sealed class GetUserPersonQueryHandler(
         {
             logger.LogError($"Get person failed: {ex}");
 
-            return Result.Failure<PersonResponse>(PersonErrors.NotFound);
+            return Result.Failure<PersonResponse>(PersonErrors.UnexpectedError(ex.Message));
         }
     }
 }

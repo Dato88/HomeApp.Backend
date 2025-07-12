@@ -17,6 +17,11 @@ public static class PersonErrors
         "People.NotFound",
         "There is no person in the database");
 
+    public static Error UnexpectedError(string message) => Error.Failure(
+        "Unexpected error",
+        $"An unexpected error occurred: {message}"
+    );
+
     public static Error NotFoundById(PersonId personId) => Error.NotFound(
         "People.NotFoundById",
         $"The person with the Id = '{personId}' was not found");
