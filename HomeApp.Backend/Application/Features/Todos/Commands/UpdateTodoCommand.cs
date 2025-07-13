@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 using MediatR;
 using SharedKernel;
 
@@ -8,7 +7,7 @@ namespace Application.Features.Todos.Commands;
 
 public sealed class UpdateTodoCommand : IRequest<Result>
 {
-    public TodoId TodoId { get; set; }
+    public int TodoId { get; set; }
     public int? TodoGroupId { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool Done { get; set; }

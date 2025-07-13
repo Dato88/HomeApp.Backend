@@ -32,7 +32,7 @@ public sealed class PersonQueries(
         }
     }
 
-    public async Task<PersonResponse?> GetPersonByEmailAsync(UserEmail email, CancellationToken cancellationToken)
+    public async Task<PersonResponse?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
     {
         try
         {

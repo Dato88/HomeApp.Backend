@@ -5,12 +5,12 @@ namespace Infrastructure.Services.Authentication;
 
 internal static class ClaimsPrincipalExtensions
 {
-    public static PersonId GetPersonId(this ClaimsPrincipal? principal)
+    public static int GetPersonId(this ClaimsPrincipal? principal)
     {
         var personId = principal?.FindFirstValue("personId");
 
         return int.TryParse(personId, out var parsedPersonId)
-            ? new PersonId(parsedPersonId)
+            ? parsedPersonId
             : throw new ApplicationException("Person id is unavailable");
     }
 
@@ -23,12 +23,12 @@ internal static class ClaimsPrincipalExtensions
             : throw new ApplicationException("User email is unavailable");
     }
 
-    public static UserId GetUserId(this ClaimsPrincipal? principal)
+    public static Guid GetUserId(this ClaimsPrincipal? principal)
     {
         var userId = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
 
         return Guid.TryParse(userId, out var parsedUserId)
-            ? new UserId(parsedUserId)
+            ? parsedUserId
             : throw new ApplicationException("User id is unavailable");
     }
 }

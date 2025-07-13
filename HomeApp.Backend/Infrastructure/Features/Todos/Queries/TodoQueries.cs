@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Application.Features.Todos.Queries;
 using Domain.Entities.Todos;
-using Domain.ValueObjects;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
@@ -11,7 +10,7 @@ namespace Infrastructure.Features.Todos.Queries;
 public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
 {
     public async Task<Result<Todo>> FindByIdAsync(
-        TodoId todoId,
+        int todoId,
         CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)
@@ -36,7 +35,7 @@ public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
     }
 
     public async Task<Result<IEnumerable<Todo>>> GetAllAsync(
-        PersonId personId,
+        int personId,
         CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes)

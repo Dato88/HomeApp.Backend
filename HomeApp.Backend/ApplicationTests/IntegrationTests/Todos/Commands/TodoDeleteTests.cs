@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.Todos;
-using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
@@ -24,10 +23,9 @@ public class TodoDeleteTests : BaseTodoCommandsTest
     [Theory]
     [InlineData(0)]
     [InlineData(-3)]
-    public async Task DeleteAsync_Fails_WhenIdIsInvalid(int id)
+    public async Task DeleteAsync_Fails_WhenIdIsInvalid(int todoId)
     {
         // Act
-        var todoId = new TodoId(id);
         var result = await TodoCommands.DeleteAsync(todoId, default);
 
         // Assert
@@ -39,7 +37,7 @@ public class TodoDeleteTests : BaseTodoCommandsTest
     public async Task DeleteAsync_Fails_WhenTodoDoesNotExist()
     {
         // Arrange
-        var nonExistentId = new TodoId(999);
+        var nonExistentId = 999;
 
         // Act
         var result = await TodoCommands.DeleteAsync(nonExistentId, default);

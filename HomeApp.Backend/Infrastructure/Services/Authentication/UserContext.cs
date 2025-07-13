@@ -10,7 +10,7 @@ internal sealed class UserContext : IUserContext
 
     public UserContext(IHttpContextAccessor httpContextAccessor) => _httpContextAccessor = httpContextAccessor;
 
-    public PersonId PersonId =>
+    public int PersonId =>
         _httpContextAccessor
             .HttpContext?
             .User
@@ -24,7 +24,7 @@ internal sealed class UserContext : IUserContext
             .GetUserEmail() ??
         throw new ApplicationException("User context is unavailable");
 
-    public UserId UserId =>
+    public Guid UserId =>
         _httpContextAccessor
             .HttpContext?
             .User

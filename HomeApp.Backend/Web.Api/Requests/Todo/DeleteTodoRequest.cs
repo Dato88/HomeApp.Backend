@@ -1,9 +1,8 @@
 ﻿using Application.Features.Todos.Commands;
-using Domain.ValueObjects;
 
 namespace Web.Api.Requests.Todo;
 
-public sealed record DeleteTodoRequest(TodoId TodoId)
+public sealed record DeleteTodoRequest(int TodoId)
 {
     public static explicit operator DeleteTodoCommand(DeleteTodoRequest request)
         => new(request.TodoId);

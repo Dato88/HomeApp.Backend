@@ -1,12 +1,11 @@
 ﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 
 namespace Web.Api.Requests.Todo;
 
 public sealed record CreateTodoRequest
 {
-    public TodoGroupId? TodoGroupId { get; init; }
+    public int? TodoGroupId { get; init; }
     public string Name { get; init; } = string.Empty;
     public bool Done { get; init; }
     public TodoPriority Priority { get; init; }

@@ -1,12 +1,11 @@
 ﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 
 namespace Web.Api.Requests.Todo;
 
 public class UpdateTodoRequest
 {
-    public TodoId TodoId { get; set; }
+    public int TodoId { get; set; }
     public int? TodoGroupId { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool Done { get; set; }

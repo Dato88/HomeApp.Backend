@@ -1,13 +1,11 @@
-﻿using Domain.ValueObjects;
-
-namespace Domain.Entities.Todos;
+﻿namespace Domain.Entities.Todos;
 
 public class TodoGroupTodo
 {
-    public TodoGroupTodoId TodoGroupTodoId { get; set; }
+    public int TodoGroupTodoId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public TodoId TodoId { get; set; }
-    public TodoGroupId TodoGroupId { get; set; }
+    public int TodoId { get; set; }
+    public int TodoGroupId { get; set; }
 
     public virtual Todo Todo { get; set; }
     public virtual TodoGroup TodoGroup { get; set; }

@@ -1,5 +1,4 @@
 using Domain.Entities.People;
-using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,14 +11,6 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.ToTable("People");
 
         builder.HasKey(p => p.PersonId);
-
-        builder.Property(p => p.PersonId)
-            .HasConversion(
-                id => id.Value,
-                value => new PersonId(value)
-            )
-            .ValueGeneratedOnAdd();
-
 
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("NOW()");
@@ -36,10 +27,6 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .HasMaxLength(150);
 
         builder.Property(p => p.Email)
-            .HasConversion(
-                ue => ue.Value,
-                str => new UserEmail(str)
-            )
             .IsRequired()
             .HasMaxLength(150);
 

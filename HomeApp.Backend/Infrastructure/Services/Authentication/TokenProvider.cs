@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Application.Abstractions.Authentication;
 using Domain.Entities.User;
-using Domain.ValueObjects;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -51,13 +50,13 @@ internal sealed class TokenProvider(
 
     private async Task<List<Claim>> GetClaims(User user)
     {
-        var person = await homeAppContext.People.FirstOrDefaultAsync(x => x.Email == new UserEmail(user.Email));
+        var person = await homeAppContext.People.FirstOrDefaultAsync(x => x.Email == user.Email);
 
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, user.Email),
-            new("personId", person.PersonId.Value.ToString())
+            new("personId", person.PersonId.ToString())
         };
 
         var roles = await userManager.GetRolesAsync(user);

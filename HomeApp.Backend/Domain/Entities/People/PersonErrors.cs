@@ -1,5 +1,4 @@
-﻿using Domain.ValueObjects;
-using SharedKernel;
+﻿using SharedKernel;
 
 namespace Domain.Entities.People;
 
@@ -22,7 +21,7 @@ public static class PersonErrors
         $"An unexpected error occurred: {message}"
     );
 
-    public static Error NotFoundById(PersonId personId) => Error.NotFound(
+    public static Error NotFoundById(int personId) => Error.NotFound(
         "People.NotFoundById",
         $"The person with the Id = '{personId}' was not found");
 
@@ -30,7 +29,7 @@ public static class PersonErrors
         "Person.CreateFailedWithMessage",
         $"The person could not be created with message = '{message}'");
 
-    public static Error DeleteFailed(PersonId personId) => Error.Failure(
+    public static Error DeleteFailed(int personId) => Error.Failure(
         "Person.DeleteFailed",
         $"The person with the id = '{personId}' could not be deleted");
 

@@ -1,6 +1,5 @@
 ﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
-using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -26,9 +25,8 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
     [Theory]
     [InlineData(0)]
     [InlineData(-10)]
-    public async Task DeleteAsync_ShouldFail_WhenIdIsInvalid(int id)
+    public async Task DeleteAsync_ShouldFail_WhenIdIsInvalid(int invalidId)
     {
-        var invalidId = new PersonId(id);
         var result = await CommonPersonCommands.DeletePersonAsync(invalidId, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
@@ -38,7 +36,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
     [Fact]
     public async Task DeleteAsync_ShouldFail_WhenPersonDoesNotExist()
     {
-        var nonExistentId = new PersonId(9999);
+        var nonExistentId = 9999;
 
         var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, CancellationToken.None);
 

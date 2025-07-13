@@ -2,7 +2,6 @@
 using Application.Features.People.Commands;
 using Application.Features.People.Validations;
 using Domain.Entities.People;
-using Domain.ValueObjects;
 using Infrastructure.Database;
 using SharedKernel;
 
@@ -13,9 +12,9 @@ public sealed class PersonCommands(
     IPersonValidation personValidation,
     IAppLogger<PersonCommands> logger) : IPersonCommands
 {
-    public async Task<Result> DeletePersonAsync(PersonId personId, CancellationToken cancellationToken)
+    public async Task<Result> DeletePersonAsync(int personId, CancellationToken cancellationToken)
     {
-        if (personId.Value <= 0)
+        if (personId <= 0)
             return Result.Failure(PersonErrors.DeleteFailed(personId));
 
         var person = await dbContext.People.FindAsync(personId, cancellationToken);
@@ -30,10 +29,10 @@ public sealed class PersonCommands(
         return Result.Success();
     }
 
-    public async Task<Result<PersonId>> CreatePersonAsync(Person person, CancellationToken cancellationToken)
+    public async Task<Result<int>> CreatePersonAsync(Person person, CancellationToken cancellationToken)
     {
         if (person is null)
-            return Result.Failure<PersonId>(PersonErrors.CreateFailedWithMessage("Person is null"));
+            return Result.Failure<int>(PersonErrors.CreateFailedWithMessage("Person is null"));
 
         var validationResults = new[]
         {
@@ -57,7 +56,7 @@ public sealed class PersonCommands(
             foreach (var error in validationErrors)
                 logger.LogWarning($"Validation failed: {error.Description}");
 
-            return Result.Failure<PersonId>(validationErrors.ToArray());
+            return Result.Failure<int>(validationErrors.ToArray());
         }
 
         dbContext.People.Add(person);

@@ -11,14 +11,14 @@ public interface IPersonValidation
     /// </summary>
     /// <param name="email">The email to validate.</param>
     /// <returns>True if the email is valid, false otherwise.</returns>
-    bool IsValidEmail(UserEmail email);
+    bool IsValidEmail(string email);
 
     /// <summary>
     ///     Validates the format of the provided email.
     /// </summary>
     /// <param name="email">The email to validate.</param>
     /// <returns>A Result indicating success or failure.</returns>
-    Result ValidateEmailFormat(UserEmail email);
+    Result ValidateEmailFormat(string email);
 
     /// <summary>
     ///     Validates the maximum length of the user's properties.

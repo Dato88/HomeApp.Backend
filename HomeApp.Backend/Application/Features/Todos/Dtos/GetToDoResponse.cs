@@ -1,12 +1,11 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 
 namespace Application.Features.Todos.Dtos;
 
 public sealed record GetToDoResponse(
-    TodoId TodoId,
-    TodoGroupId? TodoGroupId,
+    int TodoId,
+    int? TodoGroupId,
     string Name,
     bool Done,
     TodoPriority Priority,

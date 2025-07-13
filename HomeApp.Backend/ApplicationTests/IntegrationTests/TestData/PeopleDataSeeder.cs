@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Domain.ValueObjects;
 using Person = Domain.Entities.People.Person;
 
 namespace ApplicationTests.IntegrationTests.TestData;
@@ -12,7 +11,7 @@ public class PeopleDataSeeder : BaseTest
         _personFaker = new Faker<Person>()
             .RuleFor(u => u.FirstName, f => f.Name.FirstName())
             .RuleFor(u => u.LastName, f => f.Name.LastName())
-            .RuleFor(u => u.Email, f => new UserEmail(f.Internet.Email()))
+            .RuleFor(u => u.Email, f => f.Internet.Email())
             .RuleFor(u => u.UserId, f => f.Random.Guid().ToString())
             .UseSeed(Guid.NewGuid().GetHashCode());
 

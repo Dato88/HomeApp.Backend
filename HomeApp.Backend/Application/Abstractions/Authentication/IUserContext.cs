@@ -4,7 +4,7 @@ namespace Application.Abstractions.Authentication;
 
 public interface IUserContext
 {
-    PersonId PersonId { get; }
+    int PersonId { get; }
     UserEmail UserEmail { get; }
-    UserId UserId { get; }
+    Guid UserId { get; }
 }

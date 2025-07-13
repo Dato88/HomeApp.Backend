@@ -1,7 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Messaging;
 using Domain.Entities.User;
-using Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
@@ -16,7 +15,7 @@ internal sealed class GetUserByEmailQueryHandler(UserManager<User> userManager, 
         var user = await userManager.Users
             .Where(u => u.Email == query.Email.Value).Select(u => new UserResponse
             {
-                UserId = new UserId(new Guid(u.Id)), FirstName = u.FirstName, LastName = u.LastName, Email = u.Email
+                UserId = Guid.Parse(u.Id), FirstName = u.FirstName, LastName = u.LastName, Email = u.Email
             }).FirstOrDefaultAsync(cancellationToken);
 
         if (user is null) return Result.Failure<UserResponse>(UserErrors.NotFoundByEmail);

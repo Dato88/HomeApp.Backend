@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.People;
-using Domain.ValueObjects;
 using SharedKernel;
 
 namespace Domain.Entities.Budgets;
@@ -9,7 +8,7 @@ public class BudgetCell : BaseClass
     public int BudgetRowId { get; set; }
     public int BudgetColumnId { get; set; }
     public int BudgetGroupId { get; set; }
-    public PersonId PersonId { get; set; }
+    public int PersonId { get; set; }
     public int Year { get; set; }
     public string Name { get; set; }
 

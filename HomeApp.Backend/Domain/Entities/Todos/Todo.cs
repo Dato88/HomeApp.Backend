@@ -1,11 +1,10 @@
 ﻿using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 
 namespace Domain.Entities.Todos;
 
 public class Todo
 {
-    public TodoId TodoId { get; set; }
+    public int TodoId { get; set; }
     public DateTime CreatedAt { get; set; }
     public string Name { get; set; }
     public bool Done { get; set; }

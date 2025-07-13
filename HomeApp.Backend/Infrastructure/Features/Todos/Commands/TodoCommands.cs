@@ -1,6 +1,5 @@
 ﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos;
-using Domain.ValueObjects;
 using Infrastructure.Database;
 using SharedKernel;
 
@@ -46,12 +45,12 @@ public sealed class TodoCommands(HomeAppContext dbContext) : ITodoCommands
         dbContext.Todos.Add(todo);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(todo.TodoId.Value);
+        return Result.Success(todo.TodoId);
     }
 
-    public async Task<Result> DeleteAsync(TodoId todoId, CancellationToken cancellationToken)
+    public async Task<Result> DeleteAsync(int todoId, CancellationToken cancellationToken)
     {
-        if (todoId.Value <= 0)
+        if (todoId <= 0)
             return Result.Failure(TodoErrors.DeleteFailed(todoId));
 
         var todo = await dbContext.Todos.FindAsync(new object[] { todoId }, cancellationToken);

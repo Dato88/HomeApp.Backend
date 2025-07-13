@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.Todos;
-using Domain.ValueObjects;
 using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
@@ -18,7 +17,7 @@ public interface ITodoQueries
     /// <returns>
     ///     A <see cref="Result{Todo}" /> representing the operation result. Contains the found Todo or an error if not found.
     /// </returns>
-    Task<Result<Todo>> FindByIdAsync(TodoId todoId, CancellationToken cancellationToken,
+    Task<Result<Todo>> FindByIdAsync(int todoId, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 
@@ -34,7 +33,7 @@ public interface ITodoQueries
     /// <returns>
     ///     A <see cref="Result{IEnumerable{Todo}}" /> containing the list of Todos or an error if none are found.
     /// </returns>
-    Task<Result<IEnumerable<Todo>>> GetAllAsync(PersonId personId, CancellationToken cancellationToken,
+    Task<Result<IEnumerable<Todo>>> GetAllAsync(int personId, CancellationToken cancellationToken,
         bool asNoTracking = true,
         params string[] includes);
 }

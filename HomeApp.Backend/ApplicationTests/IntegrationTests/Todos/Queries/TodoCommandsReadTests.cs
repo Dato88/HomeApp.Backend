@@ -1,6 +1,4 @@
-﻿using Domain.ValueObjects;
-
-namespace ApplicationTests.IntegrationTests.Todos.Queries;
+﻿namespace ApplicationTests.IntegrationTests.Todos.Queries;
 
 public class TodoReadTests : BaseTodoQueriesTest
 {
@@ -28,10 +26,9 @@ public class TodoReadTests : BaseTodoQueriesTest
     [Theory]
     [InlineData(0)]
     [InlineData(-3)]
-    public async Task FindByIdAsync_ReturnsFailure_WhenIdIsInvalid(int id)
+    public async Task FindByIdAsync_ReturnsFailure_WhenIdIsInvalid(int todoId)
     {
         // Act
-        var todoId = new TodoId(id);
         var result = await TodoQueries.FindByIdAsync(todoId, default);
 
         // Assert
@@ -44,7 +41,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task FindByIdAsync_ReturnsFailure_WhenTodoDoesNotExist()
     {
         // Act
-        var result = await TodoQueries.FindByIdAsync(new TodoId(999), default);
+        var result = await TodoQueries.FindByIdAsync(999, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -76,7 +73,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task GetAllAsync_ReturnsFailure_WhenNoTodosForPersonExist()
     {
         // Arrange
-        var userId = new PersonId(999);
+        var userId = 999;
 
         // Act
         var result = await TodoQueries.GetAllAsync(userId, default);

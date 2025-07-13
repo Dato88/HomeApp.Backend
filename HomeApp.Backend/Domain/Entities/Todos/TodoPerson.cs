@@ -1,14 +1,13 @@
 ﻿using Domain.Entities.People;
-using Domain.ValueObjects;
 
 namespace Domain.Entities.Todos;
 
 public class TodoPerson
 {
-    public TodoPersonId TodoPersonId { get; set; }
+    public int TodoPersonId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public PersonId PersonId { get; set; }
-    public TodoId TodoId { get; set; }
+    public int PersonId { get; set; }
+    public int TodoId { get; set; }
 
     public virtual Person Person { get; set; }
     public virtual Todo Todo { get; set; }

@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
-using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
@@ -82,7 +81,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var todo = new Todo
         {
-            TodoId = new TodoId(999),
+            TodoId = 999,
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
