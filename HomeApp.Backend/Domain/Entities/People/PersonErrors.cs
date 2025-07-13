@@ -1,5 +1,5 @@
-﻿using SharedKernel;
-using SharedKernel.ValueObjects;
+﻿using Domain.ValueObjects;
+using SharedKernel;
 
 namespace Domain.Entities.People;
 

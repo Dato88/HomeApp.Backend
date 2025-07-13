@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.People;
+using Domain.ValueObjects;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Domain.Entities.Budgets;
 

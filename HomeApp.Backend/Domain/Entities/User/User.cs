@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.People;
+using Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities.User;
@@ -14,7 +15,7 @@ public class User : IdentityUser
             Username = item.Email,
             FirstName = item.FirstName,
             LastName = item.LastName,
-            Email = item.Email,
+            Email = new UserEmail(item.Email),
             UserId = item.Id
         };
 }

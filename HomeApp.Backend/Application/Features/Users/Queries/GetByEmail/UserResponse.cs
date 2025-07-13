@@ -1,4 +1,4 @@
-﻿using SharedKernel.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Application.Features.Users.Queries.GetByEmail;
 

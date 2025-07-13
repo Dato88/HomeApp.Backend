@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.People;
+using Domain.ValueObjects;
 using SharedKernel;
 
 namespace Application.Features.People.Validations;
@@ -10,14 +11,14 @@ public interface IPersonValidation
     /// </summary>
     /// <param name="email">The email to validate.</param>
     /// <returns>True if the email is valid, false otherwise.</returns>
-    bool IsValidEmail(string email);
+    bool IsValidEmail(UserEmail email);
 
     /// <summary>
     ///     Validates the format of the provided email.
     /// </summary>
     /// <param name="email">The email to validate.</param>
     /// <returns>A Result indicating success or failure.</returns>
-    Result ValidateEmailFormat(string email);
+    Result ValidateEmailFormat(UserEmail email);
 
     /// <summary>
     ///     Validates the maximum length of the user's properties.

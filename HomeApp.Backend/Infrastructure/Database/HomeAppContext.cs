@@ -25,6 +25,7 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
         foreach (var prop in entityType.ClrType.GetProperties())
         {
             var propType = prop.PropertyType;
+
             if (propType.IsValueType && propType.Name.EndsWith("Id"))
             {
                 var converterType = typeof(StronglyTypedIdConverter<>).MakeGenericType(propType);

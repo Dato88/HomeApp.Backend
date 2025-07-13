@@ -1,10 +1,10 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Messaging;
 using Domain.Entities.User;
+using Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Application.Features.Users.Queries.GetByEmail;
 
@@ -14,7 +14,7 @@ internal sealed class GetUserByEmailQueryHandler(UserManager<User> userManager, 
     public async Task<Result<UserResponse>> Handle(GetUserByEmailQuery query, CancellationToken cancellationToken)
     {
         var user = await userManager.Users
-            .Where(u => u.Email == query.Email).Select(u => new UserResponse
+            .Where(u => u.Email == query.Email.Value).Select(u => new UserResponse
             {
                 UserId = new UserId(new Guid(u.Id)), FirstName = u.FirstName, LastName = u.LastName, Email = u.Email
             }).FirstOrDefaultAsync(cancellationToken);

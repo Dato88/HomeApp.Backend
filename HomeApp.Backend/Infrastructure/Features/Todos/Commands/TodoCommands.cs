@@ -1,8 +1,8 @@
 ﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos;
+using Domain.ValueObjects;
 using Infrastructure.Database;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Features.Todos.Commands;
 

@@ -2,6 +2,7 @@
 using Application.Abstractions.Logging;
 using Application.Features.People.Dtos;
 using Application.Features.People.Queries;
+using Domain.ValueObjects;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +32,7 @@ public sealed class PersonQueries(
         }
     }
 
-    public async Task<PersonResponse?> GetPersonByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<PersonResponse?> GetPersonByEmailAsync(UserEmail email, CancellationToken cancellationToken)
     {
         try
         {

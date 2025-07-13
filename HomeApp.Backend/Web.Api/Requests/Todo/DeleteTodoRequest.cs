@@ -1,5 +1,5 @@
 ﻿using Application.Features.Todos.Commands;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Web.Api.Requests.Todo;
 

@@ -1,6 +1,6 @@
 ﻿using Application.Features.Todos.Commands;
 using Domain.Entities.Todos.Enums;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Web.Api.Requests.Todo;
 

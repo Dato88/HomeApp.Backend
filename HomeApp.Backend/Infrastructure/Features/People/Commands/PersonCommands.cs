@@ -2,9 +2,9 @@
 using Application.Features.People.Commands;
 using Application.Features.People.Validations;
 using Domain.Entities.People;
+using Domain.ValueObjects;
 using Infrastructure.Database;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Features.People.Commands;
 

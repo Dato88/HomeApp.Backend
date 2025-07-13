@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 

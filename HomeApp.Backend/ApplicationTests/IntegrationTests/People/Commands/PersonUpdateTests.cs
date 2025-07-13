@@ -1,7 +1,7 @@
 ﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
+using Domain.ValueObjects;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
@@ -23,7 +23,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = "updateduser",
             FirstName = "Jane",
             LastName = "Doe",
-            Email = "updated@example.com",
+            Email = new UserEmail("updated@example.com"),
             UserId = "new-user-id"
         };
 
@@ -59,7 +59,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = "updateduser",
             FirstName = "Jane",
             LastName = "Doe",
-            Email = "updated212@example.com",
+            Email = new UserEmail("updated212@example.com"),
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
@@ -92,7 +92,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = existingPerson.Username,
             FirstName = "Jane",
             LastName = "Doe",
-            Email = "updated3@example.com",
+            Email = new UserEmail("updated3@example.com"),
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 
@@ -129,7 +129,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
             Username = "nonexistent",
             FirstName = "Ghost",
             LastName = "User",
-            Email = "ghost@example.com",
+            Email = new UserEmail("ghost@example.com"),
             UserId = "ghost-id"
         };
 

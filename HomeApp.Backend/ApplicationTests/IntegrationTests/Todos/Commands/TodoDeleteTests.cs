@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.Todos;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 

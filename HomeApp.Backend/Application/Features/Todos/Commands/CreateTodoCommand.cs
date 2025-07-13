@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Entities.Todos;
 using Domain.Entities.Todos.Enums;
+using Domain.ValueObjects;
 using MediatR;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 

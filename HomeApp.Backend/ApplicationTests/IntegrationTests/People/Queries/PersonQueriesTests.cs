@@ -1,5 +1,6 @@
 ﻿using Application.Features.People.Dtos;
 using Domain.Entities.People;
+using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Queries;
 
@@ -11,7 +12,7 @@ public class PersonQueriesTests : BaseCommonPersonTest
     public async Task GetPersonByEmailAsync_ReturnsPerson_WhenPersonExists()
     {
         // Arrange
-        var email = "john.doe@example.com";
+        var email = new UserEmail("john.doe@example.com");
         var person = new Person
         {
             Email = email, FirstName = "John", LastName = "Doe", UserId = Guid.NewGuid().ToString()
@@ -33,7 +34,7 @@ public class PersonQueriesTests : BaseCommonPersonTest
     public async Task GetPersonByEmailAsync_ReturnsNull_WhenPersonDoesNotExist()
     {
         // Arrange
-        var email = "nonexistent@example.com";
+        var email = new UserEmail("nonexistent@example.com");
 
         // Act
         var result = await PersonQueries.GetPersonByEmailAsync(email, default);

@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Budgets;
 using Domain.Entities.Todos;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Domain.Entities.People;
 
@@ -11,7 +11,7 @@ public class Person
     public string? Username { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Email { get; set; }
+    public UserEmail Email { get; set; }
     public string UserId { get; set; }
 
     public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();

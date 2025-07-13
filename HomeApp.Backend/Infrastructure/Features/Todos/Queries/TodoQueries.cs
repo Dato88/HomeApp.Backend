@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 using Application.Features.Todos.Queries;
 using Domain.Entities.Todos;
+using Domain.ValueObjects;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Features.Todos.Queries;
 

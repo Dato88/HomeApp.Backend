@@ -1,6 +1,6 @@
 ﻿using ApplicationTests.IntegrationTests.TestData;
 using Domain.Entities.People;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 

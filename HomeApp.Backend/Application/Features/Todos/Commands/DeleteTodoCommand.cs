@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using Domain.ValueObjects;
+using MediatR;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 

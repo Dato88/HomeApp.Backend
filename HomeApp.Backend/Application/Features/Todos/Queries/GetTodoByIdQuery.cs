@@ -1,7 +1,7 @@
 ﻿using Application.Features.Todos.Dtos;
+using Domain.ValueObjects;
 using MediatR;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Queries;
 

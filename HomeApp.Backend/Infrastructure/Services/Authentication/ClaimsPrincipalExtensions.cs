@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using SharedKernel.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Infrastructure.Services.Authentication;
 

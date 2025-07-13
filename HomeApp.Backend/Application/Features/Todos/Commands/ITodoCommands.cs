@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Todos;
+using Domain.ValueObjects;
 using SharedKernel;
-using SharedKernel.ValueObjects;
 
 namespace Application.Features.Todos.Commands;
 

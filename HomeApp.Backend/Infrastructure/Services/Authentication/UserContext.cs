@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
+using Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
-using SharedKernel.ValueObjects;
 
 namespace Infrastructure.Services.Authentication;
 
