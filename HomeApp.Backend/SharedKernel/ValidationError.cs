@@ -15,7 +15,7 @@ public sealed record ValidationError : Error
         new(
             results
                 .Where(r => r.IsFailure)
-                .SelectMany(r => r.Errors)
+                .Select(r => r.Error)
                 .ToList()
         );
 }

@@ -16,22 +16,20 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
-        if (response.IsSuccess) return Ok(response);
+        if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [HttpGet("todo")]
-    public async Task<IActionResult> GetTodoAsync([FromQuery] GetTodoRequest? getTodoRequest,
+    public async Task<IActionResult> GetTodoAsync([FromQuery] int todoId,
         CancellationToken cancellationToken)
     {
-        if (getTodoRequest is null) return BadRequest();
+        var response = await _mediator.Send(new GetTodoByIdQuery(todoId), cancellationToken);
 
-        var response = await _mediator.Send((GetTodoByIdQuery)getTodoRequest, cancellationToken);
+        if (response.IsSuccess) return Ok(response.Value);
 
-        if (response.IsSuccess) return Ok(response);
-
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [HttpPost("todo")]
@@ -42,22 +40,20 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send((CreateTodoCommand)createTodoRequest, cancellationToken);
 
-        if (response.IsSuccess) return Ok(response);
+        if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [HttpDelete("todo")]
-    public async Task<IActionResult> DeleteToDoAsync([FromQuery] DeleteTodoRequest? deleteTodoRequest,
+    public async Task<IActionResult> DeleteToDoAsync([FromQuery] int todoId,
         CancellationToken cancellationToken)
     {
-        if (deleteTodoRequest is null) return BadRequest();
+        var response = await _mediator.Send(new DeleteTodoCommand(todoId), cancellationToken);
 
-        var response = await _mediator.Send((DeleteTodoCommand)deleteTodoRequest, cancellationToken);
+        if (response.IsSuccess) return Ok(response.IsSuccess);
 
-        if (response.IsSuccess) return Ok(response);
-
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [HttpPatch("todo")]
@@ -68,8 +64,8 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send((UpdateTodoCommand)updateTodoRequest, cancellationToken);
 
-        if (response.IsSuccess) return Ok(response);
+        if (response.IsSuccess) return Ok(response.IsSuccess);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 }

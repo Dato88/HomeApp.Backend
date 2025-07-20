@@ -42,21 +42,21 @@ public sealed class PersonCommands(
 
         var validationErrors = validationResults
             .Where(r => r.IsFailure)
-            .SelectMany(r => r.Errors)
+            .Select(r => r.Error)
             .ToList();
 
         var usernameCheck =
             await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
 
         if (usernameCheck.IsFailure)
-            validationErrors.AddRange(usernameCheck.Errors);
+            validationErrors.Add(usernameCheck.Error);
 
         if (validationErrors.Any())
         {
             foreach (var error in validationErrors)
                 logger.LogWarning($"Validation failed: {error.Description}");
 
-            return Result.Failure<int>(validationErrors.ToArray());
+            return Result.Failure<int>(validationErrors.First());
         }
 
         dbContext.People.Add(person);
@@ -82,7 +82,7 @@ public sealed class PersonCommands(
 
         errors.AddRange(validationResults
             .Where(r => r.IsFailure)
-            .SelectMany(r => r.Errors));
+            .Select(r => r.Error));
 
         var existingUser = await dbContext.People.FindAsync(person.PersonId, cancellationToken);
         if (existingUser == null)
@@ -93,7 +93,7 @@ public sealed class PersonCommands(
             var usernameCheck =
                 await personValidation.ValidatePersonnameDoesNotExistAsync(person.Username, cancellationToken);
             if (usernameCheck.IsFailure)
-                errors.AddRange(usernameCheck.Errors);
+                errors.Add(usernameCheck.Error);
         }
 
         if (errors.Any())
@@ -101,7 +101,7 @@ public sealed class PersonCommands(
             foreach (var error in errors)
                 logger.LogWarning($"Update validation failed: {error.Description}");
 
-            return Result.Failure(errors.ToArray());
+            return Result.Failure(errors.First());
         }
 
         existingUser!.Username = person.Username;

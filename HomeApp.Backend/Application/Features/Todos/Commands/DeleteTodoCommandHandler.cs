@@ -16,10 +16,9 @@ internal sealed class DeleteTodoCommandHandler(
 
         if (result.IsFailure)
         {
-            foreach (var error in result.Errors)
-                logger.LogWarning($"Deleting todo failed: {error.Description} ({error.Code})");
+            logger.LogWarning($"Deleting todo failed: {result.Error.Description} ({result.Error.Code})");
 
-            return Result.Failure(result.Errors.ToArray());
+            return Result.Failure(result.Error);
         }
 
         logger.LogInformation($"Todo with ID {request.TodoId} deleted successfully.");

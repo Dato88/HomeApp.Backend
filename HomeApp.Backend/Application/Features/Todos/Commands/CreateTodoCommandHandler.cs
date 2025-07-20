@@ -20,10 +20,9 @@ internal sealed class CreateTodoCommandHandler(
 
         if (result.IsFailure)
         {
-            foreach (var error in result.Errors)
-                logger.LogWarning($"Creating todo failed: {error.Description} ({error.Code})");
+            logger.LogWarning($"Creating todo failed: {result.Error.Description} ({result.Error.Code})");
 
-            return Result.Failure<int>(result.Errors.ToArray());
+            return Result.Failure<int>(result.Error);
         }
 
         logger.LogInformation($"Creating todo: {result.Value}");

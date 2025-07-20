@@ -16,10 +16,9 @@ internal sealed class UpdateTodoCommandHandler(
 
         if (result.IsFailure)
         {
-            foreach (var error in result.Errors)
-                logger.LogWarning($"Updating todo failed: {error.Description} ({error.Code})");
+            logger.LogWarning($"Updating todo failed: {result.Error.Description} ({result.Error.Code})");
 
-            return Result.Failure(result.Errors.ToArray());
+            return Result.Failure(result.Error);
         }
 
         logger.LogInformation($"Todo with ID {request.TodoId} updated successfully.");

@@ -16,6 +16,6 @@ public class PersonController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response.Value);
 
-        return BadRequest(response.Errors);
+        return BadRequest(response.Error);
     }
 }
