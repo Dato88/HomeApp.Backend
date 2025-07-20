@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Web.Api;
 using Web.Api.Extensions;
-using Web.Api.Middleware;
 using AssemblyReference = Web.Api.AssemblyReference;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,8 +42,6 @@ builder.Services.AddAuthentication(opt =>
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
-
-app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
 
 app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 

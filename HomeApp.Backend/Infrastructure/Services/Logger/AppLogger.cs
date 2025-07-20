@@ -1,6 +1,5 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services.Logger;
@@ -10,7 +9,7 @@ internal class AppLogger<T> : IAppLogger<T>
     private readonly ILogger<T> _logger;
     private readonly IUserContext _userContext;
 
-    public AppLogger(ILogger<T> logger, IUserContext userContext, IHttpContextAccessor httpContextAccessor)
+    public AppLogger(ILogger<T> logger, IUserContext userContext)
     {
         _logger = logger;
         _userContext = userContext;

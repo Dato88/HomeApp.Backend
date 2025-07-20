@@ -19,6 +19,8 @@ internal static class ApplicationBuilderExtensions
     {
         if (!app.Environment.IsDevelopment()) app.UseHttpsRedirection();
 
+        app.UseExceptionHandler();
+
         app.UseCors("CorsPolicy");
 
         app.UseAuthentication();

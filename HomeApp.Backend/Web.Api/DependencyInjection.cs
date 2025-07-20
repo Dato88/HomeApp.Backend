@@ -1,4 +1,6 @@
-﻿namespace Web.Api;
+﻿using Web.Api.Middleware;
+
+namespace Web.Api;
 
 public static class DependencyInjection
 {
@@ -9,6 +11,10 @@ public static class DependencyInjection
         services.AddOpenApi();
 
         services.AddControllers();
+
+        services.AddExceptionHandler<ValidationExceptionHandler>();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }
