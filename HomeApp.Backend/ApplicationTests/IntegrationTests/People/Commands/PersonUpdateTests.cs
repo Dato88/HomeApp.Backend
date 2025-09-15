@@ -116,7 +116,7 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.UpdatePersonAsync(null, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PersonErrors.UpdateFailedWithMessage("").Code);
+        result.Error.Should().BeEquivalentTo(PersonErrors.UpdateFailedWithMessage("Person is null"));
     }
 
     [Fact]
@@ -139,6 +139,6 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.UpdatePersonAsync(nonExisting, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PersonErrors.NotFoundById(nonExisting.PersonId).Code);
+        result.Error.Should().BeEquivalentTo(PersonErrors.NotFoundById(nonExisting.PersonId));
     }
 }

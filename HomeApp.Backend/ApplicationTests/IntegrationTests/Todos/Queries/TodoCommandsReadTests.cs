@@ -1,4 +1,6 @@
-﻿namespace ApplicationTests.IntegrationTests.Todos.Queries;
+﻿using Domain.Entities.Todos;
+
+namespace ApplicationTests.IntegrationTests.Todos.Queries;
 
 public class TodoReadTests : BaseTodoQueriesTest
 {
@@ -33,7 +35,7 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Todo.NotFoundById");
+        result.Error.Should().BeEquivalentTo(TodoErrors.NotFoundById(todoId));
         result.Error.Description.Should().Contain(todoId.ToString());
     }
 
@@ -45,7 +47,7 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Todo.NotFoundById");
+        result.Error.Should().BeEquivalentTo(TodoErrors.NotFoundById(999));
         result.Error.Description.Should().Contain("999");
     }
 
@@ -80,8 +82,7 @@ public class TodoReadTests : BaseTodoQueriesTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be("Todo.NotFoundAll");
-        result.Error.Description.Should().Contain("999");
+        result.Error.Should().BeEquivalentTo(TodoErrors.NotFoundAll);
     }
 
     [Fact]

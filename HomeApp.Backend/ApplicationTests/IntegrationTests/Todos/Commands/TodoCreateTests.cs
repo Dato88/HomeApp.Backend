@@ -54,7 +54,8 @@ public class TodoCreateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue("no valid personId was provided");
-        result.Error.Should().Be("Todo.CreateFailedWithMessage");
+        result.Error.Should()
+            .BeEquivalentTo(TodoErrors.CreateFailedWithMessage("Todo must have at least one valid person"));
         result.Error.Description.Should().Contain("person", "the error should describe the missing personId");
     }
 
@@ -66,7 +67,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue("todo is null and should not be created");
-        result.Error.Should().Be("Todo.CreateFailedWithMessage");
+        result.Error.Should().BeEquivalentTo(TodoErrors.CreateFailedWithMessage("Todo is null"));
         result.Error.Description.Should().Contain("null", "null values should be rejected");
     }
 }

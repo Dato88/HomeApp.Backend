@@ -30,7 +30,7 @@ public class TodoDeleteTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue("ID is invalid and deletion should fail");
-        result.Error.Should().Be(TodoErrors.DeleteFailed(todoId).Code);
+        result.Error.Should().BeEquivalentTo(TodoErrors.DeleteFailed(todoId));
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class TodoDeleteTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue("the todo does not exist");
-        result.Error.Should().Be(TodoErrors.DeleteFailed(nonExistentId).Code);
+        result.Error.Should().BeEquivalentTo(TodoErrors.DeleteFailed(nonExistentId));
         result.Error.Description.Should()
             .Contain(nonExistentId.ToString(), "the error message should mention the missing ID");
     }

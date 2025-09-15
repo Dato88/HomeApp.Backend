@@ -42,7 +42,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
+        result.Error.Should().BeEquivalentTo(TodoErrors.UpdateFailedWithMessage("Todo is null"));
         result.Error.Description.Should().Contain("null");
     }
 
@@ -72,7 +72,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoErrors.UpdateFailedWithMessage("").Code);
+        result.Error.Should().BeEquivalentTo(TodoErrors.UpdateFailedWithMessage("Priority is invalid"));
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(TodoErrors.UpdateFailed(todo.TodoId).Code);
+        result.Error.Should().BeEquivalentTo(TodoErrors.UpdateFailed(todo.TodoId));
         result.Error.Description.Should().Contain("999");
     }
 }

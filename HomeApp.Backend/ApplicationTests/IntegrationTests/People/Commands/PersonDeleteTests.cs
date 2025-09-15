@@ -30,7 +30,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.DeletePersonAsync(invalidId, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PersonErrors.DeleteFailed(invalidId).Code);
+        result.Error.Should().BeEquivalentTo(PersonErrors.DeleteFailed(invalidId));
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class PersonCommandsDeleteTests : BaseCommonPersonTest
         var result = await CommonPersonCommands.DeletePersonAsync(nonExistentId, CancellationToken.None);
 
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(PersonErrors.NotFoundById(nonExistentId).Code);
+        result.Error.Should().BeEquivalentTo(PersonErrors.NotFoundById(nonExistentId));
         result.Error.Description.Should().Contain(nonExistentId.ToString());
     }
 }
