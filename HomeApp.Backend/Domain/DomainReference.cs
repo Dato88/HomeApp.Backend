@@ -1,5 +1,3 @@
 ﻿namespace Domain;
 
-public class DomainReference
-{
-}
+public class DomainReference;

@@ -6,12 +6,12 @@ public interface IBudgetFacade
 {
     // Task<Budget?> GetBudgetAsync(CancellationToken cancellationToken);
     Task CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
-    Task CreateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
+    Task CreateBudgetColumnAsync(Budget budget, CancellationToken cancellationToken);
     Task CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken);
     Task CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken);
 
     Task UpdateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
-    Task UpdateBudgetColumnAsync(BudgetColumn budgetColumn, CancellationToken cancellationToken);
+    Task UpdateBudgetColumnAsync(Budget budget, CancellationToken cancellationToken);
     Task UpdateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken);
     Task UpdateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken);
 

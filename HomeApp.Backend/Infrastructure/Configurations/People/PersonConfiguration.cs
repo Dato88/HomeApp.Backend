@@ -39,24 +39,16 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .IsUnique();
         builder.HasIndex(p => p.UserId)
             .IsUnique();
+        builder.HasIndex(p => p.Username)
+            .IsUnique();
 
-        // Relations
+        // Relationen
+        builder.HasMany(p => p.Budgets)
+            .WithOne()
+            .HasForeignKey(b => b.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(tp => tp.TodoPeople)
-            .WithOne(p => p.Person)
-            .HasForeignKey(p => p.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(bc => bc.BudgetCells)
-            .WithOne(p => p.Person)
-            .HasForeignKey(p => p.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(bg => bg.BudgetGroups)
-            .WithOne(p => p.Person)
-            .HasForeignKey(p => p.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(br => br.BudgetRows)
             .WithOne(p => p.Person)
             .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);

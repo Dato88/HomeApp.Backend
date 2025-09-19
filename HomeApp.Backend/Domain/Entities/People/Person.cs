@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Budgets;
 using Domain.Entities.Todos;
-using Domain.ValueObjects;
 
 namespace Domain.Entities.People;
 
@@ -14,8 +13,6 @@ public class Person
     public string Email { get; set; }
     public string UserId { get; set; }
 
-    public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
-    public virtual ICollection<BudgetGroup> BudgetGroups { get; set; } = new HashSet<BudgetGroup>();
-    public virtual ICollection<BudgetRow> BudgetRows { get; set; } = new HashSet<BudgetRow>();
+    public virtual ICollection<Budget> Budgets { get; set; } = new HashSet<Budget>();
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
 }

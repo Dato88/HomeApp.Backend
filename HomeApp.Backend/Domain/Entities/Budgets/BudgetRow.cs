@@ -1,15 +1,20 @@
-﻿using Domain.Entities.People;
-using SharedKernel;
+﻿using SharedKernel;
 
 namespace Domain.Entities.Budgets;
 
-public class BudgetRow : BaseClass
+public class BudgetRow : IAudited
 {
-    public int PersonId { get; set; }
-    public int Index { get; set; }
-    public int Year { get; set; }
-    public string Name { get; set; }
+    public int BudgetRowId { get; set; }
 
-    public virtual Person Person { get; set; }
-    public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
+    public int BudgetGroupId { get; set; }
+    public int Index { get; set; }
+    public string Name { get; set; } = default!;
+
+    public virtual BudgetGroup Group { get; set; } = new();
+    public virtual ICollection<BudgetCell> Cells { get; set; } = new HashSet<BudgetCell>();
+
+    public DateTime CreatedAt { get; set; }
+    public int CreatedById { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public int UpdatedById { get; set; }
 }

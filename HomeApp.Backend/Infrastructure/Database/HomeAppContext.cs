@@ -9,7 +9,7 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
 {
     public DbSet<Person> People { get; set; }
     public DbSet<BudgetCell> BudgetCells { get; set; }
-    public DbSet<BudgetColumn> BudgetColumns { get; set; }
+    public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetGroup> BudgetGroups { get; set; }
     public DbSet<BudgetRow> BudgetRows { get; set; }
     public DbSet<Todo> Todos { get; set; }
