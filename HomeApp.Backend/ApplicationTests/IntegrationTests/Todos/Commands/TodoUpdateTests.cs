@@ -31,7 +31,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         dbTodo!.Name.Should().Be(updatedTodo.Name);
         dbTodo.Done.Should().Be(updatedTodo.Done);
         dbTodo.Priority.Should().Be(updatedTodo.Priority);
-        dbTodo.LastModified.Should().BeAfter(initialLastModified);
+        dbTodo.UpdatedAt.Should().BeAfter(initialLastModified);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var todo = new Todo
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.UtcNow
+            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, UpdatedAt = DateTime.UtcNow
         };
 
         DbContext.Todos.Add(todo);
@@ -64,7 +64,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
             Name = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
-            LastModified = DateTime.UtcNow.AddDays(2)
+            UpdatedAt = DateTime.UtcNow.AddDays(2)
         };
 
         // Act
@@ -85,7 +85,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
             Name = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
-            LastModified = DateTime.UtcNow.AddDays(1)
+            UpdatedAt = DateTime.UtcNow.AddDays(1)
         };
 
         // Act

@@ -23,7 +23,7 @@ public sealed record CreateTodoCommand : IRequest<Result<int>>
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            LastModified = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
             TodoGroupTodo = item.TodoGroupId.HasValue
                 ? new TodoGroupTodo { TodoGroupId = item.TodoGroupId.Value }
                 : null,

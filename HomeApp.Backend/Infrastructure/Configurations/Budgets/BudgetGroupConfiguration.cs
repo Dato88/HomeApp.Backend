@@ -19,7 +19,7 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
         builder.Property(g => g.Name)
             .IsRequired()
             .HasMaxLength(150);
-        builder.Property(g => g.Type)
+        builder.Property(g => g.BudgetGroupType)
             .IsRequired();
 
         // Auditing
@@ -28,8 +28,7 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
         builder.Property(g => g.CreatedById)
             .IsRequired();
         builder.Property(g => g.UpdatedAt);
-        builder.Property(g => g.UpdatedById)
-            .HasDefaultValue(0);
+        builder.Property(g => g.UpdatedById);
 
         // Indices (ordering unique within a budget)
         builder.HasIndex(g => g.BudgetId);

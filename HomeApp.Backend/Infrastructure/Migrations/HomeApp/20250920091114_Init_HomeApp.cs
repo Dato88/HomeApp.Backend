@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations.HomeApp
 {
     /// <inheritdoc />
-    public partial class InitialHomeApp : Migration
+    public partial class Init_HomeApp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,38 +16,25 @@ namespace Infrastructure.Migrations
                 name: "public");
 
             migrationBuilder.CreateTable(
-                name: "BudgetColumns",
-                schema: "public",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    index = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 905, DateTimeKind.Utc).AddTicks(5870))
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_budget_columns", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "People",
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    person_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     username = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     first_name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     last_name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 906, DateTimeKind.Utc).AddTicks(9500))
+                    user_id = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_people", x => x.id);
+                    table.PrimaryKey("pk_people", x => x.person_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,14 +42,17 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    todo_group_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 908, DateTimeKind.Utc).AddTicks(1860))
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_todo_groups", x => x.id);
+                    table.PrimaryKey("pk_todo_groups", x => x.todo_group_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,65 +60,44 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    todo_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     done = table.Column<bool>(type: "boolean", nullable: false),
-                    priority = table.Column<int>(type: "integer", nullable: false),
-                    last_modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 907, DateTimeKind.Utc).AddTicks(5750)),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 907, DateTimeKind.Utc).AddTicks(5160))
+                    priority = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_todos", x => x.id);
+                    table.PrimaryKey("pk_todos", x => x.todo_id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BudgetGroups",
+                name: "Budgets",
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    budget_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     person_id = table.Column<int>(type: "integer", nullable: false),
-                    index = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 905, DateTimeKind.Utc).AddTicks(9520))
+                    year = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_budget_groups", x => x.id);
+                    table.PrimaryKey("pk_budgets", x => x.budget_id);
                     table.ForeignKey(
-                        name: "fk_budget_groups_people_person_id",
+                        name: "fk_budgets_people_person_id",
                         column: x => x.person_id,
                         principalSchema: "public",
                         principalTable: "People",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BudgetRows",
-                schema: "public",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    person_id = table.Column<int>(type: "integer", nullable: false),
-                    index = table.Column<int>(type: "integer", nullable: false),
-                    year = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 906, DateTimeKind.Utc).AddTicks(4560))
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_budget_rows", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_budget_rows_people_person_id",
-                        column: x => x.person_id,
-                        principalSchema: "public",
-                        principalTable: "People",
-                        principalColumn: "id",
+                        principalColumn: "person_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -137,28 +106,31 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    todo_group_todo_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     todo_id = table.Column<int>(type: "integer", nullable: false),
-                    todo_group_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 908, DateTimeKind.Utc).AddTicks(6110))
+                    todo_group_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_todo_group_todos", x => x.id);
+                    table.PrimaryKey("pk_todo_group_todos", x => x.todo_group_todo_id);
                     table.ForeignKey(
                         name: "fk_todo_group_todos_todo_groups_todo_group_id",
                         column: x => x.todo_group_id,
                         principalSchema: "public",
                         principalTable: "TodoGroups",
-                        principalColumn: "id",
+                        principalColumn: "todo_group_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_todo_group_todos_todos_todo_id",
                         column: x => x.todo_id,
                         principalSchema: "public",
                         principalTable: "Todos",
-                        principalColumn: "id",
+                        principalColumn: "todo_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -167,28 +139,86 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    todo_person_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     person_id = table.Column<int>(type: "integer", nullable: false),
-                    todo_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 908, DateTimeKind.Utc).AddTicks(9800))
+                    todo_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_todo_people", x => x.id);
+                    table.PrimaryKey("pk_todo_people", x => x.todo_person_id);
                     table.ForeignKey(
                         name: "fk_todo_people_people_person_id",
                         column: x => x.person_id,
                         principalSchema: "public",
                         principalTable: "People",
-                        principalColumn: "id",
+                        principalColumn: "person_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_todo_people_todos_todo_id",
                         column: x => x.todo_id,
                         principalSchema: "public",
                         principalTable: "Todos",
-                        principalColumn: "id",
+                        principalColumn: "todo_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BudgetGroups",
+                schema: "public",
+                columns: table => new
+                {
+                    budget_group_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
+                    budget_id = table.Column<int>(type: "integer", nullable: false),
+                    index = table.Column<int>(type: "integer", nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    budget_group_type = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_budget_groups", x => x.budget_group_id);
+                    table.ForeignKey(
+                        name: "fk_budget_groups_budgets_budget_id",
+                        column: x => x.budget_id,
+                        principalSchema: "public",
+                        principalTable: "Budgets",
+                        principalColumn: "budget_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BudgetRows",
+                schema: "public",
+                columns: table => new
+                {
+                    budget_row_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
+                    budget_group_id = table.Column<int>(type: "integer", nullable: false),
+                    index = table.Column<int>(type: "integer", nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_budget_rows", x => x.budget_row_id);
+                    table.ForeignKey(
+                        name: "fk_budget_rows_budget_groups_budget_group_id",
+                        column: x => x.budget_group_id,
+                        principalSchema: "public",
+                        principalTable: "BudgetGroups",
+                        principalColumn: "budget_group_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -197,60 +227,28 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    budget_cell_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     budget_row_id = table.Column<int>(type: "integer", nullable: false),
-                    budget_column_id = table.Column<int>(type: "integer", nullable: false),
-                    budget_group_id = table.Column<int>(type: "integer", nullable: false),
-                    person_id = table.Column<int>(type: "integer", nullable: false),
-                    year = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(2025, 3, 27, 19, 26, 30, 904, DateTimeKind.Utc).AddTicks(7210))
+                    month = table.Column<int>(type: "integer", nullable: false),
+                    amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_budget_cells", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_budget_cells_budget_columns_budget_column_id",
-                        column: x => x.budget_column_id,
-                        principalSchema: "public",
-                        principalTable: "BudgetColumns",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_budget_cells_budget_groups_budget_group_id",
-                        column: x => x.budget_group_id,
-                        principalSchema: "public",
-                        principalTable: "BudgetGroups",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("pk_budget_cells", x => x.budget_cell_id);
+                    table.CheckConstraint("ck_budgetcell_month", "month BETWEEN 1 AND 12");
                     table.ForeignKey(
                         name: "fk_budget_cells_budget_rows_budget_row_id",
                         column: x => x.budget_row_id,
                         principalSchema: "public",
                         principalTable: "BudgetRows",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_budget_cells_people_person_id",
-                        column: x => x.person_id,
-                        principalSchema: "public",
-                        principalTable: "People",
-                        principalColumn: "id",
+                        principalColumn: "budget_row_id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_budget_cells_budget_column_id",
-                schema: "public",
-                table: "BudgetCells",
-                column: "budget_column_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_budget_cells_budget_group_id",
-                schema: "public",
-                table: "BudgetCells",
-                column: "budget_group_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_budget_cells_budget_row_id",
@@ -259,58 +257,44 @@ namespace Infrastructure.Migrations
                 column: "budget_row_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_cells_person_id",
+                name: "ix_budget_cells_budget_row_id_month",
                 schema: "public",
                 table: "BudgetCells",
-                column: "person_id");
+                columns: new[] { "budget_row_id", "month" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_cells_year",
-                schema: "public",
-                table: "BudgetCells",
-                column: "year");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_budget_columns_index",
-                schema: "public",
-                table: "BudgetColumns",
-                column: "index");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_budget_columns_name",
-                schema: "public",
-                table: "BudgetColumns",
-                column: "name");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_budget_groups_index",
+                name: "ix_budget_groups_budget_id",
                 schema: "public",
                 table: "BudgetGroups",
-                column: "index");
+                column: "budget_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_groups_person_id",
+                name: "ix_budget_groups_budget_id_index",
                 schema: "public",
                 table: "BudgetGroups",
-                column: "person_id");
+                columns: new[] { "budget_id", "index" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_rows_index",
+                name: "ix_budget_rows_budget_group_id",
                 schema: "public",
                 table: "BudgetRows",
-                column: "index");
+                column: "budget_group_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_rows_person_id",
+                name: "ix_budget_rows_budget_group_id_index",
                 schema: "public",
                 table: "BudgetRows",
-                column: "person_id");
+                columns: new[] { "budget_group_id", "index" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_budget_rows_year",
+                name: "ix_budgets_person_id_year",
                 schema: "public",
-                table: "BudgetRows",
-                column: "year");
+                table: "Budgets",
+                columns: new[] { "person_id", "year" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_people_email",
@@ -327,10 +311,10 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_todo_groups_id",
+                name: "ix_people_username",
                 schema: "public",
-                table: "TodoGroups",
-                column: "id",
+                table: "People",
+                column: "username",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -338,6 +322,13 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 table: "TodoGroups",
                 column: "name");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_todo_groups_todo_group_id",
+                schema: "public",
+                table: "TodoGroups",
+                column: "todo_group_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_todo_group_todos_todo_group_id",
@@ -371,19 +362,6 @@ namespace Infrastructure.Migrations
                 column: "done");
 
             migrationBuilder.CreateIndex(
-                name: "ix_todos_id",
-                schema: "public",
-                table: "Todos",
-                column: "id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_todos_last_modified",
-                schema: "public",
-                table: "Todos",
-                column: "last_modified");
-
-            migrationBuilder.CreateIndex(
                 name: "ix_todos_name",
                 schema: "public",
                 table: "Todos",
@@ -394,6 +372,19 @@ namespace Infrastructure.Migrations
                 schema: "public",
                 table: "Todos",
                 column: "priority");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_todos_todo_id",
+                schema: "public",
+                table: "Todos",
+                column: "todo_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_todos_updated_at",
+                schema: "public",
+                table: "Todos",
+                column: "updated_at");
         }
 
         /// <inheritdoc />
@@ -412,14 +403,6 @@ namespace Infrastructure.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "BudgetColumns",
-                schema: "public");
-
-            migrationBuilder.DropTable(
-                name: "BudgetGroups",
-                schema: "public");
-
-            migrationBuilder.DropTable(
                 name: "BudgetRows",
                 schema: "public");
 
@@ -429,6 +412,14 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Todos",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "BudgetGroups",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "Budgets",
                 schema: "public");
 
             migrationBuilder.DropTable(

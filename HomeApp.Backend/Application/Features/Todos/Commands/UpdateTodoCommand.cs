@@ -22,6 +22,6 @@ public sealed class UpdateTodoCommand : IRequest<Result>
             Name = item.Name,
             Done = item.Done,
             Priority = item.Priority,
-            LastModified = DateTime.Now
+            UpdatedAt = DateTime.Now
         };
 }

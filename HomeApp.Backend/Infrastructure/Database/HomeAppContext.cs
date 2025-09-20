@@ -19,8 +19,10 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema(Schemas.Default);
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(HomeAppContext).Assembly);
 
-        modelBuilder.HasDefaultSchema(Schemas.Default);
+        modelBuilder.ApplyAuditedColumnOrdering();
     }
 }

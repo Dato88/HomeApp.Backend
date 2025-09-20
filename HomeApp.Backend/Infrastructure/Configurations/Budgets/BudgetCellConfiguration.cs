@@ -26,8 +26,7 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
         builder.Property(c => c.CreatedById)
             .IsRequired();
         builder.Property(c => c.UpdatedAt);
-        builder.Property(c => c.UpdatedById)
-            .HasDefaultValue(0);
+        builder.Property(c => c.UpdatedById);
 
         // Indices / Constraints
         builder.HasIndex(c => c.BudgetRowId);
@@ -36,7 +35,7 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
 
         builder.ToTable(t => t.HasCheckConstraint(
             "ck_budgetcell_month",
-            "\"Month\" BETWEEN 1 AND 12"
+            "month BETWEEN 1 AND 12"
         ));
 
         // Relations

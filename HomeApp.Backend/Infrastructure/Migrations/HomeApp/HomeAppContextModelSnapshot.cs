@@ -3,7 +3,6 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations.HomeApp
 {
     [DbContext(typeof(HomeAppContext))]
-    [Migration("20250330102838_FixDefaultValueCreatedAt")]
-    partial class FixDefaultValueCreatedAt
+    partial class HomeAppContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,22 +23,70 @@ namespace Infrastructure.Migrations.HomeApp
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
+            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("BudgetId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("budget_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetId"));
 
-                    b.Property<int>("BudgetColumnId")
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
                         .HasColumnType("integer")
-                        .HasColumnName("budget_column_id");
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
-                    b.Property<int>("BudgetGroupId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer")
-                        .HasColumnName("budget_group_id");
+                        .HasColumnName("person_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
+
+                    b.HasKey("BudgetId")
+                        .HasName("pk_budgets");
+
+                    b.HasIndex("PersonId", "Year")
+                        .IsUnique()
+                        .HasDatabaseName("ix_budgets_person_id_year");
+
+                    b.ToTable("Budgets", "public");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
+                {
+                    b.Property<int>("BudgetCellId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("budget_cell_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetCellId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("amount");
 
                     b.Property<int>("BudgetRowId")
                         .HasColumnType("integer")
@@ -51,93 +96,73 @@ namespace Infrastructure.Migrations.HomeApp
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<int>("PersonId")
+                    b.Property<int>("CreatedById")
                         .HasColumnType("integer")
-                        .HasColumnName("person_id");
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
-                    b.Property<int>("Year")
+                    b.Property<int>("Month")
                         .HasColumnType("integer")
-                        .HasColumnName("year");
+                        .HasColumnName("month");
 
-                    b.HasKey("Id")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("BudgetCellId")
                         .HasName("pk_budget_cells");
-
-                    b.HasIndex("BudgetColumnId")
-                        .HasDatabaseName("ix_budget_cells_budget_column_id");
-
-                    b.HasIndex("BudgetGroupId")
-                        .HasDatabaseName("ix_budget_cells_budget_group_id");
 
                     b.HasIndex("BudgetRowId")
                         .HasDatabaseName("ix_budget_cells_budget_row_id");
 
-                    b.HasIndex("PersonId")
-                        .HasDatabaseName("ix_budget_cells_person_id");
+                    b.HasIndex("BudgetRowId", "Month")
+                        .IsUnique()
+                        .HasDatabaseName("ix_budget_cells_budget_row_id_month");
 
-                    b.HasIndex("Year")
-                        .HasDatabaseName("ix_budget_cells_year");
-
-                    b.ToTable("BudgetCells", "public");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetColumn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_budget_columns");
-
-                    b.HasIndex("Index")
-                        .HasDatabaseName("ix_budget_columns_index");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("ix_budget_columns_name");
-
-                    b.ToTable("BudgetColumns", "public");
+                    b.ToTable("BudgetCells", "public", t =>
+                        {
+                            t.HasCheckConstraint("ck_budgetcell_month", "month BETWEEN 1 AND 12");
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("BudgetGroupId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("budget_group_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetGroupId"));
+
+                    b.Property<int>("BudgetGroupType")
+                        .HasColumnType("integer")
+                        .HasColumnName("budget_group_type");
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("integer")
+                        .HasColumnName("budget_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<int>("Index")
                         .HasColumnType("integer")
@@ -149,36 +174,54 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
 
-                    b.HasKey("Id")
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("BudgetGroupId")
                         .HasName("pk_budget_groups");
 
-                    b.HasIndex("Index")
-                        .HasDatabaseName("ix_budget_groups_index");
+                    b.HasIndex("BudgetId")
+                        .HasDatabaseName("ix_budget_groups_budget_id");
 
-                    b.HasIndex("PersonId")
-                        .HasDatabaseName("ix_budget_groups_person_id");
+                    b.HasIndex("BudgetId", "Index")
+                        .IsUnique()
+                        .HasDatabaseName("ix_budget_groups_budget_id_index");
 
                     b.ToTable("BudgetGroups", "public");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("BudgetRowId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("budget_row_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetRowId"));
+
+                    b.Property<int>("BudgetGroupId")
+                        .HasColumnType("integer")
+                        .HasColumnName("budget_group_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<int>("Index")
                         .HasColumnType("integer")
@@ -190,43 +233,50 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("integer")
-                        .HasColumnName("year");
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
 
-                    b.HasKey("Id")
+                    b.HasKey("BudgetRowId")
                         .HasName("pk_budget_rows");
 
-                    b.HasIndex("Index")
-                        .HasDatabaseName("ix_budget_rows_index");
+                    b.HasIndex("BudgetGroupId")
+                        .HasDatabaseName("ix_budget_rows_budget_group_id");
 
-                    b.HasIndex("PersonId")
-                        .HasDatabaseName("ix_budget_rows_person_id");
-
-                    b.HasIndex("Year")
-                        .HasDatabaseName("ix_budget_rows_year");
+                    b.HasIndex("BudgetGroupId", "Index")
+                        .IsUnique()
+                        .HasDatabaseName("ix_budget_rows_budget_group_id_index");
 
                     b.ToTable("BudgetRows", "public");
                 });
 
             modelBuilder.Entity("Domain.Entities.People.Person", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("PersonId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("person_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PersonId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -246,6 +296,16 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(150)")
                         .HasColumnName("last_name");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -257,7 +317,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(150)")
                         .HasColumnName("username");
 
-                    b.HasKey("Id")
+                    b.HasKey("PersonId")
                         .HasName("pk_people");
 
                     b.HasIndex("Email")
@@ -268,33 +328,38 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_people_user_id");
 
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("ix_people_username");
+
                     b.ToTable("People", "public");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.Todo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TodoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("todo_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<bool>("Done")
                         .HasColumnType("boolean")
                         .HasColumnName("done");
-
-                    b.Property<DateTime>("LastModified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("last_modified")
-                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -306,18 +371,21 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("priority");
 
-                    b.HasKey("Id")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("TodoId")
                         .HasName("pk_todos");
 
                     b.HasIndex("Done")
                         .HasDatabaseName("ix_todos_done");
-
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_todos_id");
-
-                    b.HasIndex("LastModified")
-                        .HasDatabaseName("ix_todos_last_modified");
 
                     b.HasIndex("Name")
                         .HasDatabaseName("ix_todos_name");
@@ -325,23 +393,37 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("Priority")
                         .HasDatabaseName("ix_todos_priority");
 
+                    b.HasIndex("TodoId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_todos_todo_id");
+
+                    b.HasIndex("UpdatedAt")
+                        .HasDatabaseName("ix_todos_updated_at");
+
                     b.ToTable("Todos", "public");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroup", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TodoGroupId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("todo_group_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoGroupId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -349,33 +431,50 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
-                    b.HasKey("Id")
-                        .HasName("pk_todo_groups");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
 
-                    b.HasIndex("Id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_todo_groups_id");
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("TodoGroupId")
+                        .HasName("pk_todo_groups");
 
                     b.HasIndex("Name")
                         .HasDatabaseName("ix_todo_groups_name");
+
+                    b.HasIndex("TodoGroupId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_todo_groups_todo_group_id");
 
                     b.ToTable("TodoGroups", "public");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TodoGroupTodoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("todo_group_todo_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoGroupTodoId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<int>("TodoGroupId")
                         .HasColumnType("integer")
@@ -385,7 +484,17 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("todo_id");
 
-                    b.HasKey("Id")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("TodoGroupTodoId")
                         .HasName("pk_todo_group_todos");
 
                     b.HasIndex("TodoGroupId")
@@ -400,18 +509,25 @@ namespace Infrastructure.Migrations.HomeApp
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoPerson", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TodoPersonId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("todo_person_id")
+                        .HasColumnOrder(0);
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TodoPersonId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
+                        .HasColumnOrder(1)
                         .HasDefaultValueSql("NOW()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
 
                     b.Property<int>("PersonId")
                         .HasColumnType("integer")
@@ -421,7 +537,17 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("todo_id");
 
-                    b.HasKey("Id")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("TodoPersonId")
                         .HasName("pk_todo_people");
 
                     b.HasIndex("PersonId")
@@ -433,67 +559,52 @@ namespace Infrastructure.Migrations.HomeApp
                     b.ToTable("TodoPeople", "public");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("Budgets")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_budgets_people_person_id");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
                 {
-                    b.HasOne("Domain.Entities.Budgets.BudgetColumn", "BudgetColumn")
-                        .WithMany("BudgetCells")
-                        .HasForeignKey("BudgetColumnId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_cells_budget_columns_budget_column_id");
-
-                    b.HasOne("Domain.Entities.Budgets.BudgetGroup", "BudgetGroup")
-                        .WithMany("BudgetCells")
-                        .HasForeignKey("BudgetGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_cells_budget_groups_budget_group_id");
-
                     b.HasOne("Domain.Entities.Budgets.BudgetRow", "BudgetRow")
-                        .WithMany("BudgetCells")
+                        .WithMany("Cells")
                         .HasForeignKey("BudgetRowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_budget_cells_budget_rows_budget_row_id");
 
-                    b.HasOne("Domain.Entities.People.Person", "Person")
-                        .WithMany("BudgetCells")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_cells_people_person_id");
-
-                    b.Navigation("BudgetColumn");
-
-                    b.Navigation("BudgetGroup");
-
                     b.Navigation("BudgetRow");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
                 {
-                    b.HasOne("Domain.Entities.People.Person", "Person")
+                    b.HasOne("Domain.Entities.Budgets.Budget", "Budget")
                         .WithMany("BudgetGroups")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_budget_groups_people_person_id");
+                        .HasConstraintName("fk_budget_groups_budgets_budget_id");
 
-                    b.Navigation("Person");
+                    b.Navigation("Budget");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
                 {
-                    b.HasOne("Domain.Entities.People.Person", "Person")
+                    b.HasOne("Domain.Entities.Budgets.BudgetGroup", "Group")
                         .WithMany("BudgetRows")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("BudgetGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_budget_rows_people_person_id");
+                        .HasConstraintName("fk_budget_rows_budget_groups_budget_group_id");
 
-                    b.Navigation("Person");
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
@@ -538,28 +649,24 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Todo");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetColumn", b =>
+            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
                 {
-                    b.Navigation("BudgetCells");
+                    b.Navigation("BudgetGroups");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
                 {
-                    b.Navigation("BudgetCells");
+                    b.Navigation("BudgetRows");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
                 {
-                    b.Navigation("BudgetCells");
+                    b.Navigation("Cells");
                 });
 
             modelBuilder.Entity("Domain.Entities.People.Person", b =>
                 {
-                    b.Navigation("BudgetCells");
-
-                    b.Navigation("BudgetGroups");
-
-                    b.Navigation("BudgetRows");
+                    b.Navigation("Budgets");
 
                     b.Navigation("TodoPeople");
                 });

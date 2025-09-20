@@ -23,7 +23,7 @@ public sealed class TodoCommands(HomeAppContext dbContext) : ITodoCommands
         existingTodo.Name = todo.Name;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.LastModified = DateTime.UtcNow;
+        existingTodo.UpdatedAt = DateTime.UtcNow;
 
         dbContext.Todos.Update(existingTodo);
         await dbContext.SaveChangesAsync(cancellationToken);

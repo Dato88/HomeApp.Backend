@@ -37,7 +37,7 @@ public class TodosDataSeeder : BaseTest
 
         var todo = await GenereateDummyTodo(personId);
 
-        if (dateTime.HasValue) todo.LastModified = dateTime.Value;
+        if (dateTime.HasValue) todo.UpdatedAt = dateTime.Value;
 
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();

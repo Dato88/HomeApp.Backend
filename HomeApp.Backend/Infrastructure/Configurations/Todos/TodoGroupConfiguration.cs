@@ -12,12 +12,17 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
 
         builder.HasKey(t => t.TodoGroupId);
 
-        builder.Property(t => t.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(150);
+
+        // Auditing
+        builder.Property(c => c.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+        builder.Property(c => c.CreatedById)
+            .IsRequired();
+        builder.Property(c => c.UpdatedAt);
+        builder.Property(c => c.UpdatedById);
 
         // Indices
         builder.HasIndex(x => x.TodoGroupId)

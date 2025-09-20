@@ -9,7 +9,7 @@ public sealed record GetToDoResponse(
     string Name,
     bool Done,
     TodoPriority Priority,
-    DateTimeOffset LastModified
+    DateTime? UpdatedAt
 )
 {
     public static implicit operator GetToDoResponse(Todo item) =>
@@ -19,6 +19,6 @@ public sealed record GetToDoResponse(
             item.Name,
             item.Done,
             item.Priority,
-            item.LastModified
+            item.UpdatedAt
         );
 }

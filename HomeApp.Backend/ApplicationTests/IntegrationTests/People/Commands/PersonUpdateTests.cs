@@ -55,10 +55,10 @@ public class PersonCommandsUpdateTests : BaseCommonPersonTest
         var updated = new Person
         {
             PersonId = existingPerson.PersonId,
-            Username = "updateduser",
-            FirstName = "Jane",
-            LastName = "Doe",
-            Email = "updated212@example.com",
+            Username = "updateduser123",
+            FirstName = "Jane123",
+            LastName = "Doe123",
+            Email = "updated212123@example.com",
             UserId = "safdf-adfdf-dfdsx-Tcere-fooOO-1232?"
         };
 

@@ -23,8 +23,7 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
         builder.Property(b => b.CreatedById)
             .IsRequired();
         builder.Property(b => b.UpdatedAt);
-        builder.Property(b => b.UpdatedById)
-            .HasDefaultValue(0);
+        builder.Property(b => b.UpdatedById);
 
         // One budget per person/year
         builder.HasIndex(b => new { b.PersonId, b.Year })
@@ -34,6 +33,7 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
         builder.HasOne(b => b.Person)
             .WithMany(p => p.Budgets)
             .HasForeignKey(b => b.PersonId)
+            .HasPrincipalKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(b => b.BudgetGroups)

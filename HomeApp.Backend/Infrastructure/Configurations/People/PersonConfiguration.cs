@@ -12,9 +12,6 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
 
         builder.HasKey(p => p.PersonId);
 
-        builder.Property(p => p.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
         builder.Property(p => p.Username)
             .HasMaxLength(150);
 
@@ -34,6 +31,14 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .IsRequired()
             .HasMaxLength(36);
 
+        // Auditing
+        builder.Property(c => c.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+        builder.Property(c => c.CreatedById)
+            .IsRequired();
+        builder.Property(c => c.UpdatedAt);
+        builder.Property(c => c.UpdatedById);
+
         // Indices
         builder.HasIndex(p => p.Email)
             .IsUnique();
@@ -43,11 +48,6 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .IsUnique();
 
         // Relationen
-        builder.HasMany(p => p.Budgets)
-            .WithOne()
-            .HasForeignKey(b => b.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasMany(tp => tp.TodoPeople)
             .WithOne(p => p.Person)
             .HasForeignKey(p => p.PersonId)

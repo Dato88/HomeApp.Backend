@@ -26,8 +26,7 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
         builder.Property(r => r.CreatedById)
             .IsRequired();
         builder.Property(r => r.UpdatedAt);
-        builder.Property(r => r.UpdatedById)
-            .HasDefaultValue(0);
+        builder.Property(r => r.UpdatedById);
 
         // Indices (ordering unique within a group)
         builder.HasIndex(r => r.BudgetGroupId);

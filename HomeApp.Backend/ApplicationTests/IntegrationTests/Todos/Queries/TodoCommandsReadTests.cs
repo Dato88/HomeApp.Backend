@@ -22,7 +22,7 @@ public class TodoReadTests : BaseTodoQueriesTest
                 .Excluding(t => t.CreatedAt)
                 .Excluding(t => t.TodoGroupTodo)
                 .Excluding(t => t.TodoPeople)
-                .Excluding(t => t.LastModified));
+                .Excluding(t => t.UpdatedAt));
     }
 
     [Theory]

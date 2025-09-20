@@ -12,13 +12,18 @@ internal sealed class TodoPersonConfiguration : IEntityTypeConfiguration<TodoPer
 
         builder.HasKey(t => t.TodoPersonId);
 
-        builder.Property(t => t.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
         builder.Property(x => x.PersonId)
             .IsRequired();
         builder.Property(x => x.TodoId)
             .IsRequired();
+
+        // Auditing
+        builder.Property(c => c.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+        builder.Property(c => c.CreatedById)
+            .IsRequired();
+        builder.Property(c => c.UpdatedAt);
+        builder.Property(c => c.UpdatedById);
 
         // Indices
         builder.HasIndex(x => x.PersonId);
