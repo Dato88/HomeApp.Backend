@@ -1,5 +1,9 @@
-﻿using Application.Features.Budgets.Queries;
+﻿using Application.Features.Budgets.Commands;
+using Application.Features.Budgets.Queries;
+using Domain.Entities.Budgets;
+using Domain.Entities.Budgets.Enums;
 using SharedKernel;
+using Web.Api.Requests.Budget;
 
 namespace Web.Api.Controllers;
 
@@ -13,7 +17,7 @@ public class BudgetController(IMediator mediator) : ControllerBase
     private readonly IMediator _mediator = mediator;
 
     [HttpGet("budget")]
-    public async Task<IActionResult> GetBudgetAsync(int year, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBudgetAsync([FromQuery] int year, CancellationToken cancellationToken)
     {
         if (year <= 0)
             year = DateTime.Now.Year;
@@ -46,14 +50,17 @@ public class BudgetController(IMediator mediator) : ControllerBase
     //     return Ok(budgetColumn);
     // }
     //
-    // [HttpPost("group")]
-    // public async Task<IActionResult> PostBudgetGroupAsync([FromBody] BudgetGroup budgetGroup,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.CreateBudgetGroupAsync(budgetGroup, cancellationToken);
-    //
-    //     return Ok(budgetGroup);
-    // }
+
+    [HttpPost("group")]
+    public async Task<IActionResult> PostBudgetGroupAsync([FromBody] CreateBudgetGroupRequest createBudgetGroupRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((CreateBudgetGroupCommand)createBudgetGroupRequest);
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
     //
     // [HttpPost("row")]
     // public async Task<IActionResult> PostBudgetRowAsync([FromBody] BudgetRow budgetRow,

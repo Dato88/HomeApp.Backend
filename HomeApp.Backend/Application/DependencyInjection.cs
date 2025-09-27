@@ -32,15 +32,6 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // services.AddScoped<IBudgetValidation, BudgetValidation>();
-
-        // services.AddScoped<IBudgetCellCrud, BudgetCellQueries>();
-        // services.AddScoped<IBudgetColumnCrud, BudgetColumnQueries>();
-        // services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
-        // builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
-        // builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
-
-
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
         services.AddSingleton(emailConfig);
         services.AddScoped<IEmailSender, EmailSender>();
