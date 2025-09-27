@@ -33,8 +33,8 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
     public async Task<Result<int>> CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
     {
-        var budgetIdIsValid = _dbContext.BudgetGroups.Any(x =>
-            x.BudgetId == budgetGroup.BudgetId && x.Budget.PersonId == _userContext.PersonId);
+        var budgetIdIsValid = _dbContext.Budgets.Any(x =>
+            x.BudgetId == budgetGroup.BudgetId && x.PersonId == _userContext.PersonId);
 
         if (!budgetIdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetId is invalid"));
