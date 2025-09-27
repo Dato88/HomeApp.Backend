@@ -125,6 +125,28 @@ public class BudgetController(IMediator mediator) : ControllerBase
         return BadRequest(response.Error);
     }
 
+    [HttpDelete("group")]
+    public async Task<IActionResult> DeleteBudgetGroupAsync([FromQuery] int budgetRowId,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new DeleteBudgetGroupCommand(budgetRowId));
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpDelete("group")]
+    public async Task<IActionResult> DeleteBudgetRowAsync([FromQuery] int budgetRowId,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new DeleteBudgetRowCommand(budgetRowId));
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
+
     // [HttpDelete("cell/{id}")]
     // public async Task<IActionResult> DeleteBudgetCellAsync(int id, CancellationToken cancellationToken)
     // {

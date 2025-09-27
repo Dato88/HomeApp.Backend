@@ -109,4 +109,19 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
         return Result.Success(budgetGroupId);
     }
+
+    public async Task<Result<int>> DeleteBudgetRowAsync(int budgetRowId, CancellationToken cancellationToken)
+    {
+        var budgetRow = await _dbContext.BudgetRows.SingleOrDefaultAsync(x =>
+            x.BudgetRowId == budgetRowId &&
+            x.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+
+        if (budgetRow == null)
+            return Result.Failure<int>(BudgetErrors.DeleteFailed(budgetRowId));
+
+        _dbContext.BudgetRows.Remove(budgetRow);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(budgetRowId);
+    }
 }

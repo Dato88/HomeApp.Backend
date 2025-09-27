@@ -4,7 +4,7 @@ using SharedKernel;
 
 namespace Application.Features.Budgets.Commands;
 
-public class DeleteBudgetGroupCommandHandler(
+public sealed class DeleteBudgetGroupCommandHandler(
     IBudgetCommands budgetCommands,
     IAppLogger<DeleteBudgetGroupCommandHandler> logger)
     : IRequestHandler<DeleteBudgetGroupCommand, Result<int>>
