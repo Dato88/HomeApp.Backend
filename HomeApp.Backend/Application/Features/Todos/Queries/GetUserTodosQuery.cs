@@ -4,6 +4,4 @@ using SharedKernel;
 
 namespace Application.Features.Todos.Queries;
 
-public sealed class GetUserTodosQuery : IRequest<Result<IEnumerable<GetToDoResponse>>>
-{
-}
+public sealed class GetUserTodosQuery : IRequest<Result<IEnumerable<GetToDoResponse>>>;
