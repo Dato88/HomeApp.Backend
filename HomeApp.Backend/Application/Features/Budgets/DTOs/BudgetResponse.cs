@@ -23,7 +23,7 @@ public sealed class BudgetResponse
     {
         var groups = budget.BudgetGroups ?? Enumerable.Empty<BudgetGroup>();
         var rows = groups.SelectMany(g => g.BudgetRows ?? Enumerable.Empty<BudgetRow>());
-        var cells = rows.SelectMany(r => r.Cells ?? Enumerable.Empty<BudgetCell>());
+        var cells = rows.SelectMany(r => r.BudgetCells ?? Enumerable.Empty<BudgetCell>());
 
         return new BudgetResponse
         {

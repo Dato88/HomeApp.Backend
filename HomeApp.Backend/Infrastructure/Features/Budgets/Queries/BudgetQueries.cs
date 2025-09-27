@@ -20,7 +20,7 @@ public sealed class BudgetQueries(
 
         var budget = await query.Include(i => i.BudgetGroups)
             .ThenInclude(th => th.BudgetRows)
-            .ThenInclude(th => th.Cells)
+            .ThenInclude(th => th.BudgetCells)
             .AsSplitQuery()
             .SingleOrDefaultAsync(x => x.PersonId == _userContext.PersonId && x.Year == year, cancellationToken);
 

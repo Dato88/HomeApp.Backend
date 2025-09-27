@@ -10,8 +10,8 @@ public class BudgetRow : IAudited
     public int Index { get; set; }
     public string Name { get; set; } = default!;
 
-    public virtual BudgetGroup Group { get; set; }
-    public virtual ICollection<BudgetCell> Cells { get; set; } = new HashSet<BudgetCell>();
+    public virtual BudgetGroup BudgetGroup { get; set; }
+    public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
 
     public DateTime CreatedAt { get; set; }
     public int CreatedById { get; set; }

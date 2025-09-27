@@ -40,7 +40,7 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
 
         // Relations
         builder.HasOne(c => c.BudgetRow)
-            .WithMany(r => r.Cells)
+            .WithMany(r => r.BudgetCells)
             .HasForeignKey(c => c.BudgetRowId)
             .OnDelete(DeleteBehavior.Cascade);
     }

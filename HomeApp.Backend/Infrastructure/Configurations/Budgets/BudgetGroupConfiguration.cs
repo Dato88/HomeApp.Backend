@@ -41,7 +41,7 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(g => g.BudgetRows)
-            .WithOne(r => r.Group)
+            .WithOne(r => r.BudgetGroup)
             .HasForeignKey(r => r.BudgetGroupId)
             .OnDelete(DeleteBehavior.Cascade);
     }

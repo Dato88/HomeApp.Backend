@@ -5,7 +5,7 @@ using SharedKernel;
 
 namespace Application.Features.Budgets.Commands;
 
-public class CreateBudgetRowCommandHandler(
+public sealed class CreateBudgetRowCommandHandler(
     IBudgetCommands budgetCommands,
     IAppLogger<CreateBudgetRowCommandHandler> logger)
     : IRequestHandler<CreateBudgetRowCommand, Result<int>>

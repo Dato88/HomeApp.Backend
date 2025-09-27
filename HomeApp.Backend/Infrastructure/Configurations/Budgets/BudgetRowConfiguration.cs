@@ -34,12 +34,12 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
             .IsUnique();
 
         // Relations
-        builder.HasOne(r => r.Group)
+        builder.HasOne(r => r.BudgetGroup)
             .WithMany(g => g.BudgetRows)
             .HasForeignKey(r => r.BudgetGroupId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(r => r.Cells)
+        builder.HasMany(r => r.BudgetCells)
             .WithOne(c => c.BudgetRow)
             .HasForeignKey(c => c.BudgetRowId)
             .OnDelete(DeleteBehavior.Cascade);
