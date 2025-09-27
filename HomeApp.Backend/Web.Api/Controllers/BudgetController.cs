@@ -16,7 +16,7 @@ public class BudgetController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpGet("budget")]
+    [HttpGet("")]
     public async Task<IActionResult> GetBudgetAsync([FromQuery] int year, CancellationToken cancellationToken)
     {
         if (year <= 0)
@@ -28,6 +28,17 @@ public class BudgetController(IMediator mediator) : ControllerBase
 
         if (response.Error.Type == ErrorType.NotFound)
             return NoContent();
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpPost("")]
+    public async Task<IActionResult> PostBudgetAsync([FromQuery] int year,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new CreateBudgetCommand(year));
+
+        if (response.IsSuccess) return Ok(response.Value);
 
         return BadRequest(response.Error);
     }

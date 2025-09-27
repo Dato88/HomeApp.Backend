@@ -11,6 +11,22 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     private readonly HomeAppContext _dbContext = dbContext;
     private readonly IUserContext _userContext = userContext;
 
+    public async Task<Result<int>> CreateBudgetAsync(int year, CancellationToken cancellationToken)
+    {
+        var budgetYearExists = _dbContext.Budgets.Any(x =>
+            x.Year == year && x.PersonId == _userContext.PersonId);
+
+        if (budgetYearExists)
+            return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("Budget Year already exists"));
+
+        var newBudget = new Budget() { PersonId = _userContext.PersonId, Year = year, };
+
+        _dbContext.Budgets.Add(newBudget);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(newBudget.BudgetId);
+    }
+
     public async Task<Result<int>> CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
     {
         var budgetIdIsValid = _dbContext.Budgets.Any(x =>
