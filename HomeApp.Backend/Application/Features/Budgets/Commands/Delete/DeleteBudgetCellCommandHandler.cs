@@ -2,7 +2,7 @@
 using MediatR;
 using SharedKernel;
 
-namespace Application.Features.Budgets.Commands;
+namespace Application.Features.Budgets.Commands.Delete;
 
 public sealed class DeleteBudgetCellCommandHandler(
     IBudgetCommands budgetCommands,

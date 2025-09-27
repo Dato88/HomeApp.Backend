@@ -3,7 +3,7 @@ using Domain.Entities.Budgets;
 using MediatR;
 using SharedKernel;
 
-namespace Application.Features.Budgets.Commands;
+namespace Application.Features.Budgets.Commands.Create;
 
 public class CreateBudgetCellCommandHandler(
     IBudgetCommands budgetCommands,

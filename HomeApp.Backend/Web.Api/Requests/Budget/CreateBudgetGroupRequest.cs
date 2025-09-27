@@ -1,4 +1,4 @@
-﻿using Application.Features.Budgets.Commands;
+﻿using Application.Features.Budgets.Commands.Create;
 using Domain.Entities.Budgets.Enums;
 
 namespace Web.Api.Requests.Budget;

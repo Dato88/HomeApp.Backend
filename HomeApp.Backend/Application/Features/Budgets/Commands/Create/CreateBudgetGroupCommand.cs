@@ -3,7 +3,7 @@ using Domain.Entities.Budgets.Enums;
 using MediatR;
 using SharedKernel;
 
-namespace Application.Features.Budgets.Commands;
+namespace Application.Features.Budgets.Commands.Create;
 
 public sealed record CreateBudgetGroupCommand(
     int BudgetId,
