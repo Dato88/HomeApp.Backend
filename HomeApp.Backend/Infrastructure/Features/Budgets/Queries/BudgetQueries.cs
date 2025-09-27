@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions.Authentication;
-using Application.Features.Budgets.Queries;
+using Application.Abstractions.BudgetModule;
 using Domain.Entities.Budgets;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;

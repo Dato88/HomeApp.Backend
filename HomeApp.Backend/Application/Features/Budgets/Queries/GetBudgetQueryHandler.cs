@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Logging;
+﻿using Application.Abstractions.BudgetModule;
+using Application.Abstractions.Logging;
 using Application.Features.Budgets.DTOs;
 using Domain.Entities.Budgets;
 using MediatR;

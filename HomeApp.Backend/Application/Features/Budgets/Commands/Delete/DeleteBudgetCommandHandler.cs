@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Logging;
+﻿using Application.Abstractions.BudgetModule;
+using Application.Abstractions.Logging;
 using MediatR;
 using SharedKernel;
 

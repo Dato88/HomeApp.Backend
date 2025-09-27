@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Budgets;
 using SharedKernel;
 
-namespace Application.Features.Budgets.Commands;
+namespace Application.Abstractions.BudgetModule;
 
 public interface IBudgetCommands
 {

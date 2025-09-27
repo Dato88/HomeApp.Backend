@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Budgets;
 using SharedKernel;
 
-namespace Application.Features.Budgets.Queries;
+namespace Application.Abstractions.BudgetModule;
 
 public interface IBudgetQueries
 {

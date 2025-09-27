@@ -1,6 +1,5 @@
-﻿using Application.Abstractions.Authentication;
+﻿using Application.Abstractions.BudgetModule;
 using Application.Abstractions.Logging;
-using Domain.Entities.Budgets;
 using MediatR;
 using SharedKernel;
 

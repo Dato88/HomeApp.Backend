@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.BudgetModule;
 using Application.Abstractions.Logging;
 using Application.Features.Budgets.Commands;
 using Application.Features.Budgets.Queries;
