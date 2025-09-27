@@ -43,15 +43,17 @@ public class BudgetController(IMediator mediator) : ControllerBase
         return BadRequest(response.Error);
     }
 
-    // [HttpPost("cell")]
-    // public async Task<ActionResult<BudgetCell>> PostBudgetCellAsync([FromBody] BudgetCell budgetCell,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.CreateBudgetCellAsync(budgetCell, cancellationToken);
-    //
-    //     return Ok(budgetCell);
-    // }
-    //
+    [HttpPost("cell")]
+    public async Task<ActionResult<BudgetCell>> PostBudgetCellAsync(
+        [FromBody] CreateBudgetCellRequest createBudgetGroupRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((CreateBudgetCellCommand)createBudgetGroupRequest);
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
 
     [HttpPost("group")]
     public async Task<IActionResult> PostBudgetGroupAsync([FromBody] CreateBudgetGroupRequest createBudgetGroupRequest,

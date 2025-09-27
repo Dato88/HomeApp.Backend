@@ -6,7 +6,7 @@ using SharedKernel;
 
 namespace Application.Features.Budgets.Commands;
 
-public class CreateBudgetCommandHandler(
+public sealed class CreateBudgetCommandHandler(
     IBudgetCommands budgetCommands,
     IAppLogger<CreateBudgetCommandHandler> logger)
     : IRequestHandler<CreateBudgetCommand, Result<int>>

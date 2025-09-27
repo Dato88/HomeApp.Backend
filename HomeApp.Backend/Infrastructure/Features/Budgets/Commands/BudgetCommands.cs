@@ -2,6 +2,7 @@
 using Application.Features.Budgets.Commands;
 using Domain.Entities.Budgets;
 using Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
 namespace Infrastructure.Features.Budgets.Commands;
@@ -19,7 +20,10 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
         if (budgetYearExists)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("Budget Year already exists"));
 
-        var newBudget = new Budget() { PersonId = _userContext.PersonId, Year = year, };
+        var newBudget = new Budget()
+        {
+            PersonId = _userContext.PersonId, Year = year, CreatedById = _userContext.PersonId
+        };
 
         _dbContext.Budgets.Add(newBudget);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -35,6 +39,8 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
         if (!budgetIdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetId is invalid"));
 
+        budgetGroup.CreatedById = _userContext.PersonId;
+
         _dbContext.BudgetGroups.Add(budgetGroup);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -49,9 +55,28 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
         if (!budgetGroupIdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetGroupId is invalid"));
 
+        budgetRow.CreatedById = _userContext.PersonId;
+
         _dbContext.BudgetRows.Add(budgetRow);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success(budgetRow.BudgetRowId);
+    }
+
+    public async Task<Result<int>> CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
+    {
+        var budgetRowdIsValid = _dbContext.BudgetRows.Any(x =>
+            x.BudgetRowId == budgetCell.BudgetRowId &&
+            x.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+
+        if (!budgetRowdIsValid)
+            return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetRowId is invalid"));
+
+        budgetCell.CreatedById = _userContext.PersonId;
+
+        _dbContext.BudgetCells.Add(budgetCell);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(budgetCell.BudgetCellId);
     }
 }
