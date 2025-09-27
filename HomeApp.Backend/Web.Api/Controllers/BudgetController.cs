@@ -136,7 +136,7 @@ public class BudgetController(IMediator mediator) : ControllerBase
         return BadRequest(response.Error);
     }
 
-    [HttpDelete("group")]
+    [HttpDelete("row")]
     public async Task<IActionResult> DeleteBudgetRowAsync([FromQuery] int budgetRowId,
         CancellationToken cancellationToken)
     {
@@ -147,35 +147,14 @@ public class BudgetController(IMediator mediator) : ControllerBase
         return BadRequest(response.Error);
     }
 
-    // [HttpDelete("cell/{id}")]
-    // public async Task<IActionResult> DeleteBudgetCellAsync(int id, CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.DeleteBudgetCellAsync(id, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpDelete("column/{id}")]
-    // public async Task<IActionResult> DeleteBudgetColumnAsync(int id, CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.DeleteBudgetColumnAsync(id, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpDelete("group/{id}")]
-    // public async Task<IActionResult> DeleteBudgetGroupAsync(int id, CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.DeleteBudgetGroupAsync(id, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpDelete("row/{id}")]
-    // public async Task<IActionResult> DeleteBudgetRowAsync(int id, CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.DeleteBudgetRowAsync(id, cancellationToken);
-    //
-    //     return Ok();
-    // }
+    [HttpDelete("cell")]
+    public async Task<IActionResult> DeleteBudgetCellAsync([FromQuery] int budgetCellId,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new DeleteBudgetCellCommand(budgetCellId));
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
 }

@@ -102,7 +102,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
             x.Budget.PersonId == _userContext.PersonId);
 
         if (budgetGroup == null)
-            return Result.Failure<int>(BudgetErrors.DeleteFailed(budgetGroupId));
+            return Result.Failure<int>(BudgetErrors.DeleteGroupFailed(budgetGroupId));
 
         _dbContext.BudgetGroups.Remove(budgetGroup);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -117,11 +117,26 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
             x.BudgetGroup.Budget.PersonId == _userContext.PersonId);
 
         if (budgetRow == null)
-            return Result.Failure<int>(BudgetErrors.DeleteFailed(budgetRowId));
+            return Result.Failure<int>(BudgetErrors.DeleteRowFailed(budgetRowId));
 
         _dbContext.BudgetRows.Remove(budgetRow);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success(budgetRowId);
+    }
+
+    public async Task<Result<int>> DeleteBudgetCellAsync(int budgetCellId, CancellationToken cancellationToken)
+    {
+        var budgetCell = await _dbContext.BudgetCells.SingleOrDefaultAsync(x =>
+            x.BudgetCellId == budgetCellId &&
+            x.BudgetRow.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+
+        if (budgetCell == null)
+            return Result.Failure<int>(BudgetErrors.DeleteCellFailed(budgetCellId));
+
+        _dbContext.BudgetCells.Remove(budgetCell);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(budgetCellId);
     }
 }

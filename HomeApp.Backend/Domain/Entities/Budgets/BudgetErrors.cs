@@ -29,6 +29,18 @@ public static class BudgetErrors
         "Budget.DeleteFailed",
         $"The budget with the id = '{budgetId}' could not be deleted");
 
+    public static Error DeleteCellFailed(int budgetCellId) => Error.Failure(
+        "Budget.DeleteCellFailed",
+        $"The budgetCell with the id = '{budgetCellId}' could not be deleted");
+
+    public static Error DeleteGroupFailed(int budgetGroupId) => Error.Failure(
+        "Budget.DeleteGroupFailed",
+        $"The budgetGroup with the id = '{budgetGroupId}' could not be deleted");
+
+    public static Error DeleteRowFailed(int budgetRowId) => Error.Failure(
+        "Budget.DeleteRowFailed",
+        $"The budgetRow with the id = '{budgetRowId}' could not be deleted");
+
     public static Error UpdateFailedWithMessage(string message) => Error.Failure(
         "Budget.UpdateFailedWithMessage",
         $"The budget could not be updated with message = '{message}'");

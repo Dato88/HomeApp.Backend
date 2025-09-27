@@ -13,4 +13,5 @@ public interface IBudgetCommands
     Task<Result<int>> DeleteBudgetAsync(int budgetId, CancellationToken cancellationToken);
     Task<Result<int>> DeleteBudgetGroupAsync(int budgetGroupId, CancellationToken cancellationToken);
     Task<Result<int>> DeleteBudgetRowAsync(int budgetRowId, CancellationToken cancellationToken);
+    Task<Result<int>> DeleteBudgetCellAsync(int budgetCellId, CancellationToken cancellationToken);
 }
