@@ -52,15 +52,6 @@ public class BudgetController(IMediator mediator) : ControllerBase
     //     return Ok(budgetCell);
     // }
     //
-    // [HttpPost("column")]
-    // public async Task<IActionResult> PostBudgetColumnAsync([FromBody] BudgetColumn budgetColumn,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.CreateBudgetColumnAsync(budgetColumn, cancellationToken);
-    //
-    //     return Ok(budgetColumn);
-    // }
-    //
 
     [HttpPost("group")]
     public async Task<IActionResult> PostBudgetGroupAsync([FromBody] CreateBudgetGroupRequest createBudgetGroupRequest,
@@ -72,15 +63,17 @@ public class BudgetController(IMediator mediator) : ControllerBase
 
         return BadRequest(response.Error);
     }
-    //
-    // [HttpPost("row")]
-    // public async Task<IActionResult> PostBudgetRowAsync([FromBody] BudgetRow budgetRow,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.CreateBudgetRowAsync(budgetRow, cancellationToken);
-    //
-    //     return Ok(budgetRow);
-    // }
+
+    [HttpPost("row")]
+    public async Task<IActionResult> PostBudgetRowAsync([FromBody] CreateBudgetRowRequest createBudgetRowRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((CreateBudgetRowCommand)createBudgetRowRequest);
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
     //
     // [HttpPut("cell")]
     // public async Task<IActionResult> PutBudgetCellAsync([FromBody] BudgetCell budgetCell,

@@ -40,4 +40,18 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
         return Result.Success(budgetGroup.BudgetGroupId);
     }
+
+    public async Task<Result<int>> CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
+    {
+        var budgetGroupIdIsValid = _dbContext.BudgetGroups.Any(x =>
+            x.BudgetGroupId == budgetRow.BudgetGroupId && x.Budget.PersonId == _userContext.PersonId);
+
+        if (!budgetGroupIdIsValid)
+            return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetGroupId is invalid"));
+
+        _dbContext.BudgetRows.Add(budgetRow);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(budgetRow.BudgetRowId);
+    }
 }
