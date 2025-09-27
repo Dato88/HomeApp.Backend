@@ -1,19 +1,33 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Features.Budgets.Queries;
+using SharedKernel;
 
 namespace Web.Api.Controllers;
 
 [ApiController]
 [Authorize]
 // [Authorize(Policy = "ViewBudgetPolicy")]
+[Authorize]
 [Route("[controller]")]
-public class BudgetController(IBudgetFacade budgetFacade) : ControllerBase
+public class BudgetController(IMediator mediator) : ControllerBase
 {
-    private readonly IBudgetFacade _budgetFacade = budgetFacade;
+    private readonly IMediator _mediator = mediator;
 
-    // [HttpGet("budget")]
-    // public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken) =>
-    //     Ok(await _budgetFacade.GetBudgetAsync(cancellationToken));
-    //
+    [HttpGet("budget")]
+    public async Task<IActionResult> GetBudgetAsync(int year, CancellationToken cancellationToken)
+    {
+        if (year <= 0)
+            year = DateTime.Now.Year;
+
+        var response = await _mediator.Send(new GetBudgetQuery(year));
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        if (response.Error.Type == ErrorType.NotFound)
+            return NoContent();
+
+        return BadRequest(response.Error);
+    }
+
     // [HttpPost("cell")]
     // public async Task<ActionResult<BudgetCell>> PostBudgetCellAsync([FromBody] BudgetCell budgetCell,
     //     CancellationToken cancellationToken)
