@@ -1,5 +1,6 @@
 ﻿using Application.Features.Budgets.Commands.Create;
 using Application.Features.Budgets.Commands.Delete;
+using Application.Features.Budgets.Commands.Update;
 using Application.Features.Budgets.Queries;
 using Domain.Entities.Budgets;
 using SharedKernel;
@@ -76,43 +77,6 @@ public class BudgetController(IMediator mediator) : ControllerBase
 
         return BadRequest(response.Error);
     }
-    //
-    // [HttpPut("cell")]
-    // public async Task<IActionResult> PutBudgetCellAsync([FromBody] BudgetCell budgetCell,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.UpdateBudgetCellAsync(budgetCell, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpPut("column")]
-    // public async Task<IActionResult> PutBudgetColumnAsync([FromBody] BudgetColumn budgetColumn,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.UpdateBudgetColumnAsync(budgetColumn, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpPut("group")]
-    // public async Task<IActionResult> PutBudgetGroupAsync([FromBody] BudgetGroup budgetGroup,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.UpdateBudgetGroupAsync(budgetGroup, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
-    // [HttpPut("row")]
-    // public async Task<IActionResult> PutBudgetRowAsync([FromBody] BudgetRow budgetRow,
-    //     CancellationToken cancellationToken)
-    // {
-    //     await _budgetFacade.UpdateBudgetRowAsync(budgetRow, cancellationToken);
-    //
-    //     return Ok();
-    // }
-    //
 
     [HttpDelete("")]
     public async Task<IActionResult> DeleteBudgetAsync([FromQuery] int budgetId,
@@ -152,6 +116,17 @@ public class BudgetController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new DeleteBudgetCellCommand(budgetCellId));
+
+        if (response.IsSuccess) return Ok(response.Value);
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpPatch("")]
+    public async Task<IActionResult> UpdateBudgetAsync([FromQuery] int budgetId, [FromQuery] int year,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new UpdateBudgetCommand(budgetId, year));
 
         if (response.IsSuccess) return Ok(response.Value);
 

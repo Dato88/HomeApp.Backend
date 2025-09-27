@@ -139,4 +139,28 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
         return Result.Success(budgetCellId);
     }
+
+    public async Task<Result<int>> UpdateBudgetAsync(int budgetId, int year, CancellationToken cancellationToken)
+    {
+        var budgetYearExists = _dbContext.Budgets.Any(x =>
+            x.Year == year && x.PersonId == _userContext.PersonId);
+
+        if (budgetYearExists)
+            return Result.Failure<int>(BudgetErrors.UpdateFailedWithMessage("Budget Year already exists"));
+
+        var budget =
+            _dbContext.Budgets.SingleOrDefault(x => x.BudgetId == budgetId && x.PersonId == _userContext.PersonId);
+
+        if (budget == null)
+            return Result.Failure<int>(BudgetErrors.UpdateFailedWithMessage("BudgetId is invalid"));
+
+        budget.Year = year;
+        budget.UpdatedById = _userContext.PersonId;
+        budget.UpdatedAt = DateTime.UtcNow;
+
+        _dbContext.Budgets.Update(budget);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(budget.BudgetId);
+    }
 }
