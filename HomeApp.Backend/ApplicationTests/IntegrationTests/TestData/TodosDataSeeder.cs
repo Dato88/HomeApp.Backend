@@ -4,7 +4,7 @@ using Domain.Entities.Todos.Enums;
 
 namespace ApplicationTests.IntegrationTests.TestData;
 
-public class TodosDataSeeder : BaseTest
+internal class TodosDataSeeder : BaseTest
 {
     private readonly PeopleDataSeeder _peopleDataSeeder;
     private readonly Faker<Todo> _todoFaker;

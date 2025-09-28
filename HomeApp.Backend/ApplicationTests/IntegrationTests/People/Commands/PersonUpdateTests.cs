@@ -4,7 +4,7 @@ using SharedKernel;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
-public class PersonCommandsUpdateTests : BaseCommonPersonTest
+internal class PersonCommandsUpdateTests : BaseCommonPersonTest
 {
     private readonly PeopleDataSeeder _peopleDataSeeder;
 

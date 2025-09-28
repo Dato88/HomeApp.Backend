@@ -2,7 +2,7 @@
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
-public class TodoDeleteTests : BaseTodoCommandsTest
+internal class TodoDeleteTests : BaseTodoCommandsTest
 {
     public TodoDeleteTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 

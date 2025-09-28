@@ -3,7 +3,7 @@ using Domain.Entities.People;
 
 namespace ApplicationTests.IntegrationTests.People.Queries;
 
-public class PersonQueriesTests : BaseCommonPersonTest
+internal class PersonQueriesTests : BaseCommonPersonTest
 {
     public PersonQueriesTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 
