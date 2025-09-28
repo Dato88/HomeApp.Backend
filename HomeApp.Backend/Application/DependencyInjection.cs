@@ -2,6 +2,7 @@
 using Application.Email;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,11 @@ public static class DependencyInjection
 
     private static IServiceCollection AddMediatR(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+            cfg.AddOpenBehavior(typeof(Behaviors.ValidationBehavior<,>));
+        });
 
         return services;
     }
@@ -25,7 +30,6 @@ public static class DependencyInjection
     private static IServiceCollection AddValidation(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
-        services.AddFluentValidationAutoValidation();
 
         return services;
     }
