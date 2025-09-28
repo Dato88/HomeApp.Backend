@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace Application.Features.Budgets.Commands.Update;
+namespace Application.Features.Budgets.Queries;
 
-public class UpdateBudgetCommandValidator : AbstractValidator<UpdateBudgetCommand>
+public class GetBudgetQueryValidator : AbstractValidator<GetBudgetQuery>
 {
-    public UpdateBudgetCommandValidator()
+    public GetBudgetQueryValidator()
     {
-        RuleFor(c => c.BudgetId).GreaterThan(0);
         RuleFor(c => c.Year)
             .InclusiveBetween(1900, DateTime.UtcNow.Year + 10)
             .WithMessage("Year must be between 1900 and " + (DateTime.UtcNow.Year + 10) + ".");
