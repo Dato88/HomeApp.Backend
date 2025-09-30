@@ -2,7 +2,7 @@
 
 namespace ApplicationTests.IntegrationTests.Todos.Queries;
 
-internal class TodoReadTests : BaseTodoQueriesTest
+public class TodoReadTests : BaseTodoQueriesTest
 {
     public TodoReadTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 

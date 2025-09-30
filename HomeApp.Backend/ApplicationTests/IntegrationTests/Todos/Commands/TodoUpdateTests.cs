@@ -3,7 +3,7 @@ using Domain.Entities.Todos.Enums;
 
 namespace ApplicationTests.IntegrationTests.Todos.Commands;
 
-internal class TodoUpdateTests : BaseTodoCommandsTest
+public class TodoUpdateTests : BaseTodoCommandsTest
 {
     public TodoUpdateTests(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory) { }
 

@@ -3,7 +3,7 @@ using Infrastructure.Features.Todos.Commands;
 
 namespace ApplicationTests.IntegrationTests.Todos;
 
-internal abstract class BaseTodoCommandsTest : BaseTest
+public abstract class BaseTodoCommandsTest : BaseTest
 {
     protected readonly PeopleDataSeeder PeopleDataSeeder;
     protected readonly TodoCommands TodoCommands;

@@ -3,7 +3,7 @@ using Person = Domain.Entities.People.Person;
 
 namespace ApplicationTests.IntegrationTests.TestData;
 
-internal class PeopleDataSeeder : BaseTest
+public class PeopleDataSeeder : BaseTest
 {
     private readonly Faker<Person> _personFaker;
 

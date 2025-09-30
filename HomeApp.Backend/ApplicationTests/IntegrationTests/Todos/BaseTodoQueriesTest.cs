@@ -3,7 +3,7 @@ using Infrastructure.Features.Todos.Queries;
 
 namespace ApplicationTests.IntegrationTests.Todos;
 
-internal abstract class BaseTodoQueriesTest : BaseTest
+public abstract class BaseTodoQueriesTest : BaseTest
 {
     protected readonly PeopleDataSeeder PeopleDataSeeder;
     protected readonly TodoQueries TodoQueries;

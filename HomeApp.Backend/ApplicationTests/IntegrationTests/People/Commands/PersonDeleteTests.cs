@@ -3,7 +3,7 @@ using Domain.Entities.People;
 
 namespace ApplicationTests.IntegrationTests.People.Commands;
 
-internal class PersonCommandsDeleteTests : BaseCommonPersonTest
+public class PersonCommandsDeleteTests : BaseCommonPersonTest
 {
     private readonly PeopleDataSeeder _peopleDataSeeder;
 

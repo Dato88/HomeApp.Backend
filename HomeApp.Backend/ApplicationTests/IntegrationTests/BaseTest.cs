@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ApplicationTests.IntegrationTests;
 
-internal abstract class BaseTest : IClassFixture<UnitTestingApiFactory>, IDisposable
+public abstract class BaseTest : IClassFixture<UnitTestingApiFactory>, IDisposable
 {
     private readonly IServiceScope _scope;
     protected readonly HomeAppContext DbContext;

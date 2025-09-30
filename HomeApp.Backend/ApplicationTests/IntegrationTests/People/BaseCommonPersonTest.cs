@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ApplicationTests.IntegrationTests.People;
 
-internal class BaseCommonPersonTest : BaseTest
+public class BaseCommonPersonTest : BaseTest
 {
     protected readonly Mock<IAppLogger<PersonCommands>> CommandsILogger;
     protected readonly PersonCommands CommonPersonCommands;
