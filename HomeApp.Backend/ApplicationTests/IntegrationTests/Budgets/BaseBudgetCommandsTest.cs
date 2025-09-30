@@ -30,6 +30,4 @@ public class BaseBudgetCommandsTest : BaseTest
         mock.SetupGet(x => x.UserId).Returns(Guid.TryParse(person.UserId, out var g) ? g : Guid.NewGuid());
         return mock.Object;
     }
-
-
 }

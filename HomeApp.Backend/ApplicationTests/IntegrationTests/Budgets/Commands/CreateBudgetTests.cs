@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Authentication;
+using Domain.Entities.Budgets;
 
 namespace ApplicationTests.IntegrationTests.Budgets.Commands;
 
@@ -23,5 +24,28 @@ public class CreateBudgetTests : BaseBudgetCommandsTest
         created.Should().NotBeNull();
         created!.Year.Should().Be(year);
         created.PersonId.Should().Be(UserContext.PersonId);
+    }
+
+    [Fact]
+    public async Task CreateBudget_ShouldReturnError_WhenInvalidYear()
+    {
+        // Arrange
+        var year = 2030;
+
+        // Act
+        var newBudget = new Budget()
+        {
+            PersonId = UserContext.PersonId, Year = year, CreatedById = UserContext.PersonId
+        };
+
+        DbContext.Budgets.Add(newBudget);
+        await DbContext.SaveChangesAsync(default);
+
+        var result = await BudgetCommands.CreateBudgetAsync(year, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(BudgetErrors.CreateFailedWithMessage("Budget Year already exists"));
     }
 }
