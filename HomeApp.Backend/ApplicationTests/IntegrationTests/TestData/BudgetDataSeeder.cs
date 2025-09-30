@@ -18,13 +18,17 @@ public class BudgetDataSeeder : BaseTest
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
     }
 
-    public async Task<Budget> GenereateDummyTodo(int? personId = null)
+    public async Task<Budget> GenereateDummyBudget(int? personId = null, bool saveAsync = true)
     {
-        await Task.Delay(0);
-
         var budget = _budgetFaker.Generate();
 
         if (personId.HasValue) budget.PersonId = personId.Value;
+
+        if (saveAsync)
+        {
+            await DbContext.Budgets.AddAsync(budget);
+            await DbContext.SaveChangesAsync();
+        }
 
         return budget;
     }

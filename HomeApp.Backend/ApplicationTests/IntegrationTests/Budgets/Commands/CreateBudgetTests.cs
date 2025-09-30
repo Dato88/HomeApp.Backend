@@ -30,18 +30,10 @@ public class CreateBudgetTests : BaseBudgetCommandsTest
     public async Task CreateBudget_ShouldReturnError_WhenInvalidYear()
     {
         // Arrange
-        var year = 2030;
+        var newBudget = await BudgetDataSeeder.GenereateDummyBudget(UserContext.PersonId);
 
         // Act
-        var newBudget = new Budget()
-        {
-            PersonId = UserContext.PersonId, Year = year, CreatedById = UserContext.PersonId
-        };
-
-        DbContext.Budgets.Add(newBudget);
-        await DbContext.SaveChangesAsync(default);
-
-        var result = await BudgetCommands.CreateBudgetAsync(year, CancellationToken.None);
+        var result = await BudgetCommands.CreateBudgetAsync(newBudget.Year, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
