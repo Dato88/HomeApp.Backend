@@ -13,7 +13,7 @@ public class CreateBudgetRowTests : BaseBudgetCommandsTest
     [InlineData(1, 0, 0, "Group Row Name")]
     [InlineData(5, 3, 3, "Group Row Name")]
     [InlineData(7, 5, 7, "Group Row Name")]
-    public async Task CreateBudgetGroup_ShouldCreateNewBudgetGroup(int groupCount, int selectedGroupIndex, int index,
+    public async Task CreateBudgetRow_ShouldCreateNewBudgetRow(int groupCount, int selectedGroupIndex, int index,
         string name)
     {
         // Arrange

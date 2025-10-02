@@ -65,6 +65,10 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
     public async Task<Result<int>> CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken)
     {
+        var monthIsInValid = budgetCell.Month < 1 || budgetCell.Month > 12;
+        if (monthIsInValid)
+            return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("Month should be between 1 and 12"));
+
         var budgetRowdIsValid = _dbContext.BudgetRows.Any(x =>
             x.BudgetRowId == budgetCell.BudgetRowId &&
             x.BudgetGroup.Budget.PersonId == _userContext.PersonId);

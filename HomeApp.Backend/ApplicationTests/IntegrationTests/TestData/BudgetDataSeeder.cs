@@ -10,6 +10,7 @@ public class BudgetDataSeeder : BaseTest
 
     private readonly Faker<Budget> _budgetFaker;
     private readonly Faker<BudgetGroup> _budgetGroupFaker;
+    private readonly Faker<BudgetRow> _budgetRowFaker;
 
     public BudgetDataSeeder(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
@@ -22,6 +23,10 @@ public class BudgetDataSeeder : BaseTest
         _budgetGroupFaker = new Faker<BudgetGroup>()
             .RuleFor(u => u.Name, f => f.Lorem.Word())
             .RuleFor(u => u.BudgetGroupType, f => f.PickRandom<BudgetGroupType>())
+            .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
+
+        _budgetRowFaker = new Faker<BudgetRow>()
+            .RuleFor(u => u.Name, f => f.Lorem.Word())
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
     }
 
@@ -40,22 +45,52 @@ public class BudgetDataSeeder : BaseTest
         return budget;
     }
 
-    public async Task<Budget> GenereateDummyBudgetGroups(int budgetGroupCount, int? personId = null,
-        bool saveAsync = true)
+    public async Task<Budget> GenereateDummyBudgetGroups(int budgetGroupCount, int? personId = null)
     {
-        var budget = await GenereateDummyBudget(personId, saveAsync);
+        var budget = await GenereateDummyBudget(personId);
 
         for (var i = 0; i < budgetGroupCount; i++)
         {
-            var newBudgetGroup = _budgetGroupFaker.Generate();
-            newBudgetGroup.BudgetId = budget.BudgetId;
-            newBudgetGroup.Index = i;
-            newBudgetGroup.CreatedById = budget.CreatedById;
-
-            await DbContext.BudgetGroups.AddAsync(newBudgetGroup);
-            await DbContext.SaveChangesAsync();
+            await CreateAndSaveDummyBudgetGroup(budget.BudgetId, budget.CreatedById, i);
         }
 
         return budget;
+    }
+
+    public async Task<Budget> GenereateDummyBudgetRows((int budgetGroup, int budgetRowCount)[] groups,
+        int personId)
+    {
+        var budget = await GenereateDummyBudget(personId);
+
+        for (var gi = 0; gi < groups.Length; gi++)
+        {
+            var budgetGroup = await CreateAndSaveDummyBudgetGroup(budget.BudgetId, personId, gi);
+
+            for (var ri = 0; ri < groups[gi].budgetRowCount; ri++)
+            {
+                var newBudgetRow = _budgetRowFaker.Generate();
+                newBudgetRow.BudgetGroupId = budgetGroup.BudgetGroupId;
+                newBudgetRow.Index = ri;
+                newBudgetRow.CreatedById = budget.CreatedById;
+
+                await DbContext.BudgetRows.AddAsync(newBudgetRow);
+                await DbContext.SaveChangesAsync();
+            }
+        }
+
+        return budget;
+    }
+
+    private async Task<BudgetGroup> CreateAndSaveDummyBudgetGroup(int budgetId, int personId, int index)
+    {
+        var newBudgetGroup = _budgetGroupFaker.Generate();
+        newBudgetGroup.BudgetId = budgetId;
+        newBudgetGroup.Index = index;
+        newBudgetGroup.CreatedById = personId;
+
+        await DbContext.BudgetGroups.AddAsync(newBudgetGroup);
+        await DbContext.SaveChangesAsync();
+
+        return newBudgetGroup;
     }
 }
