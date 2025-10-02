@@ -20,7 +20,7 @@ internal sealed class GetUserTodosQueryHandler(
     {
         try
         {
-            var todosResult = await todoQueries.GetAllAsync(userContext.PersonId, cancellationToken);
+            var todosResult = await todoQueries.GetAllUserTodosAsync(userContext.PersonId, cancellationToken);
 
             var result = todosResult.Value.Select(s => (GetToDoResponse)s);
 

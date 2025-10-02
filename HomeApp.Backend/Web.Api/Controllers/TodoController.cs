@@ -1,5 +1,6 @@
 ﻿using Application.Features.Todos.Commands;
 using Application.Features.Todos.Queries;
+using SharedKernel;
 using Web.Api.Requests.Todo;
 
 namespace Web.Api.Controllers;
@@ -16,9 +17,12 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetUserTodosQuery(), cancellationToken);
 
-        if (response.IsSuccess) return Ok(response.Value);
+        if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response.Error);
+        if (response.Error?.Type == ErrorType.NotFound)
+            return NoContent();
+
+        return BadRequest(response);
     }
 
     [HttpGet("todo")]
@@ -27,7 +31,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetTodoByIdQuery(todoId), cancellationToken);
 
-        if (response.IsSuccess) return Ok(response.Value);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response.Error);
     }
@@ -40,7 +44,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send((CreateTodoCommand)createTodoRequest, cancellationToken);
 
-        if (response.IsSuccess) return Ok(response.Value);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response.Error);
     }
@@ -64,7 +68,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         var response = await _mediator.Send((UpdateTodoCommand)updateTodoRequest, cancellationToken);
 
-        if (response.IsSuccess) return Ok(response.IsSuccess);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response.Error);
     }

@@ -13,7 +13,7 @@ public class TodoReadTests : BaseTodoQueriesTest
         var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         // Act
-        var result = await TodoQueries.FindByIdAsync(todo.TodoId, default);
+        var result = await TodoQueries.FindTodoByIdAsync(todo.TodoId, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -31,7 +31,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task FindByIdAsync_ReturnsFailure_WhenIdIsInvalid(int todoId)
     {
         // Act
-        var result = await TodoQueries.FindByIdAsync(todoId, default);
+        var result = await TodoQueries.FindTodoByIdAsync(todoId, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -43,7 +43,7 @@ public class TodoReadTests : BaseTodoQueriesTest
     public async Task FindByIdAsync_ReturnsFailure_WhenTodoDoesNotExist()
     {
         // Act
-        var result = await TodoQueries.FindByIdAsync(999, default);
+        var result = await TodoQueries.FindTodoByIdAsync(999, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -60,7 +60,7 @@ public class TodoReadTests : BaseTodoQueriesTest
         var todo2 = await TodosDataSeeder.CreateOneDummyTodoWithPersonId(personId);
 
         // Act
-        var result = await TodoQueries.GetAllAsync(personId, default);
+        var result = await TodoQueries.GetAllUserTodosAsync(personId, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -78,7 +78,7 @@ public class TodoReadTests : BaseTodoQueriesTest
         var userId = 999;
 
         // Act
-        var result = await TodoQueries.GetAllAsync(userId, default);
+        var result = await TodoQueries.GetAllUserTodosAsync(userId, default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -93,7 +93,7 @@ public class TodoReadTests : BaseTodoQueriesTest
         var personId = todo.TodoPeople.First().PersonId;
 
         // Act
-        var result = await TodoQueries.GetAllAsync(personId, default);
+        var result = await TodoQueries.GetAllUserTodosAsync(personId, default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

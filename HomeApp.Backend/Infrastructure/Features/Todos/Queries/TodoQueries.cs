@@ -9,24 +9,14 @@ namespace Infrastructure.Features.Todos.Queries;
 
 public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
 {
-    public async Task<Result<Todo>> FindByIdAsync(
-        int todoId,
-        CancellationToken cancellationToken,
-        bool asNoTracking = true,
-        params string[] includes)
+    public async Task<Result<Todo>> FindTodoByIdAsync(int todoId, CancellationToken cancellationToken)
     {
-        if (todoId == null)
+        if (todoId <= 0)
             return Result.Failure<Todo>(TodoErrors.NotFoundById(todoId));
 
-        var query = dbContext.Todos.AsQueryable();
-
-        if (asNoTracking)
-            query = query.AsNoTracking();
-
-        if (includes is { Length: > 0 })
-            query = ApplyIncludes(query, includes);
-
-        var todo = await query.FirstOrDefaultAsync(x => x.TodoId == todoId, cancellationToken);
+        var todo = await dbContext.Todos
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.TodoId == todoId, cancellationToken);
 
         if (todo is null)
             return Result.Failure<Todo>(TodoErrors.NotFoundById(todoId));
@@ -34,44 +24,21 @@ public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
         return Result.Success(todo);
     }
 
-    public async Task<Result<IEnumerable<Todo>>> GetAllAsync(
+    public async Task<Result<IEnumerable<Todo>>> GetAllUserTodosAsync(
         int personId,
-        CancellationToken cancellationToken,
-        bool asNoTracking = true,
-        params string[] includes)
+        CancellationToken cancellationToken)
     {
-        var query = dbContext.Todos.AsQueryable();
-
-        if (asNoTracking)
-            query = query.AsNoTracking();
-
-        if (includes is { Length: > 0 })
-            query = ApplyIncludes(query, includes);
-        else
-            query = query.Include(i => i.TodoGroupTodo)
-                .Include(i => i.TodoPeople);
-
-        var todoPeople = await query
+        var todos = await dbContext.Todos
+            .AsNoTracking()
+            .Include(i => i.TodoGroupTodo)
+            .Include(i => i.TodoPeople)
             .Where(x => x.TodoPeople.Any(p => p.PersonId == personId))
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
 
-        if (!todoPeople.Any())
+        if (!todos.Any())
             return Result.Failure<IEnumerable<Todo>>(TodoErrors.NotFoundAll);
 
-        return Result.Success<IEnumerable<Todo>>(todoPeople);
-    }
-
-    protected IQueryable<Todo> ApplyIncludes(IQueryable<Todo> query, params string[] includes)
-    {
-        var includeMappings = new Dictionary<string, Expression<Func<Todo, object>>>
-        {
-            { nameof(Todo.TodoGroupTodo), x => x.TodoGroupTodo }, { nameof(Todo.TodoPeople), x => x.TodoPeople }
-        };
-
-        foreach (var include in includes)
-            if (includeMappings.TryGetValue(include, out var expression))
-                query = query.Include(expression);
-
-        return query;
+        return Result.Success<IEnumerable<Todo>>(todos);
     }
 }

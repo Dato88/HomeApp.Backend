@@ -18,7 +18,7 @@ internal sealed class GetTodoByIdQueryHandler(
     {
         try
         {
-            var todoResult = await _todoQueries.FindByIdAsync(request.TodoId, cancellationToken);
+            var todoResult = await _todoQueries.FindTodoByIdAsync(request.TodoId, cancellationToken);
 
             if (todoResult.IsFailure)
             {

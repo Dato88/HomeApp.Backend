@@ -9,7 +9,7 @@ public sealed record GetToDoResponse(
     string Name,
     bool Done,
     TodoPriority Priority,
-    DateTime? UpdatedAt
+    DateTime? LastModified
 )
 {
     public static implicit operator GetToDoResponse(Todo item) =>
