@@ -72,20 +72,6 @@ public class TodoReadTests : BaseTodoQueriesTest
     }
 
     [Fact]
-    public async Task GetAllAsync_ReturnsFailure_WhenNoTodosForPersonExist()
-    {
-        // Arrange
-        var userId = 999;
-
-        // Act
-        var result = await TodoQueries.GetAllUserTodosAsync(userId, default);
-
-        // Assert
-        result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeEquivalentTo(TodoErrors.NotFoundAll);
-    }
-
-    [Fact]
     public async Task GetAllAsync_IncludesTodoAndTodoGroupTodo()
     {
         // Arrange

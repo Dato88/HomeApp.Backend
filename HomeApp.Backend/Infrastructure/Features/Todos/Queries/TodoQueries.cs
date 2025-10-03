@@ -36,9 +36,6 @@ public sealed class TodoQueries(HomeAppContext dbContext) : ITodoQueries
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
 
-        if (!todos.Any())
-            return Result.Failure<IEnumerable<Todo>>(TodoErrors.NotFoundAll);
-
         return Result.Success<IEnumerable<Todo>>(todos);
     }
 }

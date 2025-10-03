@@ -19,9 +19,6 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        if (response.Error?.Type == ErrorType.NotFound)
-            return NoContent();
-
         return BadRequest(response);
     }
 
@@ -55,7 +52,7 @@ public class TodoController(IMediator mediator) : ControllerBase
     {
         var response = await _mediator.Send(new DeleteTodoCommand(todoId), cancellationToken);
 
-        if (response.IsSuccess) return Ok(response.IsSuccess);
+        if (response.IsSuccess) return Ok(response);
 
         return BadRequest(response.Error);
     }
