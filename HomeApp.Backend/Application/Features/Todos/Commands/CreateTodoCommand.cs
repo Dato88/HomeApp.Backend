@@ -23,10 +23,10 @@ public sealed record CreateTodoCommand : IRequest<Result<int>>
             Title = item.Title,
             Done = item.Done,
             Priority = item.Priority,
-            UpdatedAt = DateTime.UtcNow,
             TodoGroupTodo = item.TodoGroupId.HasValue
                 ? new TodoGroupTodo { TodoGroupId = item.TodoGroupId.Value }
                 : null,
-            TodoPeople = new List<TodoPerson> { new() { PersonId = item.PersonId } }
+            TodoPeople = new List<TodoPerson> { new() { CreatedById = item.PersonId, PersonId = item.PersonId } },
+            CreatedById = item.PersonId
         };
 }

@@ -11,6 +11,7 @@ public sealed class UpdateTodoCommand : IRequest<Result>
     public int? TodoGroupId { get; set; }
     public string Title { get; set; } = default!;
     public bool Done { get; set; }
+    public int PersonId { get; set; }
 
     public TodoPriority Priority { get; set; }
     public DateTimeOffset LastModified { get; set; }
@@ -22,6 +23,7 @@ public sealed class UpdateTodoCommand : IRequest<Result>
             Title = item.Title,
             Done = item.Done,
             Priority = item.Priority,
-            UpdatedAt = DateTime.Now
+            UpdatedAt = DateTime.Now,
+            UpdatedById = item.PersonId
         };
 }
