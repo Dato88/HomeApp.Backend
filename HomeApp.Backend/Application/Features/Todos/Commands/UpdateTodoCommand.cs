@@ -9,17 +9,17 @@ public sealed class UpdateTodoCommand : IRequest<Result>
 {
     public int TodoId { get; set; }
     public int? TodoGroupId { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string Title { get; set; } = default!;
     public bool Done { get; set; }
 
     public TodoPriority Priority { get; set; }
     public DateTimeOffset LastModified { get; set; }
 
-    public static implicit operator Todo(UpdateTodoCommand item) =>
+    public static explicit operator Todo(UpdateTodoCommand item) =>
         new()
         {
             TodoId = item.TodoId,
-            Title = item.Name,
+            Title = item.Title,
             Done = item.Done,
             Priority = item.Priority,
             UpdatedAt = DateTime.Now

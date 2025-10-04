@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Logging;
+using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -12,7 +13,7 @@ internal sealed class UpdateTodoCommandHandler(
 
     public async Task<Result> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
     {
-        var result = await _todoCommands.UpdateAsync(request, cancellationToken);
+        var result = await _todoCommands.UpdateAsync((Todo)request, cancellationToken);
 
         if (result.IsFailure)
         {

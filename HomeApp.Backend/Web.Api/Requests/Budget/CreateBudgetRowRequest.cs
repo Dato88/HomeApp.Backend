@@ -4,10 +4,10 @@ namespace Web.Api.Requests.Budget;
 
 public record CreateBudgetRowRequest
 {
-    public int BudgetGroupId { get; set; }
-    public int Index { get; set; }
-    public string Name { get; set; } = default!;
+    public int BudgetGroupId { get; init; }
+    public int Index { get; init; }
+    public string Title { get; init; } = default!;
 
     public static explicit operator CreateBudgetRowCommand(CreateBudgetRowRequest request)
-        => new(request.BudgetGroupId, request.Index, request.Name);
+        => new(request.BudgetGroupId, request.Index, request.Title);
 }

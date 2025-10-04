@@ -3,6 +3,7 @@ using Application.Abstractions.Messaging;
 using Application.Email;
 using Application.Features.People.Commands;
 using Application.Models.Email;
+using Domain.Entities.People;
 using Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
@@ -20,7 +21,7 @@ internal sealed class RegisterAccountCommandHandler(
 {
     public async Task<Result<Guid>> Handle(RegisterAccountCommand command, CancellationToken cancellationToken)
     {
-        User user = command;
+        var user = (User)command;
 
         // Check if email is already used
         if (await userManager.Users.AnyAsync(u => u.Email == command.Email, cancellationToken))
@@ -37,7 +38,7 @@ internal sealed class RegisterAccountCommandHandler(
         }
 
         // Create corresponding Person entry
-        var createPersonResult = await personCommands.CreatePersonAsync(user, cancellationToken);
+        var createPersonResult = await personCommands.CreatePersonAsync((Person)user, cancellationToken);
         if (createPersonResult.IsFailure)
         {
             logger.LogWarning(

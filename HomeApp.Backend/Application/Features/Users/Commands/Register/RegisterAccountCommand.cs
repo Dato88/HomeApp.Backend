@@ -12,6 +12,6 @@ public sealed record RegisterAccountCommand(
     string? ClientUri)
     : ICommand<Guid>
 {
-    public static implicit operator User(RegisterAccountCommand item) =>
+    public static explicit operator User(RegisterAccountCommand item) =>
         new() { FirstName = item.FirstName, LastName = item.LastName, Email = item.Email, UserName = item.Email };
 }

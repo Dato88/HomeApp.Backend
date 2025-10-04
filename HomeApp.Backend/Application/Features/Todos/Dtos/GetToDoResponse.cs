@@ -12,7 +12,7 @@ public sealed record GetToDoResponse(
     DateTime? LastModified
 )
 {
-    public static implicit operator GetToDoResponse(Todo item) =>
+    public static explicit operator GetToDoResponse(Todo item) =>
         new(
             item.TodoId,
             item.TodoGroupTodo?.TodoGroupId,

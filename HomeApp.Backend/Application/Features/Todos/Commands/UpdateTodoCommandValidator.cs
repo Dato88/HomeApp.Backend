@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Web.Api.Requests.Todo;
+namespace Application.Features.Todos.Commands;
 
-public class UpdateTodoRequestValidator : AbstractValidator<UpdateTodoRequest>
+public class UpdateTodoCommandValidator : AbstractValidator<UpdateTodoCommand>
 {
-    public UpdateTodoRequestValidator()
+    public UpdateTodoCommandValidator()
     {
         RuleFor(x => x.TodoId)
             .GreaterThan(0).WithMessage("The todo ID must be greater than zero.");

@@ -6,6 +6,13 @@ public class CreateTodoCommandValidator : AbstractValidator<CreateTodoCommand>
 {
     public CreateTodoCommandValidator()
     {
-        RuleFor(c => c.Name).NotEmpty().WithMessage("Todo name is required");
+        RuleFor(c => c.Title)
+            .NotEmpty()
+            .MaximumLength(150)
+            .WithMessage("Todo title is required");
+
+        RuleFor(x => x.Priority)
+            .IsInEnum()
+            .WithMessage("Invalid priority.");
     }
 }
