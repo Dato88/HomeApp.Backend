@@ -6,7 +6,7 @@ namespace Application.Features.Todos.Dtos;
 public sealed record GetToDoResponse(
     int TodoId,
     int? TodoGroupId,
-    string Name,
+    string Title,
     bool Done,
     TodoPriority Priority,
     DateTime? LastModified
