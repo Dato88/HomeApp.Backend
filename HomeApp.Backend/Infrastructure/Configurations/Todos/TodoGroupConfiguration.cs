@@ -12,7 +12,7 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
 
         builder.HasKey(t => t.TodoGroupId);
 
-        builder.Property(x => x.Name)
+        builder.Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(150);
 
@@ -27,7 +27,7 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
         // Indices
         builder.HasIndex(x => x.TodoGroupId)
             .IsUnique();
-        builder.HasIndex(x => x.Name);
+        builder.HasIndex(x => x.Title);
 
         // Relations
         builder.HasMany(tgt => tgt.TodoGroupTodos)

@@ -21,12 +21,12 @@ public class BudgetDataSeeder : BaseTest
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
 
         _budgetGroupFaker = new Faker<BudgetGroup>()
-            .RuleFor(u => u.Name, f => f.Lorem.Word())
+            .RuleFor(u => u.Title, f => f.Lorem.Word())
             .RuleFor(u => u.BudgetGroupType, f => f.PickRandom<BudgetGroupType>())
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
 
         _budgetRowFaker = new Faker<BudgetRow>()
-            .RuleFor(u => u.Name, f => f.Lorem.Word())
+            .RuleFor(u => u.Title, f => f.Lorem.Word())
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
     }
 

@@ -20,7 +20,7 @@ public sealed record CreateTodoCommand : IRequest<Result<int>>
     public static implicit operator Todo(CreateTodoCommand item) =>
         new()
         {
-            Name = item.Name,
+            Title = item.Name,
             Done = item.Done,
             Priority = item.Priority,
             UpdatedAt = DateTime.UtcNow,

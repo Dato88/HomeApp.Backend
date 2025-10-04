@@ -20,7 +20,7 @@ public sealed class TodoCommands(HomeAppContext dbContext) : ITodoCommands
         if (existingTodo == null)
             return Result.Failure(TodoErrors.UpdateFailed(todo.TodoId));
 
-        existingTodo.Name = todo.Name;
+        existingTodo.Title = todo.Title;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
         existingTodo.UpdatedAt = DateTime.UtcNow;

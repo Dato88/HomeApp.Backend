@@ -16,7 +16,7 @@ public sealed record GetToDoResponse(
         new(
             item.TodoId,
             item.TodoGroupTodo?.TodoGroupId,
-            item.Name,
+            item.Title,
             item.Done,
             item.Priority,
             item.UpdatedAt

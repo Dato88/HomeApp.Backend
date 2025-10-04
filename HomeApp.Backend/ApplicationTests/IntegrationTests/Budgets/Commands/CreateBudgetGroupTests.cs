@@ -21,7 +21,7 @@ public class CreateBudgetGroupTests : BaseBudgetCommandsTest
 
         var newBudgetGroup = new BudgetGroup
         {
-            BudgetId = newBudget.BudgetId, Index = index, Name = name, BudgetGroupType = budgetGroupType
+            BudgetId = newBudget.BudgetId, Index = index, Title = name, BudgetGroupType = budgetGroupType
         };
 
         // Act
@@ -31,7 +31,7 @@ public class CreateBudgetGroupTests : BaseBudgetCommandsTest
         var created = await DbContext.BudgetGroups.FindAsync(result.Value);
         created.Should().NotBeNull();
         created.Index.Should().Be(newBudgetGroup.Index);
-        created.Name.Should().Be(newBudgetGroup.Name);
+        created.Title.Should().Be(newBudgetGroup.Title);
         created.BudgetGroupType.Should().Be(newBudgetGroup.BudgetGroupType);
     }
 
@@ -39,7 +39,7 @@ public class CreateBudgetGroupTests : BaseBudgetCommandsTest
     public async Task CreateBudgetGroup_ShouldReturnErrorWhenBudgetIdIsInvalid()
     {
         // Arrange
-        var newBudgetGroup = new BudgetGroup { BudgetId = 0, Index = 0, Name = "Test Budget Group" };
+        var newBudgetGroup = new BudgetGroup { BudgetId = 0, Index = 0, Title = "Test Budget Group" };
 
         // Act
         var result = await BudgetCommands.CreateBudgetGroupAsync(newBudgetGroup, CancellationToken.None);

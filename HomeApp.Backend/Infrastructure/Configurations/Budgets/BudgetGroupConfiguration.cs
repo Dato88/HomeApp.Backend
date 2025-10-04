@@ -16,7 +16,7 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
             .IsRequired();
         builder.Property(g => g.Index)
             .IsRequired();
-        builder.Property(g => g.Name)
+        builder.Property(g => g.Title)
             .IsRequired()
             .HasMaxLength(150);
         builder.Property(g => g.BudgetGroupType)

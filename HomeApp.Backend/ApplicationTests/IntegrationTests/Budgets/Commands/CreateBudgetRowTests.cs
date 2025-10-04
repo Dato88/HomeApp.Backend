@@ -25,7 +25,7 @@ public class CreateBudgetRowTests : BaseBudgetCommandsTest
             .Select(g => g.BudgetGroupId)
             .ToListAsync();
 
-        var newBudgetRow = new BudgetRow { BudgetGroupId = groupIds[selectedGroupIndex], Index = index, Name = name };
+        var newBudgetRow = new BudgetRow { BudgetGroupId = groupIds[selectedGroupIndex], Index = index, Title = name };
 
         // Act
         var result = await BudgetCommands.CreateBudgetRowAsync(newBudgetRow, CancellationToken.None);
@@ -34,14 +34,14 @@ public class CreateBudgetRowTests : BaseBudgetCommandsTest
         var created = await DbContext.BudgetRows.FindAsync(result.Value);
         created.Should().NotBeNull();
         created.Index.Should().Be(newBudgetRow.Index);
-        created.Name.Should().Be(newBudgetRow.Name);
+        created.Title.Should().Be(newBudgetRow.Title);
     }
 
     [Fact]
     public async Task CreateBudgetRow_ShouldReturnErrorWhenBudgetIdIsInvalid()
     {
         // Arrange
-        var newBudgetRow = new BudgetRow { BudgetGroupId = 0, Index = 0, Name = "Test Budget Row" };
+        var newBudgetRow = new BudgetRow { BudgetGroupId = 0, Index = 0, Title = "Test Budget Row" };
 
         // Act
         var result = await BudgetCommands.CreateBudgetRowAsync(newBudgetRow, CancellationToken.None);

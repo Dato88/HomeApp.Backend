@@ -17,7 +17,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var updatedTodo = new Todo
         {
-            TodoId = todo.TodoId, Name = "Updated Todo", Done = true, Priority = TodoPriority.High
+            TodoId = todo.TodoId, Title = "Updated Todo", Done = true, Priority = TodoPriority.High
         };
 
         // Act
@@ -28,7 +28,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var dbTodo = await DbContext.Todos.FindAsync(todo.TodoId);
         dbTodo.Should().NotBeNull();
-        dbTodo!.Name.Should().Be(updatedTodo.Name);
+        dbTodo!.Title.Should().Be(updatedTodo.Title);
         dbTodo.Done.Should().Be(updatedTodo.Done);
         dbTodo.Priority.Should().Be(updatedTodo.Priority);
         dbTodo.UpdatedAt.Should().BeAfter(initialLastModified);
@@ -52,7 +52,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         // Arrange
         var todo = new Todo
         {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, UpdatedAt = DateTime.UtcNow
+            Title = "Test Todo", Done = false, Priority = TodoPriority.Low, UpdatedAt = DateTime.UtcNow
         };
 
         DbContext.Todos.Add(todo);
@@ -61,7 +61,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         var invalidTodo = new Todo
         {
             TodoId = todo.TodoId,
-            Name = "Test Todo",
+            Title = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
             UpdatedAt = DateTime.UtcNow.AddDays(2)
@@ -82,7 +82,7 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         var todo = new Todo
         {
             TodoId = 999,
-            Name = "Non-existing Todo",
+            Title = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
             UpdatedAt = DateTime.UtcNow.AddDays(1)

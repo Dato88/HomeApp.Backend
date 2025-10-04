@@ -16,7 +16,7 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
             .IsRequired();
         builder.Property(r => r.Index)
             .IsRequired();
-        builder.Property(r => r.Name)
+        builder.Property(r => r.Title)
             .IsRequired()
             .HasMaxLength(150);
 

@@ -9,7 +9,7 @@ public class BudgetGroup : IAudited
 
     public int BudgetId { get; set; }
     public int Index { get; set; }
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
     public BudgetGroupType BudgetGroupType { get; set; }
 
     public virtual Budget? Budget { get; set; }

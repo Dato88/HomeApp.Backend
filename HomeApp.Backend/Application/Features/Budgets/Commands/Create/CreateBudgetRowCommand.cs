@@ -10,5 +10,5 @@ public sealed record CreateBudgetRowCommand(
     string Name) : IRequest<Result<int>>
 {
     public static explicit operator BudgetRow(CreateBudgetRowCommand item) =>
-        new() { BudgetGroupId = item.BudgetGroupId, Index = item.Index, Name = item.Name };
+        new() { BudgetGroupId = item.BudgetGroupId, Index = item.Index, Title = item.Name };
 }

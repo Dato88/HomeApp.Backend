@@ -29,7 +29,7 @@ public class TodoCreateTests : BaseTodoCommandsTest
         // Arrange
         var person = await PeopleDataSeeder.SeedPersonAsync();
 
-        var todoGroup = new TodoGroup { Name = "TestGroup" };
+        var todoGroup = new TodoGroup { Title = "TestGroup" };
         DbContext.TodoGroups.Add(todoGroup);
         await DbContext.SaveChangesAsync();
 

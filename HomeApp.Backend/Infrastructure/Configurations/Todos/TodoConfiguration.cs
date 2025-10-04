@@ -12,7 +12,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
 
         builder.HasKey(t => t.TodoId);
 
-        builder.Property(t => t.Name)
+        builder.Property(t => t.Title)
             .IsRequired()
             .HasMaxLength(150);
 
@@ -33,7 +33,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
         // Indices
         builder.HasIndex(t => t.TodoId)
             .IsUnique();
-        builder.HasIndex(t => t.Name);
+        builder.HasIndex(t => t.Title);
         builder.HasIndex(t => t.Done);
         builder.HasIndex(t => t.Priority);
         builder.HasIndex(t => t.UpdatedAt);

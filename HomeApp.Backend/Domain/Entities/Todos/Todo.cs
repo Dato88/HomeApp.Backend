@@ -7,7 +7,7 @@ public class Todo : IAudited
 {
     public int TodoId { get; set; }
 
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
     public bool Done { get; set; }
     public TodoPriority Priority { get; set; }
 

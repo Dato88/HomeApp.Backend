@@ -19,7 +19,7 @@ public sealed class UpdateTodoCommand : IRequest<Result>
         new()
         {
             TodoId = item.TodoId,
-            Name = item.Name,
+            Title = item.Name,
             Done = item.Done,
             Priority = item.Priority,
             UpdatedAt = DateTime.Now

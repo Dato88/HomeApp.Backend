@@ -8,7 +8,7 @@ public class BudgetRow : IAudited
 
     public int BudgetGroupId { get; set; }
     public int Index { get; set; }
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
 
     public virtual BudgetGroup? BudgetGroup { get; set; }
     public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();

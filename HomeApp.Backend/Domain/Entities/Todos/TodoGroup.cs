@@ -6,7 +6,7 @@ public class TodoGroup : IAudited
 {
     public int TodoGroupId { get; set; }
 
-    public string Name { get; set; } = default!;
+    public string Title { get; set; } = default!;
 
     public virtual ICollection<TodoGroupTodo> TodoGroupTodos { get; set; } = new HashSet<TodoGroupTodo>();
 

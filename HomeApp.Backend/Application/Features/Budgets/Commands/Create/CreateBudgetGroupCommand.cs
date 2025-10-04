@@ -14,6 +14,6 @@ public sealed record CreateBudgetGroupCommand(
     public static explicit operator BudgetGroup(CreateBudgetGroupCommand item) =>
         new()
         {
-            BudgetId = item.BudgetId, Index = item.Index, Name = item.Name, BudgetGroupType = item.BudgetGroupType
+            BudgetId = item.BudgetId, Index = item.Index, Title = item.Name, BudgetGroupType = item.BudgetGroupType
         };
 }

@@ -16,6 +16,6 @@ public class BudgetRowDto
             BudgetRowId = entity.BudgetRowId,
             BudgetGroupId = entity.BudgetGroupId,
             Index = entity.Index,
-            Name = entity.Name,
+            Name = entity.Title,
         };
 }
