@@ -12,7 +12,7 @@ public class BudgetGroup : IAudited
     public string Name { get; set; } = default!;
     public BudgetGroupType BudgetGroupType { get; set; }
 
-    public virtual Budget Budget { get; set; }
+    public virtual Budget? Budget { get; set; }
     public virtual ICollection<BudgetRow> BudgetRows { get; set; } = new HashSet<BudgetRow>();
 
     public DateTime CreatedAt { get; set; }

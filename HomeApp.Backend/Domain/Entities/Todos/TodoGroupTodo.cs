@@ -9,8 +9,8 @@ public class TodoGroupTodo : IAudited
     public int TodoId { get; set; }
     public int TodoGroupId { get; set; }
 
-    public virtual Todo Todo { get; set; }
-    public virtual TodoGroup TodoGroup { get; set; }
+    public virtual Todo? Todo { get; set; }
+    public virtual TodoGroup? TodoGroup { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public int CreatedById { get; set; }

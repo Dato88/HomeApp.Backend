@@ -11,7 +11,7 @@ public class Todo : IAudited
     public bool Done { get; set; }
     public TodoPriority Priority { get; set; }
 
-    public virtual TodoGroupTodo TodoGroupTodo { get; set; }
+    public virtual TodoGroupTodo? TodoGroupTodo { get; set; }
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
 
     public DateTime CreatedAt { get; set; }

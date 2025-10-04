@@ -10,8 +10,8 @@ public class TodoPerson : IAudited
     public int PersonId { get; set; }
     public int TodoId { get; set; }
 
-    public virtual Person Person { get; set; }
-    public virtual Todo Todo { get; set; }
+    public virtual Person? Person { get; set; }
+    public virtual Todo? Todo { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public int CreatedById { get; set; }

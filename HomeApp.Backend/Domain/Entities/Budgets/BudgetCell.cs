@@ -10,7 +10,7 @@ public class BudgetCell : IAudited
     public int Month { get; set; }
     public decimal Amount { get; set; }
 
-    public virtual BudgetRow BudgetRow { get; set; }
+    public virtual BudgetRow? BudgetRow { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public int CreatedById { get; set; }
