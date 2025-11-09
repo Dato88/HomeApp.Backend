@@ -1,4 +1,5 @@
 using Domain.Entities.Budgets;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,18 +9,28 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
 {
     public void Configure(EntityTypeBuilder<BudgetGroup> builder)
     {
-        builder.ToTable("BudgetGroups");
+        builder.ToTable("budget_groups", Schemas.Budget);
 
         builder.HasKey(g => g.BudgetGroupId);
 
+        builder.Property(g => g.BudgetGroupId)
+            .HasColumnName("budget_group_id");
+
         builder.Property(g => g.BudgetId)
+            .HasColumnName("budget_id")
             .IsRequired();
+
         builder.Property(g => g.Index)
+            .HasColumnName("index")
             .IsRequired();
+
         builder.Property(g => g.Title)
+            .HasColumnName("title")
             .IsRequired()
             .HasMaxLength(150);
+
         builder.Property(g => g.BudgetGroupType)
+            .HasColumnName("budget_group_type")
             .IsRequired();
 
         // Auditing

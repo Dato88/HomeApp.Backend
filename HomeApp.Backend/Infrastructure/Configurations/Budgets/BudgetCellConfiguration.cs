@@ -1,4 +1,5 @@
 using Domain.Entities.Budgets;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,17 +9,25 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
 {
     public void Configure(EntityTypeBuilder<BudgetCell> builder)
     {
-        builder.ToTable("BudgetCells");
+        builder.ToTable("budget_cells", Schemas.Budget);
 
         builder.HasKey(c => c.BudgetCellId);
 
+        builder.Property(c => c.BudgetCellId)
+            .HasColumnName("budget_cell_id");
+
         builder.Property(c => c.BudgetRowId)
+            .HasColumnName("budget_row_id")
             .IsRequired();
+
         builder.Property(c => c.Month)
+            .HasColumnName("month")
             .IsRequired();
+
         builder.Property(c => c.Amount)
-            .IsRequired()
-            .HasPrecision(18, 2);
+            .HasColumnName("amount")
+            .HasPrecision(18, 2)
+            .IsRequired();
 
         // Auditing
         builder.ConfigureAuditable();

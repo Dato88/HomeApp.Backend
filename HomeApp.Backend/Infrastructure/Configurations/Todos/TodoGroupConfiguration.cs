@@ -1,4 +1,5 @@
 using Domain.Entities.Todos;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,11 +9,15 @@ internal sealed class TodoGroupConfiguration : IEntityTypeConfiguration<TodoGrou
 {
     public void Configure(EntityTypeBuilder<TodoGroup> builder)
     {
-        builder.ToTable("TodoGroups");
+        builder.ToTable("todo_groups", Schemas.Todo);
 
-        builder.HasKey(t => t.TodoGroupId);
+        builder.HasKey(x => x.TodoGroupId);
+
+        builder.Property(x => x.TodoGroupId)
+            .HasColumnName("todo_group_id");
 
         builder.Property(x => x.Title)
+            .HasColumnName("title")
             .IsRequired()
             .HasMaxLength(150);
 
