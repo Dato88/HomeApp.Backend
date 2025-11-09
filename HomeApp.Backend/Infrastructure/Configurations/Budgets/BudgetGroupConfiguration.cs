@@ -10,33 +10,39 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
     {
         builder.ToTable("BudgetGroups");
 
-        builder.HasKey(bg => bg.Id);
+        builder.HasKey(g => g.BudgetGroupId);
 
-        builder.Property(bg => bg.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
-        builder.Property(bg => bg.PersonId)
+        builder.Property(g => g.BudgetId)
             .IsRequired();
-        builder.Property(bg => bg.Index)
+        builder.Property(g => g.Index)
             .IsRequired();
-
-        builder.Property(bg => bg.Name)
+        builder.Property(g => g.Title)
             .IsRequired()
             .HasMaxLength(150);
+        builder.Property(g => g.BudgetGroupType)
+            .IsRequired();
 
-        // Indices
-        builder.HasIndex(bg => bg.PersonId);
-        builder.HasIndex(bg => bg.Index);
+        // Auditing
+        builder.Property(g => g.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+        builder.Property(g => g.CreatedById)
+            .IsRequired();
+        builder.Property(g => g.UpdatedAt);
+        builder.Property(g => g.UpdatedById);
+
+        // Indices (ordering unique within a budget)
+        builder.HasIndex(g => g.BudgetId);
+        builder.HasIndex(g => new { g.BudgetId, g.Index }).IsUnique();
 
         // Relations
-        builder.HasOne(p => p.Person)
-            .WithMany(bg => bg.BudgetGroups)
-            .HasForeignKey(p => p.PersonId)
+        builder.HasOne(g => g.Budget)
+            .WithMany(b => b.BudgetGroups)
+            .HasForeignKey(g => g.BudgetId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(bc => bc.BudgetCells)
-            .WithOne(bg => bg.BudgetGroup)
-            .HasForeignKey(bg => bg.BudgetGroupId)
+        builder.HasMany(g => g.BudgetRows)
+            .WithOne(r => r.BudgetGroup)
+            .HasForeignKey(r => r.BudgetGroupId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

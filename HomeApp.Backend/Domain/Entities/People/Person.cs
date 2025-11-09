@@ -1,21 +1,24 @@
 ﻿using Domain.Entities.Budgets;
 using Domain.Entities.Todos;
-using Domain.ValueObjects;
+using SharedKernel;
 
 namespace Domain.Entities.People;
 
-public class Person
+public class Person : IAudited
 {
     public int PersonId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? Username { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string UserId { get; set; }
 
-    public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
-    public virtual ICollection<BudgetGroup> BudgetGroups { get; set; } = new HashSet<BudgetGroup>();
-    public virtual ICollection<BudgetRow> BudgetRows { get; set; } = new HashSet<BudgetRow>();
+    public string? Username { get; set; }
+    public string FirstName { get; set; } = default!;
+    public string LastName { get; set; } = default!;
+    public string Email { get; set; } = default!;
+    public string UserId { get; set; } = default!;
+
+    public virtual ICollection<Budget> Budgets { get; set; } = new HashSet<Budget>();
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
+
+    public DateTime CreatedAt { get; set; }
+    public int CreatedById { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public int? UpdatedById { get; set; }
 }

@@ -9,8 +9,12 @@ public sealed class TodoCommands(HomeAppContext dbContext) : ITodoCommands
 {
     public async Task<Result> UpdateAsync(Todo todo, CancellationToken cancellationToken)
     {
-        if (todo is null)
-            return Result.Failure(TodoErrors.UpdateFailedWithMessage("Todo is null"));
+        if (todo.UpdatedAt is null)
+            return Result.Failure(TodoErrors.UpdateFailedWithMessage("Todo.UpdatedAt should not be null"));
+
+        if (todo.UpdatedById is null || todo.UpdatedById <= 0)
+            return Result.Failure(
+                TodoErrors.UpdateFailedWithMessage("Todo.UpdatedById should not be null, 0 or lower than 0"));
 
         if (todo.Priority < 0)
             return Result.Failure(TodoErrors.UpdateFailedWithMessage("Priority is invalid"));
@@ -20,10 +24,11 @@ public sealed class TodoCommands(HomeAppContext dbContext) : ITodoCommands
         if (existingTodo == null)
             return Result.Failure(TodoErrors.UpdateFailed(todo.TodoId));
 
-        existingTodo.Name = todo.Name;
+        existingTodo.Title = todo.Title;
         existingTodo.Done = todo.Done;
         existingTodo.Priority = todo.Priority;
-        existingTodo.LastModified = DateTime.UtcNow;
+        existingTodo.UpdatedAt = DateTime.UtcNow;
+        existingTodo.UpdatedById = todo.UpdatedById;
 
         dbContext.Todos.Update(existingTodo);
         await dbContext.SaveChangesAsync(cancellationToken);

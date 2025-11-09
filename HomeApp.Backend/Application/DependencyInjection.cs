@@ -2,6 +2,7 @@
 using Application.Email;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,11 @@ public static class DependencyInjection
 
     private static IServiceCollection AddMediatR(this IServiceCollection services)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly);
+            cfg.AddOpenBehavior(typeof(Behaviors.ValidationBehavior<,>));
+        });
 
         return services;
     }
@@ -25,22 +30,12 @@ public static class DependencyInjection
     private static IServiceCollection AddValidation(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
-        services.AddFluentValidationAutoValidation();
 
         return services;
     }
 
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // services.AddScoped<IBudgetValidation, BudgetValidation>();
-
-        // services.AddScoped<IBudgetCellCrud, BudgetCellQueries>();
-        // services.AddScoped<IBudgetColumnCrud, BudgetColumnQueries>();
-        // services.AddScoped<IBudgetGroupCrud, BudgetGroupQueries>();
-        // builder.Services.AddScoped<IBudgetRowCrud, BudgetRowQueries>();
-        // builder.Services.AddScoped<IBudgetFacade, BudgetFacade>();
-
-
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
         services.AddSingleton(emailConfig);
         services.AddScoped<IEmailSender, EmailSender>();

@@ -8,7 +8,7 @@ public class User : IdentityUser
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
-    public static implicit operator Person(User item) =>
+    public static explicit operator Person(User item) =>
         new()
         {
             Username = item.Email,

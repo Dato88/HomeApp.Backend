@@ -6,19 +6,19 @@ namespace Application.Features.Todos.Dtos;
 public sealed record GetToDoResponse(
     int TodoId,
     int? TodoGroupId,
-    string Name,
+    string Title,
     bool Done,
     TodoPriority Priority,
-    DateTimeOffset LastModified
+    DateTime? LastModified
 )
 {
-    public static implicit operator GetToDoResponse(Todo item) =>
+    public static explicit operator GetToDoResponse(Todo item) =>
         new(
             item.TodoId,
             item.TodoGroupTodo?.TodoGroupId,
-            item.Name,
+            item.Title,
             item.Done,
             item.Priority,
-            item.LastModified
+            item.UpdatedAt
         );
 }

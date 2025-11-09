@@ -10,36 +10,38 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
     {
         builder.ToTable("BudgetRows");
 
-        builder.HasKey(br => br.Id);
+        builder.HasKey(r => r.BudgetRowId);
 
-        builder.Property(br => br.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
-        builder.Property(br => br.PersonId)
+        builder.Property(r => r.BudgetGroupId)
             .IsRequired();
-        builder.Property(br => br.Index)
+        builder.Property(r => r.Index)
             .IsRequired();
-        builder.Property(br => br.Year)
-            .IsRequired();
-
-        builder.Property(br => br.Name)
+        builder.Property(r => r.Title)
             .IsRequired()
             .HasMaxLength(150);
 
-        // Indices
-        builder.HasIndex(br => br.PersonId);
-        builder.HasIndex(br => br.Year);
-        builder.HasIndex(br => br.Index);
+        // Auditing
+        builder.Property(r => r.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+        builder.Property(r => r.CreatedById)
+            .IsRequired();
+        builder.Property(r => r.UpdatedAt);
+        builder.Property(r => r.UpdatedById);
+
+        // Indices (ordering unique within a group)
+        builder.HasIndex(r => r.BudgetGroupId);
+        builder.HasIndex(r => new { r.BudgetGroupId, r.Index })
+            .IsUnique();
 
         // Relations
-        builder.HasOne(p => p.Person)
-            .WithMany(br => br.BudgetRows)
-            .HasForeignKey(p => p.PersonId)
+        builder.HasOne(r => r.BudgetGroup)
+            .WithMany(g => g.BudgetRows)
+            .HasForeignKey(r => r.BudgetGroupId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(bc => bc.BudgetCells)
-            .WithOne(br => br.BudgetRow)
-            .HasForeignKey(br => br.BudgetRowId)
+        builder.HasMany(r => r.BudgetCells)
+            .WithOne(c => c.BudgetRow)
+            .HasForeignKey(c => c.BudgetRowId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

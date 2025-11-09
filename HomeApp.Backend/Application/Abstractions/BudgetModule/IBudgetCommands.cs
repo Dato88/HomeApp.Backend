@@ -1,0 +1,19 @@
+﻿using Domain.Entities.Budgets;
+using SharedKernel;
+
+namespace Application.Abstractions.BudgetModule;
+
+public interface IBudgetCommands
+{
+    Task<Result<int>> CreateBudgetAsync(int year, CancellationToken cancellationToken);
+    Task<Result<int>> CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken);
+    Task<Result<int>> CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken);
+    Task<Result<int>> CreateBudgetCellAsync(BudgetCell budgetCell, CancellationToken cancellationToken);
+
+    Task<Result<int>> DeleteBudgetAsync(int budgetId, CancellationToken cancellationToken);
+    Task<Result<int>> DeleteBudgetGroupAsync(int budgetGroupId, CancellationToken cancellationToken);
+    Task<Result<int>> DeleteBudgetRowAsync(int budgetRowId, CancellationToken cancellationToken);
+    Task<Result<int>> DeleteBudgetCellAsync(int budgetCellId, CancellationToken cancellationToken);
+
+    Task<Result<int>> UpdateBudgetAsync(int budgetId, int year, CancellationToken cancellationToken);
+}

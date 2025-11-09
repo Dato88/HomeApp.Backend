@@ -10,50 +10,38 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
     {
         builder.ToTable("BudgetCells");
 
-        builder.HasKey(bc => bc.Id);
+        builder.HasKey(c => c.BudgetCellId);
 
-        builder.Property(bc => bc.CreatedAt)
+        builder.Property(c => c.BudgetRowId)
+            .IsRequired();
+        builder.Property(c => c.Month)
+            .IsRequired();
+        builder.Property(c => c.Amount)
+            .IsRequired()
+            .HasPrecision(18, 2);
+
+        // Auditing
+        builder.Property(c => c.CreatedAt)
             .HasDefaultValueSql("NOW()");
+        builder.Property(c => c.CreatedById)
+            .IsRequired();
+        builder.Property(c => c.UpdatedAt);
+        builder.Property(c => c.UpdatedById);
 
-        builder.Property(bc => bc.BudgetRowId)
-            .IsRequired();
-        builder.Property(bc => bc.BudgetColumnId)
-            .IsRequired();
-        builder.Property(bc => bc.BudgetGroupId)
-            .IsRequired();
-        builder.Property(bc => bc.PersonId)
-            .IsRequired();
-        builder.Property(bc => bc.Year)
-            .IsRequired();
-        builder.Property(bc => bc.Name)
-            .IsRequired();
+        // Indices / Constraints
+        builder.HasIndex(c => c.BudgetRowId);
+        builder.HasIndex(c => new { c.BudgetRowId, c.Month })
+            .IsUnique();
 
-        // Indices
-        builder.HasIndex(bc => bc.BudgetRowId);
-        builder.HasIndex(bc => bc.BudgetColumnId);
-        builder.HasIndex(bc => bc.BudgetGroupId);
-        builder.HasIndex(bc => bc.PersonId);
-        builder.HasIndex(bc => bc.Year);
+        builder.ToTable(t => t.HasCheckConstraint(
+            "ck_budgetcell_month",
+            "month BETWEEN 1 AND 12"
+        ));
 
         // Relations
-        builder.HasOne(bc => bc.BudgetRow)
-            .WithMany(bc => bc.BudgetCells)
-            .HasForeignKey(br => br.BudgetRowId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(bc => bc.BudgetColumn)
-            .WithMany(bc => bc.BudgetCells)
-            .HasForeignKey(bc => bc.BudgetColumnId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(bg => bg.BudgetGroup)
-            .WithMany(bc => bc.BudgetCells)
-            .HasForeignKey(bg => bg.BudgetGroupId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(p => p.Person)
-            .WithMany(bc => bc.BudgetCells)
-            .HasForeignKey(p => p.PersonId)
+        builder.HasOne(c => c.BudgetRow)
+            .WithMany(r => r.BudgetCells)
+            .HasForeignKey(c => c.BudgetRowId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

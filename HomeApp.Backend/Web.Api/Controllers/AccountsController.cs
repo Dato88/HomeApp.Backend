@@ -59,7 +59,7 @@ public class AccountsController(
 
         if (response.IsSuccess) return Ok(response.IsSuccess);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [Authorize]
@@ -74,6 +74,6 @@ public class AccountsController(
 
         if (response.IsSuccess) return Ok(response.IsSuccess);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 }

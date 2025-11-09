@@ -19,7 +19,7 @@ public class PersonQueriesTests : BaseCommonPersonTest
 
         DbContext.People.Add(person);
         await DbContext.SaveChangesAsync();
-        PersonResponse personResponse = person;
+        PersonResponse personResponse = (PersonResponse)person;
 
         // Act
         var result = await PersonQueries.GetPersonByEmailAsync(email, default);

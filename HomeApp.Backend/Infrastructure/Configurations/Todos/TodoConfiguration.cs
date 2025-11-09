@@ -12,10 +12,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
 
         builder.HasKey(t => t.TodoId);
 
-        builder.Property(t => t.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-
-        builder.Property(t => t.Name)
+        builder.Property(t => t.Title)
             .IsRequired()
             .HasMaxLength(150);
 
@@ -25,16 +22,21 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
         builder.Property(t => t.Priority)
             .IsRequired();
 
-        builder.Property(t => t.LastModified)
+        // Auditing
+        builder.Property(c => c.CreatedAt)
             .HasDefaultValueSql("NOW()");
+        builder.Property(c => c.CreatedById)
+            .IsRequired();
+        builder.Property(c => c.UpdatedAt);
+        builder.Property(c => c.UpdatedById);
 
         // Indices
         builder.HasIndex(t => t.TodoId)
             .IsUnique();
-        builder.HasIndex(t => t.Name);
+        builder.HasIndex(t => t.Title);
         builder.HasIndex(t => t.Done);
         builder.HasIndex(t => t.Priority);
-        builder.HasIndex(t => t.LastModified);
+        builder.HasIndex(t => t.UpdatedAt);
 
         // Relations
         builder.HasOne(tgt => tgt.TodoGroupTodo)

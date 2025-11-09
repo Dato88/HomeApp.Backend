@@ -17,7 +17,12 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var updatedTodo = new Todo
         {
-            TodoId = todo.TodoId, Name = "Updated Todo", Done = true, Priority = TodoPriority.High
+            TodoId = todo.TodoId,
+            Title = "Updated Todo",
+            Done = true,
+            Priority = TodoPriority.High,
+            UpdatedAt = DateTime.UtcNow,
+            UpdatedById = 1000
         };
 
         // Act
@@ -28,21 +33,42 @@ public class TodoUpdateTests : BaseTodoCommandsTest
 
         var dbTodo = await DbContext.Todos.FindAsync(todo.TodoId);
         dbTodo.Should().NotBeNull();
-        dbTodo!.Name.Should().Be(updatedTodo.Name);
+        dbTodo!.Title.Should().Be(updatedTodo.Title);
         dbTodo.Done.Should().Be(updatedTodo.Done);
         dbTodo.Priority.Should().Be(updatedTodo.Priority);
-        dbTodo.LastModified.Should().BeAfter(initialLastModified);
+        dbTodo.UpdatedAt.Should().BeAfter(initialLastModified);
+        dbTodo.UpdatedById.Should().Be(updatedTodo.UpdatedById);
     }
 
     [Fact]
-    public async Task UpdateAsync_Fails_WhenTodoIsNull()
+    public async Task UpdateAsync_Fails_WhenUpdatedAtIsNull()
     {
         // Act
-        var result = await TodoCommands.UpdateAsync(null, default);
+        var result = await TodoCommands.UpdateAsync(new(), default);
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeEquivalentTo(TodoErrors.UpdateFailedWithMessage("Todo is null"));
+        result.Error.Should().BeEquivalentTo(TodoErrors.UpdateFailedWithMessage("Todo.UpdatedAt should not be null"));
+        result.Error.Description.Should().Contain("null");
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(0)]
+    [InlineData(-10)]
+    public async Task UpdateAsync_Fails_WhenUpdatedByIdIsZeroOrBelow(int? personId)
+    {
+        // Assert
+        var newTodo = new Todo() { UpdatedAt = DateTime.UtcNow, UpdatedById = personId };
+
+        // Act
+        var result = await TodoCommands.UpdateAsync(newTodo, default);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should()
+            .BeEquivalentTo(
+                TodoErrors.UpdateFailedWithMessage("Todo.UpdatedById should not be null, 0 or lower than 0"));
         result.Error.Description.Should().Contain("null");
     }
 
@@ -50,21 +76,16 @@ public class TodoUpdateTests : BaseTodoCommandsTest
     public async Task UpdateAsync_Fails_WhenTodoPriorityIsInvalid()
     {
         // Arrange
-        var todo = new Todo
-        {
-            Name = "Test Todo", Done = false, Priority = TodoPriority.Low, LastModified = DateTime.UtcNow
-        };
-
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync();
+        var todo = await TodosDataSeeder.CreateOneDummyTodoWithPersonId();
 
         var invalidTodo = new Todo
         {
             TodoId = todo.TodoId,
-            Name = "Test Todo",
+            Title = "Test Todo",
             Done = false,
             Priority = (TodoPriority)(-1), // Invalid priority
-            LastModified = DateTime.UtcNow.AddDays(2)
+            UpdatedAt = DateTime.UtcNow.AddDays(2),
+            UpdatedById = 1
         };
 
         // Act
@@ -82,10 +103,11 @@ public class TodoUpdateTests : BaseTodoCommandsTest
         var todo = new Todo
         {
             TodoId = 999,
-            Name = "Non-existing Todo",
+            Title = "Non-existing Todo",
             Done = false,
             Priority = TodoPriority.Low,
-            LastModified = DateTime.UtcNow.AddDays(1)
+            UpdatedAt = DateTime.UtcNow.AddDays(1),
+            UpdatedById = 1
         };
 
         // Act

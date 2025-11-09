@@ -1,5 +1,8 @@
 ﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.BudgetModule;
 using Application.Abstractions.Logging;
+using Application.Features.Budgets.Commands;
+using Application.Features.Budgets.Queries;
 using Application.Features.People.Commands;
 using Application.Features.People.Queries;
 using Application.Features.People.Validations;
@@ -7,6 +10,8 @@ using Application.Features.Todos.Commands;
 using Application.Features.Todos.Queries;
 using Domain.Entities.User;
 using Infrastructure.Database;
+using Infrastructure.Features.Budgets.Commands;
+using Infrastructure.Features.Budgets.Queries;
 using Infrastructure.Features.People.Commands;
 using Infrastructure.Features.People.Queries;
 using Infrastructure.Features.People.Validations;
@@ -49,6 +54,8 @@ public static class DependencyInjection
 
         services.AddScoped<IPersonValidation, PersonValidation>();
 
+        services.AddScoped<IBudgetCommands, BudgetCommands>();
+        services.AddScoped<IBudgetQueries, BudgetQueries>();
         services.AddScoped<IPersonCommands, PersonCommands>();
         services.AddScoped<IPersonQueries, PersonQueries>();
         services.AddScoped<ITodoCommands, TodoCommands>();

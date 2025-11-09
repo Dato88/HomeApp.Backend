@@ -14,7 +14,7 @@ public class TodosDataSeeder : BaseTest
         _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
 
         _todoFaker = new Faker<Todo>()
-            .RuleFor(u => u.Name, f => f.Name.FirstName())
+            .RuleFor(u => u.Title, f => f.Name.FirstName())
             .RuleFor(u => u.Done, f => f.Random.Bool())
             .RuleFor(u => u.Priority, f => f.PickRandom<TodoPriority>());
     }
@@ -37,7 +37,7 @@ public class TodosDataSeeder : BaseTest
 
         var todo = await GenereateDummyTodo(personId);
 
-        if (dateTime.HasValue) todo.LastModified = dateTime.Value;
+        if (dateTime.HasValue) todo.UpdatedAt = dateTime.Value;
 
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync();
@@ -49,7 +49,7 @@ public class TodosDataSeeder : BaseTest
     {
         var todo = await CreateOneDummyTodoWithPersonId();
 
-        TodoGroupTodo todoGroupTodo = new() { TodoId = todo.TodoId, TodoGroup = new TodoGroup { Name = "New Group" } };
+        TodoGroupTodo todoGroupTodo = new() { TodoId = todo.TodoId, TodoGroup = new TodoGroup { Title = "New Group" } };
 
         DbContext.TodoGroupTodos.Add(todoGroupTodo);
         await DbContext.SaveChangesAsync();

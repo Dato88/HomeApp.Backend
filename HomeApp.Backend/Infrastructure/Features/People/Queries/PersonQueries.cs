@@ -22,7 +22,7 @@ public sealed class PersonQueries(
             var person = await dbContext.People.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
-            return person;
+            return (PersonResponse)person;
         }
         catch (Exception ex)
         {
@@ -39,7 +39,7 @@ public sealed class PersonQueries(
             var person = await dbContext.People.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 
-            return person;
+            return (PersonResponse)person;
         }
         catch (Exception ex)
         {

@@ -8,8 +8,8 @@ namespace Infrastructure.Database;
 public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : DbContext(options)
 {
     public DbSet<Person> People { get; set; }
+    public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetCell> BudgetCells { get; set; }
-    public DbSet<BudgetColumn> BudgetColumns { get; set; }
     public DbSet<BudgetGroup> BudgetGroups { get; set; }
     public DbSet<BudgetRow> BudgetRows { get; set; }
     public DbSet<Todo> Todos { get; set; }
@@ -19,8 +19,10 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema(Schemas.Default);
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(HomeAppContext).Assembly);
 
-        modelBuilder.HasDefaultSchema(Schemas.Default);
+        modelBuilder.ApplyAuditedColumnOrdering();
     }
 }

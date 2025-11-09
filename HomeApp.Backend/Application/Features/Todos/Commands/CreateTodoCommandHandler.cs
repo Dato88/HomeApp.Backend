@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
+using Domain.Entities.Todos;
 using MediatR;
 using SharedKernel;
 
@@ -16,7 +17,7 @@ internal sealed class CreateTodoCommandHandler(
     {
         request.PersonId = userContext.PersonId;
 
-        var result = await _todoCommands.CreateAsync(request, cancellationToken);
+        var result = await _todoCommands.CreateAsync((Todo)request, cancellationToken);
 
         if (result.IsFailure)
         {
