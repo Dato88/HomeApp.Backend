@@ -2,7 +2,7 @@
 
 namespace Domain.Entities.Todos;
 
-public class TodoGroupTodo : IAudited
+public class TodoGroupTodo : AuditableEntity
 {
     public int TodoGroupTodoId { get; set; }
 
@@ -11,9 +11,4 @@ public class TodoGroupTodo : IAudited
 
     public virtual Todo? Todo { get; set; }
     public virtual TodoGroup? TodoGroup { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
 }

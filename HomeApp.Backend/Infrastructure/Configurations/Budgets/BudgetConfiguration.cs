@@ -1,4 +1,5 @@
 using Domain.Entities.Budgets;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,22 +9,23 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
 {
     public void Configure(EntityTypeBuilder<Budget> builder)
     {
-        builder.ToTable("Budgets");
+        builder.ToTable("budgets", Schemas.Budget);
 
         builder.HasKey(b => b.BudgetId);
 
+        builder.Property(b => b.BudgetId)
+            .HasColumnName("budget_id");
+
         builder.Property(b => b.PersonId)
+            .HasColumnName("person_id")
             .IsRequired();
+
         builder.Property(b => b.Year)
+            .HasColumnName("year")
             .IsRequired();
 
         // Auditing
-        builder.Property(b => b.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(b => b.CreatedById)
-            .IsRequired();
-        builder.Property(b => b.UpdatedAt);
-        builder.Property(b => b.UpdatedById);
+        builder.ConfigureAuditable();
 
         // One budget per person/year
         builder.HasIndex(b => new { b.PersonId, b.Year })

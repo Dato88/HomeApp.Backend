@@ -1,4 +1,5 @@
 using Domain.Entities.People;
+using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,36 +9,39 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
 {
     public void Configure(EntityTypeBuilder<Person> builder)
     {
-        builder.ToTable("People");
+        builder.ToTable("people", Schemas.People);
 
         builder.HasKey(p => p.PersonId);
 
+        builder.Property(p => p.PersonId)
+            .HasColumnName("person_id");
+
         builder.Property(p => p.Username)
+            .HasColumnName("username")
             .HasMaxLength(150);
 
         builder.Property(p => p.FirstName)
+            .HasColumnName("first_name")
             .IsRequired()
             .HasMaxLength(150);
 
         builder.Property(p => p.LastName)
+            .HasColumnName("last_name")
             .IsRequired()
             .HasMaxLength(150);
 
         builder.Property(p => p.Email)
+            .HasColumnName("email")
             .IsRequired()
             .HasMaxLength(150);
 
         builder.Property(p => p.UserId)
+            .HasColumnName("user_id")
             .IsRequired()
             .HasMaxLength(36);
 
         // Auditing
-        builder.Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(c => c.CreatedById)
-            .IsRequired();
-        builder.Property(c => c.UpdatedAt);
-        builder.Property(c => c.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices
         builder.HasIndex(p => p.Email)

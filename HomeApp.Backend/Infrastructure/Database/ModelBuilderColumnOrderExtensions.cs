@@ -21,13 +21,13 @@ public static class ModelBuilderColumnOrderExtensions
                         .HasColumnOrder(order++);
 
             // 2) Then audit fields for IAudited
-            if (typeof(IAudited).IsAssignableFrom(clrType))
+            if (typeof(AuditableEntity).IsAssignableFrom(clrType))
             {
                 // adjust types/names if your interface differs
-                entity.Property(typeof(DateTime), nameof(IAudited.CreatedAt)).HasColumnOrder(order++);
-                entity.Property(typeof(int), nameof(IAudited.CreatedById)).HasColumnOrder(order++);
-                entity.Property(typeof(DateTime?), nameof(IAudited.UpdatedAt)).HasColumnOrder(order++);
-                entity.Property(typeof(int?), nameof(IAudited.UpdatedById)).HasColumnOrder(order++);
+                entity.Property(typeof(DateTime), nameof(AuditableEntity.CreatedAt)).HasColumnOrder(order++);
+                entity.Property(typeof(int), nameof(AuditableEntity.CreatedById)).HasColumnOrder(order++);
+                entity.Property(typeof(DateTime?), nameof(AuditableEntity.UpdatedAt)).HasColumnOrder(order++);
+                entity.Property(typeof(int?), nameof(AuditableEntity.UpdatedById)).HasColumnOrder(order++);
             }
         }
     }

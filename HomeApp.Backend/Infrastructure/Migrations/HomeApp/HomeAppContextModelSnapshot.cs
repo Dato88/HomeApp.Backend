@@ -35,10 +35,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -50,7 +50,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("person_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -70,7 +70,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_budgets_person_id_year");
 
-                    b.ToTable("Budgets", "public");
+                    b.ToTable("budgets", "budget");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
@@ -94,10 +94,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -109,7 +109,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("month");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -128,7 +128,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_budget_cells_budget_row_id_month");
 
-                    b.ToTable("BudgetCells", "public", t =>
+                    b.ToTable("budget_cells", "budget", t =>
                         {
                             t.HasCheckConstraint("ck_budgetcell_month", "month BETWEEN 1 AND 12");
                         });
@@ -154,10 +154,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -175,7 +175,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -194,7 +194,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_budget_groups_budget_id_index");
 
-                    b.ToTable("BudgetGroups", "public");
+                    b.ToTable("budget_groups", "budget");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
@@ -213,10 +213,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -234,7 +234,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -253,7 +253,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_budget_rows_budget_group_id_index");
 
-                    b.ToTable("BudgetRows", "public");
+                    b.ToTable("budget_rows", "budget");
                 });
 
             modelBuilder.Entity("Domain.Entities.People.Person", b =>
@@ -268,10 +268,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -297,7 +297,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("last_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -332,7 +332,1188 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_people_username");
 
-                    b.ToTable("People", "public");
+                    b.ToTable("people", "people");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Favorite", b =>
+                {
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(5);
+
+                    b.HasKey("PersonId", "RecipeId")
+                        .HasName("pk_favorites");
+
+                    b.HasIndex("RecipeId")
+                        .HasDatabaseName("ix_favorites_recipe_id");
+
+                    b.ToTable("favorites", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecipeId"));
+
+                    b.Property<int?>("CookTimeMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("cook_time_minutes");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsPublic")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_public");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int?>("PrepTimeMinutes")
+                        .HasColumnType("integer")
+                        .HasColumnName("prep_time_minutes");
+
+                    b.Property<decimal?>("Servings")
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("servings");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("RecipeId")
+                        .HasName("pk_recipes");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_recipes_person_id");
+
+                    b.ToTable("recipes", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeCategory", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(5);
+
+                    b.HasKey("RecipeId", "CategoryId")
+                        .HasName("pk_recipe_categories");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_recipe_categories_category_id");
+
+                    b.ToTable("recipe_categories", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeComment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("comment_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("comment_text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("CommentId")
+                        .HasName("pk_recipe_comments");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_recipe_comments_person_id");
+
+                    b.HasIndex("RecipeId")
+                        .HasDatabaseName("ix_recipe_comments_recipe_id");
+
+                    b.ToTable("recipe_comments", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeImage", b =>
+                {
+                    b.Property<int>("RecipeImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_image_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecipeImageId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("image_url");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_primary");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("RecipeImageId")
+                        .HasName("pk_recipe_images");
+
+                    b.HasIndex("RecipeId")
+                        .HasDatabaseName("ix_recipe_images_recipe_id");
+
+                    b.ToTable("recipe_images", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeIngredient", b =>
+                {
+                    b.Property<int>("RecipeIngredientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_ingredient_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecipeIngredientId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_id");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("note");
+
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("numeric(10,2)")
+                        .HasColumnName("quantity");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1)
+                        .HasColumnName("sort_order");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unit_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("RecipeIngredientId")
+                        .HasName("pk_recipe_ingredients");
+
+                    b.HasIndex("IngredientId")
+                        .HasDatabaseName("ix_recipe_ingredients_ingredient_id");
+
+                    b.HasIndex("RecipeId")
+                        .HasDatabaseName("ix_recipe_ingredients_recipe_id");
+
+                    b.HasIndex("UnitId")
+                        .HasDatabaseName("ix_recipe_ingredients_unit_id");
+
+                    b.ToTable("recipe_ingredients", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeRating", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<DateTime>("RatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("rated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<short>("Rating")
+                        .HasColumnType("smallint")
+                        .HasColumnName("rating");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(5);
+
+                    b.HasKey("RecipeId", "PersonId")
+                        .HasName("pk_recipe_ratings");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_recipe_ratings_person_id");
+
+                    b.ToTable("recipe_ratings", "recipes_core", t =>
+                        {
+                            t.HasCheckConstraint("ck_recipe_ratings_rating", "rating BETWEEN 1 AND 5");
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeStep", b =>
+                {
+                    b.Property<int>("RecipeStepId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_step_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecipeStepId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Instruction")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("instruction");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id");
+
+                    b.Property<int>("StepNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("step_number");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("RecipeStepId")
+                        .HasName("pk_recipe_steps");
+
+                    b.HasIndex("RecipeId", "StepNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_recipe_steps_recipe_id_step_number");
+
+                    b.ToTable("recipe_steps", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeTag", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tag_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(5);
+
+                    b.HasKey("RecipeId", "TagId")
+                        .HasName("pk_recipe_tags");
+
+                    b.HasIndex("TagId")
+                        .HasDatabaseName("ix_recipe_tags_tag_id");
+
+                    b.ToTable("recipe_tags", "recipes_core");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", b =>
+                {
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<decimal?>("CaloriesKcalPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("calories_kcal_per_100g");
+
+                    b.Property<decimal?>("CarbsGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("carbs_g_per_100g");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<decimal?>("FatGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("fat_g_per_100g");
+
+                    b.Property<decimal?>("FiberGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("fiber_g_per_100g");
+
+                    b.Property<string>("LastSource")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("last_source");
+
+                    b.Property<decimal?>("ProteinGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("protein_g_per_100g");
+
+                    b.Property<decimal?>("SaltGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("salt_g_per_100g");
+
+                    b.Property<decimal?>("SaturatedFatGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("saturated_fat_g_per_100g");
+
+                    b.Property<decimal?>("SugarGPer100g")
+                        .HasColumnType("numeric(8,2)")
+                        .HasColumnName("sugar_g_per_100g");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("IngredientId")
+                        .HasName("pk_ingredient_nutrition");
+
+                    b.ToTable("ingredient_nutrition", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.IngredientPrice", b =>
+                {
+                    b.Property<int>("IngredientPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_price_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IngredientPriceId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasDefaultValue("EUR")
+                        .HasColumnName("currency");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_id");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric(10,2)")
+                        .HasColumnName("price");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unit_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.Property<DateTime>("ValidFrom")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("valid_from")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("valid_to");
+
+                    b.HasKey("IngredientPriceId")
+                        .HasName("pk_ingredient_prices");
+
+                    b.HasIndex("StoreId")
+                        .HasDatabaseName("ix_ingredient_prices_store_id");
+
+                    b.HasIndex("UnitId")
+                        .HasDatabaseName("ix_ingredient_prices_unit_id");
+
+                    b.HasIndex("IngredientId", "StoreId", "ValidFrom", "ValidTo")
+                        .HasDatabaseName("ix_ingredient_prices_ingredient_store_valid");
+
+                    b.ToTable("ingredient_prices", "recipes_pricing");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.Store", b =>
+                {
+                    b.Property<int>("StoreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("StoreId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("website_url");
+
+                    b.HasKey("StoreId")
+                        .HasName("pk_stores");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_stores_name");
+
+                    b.ToTable("stores", "recipes_pricing");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Allergen", b =>
+                {
+                    b.Property<int>("AllergenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("allergen_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AllergenId"));
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("AllergenId")
+                        .HasName("pk_allergens");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_allergens_name");
+
+                    b.ToTable("allergens", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("CategoryId")
+                        .HasName("pk_categories");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_categories_name");
+
+                    b.ToTable("categories", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
+                {
+                    b.Property<int>("IngredientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IngredientId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int?>("IngredientCategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_category_id");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("IngredientId")
+                        .HasName("pk_ingredients");
+
+                    b.HasIndex("IngredientCategoryId")
+                        .HasDatabaseName("ix_ingredients_ingredient_category_id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_ingredients_name");
+
+                    b.ToTable("ingredients", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientAllergen", b =>
+                {
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("AllergenId")
+                        .HasColumnType("integer")
+                        .HasColumnName("allergen_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(2)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(4);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(5);
+
+                    b.HasKey("IngredientId", "AllergenId")
+                        .HasName("pk_ingredient_allergens");
+
+                    b.HasIndex("AllergenId")
+                        .HasDatabaseName("ix_ingredient_allergens_allergen_id");
+
+                    b.ToTable("ingredient_allergens", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
+                {
+                    b.Property<int>("IngredientCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("ingredient_category_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IngredientCategoryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_category_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("IngredientCategoryId")
+                        .HasName("pk_ingredient_categories");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_ingredient_categories_name");
+
+                    b.HasIndex("ParentCategoryId")
+                        .HasDatabaseName("ix_ingredient_categories_parent_category_id");
+
+                    b.ToTable("ingredient_categories", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Tag", b =>
+                {
+                    b.Property<int>("TagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("tag_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TagId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("TagId")
+                        .HasName("pk_tags");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tags_name");
+
+                    b.ToTable("tags", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Unit", b =>
+                {
+                    b.Property<int>("UnitId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("unit_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UnitId"));
+
+                    b.Property<string>("Abbreviation")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("abbreviation");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("UnitId")
+                        .HasName("pk_units");
+
+                    b.HasIndex("Abbreviation")
+                        .IsUnique()
+                        .HasDatabaseName("ix_units_abbreviation");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_units_name");
+
+                    b.ToTable("units", "recipes_ref");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.PopularSearchQuery", b =>
+                {
+                    b.Property<int>("QueryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("query_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QueryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<DateTime>("LastSearchedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("last_searched_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("QueryText")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("query_text");
+
+                    b.Property<int>("SearchCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1)
+                        .HasColumnName("search_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("QueryId")
+                        .HasName("pk_popular_search_queries");
+
+                    b.ToTable("popular_search_queries", "recipes_search");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("recipe_id")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<DateTime>("LastIndexedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("last_indexed_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("RecipeId")
+                        .HasName("pk_recipe_search_index");
+
+                    b.ToTable("recipe_search_index", "recipes_search");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.Todo", b =>
@@ -347,10 +1528,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -372,7 +1553,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -400,7 +1581,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("UpdatedAt")
                         .HasDatabaseName("ix_todos_updated_at");
 
-                    b.ToTable("Todos", "public");
+                    b.ToTable("todos", "todo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroup", b =>
@@ -415,10 +1596,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -432,7 +1613,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("title");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -451,7 +1632,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_todo_groups_todo_group_id");
 
-                    b.ToTable("TodoGroups", "public");
+                    b.ToTable("todo_groups", "todo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
@@ -466,10 +1647,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -485,7 +1666,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("todo_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -504,7 +1685,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_todo_group_todos_todo_id");
 
-                    b.ToTable("TodoGroupTodos", "public");
+                    b.ToTable("todo_group_todos", "todo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoPerson", b =>
@@ -519,10 +1700,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("created_at")
                         .HasColumnOrder(1)
-                        .HasDefaultValueSql("NOW()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
@@ -538,7 +1719,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("todo_id");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
                         .HasColumnOrder(3);
 
@@ -556,7 +1737,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("TodoId")
                         .HasDatabaseName("ix_todo_people_todo_id");
 
-                    b.ToTable("TodoPeople", "public");
+                    b.ToTable("todo_people", "todo");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
@@ -605,6 +1786,272 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasConstraintName("fk_budget_rows_budget_groups_budget_group_id");
 
                     b.Navigation("BudgetGroup");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Favorite", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("Favorites")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_favorites_people_person_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Favorites")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_favorites_recipes_recipe_id");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("Recipes")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipes_people_person_id");
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Category", "Category")
+                        .WithMany("RecipeCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_categories_categories_category_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("RecipeCategories")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_categories_recipes_recipe_id");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeComment", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("RecipeComments")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_comments_people_person_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Comments")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_comments_recipes_recipe_id");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeImage", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Images")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_images_recipes_recipe_id");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeIngredient", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_ingredients_ingredients_ingredient_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_ingredients_recipes_recipe_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Unit", "Unit")
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("UnitId")
+                        .HasConstraintName("fk_recipe_ingredients_units_unit_id");
+
+                    b.Navigation("Ingredient");
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeRating", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("RecipeRatings")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_ratings_people_person_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Ratings")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_ratings_recipes_recipe_id");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeStep", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("Steps")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_steps_recipes_recipe_id");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeTag", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithMany("RecipeTags")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_tags_recipes_recipe_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Tag", "Tag")
+                        .WithMany("RecipeTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_tags_tags_tag_id");
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
+                        .WithOne("Nutrition")
+                        .HasForeignKey("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", "IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_nutrition_ingredients_ingredient_id");
+
+                    b.Navigation("Ingredient");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.IngredientPrice", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
+                        .WithMany("IngredientPrices")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_prices_ingredients_ingredient_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesPricing.Store", "Store")
+                        .WithMany("IngredientPrices")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_prices_stores_store_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Unit", "Unit")
+                        .WithMany("IngredientPrices")
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_prices_units_unit_id");
+
+                    b.Navigation("Ingredient");
+
+                    b.Navigation("Store");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.IngredientCategory", "Category")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("IngredientCategoryId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_ingredients_ingredient_categories_ingredient_category_id");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientAllergen", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Allergen", "Allergen")
+                        .WithMany("IngredientAllergens")
+                        .HasForeignKey("AllergenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_allergens_allergens_allergen_id");
+
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
+                        .WithMany("IngredientAllergens")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_ingredient_allergens_ingredients_ingredient_id");
+
+                    b.Navigation("Allergen");
+
+                    b.Navigation("Ingredient");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.IngredientCategory", "ParentCategory")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_ingredient_categories_ingredient_categories_parent_category");
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", b =>
+                {
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
+                        .WithOne("SearchIndex")
+                        .HasForeignKey("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", "RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_recipe_search_index_recipes_recipe_id");
+
+                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.TodoGroupTodo", b =>
@@ -668,7 +2115,81 @@ namespace Infrastructure.Migrations.HomeApp
                 {
                     b.Navigation("Budgets");
 
+                    b.Navigation("Favorites");
+
+                    b.Navigation("RecipeComments");
+
+                    b.Navigation("RecipeRatings");
+
+                    b.Navigation("Recipes");
+
                     b.Navigation("TodoPeople");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("Ratings");
+
+                    b.Navigation("RecipeCategories");
+
+                    b.Navigation("RecipeTags");
+
+                    b.Navigation("SearchIndex");
+
+                    b.Navigation("Steps");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.Store", b =>
+                {
+                    b.Navigation("IngredientPrices");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Allergen", b =>
+                {
+                    b.Navigation("IngredientAllergens");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Category", b =>
+                {
+                    b.Navigation("RecipeCategories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
+                {
+                    b.Navigation("IngredientAllergens");
+
+                    b.Navigation("IngredientPrices");
+
+                    b.Navigation("Nutrition");
+
+                    b.Navigation("RecipeIngredients");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("Ingredients");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Tag", b =>
+                {
+                    b.Navigation("RecipeTags");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Unit", b =>
+                {
+                    b.Navigation("IngredientPrices");
+
+                    b.Navigation("RecipeIngredients");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.Todo", b =>

@@ -3,7 +3,7 @@ using SharedKernel;
 
 namespace Domain.Entities.Todos;
 
-public class TodoPerson : IAudited
+public class TodoPerson : AuditableEntity
 {
     public int TodoPersonId { get; set; }
 
@@ -12,9 +12,4 @@ public class TodoPerson : IAudited
 
     public virtual Person? Person { get; set; }
     public virtual Todo? Todo { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
 }

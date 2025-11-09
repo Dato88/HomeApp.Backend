@@ -1,0 +1,13 @@
+﻿using Domain.Entities.Recipes.RecipesRef;
+using SharedKernel;
+
+namespace Domain.Entities.Recipes.RecipesCore;
+
+public class RecipeTag : AuditableEntity
+{
+    public int RecipeId { get; set; }
+    public int TagId { get; set; }
+
+    public Recipe Recipe { get; set; } = null!;
+    public Tag Tag { get; set; } = null!;
+}

@@ -12,10 +12,16 @@ public class NavigationController : ControllerBase
     {
         var navbarItems = new List<NavbarListItem>
         {
-            new() { Name = "Dashboard", Link = "/dashboard", Icon = "dashboard" },
-            new() { Name = "Todo", Link = "/todo", Icon = "task" },
-            new() { Name = "Budget", Link = "/budget", Icon = "analytics" },
-            new() { Name = "Settings", Link = "/settings", Icon = "settings" }
+            new() { Name = "Dashboard", Link = "/dashboard", Icon = "bi bi-bank" },
+            new() { Name = "Todo", Link = "/todo", Icon = "bi bi-list-task" },
+            new() { Name = "Budget", Link = "/budget", Icon = "bi bi-bar-chart-line-fill" },
+            new()
+            {
+                Name = "Settings",
+                Link = "/settings",
+                Icon = "bi bi-gear-fill",
+                Sublist = new() { new() { Name = "Settings", Link = "/settings" }, }
+            }
         };
 
         return Ok(navbarItems);
