@@ -1,10 +1,10 @@
 using Domain.Entities.Budgets;
 using Domain.Entities.People;
-using Domain.Entities.Recipes.Core;
-using Domain.Entities.Recipes.Nutrition;
-using Domain.Entities.Recipes.Pricing;
-using Domain.Entities.Recipes.Ref;
-using Domain.Entities.Recipes.Search;
+using Domain.Entities.Recipes.RecipesCore;
+using Domain.Entities.Recipes.RecipesNutrition;
+using Domain.Entities.Recipes.RecipesPricing;
+using Domain.Entities.Recipes.RecipesRef;
+using Domain.Entities.Recipes.RecipesSearch;
 using Domain.Entities.Todos;
 using Microsoft.EntityFrameworkCore;
 

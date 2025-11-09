@@ -1,5 +1,5 @@
 ﻿using Domain.Entities.Budgets;
-using Domain.Entities.Recipes.Core;
+using Domain.Entities.Recipes.RecipesCore;
 using Domain.Entities.Todos;
 using SharedKernel;
 
