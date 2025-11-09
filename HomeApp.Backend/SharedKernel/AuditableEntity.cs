@@ -1,6 +1,6 @@
 ﻿namespace SharedKernel;
 
-public interface IAudited
+public abstract class AuditableEntity
 {
     public DateTime CreatedAt { get; set; }
     public int CreatedById { get; set; }

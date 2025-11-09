@@ -2,7 +2,7 @@
 
 namespace Domain.Entities.Budgets;
 
-public class BudgetCell : IAudited
+public class BudgetCell : AuditableEntity
 {
     public int BudgetCellId { get; set; }
 
@@ -11,9 +11,4 @@ public class BudgetCell : IAudited
     public decimal Amount { get; set; }
 
     public virtual BudgetRow? BudgetRow { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
 }

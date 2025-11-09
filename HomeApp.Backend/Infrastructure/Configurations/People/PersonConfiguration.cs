@@ -32,12 +32,7 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .HasMaxLength(36);
 
         // Auditing
-        builder.Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(c => c.CreatedById)
-            .IsRequired();
-        builder.Property(c => c.UpdatedAt);
-        builder.Property(c => c.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices
         builder.HasIndex(p => p.Email)

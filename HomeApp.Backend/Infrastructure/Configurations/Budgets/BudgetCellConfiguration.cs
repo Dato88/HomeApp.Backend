@@ -21,12 +21,7 @@ internal sealed class BudgetCellConfiguration : IEntityTypeConfiguration<BudgetC
             .HasPrecision(18, 2);
 
         // Auditing
-        builder.Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(c => c.CreatedById)
-            .IsRequired();
-        builder.Property(c => c.UpdatedAt);
-        builder.Property(c => c.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices / Constraints
         builder.HasIndex(c => c.BudgetRowId);

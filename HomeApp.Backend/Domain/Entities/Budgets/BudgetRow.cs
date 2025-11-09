@@ -2,7 +2,7 @@
 
 namespace Domain.Entities.Budgets;
 
-public class BudgetRow : IAudited
+public class BudgetRow : AuditableEntity
 {
     public int BudgetRowId { get; set; }
 
@@ -12,9 +12,4 @@ public class BudgetRow : IAudited
 
     public virtual BudgetGroup? BudgetGroup { get; set; }
     public virtual ICollection<BudgetCell> BudgetCells { get; set; } = new HashSet<BudgetCell>();
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
 }

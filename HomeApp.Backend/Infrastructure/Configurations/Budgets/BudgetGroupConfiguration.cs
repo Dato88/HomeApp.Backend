@@ -23,12 +23,7 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
             .IsRequired();
 
         // Auditing
-        builder.Property(g => g.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(g => g.CreatedById)
-            .IsRequired();
-        builder.Property(g => g.UpdatedAt);
-        builder.Property(g => g.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices (ordering unique within a budget)
         builder.HasIndex(g => g.BudgetId);

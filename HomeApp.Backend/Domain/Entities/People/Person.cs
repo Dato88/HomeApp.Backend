@@ -1,10 +1,11 @@
 ﻿using Domain.Entities.Budgets;
+using Domain.Entities.Recipes.Core;
 using Domain.Entities.Todos;
 using SharedKernel;
 
 namespace Domain.Entities.People;
 
-public class Person : IAudited
+public class Person : AuditableEntity
 {
     public int PersonId { get; set; }
 
@@ -15,10 +16,9 @@ public class Person : IAudited
     public string UserId { get; set; } = default!;
 
     public virtual ICollection<Budget> Budgets { get; set; } = new HashSet<Budget>();
+    public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
     public virtual ICollection<TodoPerson> TodoPeople { get; set; } = new HashSet<TodoPerson>();
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
+    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    public virtual ICollection<RecipeRating> RecipeRatings { get; set; } = new List<RecipeRating>();
+    public virtual ICollection<RecipeComment> RecipeComments { get; set; } = new List<RecipeComment>();
 }

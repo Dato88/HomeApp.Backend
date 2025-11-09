@@ -23,12 +23,7 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
             .IsRequired();
 
         // Auditing
-        builder.Property(c => c.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(c => c.CreatedById)
-            .IsRequired();
-        builder.Property(c => c.UpdatedAt);
-        builder.Property(c => c.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices
         builder.HasIndex(t => t.TodoId)

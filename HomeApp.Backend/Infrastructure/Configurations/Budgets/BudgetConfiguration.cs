@@ -18,12 +18,7 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
             .IsRequired();
 
         // Auditing
-        builder.Property(b => b.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(b => b.CreatedById)
-            .IsRequired();
-        builder.Property(b => b.UpdatedAt);
-        builder.Property(b => b.UpdatedById);
+        builder.ConfigureAuditable();
 
         // One budget per person/year
         builder.HasIndex(b => new { b.PersonId, b.Year })

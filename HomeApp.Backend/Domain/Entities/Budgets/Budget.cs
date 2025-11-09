@@ -3,7 +3,7 @@ using SharedKernel;
 
 namespace Domain.Entities.Budgets;
 
-public class Budget : IAudited
+public class Budget : AuditableEntity
 {
     public int BudgetId { get; set; }
 
@@ -12,9 +12,4 @@ public class Budget : IAudited
 
     public virtual Person? Person { get; set; }
     public virtual ICollection<BudgetGroup> BudgetGroups { get; set; } = new HashSet<BudgetGroup>();
-
-    public DateTime CreatedAt { get; set; }
-    public int CreatedById { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public int? UpdatedById { get; set; }
 }

@@ -21,12 +21,7 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
             .HasMaxLength(150);
 
         // Auditing
-        builder.Property(r => r.CreatedAt)
-            .HasDefaultValueSql("NOW()");
-        builder.Property(r => r.CreatedById)
-            .IsRequired();
-        builder.Property(r => r.UpdatedAt);
-        builder.Property(r => r.UpdatedById);
+        builder.ConfigureAuditable();
 
         // Indices (ordering unique within a group)
         builder.HasIndex(r => r.BudgetGroupId);
