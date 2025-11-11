@@ -17,6 +17,8 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddPresentation();
 
+builder.AddInfrastructureTelemetry();
+
 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
