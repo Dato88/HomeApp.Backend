@@ -22,7 +22,7 @@ public class TodoController(IMediator mediator) : ControllerBase
 
         if (response.IsSuccess) return Ok(response);
 
-        return BadRequest(response);
+        return BadRequest(response.Error);
     }
 
     [HttpGet("todo")]

@@ -1,8 +1,6 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.BudgetModule;
 using Application.Abstractions.Logging;
-using Application.Features.Budgets.Commands;
-using Application.Features.Budgets.Queries;
 using Application.Features.People.Commands;
 using Application.Features.People.Queries;
 using Application.Features.People.Validations;
@@ -24,7 +22,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 namespace Infrastructure;
 
@@ -43,13 +46,6 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        ILogger logger =
-            new LoggerConfiguration()
-                .WriteTo.Console()
-                .CreateLogger();
-
-        services.AddSingleton(logger);
-
         services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
 
         services.AddScoped<IPersonValidation, PersonValidation>();
@@ -152,18 +148,17 @@ public static class DependencyInjection
                 options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
         });
 
-        services.AddIdentity<User, IdentityRole>(
-                opt =>
-                {
-                    opt.Password.RequiredLength = 7;
-                    opt.Password.RequireDigit = false;
+        services.AddIdentity<User, IdentityRole>(opt =>
+            {
+                opt.Password.RequiredLength = 7;
+                opt.Password.RequireDigit = false;
 
-                    opt.User.RequireUniqueEmail = true;
+                opt.User.RequireUniqueEmail = true;
 
-                    opt.Lockout.AllowedForNewUsers = true;
-                    opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-                    opt.Lockout.MaxFailedAccessAttempts = 3;
-                })
+                opt.Lockout.AllowedForNewUsers = true;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+            })
             .AddEntityFrameworkStores<HomeAppUserContext>()
             .AddDefaultTokenProviders();
 
@@ -171,5 +166,95 @@ public static class DependencyInjection
             opt.TokenLifespan = TimeSpan.FromHours(1));
 
         return services;
+    }
+
+    public static IHostApplicationBuilder AddInfrastructureTelemetry(
+        this IHostApplicationBuilder builder)
+    {
+        var configuration = builder.Configuration;
+        var environment = builder.Environment;
+        var telemetrySection = builder.Configuration.GetSection("Telemetry");
+        var otlpEndpoint = telemetrySection["Exporter:Otlp:Endpoint"];
+
+        var useConsole = bool.TryParse(telemetrySection["Exporter:UseConsole"], out var consoleEnabled) &&
+                         consoleEnabled;
+
+        var serviceName = configuration["Telemetry:ServiceName"] ?? "HomeApp.Api";
+
+        var resourceBuilder = ResourceBuilder.CreateDefault()
+            .AddService(serviceName)
+            .AddAttributes(new[]
+            {
+                new KeyValuePair<string, object>("deployment.environment", environment.EnvironmentName)
+            });
+
+        var useOtlpExporter = !string.IsNullOrWhiteSpace(otlpEndpoint);
+
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(metrics =>
+            {
+                metrics.AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddMeter(
+                        "Microsoft.AspNetCore.Hosting",
+                        "Microsoft.AspNetCore.Server.Kestrel",
+                        "System.Net.Http",
+                        "HomeApp.Api")
+                    .SetResourceBuilder(resourceBuilder);
+
+                if (useOtlpExporter)
+                {
+                    metrics.AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint));
+                }
+                else
+                {
+                    metrics.AddConsoleExporter();
+                }
+            })
+            .WithTracing(tracing =>
+            {
+                if (builder.Environment.IsDevelopment())
+                {
+                    tracing.SetSampler<AlwaysOnSampler>();
+                }
+
+                tracing.AddAspNetCoreInstrumentation(o => { o.RecordException = true; })
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation()
+                    .AddSource("HomeApp.Activity")
+                    .SetResourceBuilder(resourceBuilder);
+
+                if (useOtlpExporter)
+                {
+                    tracing.AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint));
+                }
+                else
+                {
+                    tracing.AddConsoleExporter();
+                }
+            });
+
+        builder.Logging.ClearProviders();
+
+        // Logging über OpenTelemetry
+        builder.Logging.AddOpenTelemetry(logging =>
+        {
+            logging.SetResourceBuilder(resourceBuilder);
+            logging.IncludeScopes = true;
+            logging.IncludeFormattedMessage = true;
+            logging.ParseStateValues = true;
+
+            if (useOtlpExporter)
+            {
+                logging.AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint));
+            }
+            else
+            {
+                logging.AddConsoleExporter();
+            }
+        });
+
+        return builder;
     }
 }
