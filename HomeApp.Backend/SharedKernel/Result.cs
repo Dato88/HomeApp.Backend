@@ -6,8 +6,6 @@ public class Result
 {
     protected Result(bool isSuccess, Error error = null)
     {
-        // Validierung: Erfolgreiches Ergebnis darf keinen Fehler enthalten,
-        // fehlgeschlagenes Ergebnis MUSS einen Fehler enthalten.
         if ((isSuccess && error != Error.None) ||
             (!isSuccess && error == Error.None))
             throw new ArgumentException("Invalid error state", nameof(error));
