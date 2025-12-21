@@ -176,9 +176,6 @@ public static class DependencyInjection
         var telemetrySection = builder.Configuration.GetSection("Telemetry");
         var otlpEndpoint = telemetrySection["Exporter:Otlp:Endpoint"];
 
-        var useConsole = bool.TryParse(telemetrySection["Exporter:UseConsole"], out var consoleEnabled) &&
-                         consoleEnabled;
-
         var serviceName = configuration["Telemetry:ServiceName"] ?? "HomeApp.Api";
 
         var resourceBuilder = ResourceBuilder.CreateDefault()
@@ -188,7 +185,12 @@ public static class DependencyInjection
                 new KeyValuePair<string, object>("deployment.environment", environment.EnvironmentName)
             });
 
+        var useConsole = bool.TryParse(telemetrySection["Exporter:UseConsole"], out var consoleEnabled) &&
+                         consoleEnabled;
+
         var useOtlpExporter = !string.IsNullOrWhiteSpace(otlpEndpoint);
+
+        builder.Logging.ClearProviders();
 
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
@@ -207,7 +209,8 @@ public static class DependencyInjection
                 {
                     metrics.AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint));
                 }
-                else
+
+                if (useConsole)
                 {
                     metrics.AddConsoleExporter();
                 }
@@ -229,13 +232,12 @@ public static class DependencyInjection
                 {
                     tracing.AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint));
                 }
-                else
+
+                if (useConsole)
                 {
                     tracing.AddConsoleExporter();
                 }
             });
-
-        builder.Logging.ClearProviders();
 
         // Logging über OpenTelemetry
         builder.Logging.AddOpenTelemetry(logging =>
