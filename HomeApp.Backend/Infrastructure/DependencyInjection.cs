@@ -98,9 +98,19 @@ public static class DependencyInjection
 
     private static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddRequestTimeouts(
+            configure: static timeouts =>
+                timeouts.AddPolicy("HealthChecks", TimeSpan.FromSeconds(5)));
+
+        services.AddOutputCache(
+            configureOptions: static caching =>
+                caching.AddPolicy("HealthChecks",
+                    build: static policy => policy.Expire(TimeSpan.FromSeconds(10))));
+
         services
             .AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("HomeAppConnection")!);
+
         return services;
     }
 

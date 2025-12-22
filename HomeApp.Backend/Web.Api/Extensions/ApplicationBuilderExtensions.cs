@@ -1,4 +1,6 @@
-﻿using Scalar.AspNetCore;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Scalar.AspNetCore;
 
 namespace Web.Api.Extensions;
 
@@ -26,6 +28,19 @@ internal static class ApplicationBuilderExtensions
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        return app;
+    }
+
+    public static IApplicationBuilder UseHealthChecksExtension(this WebApplication app)
+    {
+        app.UseRequestTimeouts();
+        app.UseOutputCache();
+
+        app.MapHealthChecks("health",
+                new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse })
+            .WithRequestTimeout("HealthChecks")
+            .CacheOutput("HealthChecks");
 
         return app;
     }

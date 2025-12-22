@@ -3,8 +3,10 @@ using Application;
 using FluentValidation;
 using HealthChecks.UI.Client;
 using Infrastructure;
+using Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Web.Api;
 using Web.Api.Extensions;
@@ -45,7 +47,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
 
-app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+app.UseHealthChecksExtension();
 
 app.UseAuthenticationExtension();
 
@@ -53,6 +55,4 @@ app.MapControllers().RequireCors("CorsPolicy");
 
 await app.RunAsync();
 
-public partial class Program
-{
-}
+public partial class Program;
