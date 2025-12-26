@@ -45,9 +45,20 @@ builder.Services.AddAuthentication(opt =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) app.UseScalarApiWithUi();
-
 app.UseHealthChecksExtension();
+
+var applyMigrations = app.Configuration.GetValue<bool>("Database:ApplyMigrations");
+
+if (applyMigrations)
+{
+    await app.MigrateDatabaseAsync<HomeAppContext>("HomeAppContext");
+    await app.MigrateDatabaseAsync<HomeAppUserContext>("HomeAppUserContext");
+}
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseScalarApiWithUi();
+}
 
 app.UseAuthenticationExtension();
 

@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
@@ -62,9 +63,11 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("HomeAppConnection");
+
         services.AddDbContext<HomeAppContext>(options =>
             options.UseNpgsql(
-                    configuration.GetConnectionString("HomeAppConnection"),
+                    connectionString,
                     npgsqlOptions =>
                     {
                         npgsqlOptions.MigrationsHistoryTable("__ef_migrations_homeapp", "public");
@@ -73,10 +76,10 @@ public static class DependencyInjection
 
         services.AddDbContext<HomeAppUserContext>(options =>
             options.UseNpgsql(
-                    configuration.GetConnectionString("HomeAppUserConnection"),
+                    connectionString,
                     npgsqlOptions =>
                     {
-                        npgsqlOptions.MigrationsHistoryTable("__ef_migrations_user", "public");
+                        npgsqlOptions.MigrationsHistoryTable("__ef_migrations_user", "identity");
                     })
                 .UseSnakeCaseNamingConvention());
 
@@ -109,7 +112,8 @@ public static class DependencyInjection
 
         services
             .AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("HomeAppConnection")!);
+            .AddCheck("self", () => HealthCheckResult.Healthy())
+            .AddNpgSql(configuration.GetConnectionString("HomeAppConnection"), name: "postgres");
 
         return services;
     }

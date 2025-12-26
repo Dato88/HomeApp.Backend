@@ -1,5 +1,6 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
 
 namespace Web.Api.Extensions;
@@ -37,8 +38,29 @@ internal static class ApplicationBuilderExtensions
         app.UseRequestTimeouts();
         app.UseOutputCache();
 
-        app.MapHealthChecks("health",
-                new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse })
+        app.MapHealthChecks(
+                "/health/live",
+                new HealthCheckOptions
+                {
+                    Predicate = check => check.Name == "self",
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                })
+            .WithRequestTimeout("HealthChecks")
+            .CacheOutput("HealthChecks");
+
+        app.MapHealthChecks(
+                "/health/ready",
+                new HealthCheckOptions
+                {
+                    Predicate = check => check.Name != "self",
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                    },
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                })
             .WithRequestTimeout("HealthChecks")
             .CacheOutput("HealthChecks");
 

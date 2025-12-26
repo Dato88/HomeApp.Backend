@@ -14,7 +14,13 @@ public class HomeAppUserContext(DbContextOptions<HomeAppUserContext> options) : 
         builder.HasDefaultSchema("identity");
 
         builder.Entity<IdentityRole>().HasData(
-            new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" }
+            new IdentityRole
+            {
+                Id = "11111111-1111-1111-1111-111111111111",
+                Name = "Admin",
+                NormalizedName = "ADMIN",
+                ConcurrencyStamp = "11111111-1111-1111-1111-111111111111"
+            }
         );
     }
 }

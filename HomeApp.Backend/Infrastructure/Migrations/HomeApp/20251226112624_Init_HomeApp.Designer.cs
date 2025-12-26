@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations.HomeApp
 {
     [DbContext(typeof(HomeAppContext))]
-    [Migration("20251109204000_updatedOldTablesToUseSchemas")]
-    partial class updatedOldTablesToUseSchemas
+    [Migration("20251226112624_Init_HomeApp")]
+    partial class Init_HomeApp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -338,7 +338,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.ToTable("people", "people");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.Favorite", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Favorite", b =>
                 {
                     b.Property<int>("PersonId")
                         .HasColumnType("integer")
@@ -378,10 +378,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("ix_favorites_recipe_id");
 
-                    b.ToTable("favorites", "core");
+                    b.ToTable("favorites", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.Recipe", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
                 {
                     b.Property<int>("RecipeId")
                         .ValueGeneratedOnAdd()
@@ -451,10 +451,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("PersonId")
                         .HasDatabaseName("ix_recipes_person_id");
 
-                    b.ToTable("recipes", "core");
+                    b.ToTable("recipes", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeCategory", b =>
                 {
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
@@ -494,10 +494,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_recipe_categories_category_id");
 
-                    b.ToTable("recipe_categories", "core");
+                    b.ToTable("recipe_categories", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeComment", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeComment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -551,10 +551,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("ix_recipe_comments_recipe_id");
 
-                    b.ToTable("recipe_comments", "core");
+                    b.ToTable("recipe_comments", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeImage", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeImage", b =>
                 {
                     b.Property<int>("RecipeImageId")
                         .ValueGeneratedOnAdd()
@@ -608,10 +608,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("ix_recipe_images_recipe_id");
 
-                    b.ToTable("recipe_images", "core");
+                    b.ToTable("recipe_images", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeIngredient", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeIngredient", b =>
                 {
                     b.Property<int>("RecipeIngredientId")
                         .ValueGeneratedOnAdd()
@@ -682,10 +682,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("UnitId")
                         .HasDatabaseName("ix_recipe_ingredients_unit_id");
 
-                    b.ToTable("recipe_ingredients", "core");
+                    b.ToTable("recipe_ingredients", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeRating", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeRating", b =>
                 {
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
@@ -735,13 +735,13 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("PersonId")
                         .HasDatabaseName("ix_recipe_ratings_person_id");
 
-                    b.ToTable("recipe_ratings", "core", t =>
+                    b.ToTable("recipe_ratings", "recipes_core", t =>
                         {
                             t.HasCheckConstraint("ck_recipe_ratings_rating", "rating BETWEEN 1 AND 5");
                         });
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeStep", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeStep", b =>
                 {
                     b.Property<int>("RecipeStepId")
                         .ValueGeneratedOnAdd()
@@ -793,10 +793,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_recipe_steps_recipe_id_step_number");
 
-                    b.ToTable("recipe_steps", "core");
+                    b.ToTable("recipe_steps", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeTag", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeTag", b =>
                 {
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
@@ -836,10 +836,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("TagId")
                         .HasDatabaseName("ix_recipe_tags_tag_id");
 
-                    b.ToTable("recipe_tags", "core");
+                    b.ToTable("recipe_tags", "recipes_core");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Nutrition.IngredientNutrition", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", b =>
                 {
                     b.Property<int>("IngredientId")
                         .HasColumnType("integer")
@@ -908,10 +908,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasKey("IngredientId")
                         .HasName("pk_ingredient_nutrition");
 
-                    b.ToTable("ingredient_nutrition", "nutrition");
+                    b.ToTable("ingredient_nutrition", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Pricing.IngredientPrice", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.IngredientPrice", b =>
                 {
                     b.Property<int>("IngredientPriceId")
                         .ValueGeneratedOnAdd()
@@ -989,10 +989,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("IngredientId", "StoreId", "ValidFrom", "ValidTo")
                         .HasDatabaseName("ix_ingredient_prices_ingredient_store_valid");
 
-                    b.ToTable("ingredient_prices", "pricing");
+                    b.ToTable("ingredient_prices", "recipes_pricing");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Pricing.Store", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.Store", b =>
                 {
                     b.Property<int>("StoreId")
                         .ValueGeneratedOnAdd()
@@ -1042,10 +1042,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_stores_name");
 
-                    b.ToTable("stores", "pricing");
+                    b.ToTable("stores", "recipes_pricing");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Allergen", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Allergen", b =>
                 {
                     b.Property<int>("AllergenId")
                         .ValueGeneratedOnAdd()
@@ -1095,10 +1095,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_allergens_name");
 
-                    b.ToTable("allergens", "ref");
+                    b.ToTable("allergens", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Category", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Category", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -1143,10 +1143,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_categories_name");
 
-                    b.ToTable("categories", "ref");
+                    b.ToTable("categories", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Ingredient", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
                 {
                     b.Property<int>("IngredientId")
                         .ValueGeneratedOnAdd()
@@ -1204,10 +1204,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_ingredients_name");
 
-                    b.ToTable("ingredients", "ref");
+                    b.ToTable("ingredients", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.IngredientAllergen", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientAllergen", b =>
                 {
                     b.Property<int>("IngredientId")
                         .HasColumnType("integer")
@@ -1247,10 +1247,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("AllergenId")
                         .HasDatabaseName("ix_ingredient_allergens_allergen_id");
 
-                    b.ToTable("ingredient_allergens", "ref");
+                    b.ToTable("ingredient_allergens", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.IngredientCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
                 {
                     b.Property<int>("IngredientCategoryId")
                         .ValueGeneratedOnAdd()
@@ -1302,10 +1302,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("ParentCategoryId")
                         .HasDatabaseName("ix_ingredient_categories_parent_category_id");
 
-                    b.ToTable("ingredient_categories", "ref");
+                    b.ToTable("ingredient_categories", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Tag", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Tag", b =>
                 {
                     b.Property<int>("TagId")
                         .ValueGeneratedOnAdd()
@@ -1350,10 +1350,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_tags_name");
 
-                    b.ToTable("tags", "ref");
+                    b.ToTable("tags", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Unit", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Unit", b =>
                 {
                     b.Property<int>("UnitId")
                         .ValueGeneratedOnAdd()
@@ -1408,10 +1408,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsUnique()
                         .HasDatabaseName("ix_units_name");
 
-                    b.ToTable("units", "ref");
+                    b.ToTable("units", "recipes_ref");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Search.PopularSearchQuery", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.PopularSearchQuery", b =>
                 {
                     b.Property<int>("QueryId")
                         .ValueGeneratedOnAdd()
@@ -1464,10 +1464,10 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasKey("QueryId")
                         .HasName("pk_popular_search_queries");
 
-                    b.ToTable("popular_search_queries", "search");
+                    b.ToTable("popular_search_queries", "recipes_search");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Search.RecipeSearchIndex", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", b =>
                 {
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
@@ -1516,7 +1516,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasKey("RecipeId")
                         .HasName("pk_recipe_search_index");
 
-                    b.ToTable("recipe_search_index", "search");
+                    b.ToTable("recipe_search_index", "recipes_search");
                 });
 
             modelBuilder.Entity("Domain.Entities.Todos.Todo", b =>
@@ -1791,7 +1791,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("BudgetGroup");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.Favorite", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Favorite", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
                         .WithMany("Favorites")
@@ -1800,7 +1800,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsRequired()
                         .HasConstraintName("fk_favorites_people_person_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Favorites")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1812,7 +1812,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.Recipe", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
                         .WithMany("Recipes")
@@ -1824,16 +1824,16 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeCategory", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.Category", "Category")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Category", "Category")
                         .WithMany("RecipeCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_categories_categories_category_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("RecipeCategories")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1845,7 +1845,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeComment", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeComment", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
                         .WithMany("RecipeComments")
@@ -1854,7 +1854,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsRequired()
                         .HasConstraintName("fk_recipe_comments_people_person_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Comments")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1866,9 +1866,9 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeImage", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeImage", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Images")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1878,23 +1878,23 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeIngredient", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeIngredient", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.Ingredient", "Ingredient")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_ingredients_ingredients_ingredient_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_ingredients_recipes_recipe_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Ref.Unit", "Unit")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Unit", "Unit")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("UnitId")
                         .HasConstraintName("fk_recipe_ingredients_units_unit_id");
@@ -1906,7 +1906,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeRating", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeRating", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
                         .WithMany("RecipeRatings")
@@ -1915,7 +1915,7 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsRequired()
                         .HasConstraintName("fk_recipe_ratings_people_person_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Ratings")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1927,9 +1927,9 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeStep", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeStep", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("Steps")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1939,16 +1939,16 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.RecipeTag", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.RecipeTag", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithMany("RecipeTags")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_tags_recipes_recipe_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Ref.Tag", "Tag")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Tag", "Tag")
                         .WithMany("RecipeTags")
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1960,11 +1960,11 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Nutrition.IngredientNutrition", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.Ingredient", "Ingredient")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
                         .WithOne("Nutrition")
-                        .HasForeignKey("Domain.Entities.Recipes.Nutrition.IngredientNutrition", "IngredientId")
+                        .HasForeignKey("Domain.Entities.Recipes.RecipesNutrition.IngredientNutrition", "IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_ingredient_nutrition_ingredients_ingredient_id");
@@ -1972,23 +1972,23 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Ingredient");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Pricing.IngredientPrice", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.IngredientPrice", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.Ingredient", "Ingredient")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
                         .WithMany("IngredientPrices")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_ingredient_prices_ingredients_ingredient_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Pricing.Store", "Store")
+                    b.HasOne("Domain.Entities.Recipes.RecipesPricing.Store", "Store")
                         .WithMany("IngredientPrices")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_ingredient_prices_stores_store_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Ref.Unit", "Unit")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Unit", "Unit")
                         .WithMany("IngredientPrices")
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2002,9 +2002,9 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Ingredient", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.IngredientCategory", "Category")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.IngredientCategory", "Category")
                         .WithMany("Ingredients")
                         .HasForeignKey("IngredientCategoryId")
                         .OnDelete(DeleteBehavior.SetNull)
@@ -2013,16 +2013,16 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.IngredientAllergen", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientAllergen", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.Allergen", "Allergen")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Allergen", "Allergen")
                         .WithMany("IngredientAllergens")
                         .HasForeignKey("AllergenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_ingredient_allergens_allergens_allergen_id");
 
-                    b.HasOne("Domain.Entities.Recipes.Ref.Ingredient", "Ingredient")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.Ingredient", "Ingredient")
                         .WithMany("IngredientAllergens")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2034,9 +2034,9 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Ingredient");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.IngredientCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Ref.IngredientCategory", "ParentCategory")
+                    b.HasOne("Domain.Entities.Recipes.RecipesRef.IngredientCategory", "ParentCategory")
                         .WithMany("Children")
                         .HasForeignKey("ParentCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2045,11 +2045,11 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Search.RecipeSearchIndex", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", b =>
                 {
-                    b.HasOne("Domain.Entities.Recipes.Core.Recipe", "Recipe")
+                    b.HasOne("Domain.Entities.Recipes.RecipesCore.Recipe", "Recipe")
                         .WithOne("SearchIndex")
-                        .HasForeignKey("Domain.Entities.Recipes.Search.RecipeSearchIndex", "RecipeId")
+                        .HasForeignKey("Domain.Entities.Recipes.RecipesSearch.RecipeSearchIndex", "RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_search_index_recipes_recipe_id");
@@ -2129,7 +2129,7 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("TodoPeople");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Core.Recipe", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesCore.Recipe", b =>
                 {
                     b.Navigation("Comments");
 
@@ -2150,22 +2150,22 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Steps");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Pricing.Store", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesPricing.Store", b =>
                 {
                     b.Navigation("IngredientPrices");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Allergen", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Allergen", b =>
                 {
                     b.Navigation("IngredientAllergens");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Category", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Category", b =>
                 {
                     b.Navigation("RecipeCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Ingredient", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Ingredient", b =>
                 {
                     b.Navigation("IngredientAllergens");
 
@@ -2176,19 +2176,19 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("RecipeIngredients");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.IngredientCategory", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.IngredientCategory", b =>
                 {
                     b.Navigation("Children");
 
                     b.Navigation("Ingredients");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Tag", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Tag", b =>
                 {
                     b.Navigation("RecipeTags");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Recipes.Ref.Unit", b =>
+            modelBuilder.Entity("Domain.Entities.Recipes.RecipesRef.Unit", b =>
                 {
                     b.Navigation("IngredientPrices");
 

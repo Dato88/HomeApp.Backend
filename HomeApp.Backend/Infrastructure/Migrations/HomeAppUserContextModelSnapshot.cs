@@ -11,14 +11,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(HomeAppUserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    partial class HomeAppUserContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("identity")
-                .HasAnnotation("ProductVersion", "8.0.14")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -144,7 +144,8 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f3e08a9a-2dd7-4063-861a-ed4156ddafeb",
+                            Id = "11111111-1111-1111-1111-111111111111",
+                            ConcurrencyStamp = "11111111-1111-1111-1111-111111111111",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

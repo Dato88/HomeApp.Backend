@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialUserContext : Migration
+    public partial class Init_Identity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -179,7 +179,7 @@ namespace Infrastructure.Migrations
                 schema: "identity",
                 table: "AspNetRoles",
                 columns: new[] { "id", "concurrency_stamp", "name", "normalized_name" },
-                values: new object[] { "f3e08a9a-2dd7-4063-861a-ed4156ddafeb", null, "Admin", "ADMIN" });
+                values: new object[] { "11111111-1111-1111-1111-111111111111", "11111111-1111-1111-1111-111111111111", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_asp_net_role_claims_role_id",

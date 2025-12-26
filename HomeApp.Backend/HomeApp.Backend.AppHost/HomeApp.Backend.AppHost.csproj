@@ -4,6 +4,10 @@
         <ProjectReference Include="..\Web.Api\Web.Api.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
+    </ItemGroup>
+
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <UserSecretsId>4828f4d8-a4ae-40c7-ab43-2089ac043c1d</UserSecretsId>
