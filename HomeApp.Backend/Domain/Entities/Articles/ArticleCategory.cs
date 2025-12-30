@@ -11,5 +11,4 @@ public class ArticleCategory : AuditableEntity
 
     public virtual ArticleCategory? ParentCategory { get; set; }
     public virtual ICollection<ArticleCategory> Children { get; set; } = new HashSet<ArticleCategory>();
-    public virtual ICollection<Article> Articles { get; set; } = new HashSet<Article>();
 }

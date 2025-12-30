@@ -31,6 +31,8 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
     public DbSet<ArticleCategory> ArticleCategories { get; set; }
     public DbSet<ArticleNutrition> ArticleNutritions { get; set; }
     public DbSet<ArticlePrice> ArticlePrices { get; set; }
+    public DbSet<Manufacturer> Manufacturers { get; set; }
+    public DbSet<Product> Products { get; set; }
     public DbSet<Store> Stores { get; set; }
     public DbSet<Unit> Units { get; set; }
 

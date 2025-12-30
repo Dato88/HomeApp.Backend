@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations.HomeApp
 {
     [DbContext(typeof(HomeAppContext))]
-    partial class HomeAppContextModelSnapshot : ModelSnapshot
+    [Migration("20251230195259_newProductManufacturerTables")]
+    partial class newProductManufacturerTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,6 +92,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ArticleId"));
 
+                    b.Property<int?>("ArticleCategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("article_category_id");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp(3) with time zone")
@@ -133,6 +140,9 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasKey("ArticleId")
                         .HasName("pk_articles");
+
+                    b.HasIndex("ArticleCategoryId")
+                        .HasDatabaseName("ix_articles_article_category_id");
 
                     b.HasIndex("ManufacturerId")
                         .HasDatabaseName("ix_articles_manufacturer_id");
@@ -1827,6 +1837,12 @@ namespace Infrastructure.Migrations.HomeApp
 
             modelBuilder.Entity("Domain.Entities.Articles.Article", b =>
                 {
+                    b.HasOne("Domain.Entities.Articles.ArticleCategory", "Category")
+                        .WithMany("Articles")
+                        .HasForeignKey("ArticleCategoryId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_articles_article_categories_article_category_id");
+
                     b.HasOne("Domain.Entities.Articles.Manufacturer", "Manufacturer")
                         .WithMany("Articles")
                         .HasForeignKey("ManufacturerId")
@@ -1840,6 +1856,8 @@ namespace Infrastructure.Migrations.HomeApp
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_articles_products_product_id");
+
+                    b.Navigation("Category");
 
                     b.Navigation("Manufacturer");
 
@@ -2210,6 +2228,8 @@ namespace Infrastructure.Migrations.HomeApp
 
             modelBuilder.Entity("Domain.Entities.Articles.ArticleCategory", b =>
                 {
+                    b.Navigation("Articles");
+
                     b.Navigation("Children");
                 });
 
