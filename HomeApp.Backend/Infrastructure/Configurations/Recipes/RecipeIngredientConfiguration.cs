@@ -17,10 +17,12 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
             .HasColumnName("recipe_ingredient_id");
 
         builder.Property(ri => ri.RecipeId)
-            .HasColumnName("recipe_id");
+            .HasColumnName("recipe_id")
+            .IsRequired();
 
-        builder.Property(ri => ri.ArticleId)
-            .HasColumnName("article_id");
+        builder.Property(ri => ri.ProductId)
+            .HasColumnName("product_id")
+            .IsRequired();
 
         builder.Property(ri => ri.UnitId)
             .HasColumnName("unit_id");
@@ -37,21 +39,23 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
 
         builder.ConfigureAuditable();
 
+        // Indexes
+        builder.HasIndex(ri => ri.ProductId);
         builder.HasIndex(ri => ri.RecipeId);
-        builder.HasIndex(ri => ri.ArticleId);
 
         builder.HasIndex(ri => new { ri.RecipeId, ri.SortOrder })
             .IsUnique();
+
+        // Relations
+        builder.HasOne(p => p.Product)
+            .WithMany()
+            .HasForeignKey(p => p.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Ingredients)
             .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(a => a.Article)
-            .WithMany()
-            .HasForeignKey(a => a.ArticleId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(u => u.Unit)
             .WithMany()
