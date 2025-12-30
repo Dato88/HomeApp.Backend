@@ -21,7 +21,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj" />
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-        <ProjectReference Include="..\HomeApp.Backend.ServiceDefaults\HomeApp.Backend.ServiceDefaults.csproj" />
     </ItemGroup>
 
     <ItemGroup>
