@@ -21,14 +21,14 @@ internal sealed class FavoriteConfiguration : IEntityTypeConfiguration<Favorite>
 
         builder.ConfigureAuditable();
 
-        builder.HasOne(f => f.Person)
-            .WithMany()
-            .HasForeignKey(f => f.PersonId)
+        builder.HasOne(p => p.Person)
+            .WithMany(p => p.Favorites)
+            .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(f => f.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Favorites)
-            .HasForeignKey(f => f.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

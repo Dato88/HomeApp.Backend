@@ -56,5 +56,35 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .WithOne(p => p.Person)
             .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Recipes
+        builder.HasMany(p => p.Recipes)
+            .WithOne(r => r.Person)
+            .HasForeignKey(r => r.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Favorites
+        builder.HasMany(p => p.Favorites)
+            .WithOne(f => f.Person)
+            .HasForeignKey(f => f.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Recipe Ratings
+        builder.HasMany(p => p.RecipeRatings)
+            .WithOne(rr => rr.Person)
+            .HasForeignKey(rr => rr.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Recipe Comments
+        builder.HasMany(p => p.RecipeComments)
+            .WithOne(rc => rc.Person)
+            .HasForeignKey(rc => rc.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Budgets (falls vorhanden)
+        builder.HasMany(p => p.Budgets)
+            .WithOne(b => b.Person)
+            .HasForeignKey(b => b.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

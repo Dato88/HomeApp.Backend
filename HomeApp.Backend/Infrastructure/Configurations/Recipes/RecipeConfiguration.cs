@@ -45,9 +45,9 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
         builder.HasIndex(r => r.PersonId);
         builder.HasIndex(r => r.IsPublic);
 
-        builder.HasOne(r => r.Person)
-            .WithMany()
-            .HasForeignKey(r => r.PersonId)
+        builder.HasOne(p => p.Person)
+            .WithMany(p => p.Recipes)
+            .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

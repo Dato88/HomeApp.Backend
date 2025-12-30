@@ -30,14 +30,14 @@ internal sealed class RecipeCommentConfiguration : IEntityTypeConfiguration<Reci
 
         builder.HasIndex(rc => rc.RecipeId);
 
-        builder.HasOne(rc => rc.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Comments)
-            .HasForeignKey(rc => rc.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(rc => rc.Person)
-            .WithMany()
-            .HasForeignKey(rc => rc.PersonId)
+        builder.HasOne(p => p.Person)
+            .WithMany(p => p.RecipeComments)
+            .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

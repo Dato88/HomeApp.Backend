@@ -31,9 +31,9 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
         builder.HasIndex(rs => new { rs.RecipeId, rs.StepNumber })
             .IsUnique();
 
-        builder.HasOne(rs => rs.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Steps)
-            .HasForeignKey(rs => rs.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -27,14 +27,14 @@ internal sealed class RecipeRatingConfiguration : IEntityTypeConfiguration<Recip
 
         builder.ConfigureAuditable();
 
-        builder.HasOne(rr => rr.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Ratings)
-            .HasForeignKey(rr => rr.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(rr => rr.Person)
-            .WithMany()
-            .HasForeignKey(rr => rr.PersonId)
+        builder.HasOne(p => p.Person)
+            .WithMany(p => p.RecipeRatings)
+            .HasForeignKey(p => p.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

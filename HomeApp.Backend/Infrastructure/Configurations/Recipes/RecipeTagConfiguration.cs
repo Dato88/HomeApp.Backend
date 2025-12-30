@@ -21,14 +21,14 @@ internal sealed class RecipeTagConfiguration : IEntityTypeConfiguration<RecipeTa
 
         builder.ConfigureAuditable();
 
-        builder.HasOne(rt => rt.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.RecipeTags)
-            .HasForeignKey(rt => rt.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(rt => rt.Tag)
+        builder.HasOne(t => t.Tag)
             .WithMany(t => t.RecipeTags)
-            .HasForeignKey(rt => rt.TagId)
+            .HasForeignKey(t => t.TagId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -7,35 +7,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations.HomeApp
 {
     /// <inheritdoc />
-    public partial class Init_HomeApp : Migration
+    public partial class initialHomeAppContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "recipes_ref");
+                name: "article");
 
             migrationBuilder.EnsureSchema(
                 name: "budget");
 
             migrationBuilder.EnsureSchema(
-                name: "recipes_core");
-
-            migrationBuilder.EnsureSchema(
-                name: "recipes_pricing");
-
-            migrationBuilder.EnsureSchema(
                 name: "people");
 
             migrationBuilder.EnsureSchema(
-                name: "recipes_search");
+                name: "recipe");
 
             migrationBuilder.EnsureSchema(
                 name: "todo");
 
             migrationBuilder.CreateTable(
                 name: "allergens",
-                schema: "recipes_ref",
+                schema: "article",
                 columns: table => new
                 {
                     allergen_id = table.Column<int>(type: "integer", nullable: false)
@@ -45,7 +39,7 @@ namespace Infrastructure.Migrations.HomeApp
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    code = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true)
+                    code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,46 +47,28 @@ namespace Infrastructure.Migrations.HomeApp
                 });
 
             migrationBuilder.CreateTable(
-                name: "categories",
-                schema: "recipes_ref",
+                name: "article_categories",
+                schema: "article",
                 columns: table => new
                 {
-                    category_id = table.Column<int>(type: "integer", nullable: false)
+                    article_category_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_categories", x => x.category_id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ingredient_categories",
-                schema: "recipes_ref",
-                columns: table => new
-                {
-                    ingredient_category_id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
-                    created_by_id = table.Column<int>(type: "integer", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
-                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     parent_category_id = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_ingredient_categories", x => x.ingredient_category_id);
+                    table.PrimaryKey("pk_article_categories", x => x.article_category_id);
                     table.ForeignKey(
-                        name: "fk_ingredient_categories_ingredient_categories_parent_category",
+                        name: "fk_article_categories_article_categories_parent_category_id",
                         column: x => x.parent_category_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredient_categories",
-                        principalColumn: "ingredient_category_id",
+                        principalSchema: "article",
+                        principalTable: "article_categories",
+                        principalColumn: "article_category_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -120,7 +96,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "popular_search_queries",
-                schema: "recipes_search",
+                schema: "recipe",
                 columns: table => new
                 {
                     query_id = table.Column<int>(type: "integer", nullable: false)
@@ -129,9 +105,9 @@ namespace Infrastructure.Migrations.HomeApp
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    query_text = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
-                    search_count = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
-                    last_searched_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()")
+                    query_text = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    search_count = table.Column<int>(type: "integer", nullable: false),
+                    last_searched_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,7 +116,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "stores",
-                schema: "recipes_pricing",
+                schema: "article",
                 columns: table => new
                 {
                     store_id = table.Column<int>(type: "integer", nullable: false)
@@ -149,8 +125,8 @@ namespace Infrastructure.Migrations.HomeApp
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    website_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true)
+                    name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    website_url = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -159,7 +135,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "tags",
-                schema: "recipes_ref",
+                schema: "recipe",
                 columns: table => new
                 {
                     tag_id = table.Column<int>(type: "integer", nullable: false)
@@ -168,7 +144,7 @@ namespace Infrastructure.Migrations.HomeApp
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -215,7 +191,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "units",
-                schema: "recipes_ref",
+                schema: "article",
                 columns: table => new
                 {
                     unit_id = table.Column<int>(type: "integer", nullable: false)
@@ -225,7 +201,7 @@ namespace Infrastructure.Migrations.HomeApp
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    abbreviation = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
+                    abbreviation = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,29 +209,29 @@ namespace Infrastructure.Migrations.HomeApp
                 });
 
             migrationBuilder.CreateTable(
-                name: "ingredients",
-                schema: "recipes_ref",
+                name: "articles",
+                schema: "article",
                 columns: table => new
                 {
-                    ingredient_id = table.Column<int>(type: "integer", nullable: false)
+                    article_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    ingredient_category_id = table.Column<int>(type: "integer", nullable: true),
+                    article_category_id = table.Column<int>(type: "integer", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_ingredients", x => x.ingredient_id);
+                    table.PrimaryKey("pk_articles", x => x.article_id);
                     table.ForeignKey(
-                        name: "fk_ingredients_ingredient_categories_ingredient_category_id",
-                        column: x => x.ingredient_category_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredient_categories",
-                        principalColumn: "ingredient_category_id",
+                        name: "fk_articles_article_categories_article_category_id",
+                        column: x => x.article_category_id,
+                        principalSchema: "article",
+                        principalTable: "article_categories",
+                        principalColumn: "article_category_id",
                         onDelete: ReferentialAction.SetNull);
                 });
 
@@ -287,7 +263,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipes",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_id = table.Column<int>(type: "integer", nullable: false)
@@ -296,20 +272,20 @@ namespace Infrastructure.Migrations.HomeApp
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    person_id = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     prep_time_minutes = table.Column<int>(type: "integer", nullable: true),
                     cook_time_minutes = table.Column<int>(type: "integer", nullable: true),
-                    servings = table.Column<decimal>(type: "numeric(5,2)", nullable: true),
-                    is_public = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
+                    servings = table.Column<decimal>(type: "numeric", nullable: true),
+                    is_public = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_recipes", x => x.recipe_id);
                     table.ForeignKey(
                         name: "fk_recipes_people_person_id",
-                        column: x => x.user_id,
+                        column: x => x.person_id,
                         principalSchema: "people",
                         principalTable: "people",
                         principalColumn: "person_id",
@@ -383,11 +359,11 @@ namespace Infrastructure.Migrations.HomeApp
                 });
 
             migrationBuilder.CreateTable(
-                name: "ingredient_allergens",
-                schema: "recipes_ref",
+                name: "article_allergens",
+                schema: "article",
                 columns: table => new
                 {
-                    ingredient_id = table.Column<int>(type: "integer", nullable: false),
+                    article_id = table.Column<int>(type: "integer", nullable: false),
                     allergen_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
@@ -396,98 +372,98 @@ namespace Infrastructure.Migrations.HomeApp
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_ingredient_allergens", x => new { x.ingredient_id, x.allergen_id });
+                    table.PrimaryKey("pk_article_allergens", x => new { x.article_id, x.allergen_id });
                     table.ForeignKey(
-                        name: "fk_ingredient_allergens_allergens_allergen_id",
+                        name: "fk_article_allergens_allergens_allergen_id",
                         column: x => x.allergen_id,
-                        principalSchema: "recipes_ref",
+                        principalSchema: "article",
                         principalTable: "allergens",
                         principalColumn: "allergen_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_ingredient_allergens_ingredients_ingredient_id",
-                        column: x => x.ingredient_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredients",
-                        principalColumn: "ingredient_id",
+                        name: "fk_article_allergens_articles_article_id",
+                        column: x => x.article_id,
+                        principalSchema: "article",
+                        principalTable: "articles",
+                        principalColumn: "article_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ingredient_nutrition",
-                schema: "recipes_ref",
+                name: "article_nutritions",
+                schema: "article",
                 columns: table => new
                 {
-                    ingredient_id = table.Column<int>(type: "integer", nullable: false),
+                    article_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    calories_kcal_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    protein_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    carbs_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    sugar_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    fat_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    saturated_fat_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    fiber_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    salt_g_per_100g = table.Column<decimal>(type: "numeric(8,2)", nullable: true),
-                    last_source = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true)
+                    calories_kcal_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    protein_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    carbs_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    sugar_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    fat_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    saturated_fat_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    fiber_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    salt_g_per_100g = table.Column<decimal>(type: "numeric", nullable: true),
+                    last_source = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_ingredient_nutrition", x => x.ingredient_id);
+                    table.PrimaryKey("pk_article_nutritions", x => x.article_id);
                     table.ForeignKey(
-                        name: "fk_ingredient_nutrition_ingredients_ingredient_id",
-                        column: x => x.ingredient_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredients",
-                        principalColumn: "ingredient_id",
+                        name: "fk_article_nutritions_articles_article_id",
+                        column: x => x.article_id,
+                        principalSchema: "article",
+                        principalTable: "articles",
+                        principalColumn: "article_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ingredient_prices",
-                schema: "recipes_pricing",
+                name: "article_prices",
+                schema: "article",
                 columns: table => new
                 {
-                    ingredient_price_id = table.Column<int>(type: "integer", nullable: false)
+                    article_price_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    ingredient_id = table.Column<int>(type: "integer", nullable: false),
+                    article_id = table.Column<int>(type: "integer", nullable: false),
                     store_id = table.Column<int>(type: "integer", nullable: false),
                     unit_id = table.Column<int>(type: "integer", nullable: false),
-                    price = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    price = table.Column<decimal>(type: "numeric(10,2)", precision: 10, scale: 2, nullable: false),
                     currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false, defaultValue: "EUR"),
-                    valid_from = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
-                    valid_to = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true)
+                    valid_from = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    valid_to = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_ingredient_prices", x => x.ingredient_price_id);
+                    table.PrimaryKey("pk_article_prices", x => x.article_price_id);
                     table.ForeignKey(
-                        name: "fk_ingredient_prices_ingredients_ingredient_id",
-                        column: x => x.ingredient_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredients",
-                        principalColumn: "ingredient_id",
+                        name: "fk_article_prices_articles_article_id",
+                        column: x => x.article_id,
+                        principalSchema: "article",
+                        principalTable: "articles",
+                        principalColumn: "article_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_ingredient_prices_stores_store_id",
+                        name: "fk_article_prices_stores_store_id",
                         column: x => x.store_id,
-                        principalSchema: "recipes_pricing",
+                        principalSchema: "article",
                         principalTable: "stores",
                         principalColumn: "store_id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "fk_ingredient_prices_units_unit_id",
+                        name: "fk_article_prices_units_unit_id",
                         column: x => x.unit_id,
-                        principalSchema: "recipes_ref",
+                        principalSchema: "article",
                         principalTable: "units",
                         principalColumn: "unit_id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -519,62 +495,26 @@ namespace Infrastructure.Migrations.HomeApp
                 });
 
             migrationBuilder.CreateTable(
-                name: "favorites",
-                schema: "recipes_core",
-                columns: table => new
-                {
-                    user_id = table.Column<int>(type: "integer", nullable: false),
-                    recipe_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
-                    created_by_id = table.Column<int>(type: "integer", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
-                    updated_by_id = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_favorites", x => new { x.user_id, x.recipe_id });
-                    table.ForeignKey(
-                        name: "fk_favorites_people_person_id",
-                        column: x => x.user_id,
-                        principalSchema: "people",
-                        principalTable: "people",
-                        principalColumn: "person_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_favorites_recipes_recipe_id",
-                        column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
-                        principalTable: "recipes",
-                        principalColumn: "recipe_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "recipe_categories",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
-                    recipe_id = table.Column<int>(type: "integer", nullable: false),
-                    category_id = table.Column<int>(type: "integer", nullable: false),
+                    recipe_category_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
-                    updated_by_id = table.Column<int>(type: "integer", nullable: true)
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true),
+                    recipe_id = table.Column<int>(type: "integer", nullable: false),
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_recipe_categories", x => new { x.recipe_id, x.category_id });
-                    table.ForeignKey(
-                        name: "fk_recipe_categories_categories_category_id",
-                        column: x => x.category_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "categories",
-                        principalColumn: "category_id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("pk_recipe_categories", x => x.recipe_category_id);
                     table.ForeignKey(
                         name: "fk_recipe_categories_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -582,25 +522,25 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_comments",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
-                    comment_id = table.Column<int>(type: "integer", nullable: false)
+                    recipe_comment_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     recipe_id = table.Column<int>(type: "integer", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    person_id = table.Column<int>(type: "integer", nullable: false),
                     comment_text = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_recipe_comments", x => x.comment_id);
+                    table.PrimaryKey("pk_recipe_comments", x => x.recipe_comment_id);
                     table.ForeignKey(
                         name: "fk_recipe_comments_people_person_id",
-                        column: x => x.user_id,
+                        column: x => x.person_id,
                         principalSchema: "people",
                         principalTable: "people",
                         principalColumn: "person_id",
@@ -608,7 +548,38 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_comments_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
+                        principalTable: "recipes",
+                        principalColumn: "recipe_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "recipe_favorites",
+                schema: "recipe",
+                columns: table => new
+                {
+                    person_id = table.Column<int>(type: "integer", nullable: false),
+                    recipe_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
+                    updated_by_id = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_recipe_favorites", x => new { x.person_id, x.recipe_id });
+                    table.ForeignKey(
+                        name: "fk_recipe_favorites_people_person_id",
+                        column: x => x.person_id,
+                        principalSchema: "people",
+                        principalTable: "people",
+                        principalColumn: "person_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_recipe_favorites_recipes_recipe_id",
+                        column: x => x.recipe_id,
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -616,7 +587,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_images",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_image_id = table.Column<int>(type: "integer", nullable: false)
@@ -635,7 +606,7 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_images_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -643,7 +614,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_ingredients",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_ingredient_id = table.Column<int>(type: "integer", nullable: false)
@@ -653,58 +624,58 @@ namespace Infrastructure.Migrations.HomeApp
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     recipe_id = table.Column<int>(type: "integer", nullable: false),
-                    ingredient_id = table.Column<int>(type: "integer", nullable: false),
+                    article_id = table.Column<int>(type: "integer", nullable: false),
                     unit_id = table.Column<int>(type: "integer", nullable: true),
-                    quantity = table.Column<decimal>(type: "numeric(10,2)", nullable: true),
+                    quantity = table.Column<decimal>(type: "numeric", nullable: true),
                     note = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    sort_order = table.Column<int>(type: "integer", nullable: false, defaultValue: 1)
+                    sort_order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_recipe_ingredients", x => x.recipe_ingredient_id);
                     table.ForeignKey(
-                        name: "fk_recipe_ingredients_ingredients_ingredient_id",
-                        column: x => x.ingredient_id,
-                        principalSchema: "recipes_ref",
-                        principalTable: "ingredients",
-                        principalColumn: "ingredient_id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "fk_recipe_ingredients_articles_article_id",
+                        column: x => x.article_id,
+                        principalSchema: "article",
+                        principalTable: "articles",
+                        principalColumn: "article_id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_recipe_ingredients_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_recipe_ingredients_units_unit_id",
                         column: x => x.unit_id,
-                        principalSchema: "recipes_ref",
+                        principalSchema: "article",
                         principalTable: "units",
-                        principalColumn: "unit_id");
+                        principalColumn: "unit_id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
                 name: "recipe_ratings",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_id = table.Column<int>(type: "integer", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    person_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()"),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
                     rating = table.Column<short>(type: "smallint", nullable: false),
-                    rated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()")
+                    rated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_recipe_ratings", x => new { x.recipe_id, x.user_id });
-                    table.CheckConstraint("ck_recipe_ratings_rating", "rating BETWEEN 1 AND 5");
+                    table.PrimaryKey("pk_recipe_ratings", x => new { x.recipe_id, x.person_id });
                     table.ForeignKey(
                         name: "fk_recipe_ratings_people_person_id",
-                        column: x => x.user_id,
+                        column: x => x.person_id,
                         principalSchema: "people",
                         principalTable: "people",
                         principalColumn: "person_id",
@@ -712,7 +683,7 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_ratings_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -720,7 +691,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_search_index",
-                schema: "recipes_search",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_id = table.Column<int>(type: "integer", nullable: false),
@@ -728,9 +699,9 @@ namespace Infrastructure.Migrations.HomeApp
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: true),
                     updated_by_id = table.Column<int>(type: "integer", nullable: true),
-                    title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    title = table.Column<string>(type: "text", nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
-                    last_indexed_at = table.Column<DateTime>(type: "timestamp(3) with time zone", nullable: false, defaultValueSql: "now()")
+                    last_indexed_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -738,7 +709,7 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_search_index_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -746,7 +717,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_steps",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_step_id = table.Column<int>(type: "integer", nullable: false)
@@ -765,7 +736,7 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_steps_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
@@ -773,7 +744,7 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateTable(
                 name: "recipe_tags",
-                schema: "recipes_core",
+                schema: "recipe",
                 columns: table => new
                 {
                     recipe_id = table.Column<int>(type: "integer", nullable: false),
@@ -789,14 +760,14 @@ namespace Infrastructure.Migrations.HomeApp
                     table.ForeignKey(
                         name: "fk_recipe_tags_recipes_recipe_id",
                         column: x => x.recipe_id,
-                        principalSchema: "recipes_core",
+                        principalSchema: "recipe",
                         principalTable: "recipes",
                         principalColumn: "recipe_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "fk_recipe_tags_tags_tag_id",
                         column: x => x.tag_id,
-                        principalSchema: "recipes_ref",
+                        principalSchema: "recipe",
                         principalTable: "tags",
                         principalColumn: "tag_id",
                         onDelete: ReferentialAction.Cascade);
@@ -858,9 +829,77 @@ namespace Infrastructure.Migrations.HomeApp
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_allergens_name",
-                schema: "recipes_ref",
+                name: "ix_allergens_code",
+                schema: "article",
                 table: "allergens",
+                column: "code");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_allergens_name",
+                schema: "article",
+                table: "allergens",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_allergens_allergen_id",
+                schema: "article",
+                table: "article_allergens",
+                column: "allergen_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_allergens_article_id",
+                schema: "article",
+                table: "article_allergens",
+                column: "article_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_categories_name",
+                schema: "article",
+                table: "article_categories",
+                column: "name");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_categories_parent_category_id",
+                schema: "article",
+                table: "article_categories",
+                column: "parent_category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_prices_article_id",
+                schema: "article",
+                table: "article_prices",
+                column: "article_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_prices_article_id_store_id_unit_id_valid_from",
+                schema: "article",
+                table: "article_prices",
+                columns: new[] { "article_id", "store_id", "unit_id", "valid_from" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_prices_store_id",
+                schema: "article",
+                table: "article_prices",
+                column: "store_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_article_prices_unit_id",
+                schema: "article",
+                table: "article_prices",
+                column: "unit_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_articles_article_category_id",
+                schema: "article",
+                table: "articles",
+                column: "article_category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_articles_name",
+                schema: "article",
+                table: "articles",
                 column: "name",
                 unique: true);
 
@@ -911,69 +950,6 @@ namespace Infrastructure.Migrations.HomeApp
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_categories_name",
-                schema: "recipes_ref",
-                table: "categories",
-                column: "name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_favorites_recipe_id",
-                schema: "recipes_core",
-                table: "favorites",
-                column: "recipe_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_allergens_allergen_id",
-                schema: "recipes_ref",
-                table: "ingredient_allergens",
-                column: "allergen_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_categories_name",
-                schema: "recipes_ref",
-                table: "ingredient_categories",
-                column: "name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_categories_parent_category_id",
-                schema: "recipes_ref",
-                table: "ingredient_categories",
-                column: "parent_category_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_prices_ingredient_store_valid",
-                schema: "recipes_pricing",
-                table: "ingredient_prices",
-                columns: new[] { "ingredient_id", "store_id", "valid_from", "valid_to" });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_prices_store_id",
-                schema: "recipes_pricing",
-                table: "ingredient_prices",
-                column: "store_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredient_prices_unit_id",
-                schema: "recipes_pricing",
-                table: "ingredient_prices",
-                column: "unit_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredients_ingredient_category_id",
-                schema: "recipes_ref",
-                table: "ingredients",
-                column: "ingredient_category_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_ingredients_name",
-                schema: "recipes_ref",
-                table: "ingredients",
-                column: "name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "ix_people_email",
                 schema: "people",
                 table: "people",
@@ -995,82 +971,109 @@ namespace Infrastructure.Migrations.HomeApp
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_recipe_categories_category_id",
-                schema: "recipes_core",
+                name: "ix_popular_search_queries_query_text",
+                schema: "recipe",
+                table: "popular_search_queries",
+                column: "query_text",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_recipe_categories_recipe_id_name",
+                schema: "recipe",
                 table: "recipe_categories",
-                column: "category_id");
+                columns: new[] { "recipe_id", "name" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_comments_person_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_comments",
-                column: "user_id");
+                column: "person_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_comments_recipe_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_comments",
+                column: "recipe_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_recipe_favorites_recipe_id",
+                schema: "recipe",
+                table: "recipe_favorites",
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_images_recipe_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_images",
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_recipe_ingredients_ingredient_id",
-                schema: "recipes_core",
+                name: "ix_recipe_ingredients_article_id",
+                schema: "recipe",
                 table: "recipe_ingredients",
-                column: "ingredient_id");
+                column: "article_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_ingredients_recipe_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_ingredients",
                 column: "recipe_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_recipe_ingredients_recipe_id_sort_order",
+                schema: "recipe",
+                table: "recipe_ingredients",
+                columns: new[] { "recipe_id", "sort_order" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_recipe_ingredients_unit_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_ingredients",
                 column: "unit_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_ratings_person_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_ratings",
-                column: "user_id");
+                column: "person_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_steps_recipe_id_step_number",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_steps",
                 columns: new[] { "recipe_id", "step_number" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_recipe_tags_tag_id",
-                schema: "recipes_core",
+                schema: "recipe",
                 table: "recipe_tags",
                 column: "tag_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_recipes_person_id",
-                schema: "recipes_core",
+                name: "ix_recipes_is_public",
+                schema: "recipe",
                 table: "recipes",
-                column: "user_id");
+                column: "is_public");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_recipes_person_id",
+                schema: "recipe",
+                table: "recipes",
+                column: "person_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_stores_name",
-                schema: "recipes_pricing",
+                schema: "article",
                 table: "stores",
                 column: "name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_tags_name",
-                schema: "recipes_ref",
+                schema: "recipe",
                 table: "tags",
                 column: "name",
                 unique: true);
@@ -1146,16 +1149,9 @@ namespace Infrastructure.Migrations.HomeApp
 
             migrationBuilder.CreateIndex(
                 name: "ix_units_abbreviation",
-                schema: "recipes_ref",
+                schema: "article",
                 table: "units",
                 column: "abbreviation",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "ix_units_name",
-                schema: "recipes_ref",
-                table: "units",
-                column: "name",
                 unique: true);
         }
 
@@ -1163,60 +1159,60 @@ namespace Infrastructure.Migrations.HomeApp
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "article_allergens",
+                schema: "article");
+
+            migrationBuilder.DropTable(
+                name: "article_nutritions",
+                schema: "article");
+
+            migrationBuilder.DropTable(
+                name: "article_prices",
+                schema: "article");
+
+            migrationBuilder.DropTable(
                 name: "budget_cells",
                 schema: "budget");
 
             migrationBuilder.DropTable(
-                name: "favorites",
-                schema: "recipes_core");
-
-            migrationBuilder.DropTable(
-                name: "ingredient_allergens",
-                schema: "recipes_ref");
-
-            migrationBuilder.DropTable(
-                name: "ingredient_nutrition",
-                schema: "recipes_ref");
-
-            migrationBuilder.DropTable(
-                name: "ingredient_prices",
-                schema: "recipes_pricing");
-
-            migrationBuilder.DropTable(
                 name: "popular_search_queries",
-                schema: "recipes_search");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_categories",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_comments",
-                schema: "recipes_core");
+                schema: "recipe");
+
+            migrationBuilder.DropTable(
+                name: "recipe_favorites",
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_images",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_ingredients",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_ratings",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_search_index",
-                schema: "recipes_search");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_steps",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "recipe_tags",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "todo_group_todos",
@@ -1227,36 +1223,32 @@ namespace Infrastructure.Migrations.HomeApp
                 schema: "todo");
 
             migrationBuilder.DropTable(
+                name: "allergens",
+                schema: "article");
+
+            migrationBuilder.DropTable(
+                name: "stores",
+                schema: "article");
+
+            migrationBuilder.DropTable(
                 name: "budget_rows",
                 schema: "budget");
 
             migrationBuilder.DropTable(
-                name: "allergens",
-                schema: "recipes_ref");
-
-            migrationBuilder.DropTable(
-                name: "stores",
-                schema: "recipes_pricing");
-
-            migrationBuilder.DropTable(
-                name: "categories",
-                schema: "recipes_ref");
-
-            migrationBuilder.DropTable(
-                name: "ingredients",
-                schema: "recipes_ref");
+                name: "articles",
+                schema: "article");
 
             migrationBuilder.DropTable(
                 name: "units",
-                schema: "recipes_ref");
+                schema: "article");
 
             migrationBuilder.DropTable(
                 name: "recipes",
-                schema: "recipes_core");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "tags",
-                schema: "recipes_ref");
+                schema: "recipe");
 
             migrationBuilder.DropTable(
                 name: "todo_groups",
@@ -1271,8 +1263,8 @@ namespace Infrastructure.Migrations.HomeApp
                 schema: "budget");
 
             migrationBuilder.DropTable(
-                name: "ingredient_categories",
-                schema: "recipes_ref");
+                name: "article_categories",
+                schema: "article");
 
             migrationBuilder.DropTable(
                 name: "budgets",

@@ -43,19 +43,19 @@ internal sealed class RecipeIngredientConfiguration : IEntityTypeConfiguration<R
         builder.HasIndex(ri => new { ri.RecipeId, ri.SortOrder })
             .IsUnique();
 
-        builder.HasOne(ri => ri.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.Ingredients)
-            .HasForeignKey(ri => ri.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(ri => ri.Article)
+        builder.HasOne(a => a.Article)
             .WithMany()
-            .HasForeignKey(ri => ri.ArticleId)
+            .HasForeignKey(a => a.ArticleId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(ri => ri.Unit)
+        builder.HasOne(u => u.Unit)
             .WithMany()
-            .HasForeignKey(ri => ri.UnitId)
+            .HasForeignKey(u => u.UnitId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

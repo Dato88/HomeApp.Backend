@@ -29,9 +29,9 @@ internal sealed class RecipeSearchIndexConfiguration : IEntityTypeConfiguration<
 
         builder.ConfigureAuditable();
 
-        builder.HasOne(rsi => rsi.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithOne(r => r.SearchIndex)
-            .HasForeignKey<RecipeSearchIndex>(rsi => rsi.RecipeId)
+            .HasForeignKey<RecipeSearchIndex>(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -839,10 +839,6 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("created_by_id")
                         .HasColumnOrder(3);
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id1");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp(3) with time zone")
                         .HasColumnName("updated_at")
@@ -855,9 +851,6 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasKey("PersonId", "RecipeId")
                         .HasName("pk_recipe_favorites");
-
-                    b.HasIndex("PersonId1")
-                        .HasDatabaseName("ix_recipe_favorites_person_id1");
 
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("ix_recipe_favorites_recipe_id");
@@ -961,10 +954,6 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("person_id");
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id1");
-
                     b.Property<int?>("PrepTimeMinutes")
                         .HasColumnType("integer")
                         .HasColumnName("prep_time_minutes");
@@ -997,9 +986,6 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasIndex("PersonId")
                         .HasDatabaseName("ix_recipes_person_id");
-
-                    b.HasIndex("PersonId1")
-                        .HasDatabaseName("ix_recipes_person_id1");
 
                     b.ToTable("recipes", "recipe");
                 });
@@ -1087,10 +1073,6 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("person_id");
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id1");
-
                     b.Property<int>("RecipeId")
                         .HasColumnType("integer")
                         .HasColumnName("recipe_id");
@@ -1110,9 +1092,6 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasIndex("PersonId")
                         .HasDatabaseName("ix_recipe_comments_person_id");
-
-                    b.HasIndex("PersonId1")
-                        .HasDatabaseName("ix_recipe_comments_person_id1");
 
                     b.HasIndex("RecipeId")
                         .HasDatabaseName("ix_recipe_comments_recipe_id");
@@ -1277,10 +1256,6 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("created_by_id")
                         .HasColumnOrder(3);
 
-                    b.Property<int?>("PersonId1")
-                        .HasColumnType("integer")
-                        .HasColumnName("person_id1");
-
                     b.Property<DateTime>("RatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("rated_at");
@@ -1304,9 +1279,6 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasIndex("PersonId")
                         .HasDatabaseName("ix_recipe_ratings_person_id");
-
-                    b.HasIndex("PersonId1")
-                        .HasDatabaseName("ix_recipe_ratings_person_id1");
 
                     b.ToTable("recipe_ratings", "recipe");
                 });
@@ -1866,16 +1838,11 @@ namespace Infrastructure.Migrations.HomeApp
             modelBuilder.Entity("Domain.Entities.Recipes.Favorite", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
-                        .WithMany()
+                        .WithMany("Favorites")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_favorites_people_person_id");
-
-                    b.HasOne("Domain.Entities.People.Person", null)
-                        .WithMany("Favorites")
-                        .HasForeignKey("PersonId1")
-                        .HasConstraintName("fk_recipe_favorites_people_person_id1");
 
                     b.HasOne("Domain.Entities.Recipes.Recipe", "Recipe")
                         .WithMany("Favorites")
@@ -1892,16 +1859,11 @@ namespace Infrastructure.Migrations.HomeApp
             modelBuilder.Entity("Domain.Entities.Recipes.Recipe", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
-                        .WithMany()
+                        .WithMany("Recipes")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipes_people_person_id");
-
-                    b.HasOne("Domain.Entities.People.Person", null)
-                        .WithMany("Recipes")
-                        .HasForeignKey("PersonId1")
-                        .HasConstraintName("fk_recipes_people_person_id1");
 
                     b.Navigation("Person");
                 });
@@ -1921,16 +1883,11 @@ namespace Infrastructure.Migrations.HomeApp
             modelBuilder.Entity("Domain.Entities.Recipes.RecipeComment", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
-                        .WithMany()
+                        .WithMany("RecipeComments")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_comments_people_person_id");
-
-                    b.HasOne("Domain.Entities.People.Person", null)
-                        .WithMany("RecipeComments")
-                        .HasForeignKey("PersonId1")
-                        .HasConstraintName("fk_recipe_comments_people_person_id1");
 
                     b.HasOne("Domain.Entities.Recipes.Recipe", "Recipe")
                         .WithMany("Comments")
@@ -1988,16 +1945,11 @@ namespace Infrastructure.Migrations.HomeApp
             modelBuilder.Entity("Domain.Entities.Recipes.RecipeRating", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
-                        .WithMany()
+                        .WithMany("RecipeRatings")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_recipe_ratings_people_person_id");
-
-                    b.HasOne("Domain.Entities.People.Person", null)
-                        .WithMany("RecipeRatings")
-                        .HasForeignKey("PersonId1")
-                        .HasConstraintName("fk_recipe_ratings_people_person_id1");
 
                     b.HasOne("Domain.Entities.Recipes.Recipe", "Recipe")
                         .WithMany("Ratings")

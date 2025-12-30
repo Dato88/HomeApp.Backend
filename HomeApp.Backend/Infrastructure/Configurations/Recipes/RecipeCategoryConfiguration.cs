@@ -26,9 +26,9 @@ internal sealed class RecipeCategoryConfiguration : IEntityTypeConfiguration<Rec
         builder.HasIndex(rc => new { rc.RecipeId, rc.Name })
             .IsUnique();
 
-        builder.HasOne(rc => rc.Recipe)
+        builder.HasOne(r => r.Recipe)
             .WithMany(r => r.RecipeCategories)
-            .HasForeignKey(rc => rc.RecipeId)
+            .HasForeignKey(r => r.RecipeId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
