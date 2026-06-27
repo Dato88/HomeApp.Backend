@@ -139,7 +139,7 @@ public static class DependencyInjection
                         ValidAudiences = validAudiences,
                         ValidateLifetime = true,
                         ValidateIssuer = true,
-                        ValidAlgorithms = ["RS256", "ES256", "EdDSA"],
+                        ValidAlgorithms = ["EdDSA"],
                         ValidTypes = ["at+jwt"],
                         NameClaimType = ClaimTypes.NameIdentifier,
                         RoleClaimType = ClaimTypes.Role

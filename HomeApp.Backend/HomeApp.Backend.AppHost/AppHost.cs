@@ -3,14 +3,28 @@
 var keycloakAdminPassword = builder.AddParameter("keycloak-admin-password", value: "admin", secret: true);
 var bffClientSecret = builder.AddParameter("bff-client-secret", value: "local-homeapp-bff-secret", secret: true);
 
+var keycloakPostgres = builder
+    .AddPostgres("keycloakContainer")
+    .WithDataVolume();
+
+var keycloakDb = keycloakPostgres.AddDatabase(
+    name: "KeycloakConnection",
+    databaseName: "keycloak");
+
 var keycloak = builder.AddContainer("keycloak", "quay.io/keycloak/keycloak", "26.6.3")
     .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "http")
-    .WithEnvironment("KEYCLOAK_ADMIN", "admin")
-    .WithEnvironment("KEYCLOAK_ADMIN_PASSWORD", keycloakAdminPassword)
+    .WithReference(keycloakDb)
+    .WaitFor(keycloakDb)
+    .WithEnvironment("KC_BOOTSTRAP_ADMIN_USERNAME", "admin")
+    .WithEnvironment("KC_BOOTSTRAP_ADMIN_PASSWORD", keycloakAdminPassword)
     .WithEnvironment("KC_HTTP_ENABLED", "true")
     .WithEnvironment("KC_HOSTNAME_STRICT", "false")
     .WithEnvironment("KC_HOSTNAME_STRICT_HTTPS", "false")
-    .WithArgs("start-dev", "--import-realm")
+    .WithEnvironment("KC_DB", "postgres")
+    .WithEnvironment("KC_DB_URL", keycloakDb.Resource.JdbcConnectionString)
+    .WithEnvironment("KC_DB_USERNAME", keycloakPostgres.Resource.UserNameReference)
+    .WithEnvironment("KC_DB_PASSWORD", keycloakPostgres.Resource.PasswordParameter)
+    .WithArgs("start", "--import-realm")
     .WithBindMount("./keycloak/realm-export.json", "/opt/keycloak/data/import/realm-export.json");
 
 var postgres = builder
@@ -28,7 +42,11 @@ var api = builder.AddProject<Projects.Web_Api>("api")
     .WaitFor(keycloak)
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ValidAudiences__0", "local-homeapp-api")
-    .WithHttpHealthCheck("/health/ready");
+    .WithEndpoint("http", endpoint =>
+    {
+        endpoint.Port = 7254;
+        endpoint.IsProxied = false;
+    });
 
 builder.AddProject<Projects.HomeApp_Bff>("bff")
     .WithReference(api)

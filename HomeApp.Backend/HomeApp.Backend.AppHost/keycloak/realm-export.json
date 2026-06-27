@@ -1,6 +1,7 @@
 {
   "realm": "homeapp",
   "enabled": true,
+  "defaultSignatureAlgorithm": "EdDSA",
   "sslRequired": "none",
   "registrationAllowed": true,
   "loginWithEmailAllowed": true,
@@ -11,9 +12,18 @@
   "ssoSessionMaxLifespan": 36000,
   "roles": {
     "realm": [
-      { "name": "Admin", "description": "Administrator" },
-      { "name": "ViewBudget", "description": "View budget module" },
-      { "name": "ViewDashboard", "description": "View dashboard" }
+      {
+        "name": "Admin",
+        "description": "Administrator"
+      },
+      {
+        "name": "ViewBudget",
+        "description": "View budget module"
+      },
+      {
+        "name": "ViewDashboard",
+        "description": "View dashboard"
+      }
     ]
   },
   "clientScopes": [
@@ -80,6 +90,9 @@
       "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": false,
       "fullScopeAllowed": false,
+      "attributes": {
+        "access.token.header.type": "at+jwt"
+      },
       "defaultClientScopes": [],
       "optionalClientScopes": []
     },
@@ -130,6 +143,9 @@
       "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": false,
       "fullScopeAllowed": false,
+      "attributes": {
+        "access.token.header.type": "at+jwt"
+      },
       "defaultClientScopes": [
         "homeapp-api-access",
         "homeapp-user-context",
@@ -158,9 +174,38 @@
         }
       ],
       "attributes": {
-        "personId": ["1"]
+        "personId": [
+          "1"
+        ]
       },
-      "realmRoles": ["Admin", "ViewBudget", "ViewDashboard"]
+      "realmRoles": [
+        "Admin",
+        "ViewBudget",
+        "ViewDashboard"
+      ]
     }
-  ]
+  ],
+  "components": {
+    "org.keycloak.keys.KeyProvider": [
+      {
+        "name": "eddsa-generated",
+        "providerId": "eddsa-generated",
+        "subComponents": {},
+        "config": {
+          "priority": [
+            "120"
+          ],
+          "enabled": [
+            "true"
+          ],
+          "active": [
+            "true"
+          ],
+          "ellipticCurve": [
+            "Ed25519"
+          ]
+        }
+      }
+    ]
+  }
 }
