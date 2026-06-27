@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Web.Api\Web.Api.csproj"/>
+        <ProjectReference Include="..\HomeApp.Bff\HomeApp.Bff.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

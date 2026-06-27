@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Authentication;
+﻿using System.Security.Claims;
+using Application.Abstractions.Authentication;
 using Application.Abstractions.BudgetModule;
 using Application.Abstractions.Logging;
 using Application.Features.People.Commands;
@@ -6,25 +7,28 @@ using Application.Features.People.Queries;
 using Application.Features.People.Validations;
 using Application.Features.Todos.Commands;
 using Application.Features.Todos.Queries;
-using Domain.Entities.User;
+using Infrastructure.Configurations;
 using Infrastructure.Database;
 using Infrastructure.Features.Budgets.Commands;
 using Infrastructure.Features.Budgets.Queries;
 using Infrastructure.Features.People.Commands;
 using Infrastructure.Features.People.Queries;
+using Infrastructure.Features.People.Services;
 using Infrastructure.Features.People.Validations;
 using Infrastructure.Features.Todos.Commands;
 using Infrastructure.Features.Todos.Queries;
+using Infrastructure.Middleware;
 using Infrastructure.Services.Authentication;
-using Infrastructure.Services.Authorization.Utilities;
 using Infrastructure.Services.Logger;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -34,6 +38,8 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
+    public const string PersonIdItemKey = "HomeApp.PersonId";
+
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration) =>
@@ -42,14 +48,14 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddCors()
             .AddHealthChecks(configuration)
-            .AddAuthenticationInternal(configuration)
-            .AddAuthorizationInternal();
+            .AddAuthenticationInternal(configuration);
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
 
         services.AddScoped<IPersonValidation, PersonValidation>();
+        services.AddScoped<IPersonProvisioningService, PersonProvisioningService>();
 
         services.AddScoped<IBudgetCommands, BudgetCommands>();
         services.AddScoped<IBudgetQueries, BudgetQueries>();
@@ -71,15 +77,6 @@ public static class DependencyInjection
                     npgsqlOptions =>
                     {
                         npgsqlOptions.MigrationsHistoryTable("__ef_migrations_homeapp", "public");
-                    })
-                .UseSnakeCaseNamingConvention());
-
-        services.AddDbContext<HomeAppUserContext>(options =>
-            options.UseNpgsql(
-                    connectionString,
-                    npgsqlOptions =>
-                    {
-                        npgsqlOptions.MigrationsHistoryTable("__ef_migrations_user", "identity");
                     })
                 .UseSnakeCaseNamingConvention());
 
@@ -122,64 +119,57 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // var jwtSettingsSection = configuration.GetSection("JwtSettings");
-        // var jwtSettings = jwtSettingsSection.Get<JwtSettings>()!;
-        //
-        // // services.Configure<JwtSettings>(jwtSettingsSection);
-        // // services.AddSingleton(jwtSettings);
-        //
-        // services.AddAuthentication(opt =>
-        // {
-        //     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        // }).AddJwtBearer(options =>
-        // {
-        //     options.TokenValidationParameters = new TokenValidationParameters
-        //     {
-        //         ValidateIssuer = true,
-        //         ValidateAudience = true,
-        //         ValidateLifetime = true,
-        //         ValidateIssuerSigningKey = true,
-        //         ValidIssuer = jwtSettings.ValidIssuer,
-        //         ValidAudience = jwtSettings.ValidAudience,
-        //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-        //             .GetBytes(jwtSettings.SecurityKey))
-        //     };
-        // });
-
         services.AddHttpContextAccessor();
-        services.AddScoped<IUserContext, UserContext>();
-        services.AddScoped<ITokenProvider, TokenProvider>();
+
+        var authority = configuration["OAuth:Authority"];
+        var validAudiences = configuration.GetSection("OAuth:ValidAudiences").Get<string[]>() ?? [];
+
+        if (!string.IsNullOrWhiteSpace(authority) && validAudiences.Length > 0)
+        {
+            services.Configure<OAuthOptions>(configuration.GetSection(OAuthOptions.SectionName));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = authority;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = true,
+                        ValidAudiences = validAudiences,
+                        ValidateLifetime = true,
+                        ValidateIssuer = true,
+                        ValidAlgorithms = ["RS256", "ES256", "EdDSA"],
+                        ValidTypes = ["at+jwt"],
+                        NameClaimType = ClaimTypes.NameIdentifier,
+                        RoleClaimType = ClaimTypes.Role
+                    };
+                });
+
+            services.AddAuthorization();
+            services.AddScoped<IUserContext, UserContext>();
+        }
+        else
+        {
+            services.Configure<DevUserContextOptions>(configuration.GetSection("DevUserContext"));
+            services.AddScoped<IUserContext, DevUserContext>();
+
+            services.AddAuthentication(DevBypassAuthenticationHandler.SchemeName)
+                .AddScheme<AuthenticationSchemeOptions, DevBypassAuthenticationHandler>(
+                    DevBypassAuthenticationHandler.SchemeName,
+                    _ => { });
+
+            services.AddAuthorization();
+        }
 
         return services;
     }
 
-    private static IServiceCollection AddAuthorizationInternal(this IServiceCollection services)
+    public static bool IsOAuthConfigured(IConfiguration configuration)
     {
-        services.AddAuthorization(options =>
-        {
-            foreach (var item in ClaimStore.AllClaims)
-                options.AddPolicy($"{item.Type.Replace(" ", "")}Policy", policy => policy.RequireClaim(item.Value));
-        });
-
-        services.AddIdentity<User, IdentityRole>(opt =>
-            {
-                opt.Password.RequiredLength = 7;
-                opt.Password.RequireDigit = false;
-
-                opt.User.RequireUniqueEmail = true;
-
-                opt.Lockout.AllowedForNewUsers = true;
-                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
-                opt.Lockout.MaxFailedAccessAttempts = 3;
-            })
-            .AddEntityFrameworkStores<HomeAppUserContext>()
-            .AddDefaultTokenProviders();
-
-        services.Configure<DataProtectionTokenProviderOptions>(opt =>
-            opt.TokenLifespan = TimeSpan.FromHours(1));
-
-        return services;
+        var authority = configuration["OAuth:Authority"];
+        var validAudiences = configuration.GetSection("OAuth:ValidAudiences").Get<string[]>() ?? [];
+        return !string.IsNullOrWhiteSpace(authority) && validAudiences.Length > 0;
     }
 
     public static IHostApplicationBuilder AddInfrastructureTelemetry(
@@ -253,7 +243,6 @@ public static class DependencyInjection
                 }
             });
 
-        // Logging über OpenTelemetry
         builder.Logging.AddOpenTelemetry(logging =>
         {
             logging.SetResourceBuilder(resourceBuilder);

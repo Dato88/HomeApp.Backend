@@ -1,0 +1,166 @@
+{
+  "realm": "homeapp",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      { "name": "Admin", "description": "Administrator" },
+      { "name": "ViewBudget", "description": "View budget module" },
+      { "name": "ViewDashboard", "description": "View dashboard" }
+    ]
+  },
+  "clientScopes": [
+    {
+      "name": "homeapp-api-access",
+      "description": "Audience for HomeApp API",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "homeapp-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "local-homeapp-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "homeapp-user-context",
+      "description": "Business context claims for HomeApp",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "personId_mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "personId",
+            "claim.name": "personId",
+            "jsonType.label": "int",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "local-homeapp-api",
+      "name": "HomeApp API (Resource Server)",
+      "enabled": true,
+      "publicClient": true,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "fullScopeAllowed": false,
+      "defaultClientScopes": [],
+      "optionalClientScopes": []
+    },
+    {
+      "clientId": "local-homeapp-bff",
+      "name": "HomeApp BFF",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "local-homeapp-bff-secret",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "fullScopeAllowed": false,
+      "redirectUris": [
+        "http://localhost:5000/auth/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:5000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "access.token.header.type": "at+jwt"
+      },
+      "defaultClientScopes": [
+        "homeapp-api-access",
+        "homeapp-user-context",
+        "profile",
+        "email",
+        "acr"
+      ],
+      "optionalClientScopes": [
+        "offline_access"
+      ]
+    },
+    {
+      "clientId": "local-homeapp-postman",
+      "name": "HomeApp Postman (Dev only)",
+      "description": "Direct Access Grants for API testing in Postman — not for production",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "local-homeapp-postman-secret",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "fullScopeAllowed": false,
+      "defaultClientScopes": [
+        "homeapp-api-access",
+        "homeapp-user-context",
+        "profile",
+        "email",
+        "acr"
+      ],
+      "optionalClientScopes": [
+        "offline_access"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "devuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Dev",
+      "lastName": "User",
+      "email": "dev@homeapp.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "devpassword",
+          "temporary": false
+        }
+      ],
+      "attributes": {
+        "personId": ["1"]
+      },
+      "realmRoles": ["Admin", "ViewBudget", "ViewDashboard"]
+    }
+  ]
+}

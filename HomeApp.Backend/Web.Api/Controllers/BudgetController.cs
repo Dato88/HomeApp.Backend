@@ -11,8 +11,6 @@ namespace Web.Api.Controllers;
 
 [ApiController]
 [Authorize]
-// [Authorize(Policy = "ViewBudgetPolicy")]
-[Authorize]
 [Route("[controller]")]
 public class BudgetController(IMediator mediator) : ControllerBase
 {

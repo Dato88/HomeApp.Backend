@@ -1,34 +1,58 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 using Domain.ValueObjects;
 
 namespace Infrastructure.Services.Authentication;
 
 internal static class ClaimsPrincipalExtensions
 {
-    public static int GetPersonId(this ClaimsPrincipal? principal)
+    public static Guid? GetUserId(this ClaimsPrincipal? principal)
     {
-        var personId = principal?.FindFirstValue("personId");
+        var sub = principal?.FindFirstValue(ClaimTypes.NameIdentifier)
+                  ?? principal?.FindFirstValue("sub");
 
-        return int.TryParse(personId, out var parsedPersonId)
-            ? parsedPersonId
-            : throw new ApplicationException("Person id is unavailable");
+        return Guid.TryParse(sub, out var userId) ? userId : null;
     }
 
-    public static UserEmail GetUserEmail(this ClaimsPrincipal? principal)
+    public static UserEmail? GetUserEmail(this ClaimsPrincipal? principal)
     {
-        var userEmail = principal?.FindFirstValue(ClaimTypes.Email);
+        var email = principal?.FindFirstValue(ClaimTypes.Email)
+                    ?? principal?.FindFirstValue("email");
 
-        return !string.IsNullOrEmpty(userEmail)
-            ? new UserEmail(userEmail)
-            : throw new ApplicationException("User email is unavailable");
+        return string.IsNullOrWhiteSpace(email) ? null : new UserEmail(email);
     }
 
-    public static Guid GetUserId(this ClaimsPrincipal? principal)
+    public static int? GetPersonId(this ClaimsPrincipal? principal)
     {
-        var userId = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+        var personIdClaim = principal?.FindFirstValue("personId");
 
-        return Guid.TryParse(userId, out var parsedUserId)
-            ? parsedUserId
-            : throw new ApplicationException("User id is unavailable");
+        return int.TryParse(personIdClaim, out var personId) ? personId : null;
+    }
+
+    public static IReadOnlyList<string> GetRealmRoles(this ClaimsPrincipal? principal)
+    {
+        var rolesClaim = principal?.FindFirst("realm_access")?.Value;
+
+        if (string.IsNullOrWhiteSpace(rolesClaim))
+            return [];
+
+        try
+        {
+            using var document = JsonDocument.Parse(rolesClaim);
+
+            if (!document.RootElement.TryGetProperty("roles", out var rolesElement)
+                || rolesElement.ValueKind != JsonValueKind.Array)
+                return [];
+
+            return rolesElement.EnumerateArray()
+                .Select(role => role.GetString())
+                .Where(role => !string.IsNullOrWhiteSpace(role))
+                .Select(role => role!)
+                .ToList();
+        }
+        catch (JsonException)
+        {
+            return [];
+        }
     }
 }

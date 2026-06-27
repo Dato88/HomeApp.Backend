@@ -31,7 +31,7 @@ internal sealed class PersonValidation(HomeAppContext dbContext) : BaseContext(d
         person.FirstName.Length > 150 ||
         person.LastName.Length > 150 ||
         person.Email.Length > 150 ||
-        person.UserId.Length < 36
+        person.UserId.Length > 150
             ? Result.Failure(PersonErrors.CreateFailedWithMessage(PersonMessage.MaxLengthExeed))
             : Result.Success();
 

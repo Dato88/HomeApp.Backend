@@ -1,13 +1,11 @@
-using System.Text;
 using Application;
 using FluentValidation;
 using HealthChecks.UI.Client;
 using Infrastructure;
 using Infrastructure.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Infrastructure.Middleware;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Web.Api;
 using Web.Api.Extensions;
 using AssemblyReference = Web.Api.AssemblyReference;
@@ -23,26 +21,6 @@ builder.AddInfrastructureTelemetry();
 
 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-builder.Services.AddAuthentication(opt =>
-{
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["validIssuer"],
-        ValidAudience = jwtSettings["validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-            .GetBytes(jwtSettings.GetSection("securityKey").Value))
-    };
-});
-
 var app = builder.Build();
 
 app.UseHealthChecksExtension();
@@ -50,17 +28,15 @@ app.UseHealthChecksExtension();
 var applyMigrations = app.Configuration.GetValue<bool>("Database:ApplyMigrations");
 
 if (applyMigrations)
-{
     await app.MigrateDatabaseAsync<HomeAppContext>("HomeAppContext");
-    await app.MigrateDatabaseAsync<HomeAppUserContext>("HomeAppUserContext");
-}
 
 if (app.Environment.IsDevelopment())
-{
     app.UseScalarApiWithUi();
-}
 
 app.UseAuthenticationExtension();
+
+if (Infrastructure.DependencyInjection.IsOAuthConfigured(app.Configuration))
+    app.UseMiddleware<PersonProvisioningMiddleware>();
 
 app.MapControllers().RequireCors("CorsPolicy");
 
