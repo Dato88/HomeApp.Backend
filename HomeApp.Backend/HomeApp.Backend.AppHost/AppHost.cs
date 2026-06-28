@@ -1,7 +1,8 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
 var keycloakAdminPassword = builder.AddParameter("keycloak-admin-password", value: "admin", secret: true);
-var bffClientSecret = builder.AddParameter("bff-client-secret", value: "local-homeapp-bff-secret", secret: true);
+var bffClientSecret =
+    builder.AddParameter("bff-client-secret", value: "ZJHzn6jImwN7sjvIMdB3SxRQDMN8Z56N", secret: true);
 
 var keycloakPostgres = builder
     .AddPostgres("keycloakContainer")
@@ -24,8 +25,7 @@ var keycloak = builder.AddContainer("keycloak", "quay.io/keycloak/keycloak", "26
     .WithEnvironment("KC_DB_URL", keycloakDb.Resource.JdbcConnectionString)
     .WithEnvironment("KC_DB_USERNAME", keycloakPostgres.Resource.UserNameReference)
     .WithEnvironment("KC_DB_PASSWORD", keycloakPostgres.Resource.PasswordParameter)
-    .WithArgs("start", "--import-realm")
-    .WithBindMount("./keycloak/realm-export.json", "/opt/keycloak/data/import/realm-export.json");
+    .WithArgs("start");
 
 var postgres = builder
     .AddPostgres("homeappContainer")
@@ -52,7 +52,6 @@ builder.AddProject<Projects.HomeApp_Bff>("bff")
     .WithReference(api)
     .WaitFor(keycloak)
     .WaitFor(api)
-    .WithEnvironment("ASPNETCORE_URLS", "http://+:5555")
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ClientId", "local-homeapp-bff")
     .WithEnvironment("OAuth__ClientSecret", bffClientSecret)
