@@ -35,16 +35,6 @@ jobs:
     name: Build & Test (Pull Requests)
     env:
       ConnectionStrings__HomeAppConnection: ${{ secrets.DB_HOMEAPP_CONNECTION }}
-      ConnectionStrings__HomeAppUserConnection: ${{ secrets.DB_HOMEAPP_USER_CONNECTION }}
-      JwtSettings__validIssuer: ${{ secrets.JWT_VALID_ISSUER }}
-      JwtSettings__validAudience: ${{ secrets.JWT_VALID_AUDIENCE }}
-      JwtSettings__securityKey: ${{ secrets.JWT_SECURITY_KEY }}
-      JwtSettings__expiryInMinutes: ${{ secrets.JWT_EXPIRY_MINUTES }}
-      EmailConfiguration__From: ${{ secrets.EMAIL_FROM }}
-      EmailConfiguration__SmtpServer: ${{ secrets.SMTP_SERVER }}
-      EmailConfiguration__Port: ${{ secrets.SMTP_PORT }}
-      EmailConfiguration__Username: ${{ secrets.SMTP_USERNAME }}
-      EmailConfiguration__Password: ${{ secrets.SMTP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -64,16 +54,6 @@ jobs:
     name: Build, Test, Docker & Tag (Release → Main)
     env:
       ConnectionStrings__HomeAppConnection: ${{ secrets.DB_HOMEAPP_CONNECTION }}
-      ConnectionStrings__HomeAppUserConnection: ${{ secrets.DB_HOMEAPP_USER_CONNECTION }}
-      JwtSettings__validIssuer: ${{ secrets.JWT_VALID_ISSUER }}
-      JwtSettings__validAudience: ${{ secrets.JWT_VALID_AUDIENCE }}
-      JwtSettings__securityKey: ${{ secrets.JWT_SECURITY_KEY }}
-      JwtSettings__expiryInMinutes: ${{ secrets.JWT_EXPIRY_MINUTES }}
-      EmailConfiguration__From: ${{ secrets.EMAIL_FROM }}
-      EmailConfiguration__SmtpServer: ${{ secrets.SMTP_SERVER }}
-      EmailConfiguration__Port: ${{ secrets.SMTP_PORT }}
-      EmailConfiguration__Username: ${{ secrets.SMTP_USERNAME }}
-      EmailConfiguration__Password: ${{ secrets.SMTP_PASSWORD }}
     outputs:
       version: ${{ steps.extract_version.outputs.version }}
     steps:

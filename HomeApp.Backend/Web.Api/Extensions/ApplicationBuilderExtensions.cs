@@ -1,4 +1,5 @@
 ﻿using HealthChecks.UI.Client;
+using Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
@@ -27,7 +28,6 @@ internal static class ApplicationBuilderExtensions
         app.UseCors("CorsPolicy");
 
         app.UseAuthentication();
-
         app.UseAuthorization();
 
         return app;

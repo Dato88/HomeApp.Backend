@@ -10,7 +10,7 @@ namespace Application.Features.Todos.Queries;
 
 internal sealed class GetUserTodosQueryHandler(
     ITodoQueries todoQueries,
-    IUserContext userContext,
+    IExecutionContextAccessor executionContext,
     IPersonQueries personQueries,
     IAppLogger<GetUserTodosQueryHandler> logger)
     : IRequestHandler<GetUserTodosQuery, Result<IEnumerable<GetToDoResponse>>>
@@ -20,7 +20,7 @@ internal sealed class GetUserTodosQueryHandler(
     {
         try
         {
-            var todosResult = await todoQueries.GetAllUserTodosAsync(userContext.PersonId, cancellationToken);
+            var todosResult = await todoQueries.GetAllUserTodosAsync(executionContext.PersonId, cancellationToken);
 
             var result = todosResult.Value.Select(s => (GetToDoResponse)s);
 

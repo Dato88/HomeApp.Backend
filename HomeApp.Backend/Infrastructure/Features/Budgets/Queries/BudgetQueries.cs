@@ -9,10 +9,10 @@ namespace Infrastructure.Features.Budgets.Queries;
 
 public sealed class BudgetQueries(
     HomeAppContext dbContext,
-    IUserContext userContext) : IBudgetQueries
+    IExecutionContextAccessor executionContext) : IBudgetQueries
 {
     private readonly HomeAppContext _dbContext = dbContext;
-    private readonly IUserContext _userContext = userContext;
+    private readonly IExecutionContextAccessor _executionContext = executionContext;
 
     public async Task<Result<Budget>> GetBudgetAsync(int year, CancellationToken cancellationToken)
     {
@@ -22,7 +22,7 @@ public sealed class BudgetQueries(
             .ThenInclude(th => th.BudgetRows)
             .ThenInclude(th => th.BudgetCells)
             .AsSplitQuery()
-            .SingleOrDefaultAsync(x => x.PersonId == _userContext.PersonId && x.Year == year, cancellationToken);
+            .SingleOrDefaultAsync(x => x.PersonId == _executionContext.PersonId && x.Year == year, cancellationToken);
 
         if (budget is null)
             return Result.Failure<Budget>(BudgetErrors.NotFoundAll);

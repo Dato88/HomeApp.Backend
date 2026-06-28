@@ -7,7 +7,7 @@ using Web.Api.Requests.Todo;
 namespace Web.Api.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = "ViewTodoPolicy")]
 [Route("[controller]")]
 public class TodoController(IMediator mediator) : ControllerBase
 {

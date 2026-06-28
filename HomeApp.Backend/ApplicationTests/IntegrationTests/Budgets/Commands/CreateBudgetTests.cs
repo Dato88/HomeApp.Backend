@@ -23,14 +23,14 @@ public class CreateBudgetTests : BaseBudgetCommandsTest
         var created = await DbContext.Budgets.FindAsync(result.Value);
         created.Should().NotBeNull();
         created!.Year.Should().Be(year);
-        created.PersonId.Should().Be(UserContext.PersonId);
+        created.PersonId.Should().Be(ExecutionContext.PersonId);
     }
 
     [Fact]
     public async Task CreateBudget_ShouldReturnError_WhenInvalidYear()
     {
         // Arrange
-        var newBudget = await BudgetDataSeeder.GenereateDummyBudget(UserContext.PersonId);
+        var newBudget = await BudgetDataSeeder.GenereateDummyBudget(ExecutionContext.PersonId);
 
         // Act
         var result = await BudgetCommands.CreateBudgetAsync(newBudget.Year, CancellationToken.None);

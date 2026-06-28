@@ -17,7 +17,7 @@ public class CreateBudgetGroupTests : BaseBudgetCommandsTest
         BudgetGroupType budgetGroupType)
     {
         // Arrange
-        var newBudget = await BudgetDataSeeder.GenereateDummyBudget(UserContext.PersonId);
+        var newBudget = await BudgetDataSeeder.GenereateDummyBudget(ExecutionContext.PersonId);
 
         var newBudgetGroup = new BudgetGroup
         {

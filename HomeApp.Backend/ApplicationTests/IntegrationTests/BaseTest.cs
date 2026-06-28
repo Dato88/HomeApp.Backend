@@ -8,14 +8,14 @@ public abstract class BaseTest : IClassFixture<UnitTestingApiFactory>, IDisposab
 {
     private readonly IServiceScope _scope;
     protected readonly HomeAppContext DbContext;
-    protected readonly IUserContext UserContext;
+    protected readonly IExecutionContextAccessor ExecutionContext;
 
-    protected BaseTest(UnitTestingApiFactory factory, IUserContext userContext = null)
+    protected BaseTest(UnitTestingApiFactory factory, IExecutionContextAccessor executionContext = null)
     {
         _scope = factory.Services.CreateScope();
         DbContext = _scope.ServiceProvider
             .GetRequiredService<HomeAppContext>();
-        UserContext = userContext;
+        ExecutionContext = executionContext;
     }
 
     public void Dispose() => _scope.Dispose();

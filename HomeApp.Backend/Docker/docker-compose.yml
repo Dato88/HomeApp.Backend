@@ -8,16 +8,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__HomeAppConnection: "${HOMEAPP_DATA_CONN}"
-      ConnectionStrings__HomeAppUserConnection: "${HOMEAPP_USER_CONN}"
-      JWTSettings__securityKey: "${JWTSettings__securityKey}"
-      JWTSettings__validIssuer: "${JWTSettings__validIssuer}"
-      JWTSettings__validAudience: "${JWTSettings__validAudience}"
-      JWTSettings__expiryInMinutes: "${JWTSettings__expiryInMinutes}"
-      EmailConfiguration__From: "${EmailConfiguration__From}"
-      EmailConfiguration__SmtpServer: "${EmailConfiguration__SmtpServer}"
-      EmailConfiguration__Port: "${EmailConfiguration__Port}"
-      EmailConfiguration__Username: "${EmailConfiguration__Username}"
-      EmailConfiguration__Password: "${EmailConfiguration__Password}"
+      OAuth__Authority: "${OAuth__Authority}"
+      OAuth__ValidAudiences__0: "${OAuth__ValidAudiences__0}"
     expose:
       - "8080"
     networks:
@@ -29,7 +21,7 @@ services:
     depends_on:
       - homeapp-backend
     ports:
-      - "5018:5018"  # <- wichtig: öffentlich erreichbarer HTTPS-Port
+      - "5018:5018"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/cert.pem:/etc/nginx/cert.pem:ro

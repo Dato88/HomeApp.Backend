@@ -3,7 +3,9 @@ using Application.Abstractions.Logging;
 using Application.Features.People.Validations;
 using Infrastructure.Features.People.Commands;
 using Infrastructure.Features.People.Queries;
+using Infrastructure.Features.People.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ApplicationTests.IntegrationTests.People;
 
@@ -15,7 +17,8 @@ public class BaseCommonPersonTest : BaseTest
     protected readonly PersonQueries PersonQueries;
     protected readonly Mock<IPersonValidation> PersonValidationMock;
     protected readonly Mock<IAppLogger<PersonQueries>> QuerriesILogger;
-    protected readonly Mock<IUserContext> UserContext;
+    protected readonly Mock<IExecutionContextAccessor> ExecutionContextMock;
+    protected readonly IPersonIdCache PersonIdCache;
 
     public BaseCommonPersonTest(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
@@ -35,15 +38,18 @@ public class BaseCommonPersonTest : BaseTest
         PersonValidationMock.DefaultValue = DefaultValue.Mock;
         PersonValidationMock.SetupAllProperties();
 
-        UserContext = new Mock<IUserContext>();
-        UserContext.DefaultValue = DefaultValue.Mock;
-        UserContext.SetupAllProperties();
+        ExecutionContextMock = new Mock<IExecutionContextAccessor>();
+        ExecutionContextMock.DefaultValue = DefaultValue.Mock;
+        ExecutionContextMock.SetupAllProperties();
+
+        PersonIdCache = new PersonIdCache(new MemoryCache(new MemoryCacheOptions()));
 
         CommonPersonCommands = new PersonCommands(DbContext,
             PersonValidationMock.Object,
+            PersonIdCache,
             CommandsILogger.Object);
 
-        PersonQueries = new PersonQueries(DbContext, UserContext.Object,
+        PersonQueries = new PersonQueries(DbContext, ExecutionContextMock.Object,
             QuerriesILogger.Object);
     }
 }

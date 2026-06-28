@@ -7,22 +7,22 @@ using SharedKernel;
 
 namespace Infrastructure.Features.Budgets.Commands;
 
-public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userContext) : IBudgetCommands
+public sealed class BudgetCommands(HomeAppContext dbContext, IExecutionContextAccessor executionContext) : IBudgetCommands
 {
     private readonly HomeAppContext _dbContext = dbContext;
-    private readonly IUserContext _userContext = userContext;
+    private readonly IExecutionContextAccessor _executionContext = executionContext;
 
     public async Task<Result<int>> CreateBudgetAsync(int year, CancellationToken cancellationToken)
     {
         var budgetYearExists = _dbContext.Budgets.Any(x =>
-            x.Year == year && x.PersonId == _userContext.PersonId);
+            x.Year == year && x.PersonId == _executionContext.PersonId);
 
         if (budgetYearExists)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("Budget Year already exists"));
 
         var newBudget = new Budget()
         {
-            PersonId = _userContext.PersonId, Year = year, CreatedById = _userContext.PersonId
+            PersonId = _executionContext.PersonId, Year = year, CreatedById = _executionContext.PersonId
         };
 
         _dbContext.Budgets.Add(newBudget);
@@ -34,12 +34,12 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     public async Task<Result<int>> CreateBudgetGroupAsync(BudgetGroup budgetGroup, CancellationToken cancellationToken)
     {
         var budgetIdIsValid = _dbContext.Budgets.Any(x =>
-            x.BudgetId == budgetGroup.BudgetId && x.PersonId == _userContext.PersonId);
+            x.BudgetId == budgetGroup.BudgetId && x.PersonId == _executionContext.PersonId);
 
         if (!budgetIdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetId is invalid"));
 
-        budgetGroup.CreatedById = _userContext.PersonId;
+        budgetGroup.CreatedById = _executionContext.PersonId;
 
         _dbContext.BudgetGroups.Add(budgetGroup);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -50,12 +50,12 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     public async Task<Result<int>> CreateBudgetRowAsync(BudgetRow budgetRow, CancellationToken cancellationToken)
     {
         var budgetGroupIdIsValid = _dbContext.BudgetGroups.Any(x =>
-            x.BudgetGroupId == budgetRow.BudgetGroupId && x.Budget.PersonId == _userContext.PersonId);
+            x.BudgetGroupId == budgetRow.BudgetGroupId && x.Budget.PersonId == _executionContext.PersonId);
 
         if (!budgetGroupIdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetGroupId is invalid"));
 
-        budgetRow.CreatedById = _userContext.PersonId;
+        budgetRow.CreatedById = _executionContext.PersonId;
 
         _dbContext.BudgetRows.Add(budgetRow);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -71,12 +71,12 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
 
         var budgetRowdIsValid = _dbContext.BudgetRows.Any(x =>
             x.BudgetRowId == budgetCell.BudgetRowId &&
-            x.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+            x.BudgetGroup.Budget.PersonId == _executionContext.PersonId);
 
         if (!budgetRowdIsValid)
             return Result.Failure<int>(BudgetErrors.CreateFailedWithMessage("BudgetRowId is invalid"));
 
-        budgetCell.CreatedById = _userContext.PersonId;
+        budgetCell.CreatedById = _executionContext.PersonId;
 
         _dbContext.BudgetCells.Add(budgetCell);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -88,7 +88,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     {
         var budget = await _dbContext.Budgets.SingleOrDefaultAsync(x =>
             x.BudgetId == budgetId &&
-            x.PersonId == _userContext.PersonId);
+            x.PersonId == _executionContext.PersonId);
 
         if (budget == null)
             return Result.Failure<int>(BudgetErrors.DeleteFailed(budgetId));
@@ -103,7 +103,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     {
         var budgetGroup = await _dbContext.BudgetGroups.SingleOrDefaultAsync(x =>
             x.BudgetGroupId == budgetGroupId &&
-            x.Budget.PersonId == _userContext.PersonId);
+            x.Budget.PersonId == _executionContext.PersonId);
 
         if (budgetGroup == null)
             return Result.Failure<int>(BudgetErrors.DeleteGroupFailed(budgetGroupId));
@@ -118,7 +118,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     {
         var budgetRow = await _dbContext.BudgetRows.SingleOrDefaultAsync(x =>
             x.BudgetRowId == budgetRowId &&
-            x.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+            x.BudgetGroup.Budget.PersonId == _executionContext.PersonId);
 
         if (budgetRow == null)
             return Result.Failure<int>(BudgetErrors.DeleteRowFailed(budgetRowId));
@@ -133,7 +133,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     {
         var budgetCell = await _dbContext.BudgetCells.SingleOrDefaultAsync(x =>
             x.BudgetCellId == budgetCellId &&
-            x.BudgetRow.BudgetGroup.Budget.PersonId == _userContext.PersonId);
+            x.BudgetRow.BudgetGroup.Budget.PersonId == _executionContext.PersonId);
 
         if (budgetCell == null)
             return Result.Failure<int>(BudgetErrors.DeleteCellFailed(budgetCellId));
@@ -147,19 +147,19 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IUserContext userCo
     public async Task<Result<int>> UpdateBudgetAsync(int budgetId, int year, CancellationToken cancellationToken)
     {
         var budgetYearExists = _dbContext.Budgets.Any(x =>
-            x.Year == year && x.PersonId == _userContext.PersonId);
+            x.Year == year && x.PersonId == _executionContext.PersonId);
 
         if (budgetYearExists)
             return Result.Failure<int>(BudgetErrors.UpdateFailedWithMessage("Budget Year already exists"));
 
         var budget =
-            _dbContext.Budgets.SingleOrDefault(x => x.BudgetId == budgetId && x.PersonId == _userContext.PersonId);
+            _dbContext.Budgets.SingleOrDefault(x => x.BudgetId == budgetId && x.PersonId == _executionContext.PersonId);
 
         if (budget == null)
             return Result.Failure<int>(BudgetErrors.UpdateFailedWithMessage("BudgetId is invalid"));
 
         budget.Year = year;
-        budget.UpdatedById = _userContext.PersonId;
+        budget.UpdatedById = _executionContext.PersonId;
         budget.UpdatedAt = DateTime.UtcNow;
 
         _dbContext.Budgets.Update(budget);

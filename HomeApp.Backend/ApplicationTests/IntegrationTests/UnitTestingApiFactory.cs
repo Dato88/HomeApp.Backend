@@ -20,7 +20,11 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
 
     public new async Task DisposeAsync() => await _dbContainer.StopAsync();
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder) =>
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.UseSetting("OAuth:Authority", "https://test.homeapp.local/realms/homeapp");
+        builder.UseSetting("OAuth:ValidAudiences:0", "test-homeapp-api");
+
         builder.ConfigureTestServices(services =>
         {
             var descriptor = services.SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<HomeAppContext>));
@@ -30,10 +34,9 @@ public class UnitTestingApiFactory : WebApplicationFactory<Program>, IAsyncLifet
             services.AddDbContext<HomeAppContext>(options => options.UseNpgsql(_dbContainer.GetConnectionString()));
 
             var serviceProvider = services.BuildServiceProvider();
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
-                context.Database.Migrate(); // This applies pending migrations
-            }
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<HomeAppContext>();
+            context.Database.Migrate();
         });
+    }
 }

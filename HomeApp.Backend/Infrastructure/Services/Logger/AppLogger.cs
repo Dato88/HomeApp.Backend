@@ -7,12 +7,12 @@ namespace Infrastructure.Services.Logger;
 internal class AppLogger<T> : IAppLogger<T>
 {
     private readonly ILogger<T> _logger;
-    private readonly IUserContext _userContext;
+    private readonly IExecutionContextAccessor _executionContext;
 
-    public AppLogger(ILogger<T> logger, IUserContext userContext)
+    public AppLogger(ILogger<T> logger, IExecutionContextAccessor executionContext)
     {
         _logger = logger;
-        _userContext = userContext;
+        _executionContext = executionContext;
     }
 
     public void LogTrace(string message) => _logger.LogTraceFormatted(Format(message));
@@ -26,7 +26,7 @@ internal class AppLogger<T> : IAppLogger<T>
     {
         try
         {
-            var personId = _userContext.PersonId.ToString();
+            var personId = _executionContext.PersonId.ToString();
 
             return $"[PersonId: {personId}] {message}";
         }
