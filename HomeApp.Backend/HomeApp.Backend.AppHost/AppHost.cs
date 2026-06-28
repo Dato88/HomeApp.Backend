@@ -52,7 +52,7 @@ builder.AddProject<Projects.HomeApp_Bff>("bff")
     .WithReference(api)
     .WaitFor(keycloak)
     .WaitFor(api)
-    .WithEnvironment("ASPNETCORE_URLS", "http://+:5000")
+    .WithEnvironment("ASPNETCORE_URLS", "http://+:5555")
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ClientId", "local-homeapp-bff")
     .WithEnvironment("OAuth__ClientSecret", bffClientSecret)
@@ -60,7 +60,7 @@ builder.AddProject<Projects.HomeApp_Bff>("bff")
         ReferenceExpression.Create($"{api.GetEndpoint("http")}/"))
     .WithEndpoint("http", endpoint =>
     {
-        endpoint.Port = 5000;
+        endpoint.Port = 5555;
         endpoint.IsProxied = false;
     });
 
