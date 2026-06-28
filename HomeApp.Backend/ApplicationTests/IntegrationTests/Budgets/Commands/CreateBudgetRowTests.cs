@@ -17,7 +17,7 @@ public class CreateBudgetRowTests : BaseBudgetCommandsTest
         string name)
     {
         // Arrange
-        var newBudget = await BudgetDataSeeder.GenereateDummyBudgetGroups(groupCount, UserContext.PersonId);
+        var newBudget = await BudgetDataSeeder.GenereateDummyBudgetGroups(groupCount, ExecutionContext.PersonId);
 
         var groupIds = await DbContext.BudgetGroups
             .Where(g => g.BudgetId == newBudget.BudgetId)

@@ -52,6 +52,9 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddMemoryCache();
+        services.AddSingleton<IPersonIdCache, PersonIdCache>();
+
         services.AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
 
         services.AddScoped<IPersonValidation, PersonValidation>();
@@ -124,52 +127,36 @@ public static class DependencyInjection
         var authority = configuration["OAuth:Authority"];
         var validAudiences = configuration.GetSection("OAuth:ValidAudiences").Get<string[]>() ?? [];
 
-        if (!string.IsNullOrWhiteSpace(authority) && validAudiences.Length > 0)
+        if (string.IsNullOrWhiteSpace(authority) || validAudiences.Length == 0)
         {
-            services.Configure<OAuthOptions>(configuration.GetSection(OAuthOptions.SectionName));
+            throw new InvalidOperationException(
+                "OAuth is required. Configure OAuth:Authority and OAuth:ValidAudiences.");
+        }
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+        services.Configure<OAuthOptions>(configuration.GetSection(OAuthOptions.SectionName));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = authority;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.Authority = authority;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = true,
-                        ValidAudiences = validAudiences,
-                        ValidateLifetime = true,
-                        ValidateIssuer = true,
-                        ValidAlgorithms = ["RS256", "ES256", "EdDSA"],
-                        ValidTypes = ["at+jwt"],
-                        NameClaimType = ClaimTypes.NameIdentifier,
-                        RoleClaimType = ClaimTypes.Role
-                    };
-                });
+                    ValidateAudience = true,
+                    ValidAudiences = validAudiences,
+                    ValidateLifetime = true,
+                    ValidateIssuer = true,
+                    ValidAlgorithms = ["RS256", "ES256", "EdDSA"],
+                    ValidTypes = ["at+jwt"],
+                    NameClaimType = ClaimTypes.NameIdentifier,
+                    RoleClaimType = ClaimTypes.Role
+                };
+            });
 
-            services.AddAuthorization();
-            services.AddScoped<IUserContext, UserContext>();
-        }
-        else
-        {
-            services.Configure<DevUserContextOptions>(configuration.GetSection("DevUserContext"));
-            services.AddScoped<IUserContext, DevUserContext>();
-
-            services.AddAuthentication(DevBypassAuthenticationHandler.SchemeName)
-                .AddScheme<AuthenticationSchemeOptions, DevBypassAuthenticationHandler>(
-                    DevBypassAuthenticationHandler.SchemeName,
-                    _ => { });
-
-            services.AddAuthorization();
-        }
+        services.AddAuthorization();
+        services.AddScoped<IExecutionContextAccessor, ExecutionContextAccessor>();
 
         return services;
-    }
-
-    public static bool IsOAuthConfigured(IConfiguration configuration)
-    {
-        var authority = configuration["OAuth:Authority"];
-        var validAudiences = configuration.GetSection("OAuth:ValidAudiences").Get<string[]>() ?? [];
-        return !string.IsNullOrWhiteSpace(authority) && validAudiences.Length > 0;
     }
 
     public static IHostApplicationBuilder AddInfrastructureTelemetry(

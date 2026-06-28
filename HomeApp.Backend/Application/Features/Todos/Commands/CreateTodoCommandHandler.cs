@@ -8,14 +8,14 @@ namespace Application.Features.Todos.Commands;
 
 internal sealed class CreateTodoCommandHandler(
     ITodoCommands todoCommands,
-    IUserContext userContext,
+    IExecutionContextAccessor executionContext,
     IAppLogger<CreateTodoCommandHandler> logger) : IRequestHandler<CreateTodoCommand, Result<int>>
 {
     private readonly ITodoCommands _todoCommands = todoCommands;
 
     public async Task<Result<int>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
     {
-        request.PersonId = userContext.PersonId;
+        request.PersonId = executionContext.PersonId;
 
         var result = await _todoCommands.CreateAsync((Todo)request, cancellationToken);
 

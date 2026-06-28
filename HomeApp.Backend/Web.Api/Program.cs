@@ -35,8 +35,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthenticationExtension();
 
-if (Infrastructure.DependencyInjection.IsOAuthConfigured(app.Configuration))
-    app.UseMiddleware<PersonProvisioningMiddleware>();
+app.UseMiddleware<PersonProvisioningMiddleware>();
 
 app.MapControllers().RequireCors("CorsPolicy");
 

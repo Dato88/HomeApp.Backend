@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Logging;
+﻿using Application.Abstractions.Authentication;
+using Application.Abstractions.Logging;
 using Application.Features.People.Commands;
 using Application.Features.People.Validations;
 using Domain.Entities.People;
@@ -10,6 +11,7 @@ namespace Infrastructure.Features.People.Commands;
 public sealed class PersonCommands(
     HomeAppContext dbContext,
     IPersonValidation personValidation,
+    IPersonIdCache personIdCache,
     IAppLogger<PersonCommands> logger) : IPersonCommands
 {
     public async Task<Result> DeletePersonAsync(int personId, CancellationToken cancellationToken)
@@ -20,6 +22,8 @@ public sealed class PersonCommands(
         var person = await dbContext.People.FindAsync(personId, cancellationToken);
         if (person == null)
             return Result.Failure(PersonErrors.NotFoundById(personId));
+
+        personIdCache.Remove(person.UserId);
 
         dbContext.People.Remove(person);
         await dbContext.SaveChangesAsync(cancellationToken);

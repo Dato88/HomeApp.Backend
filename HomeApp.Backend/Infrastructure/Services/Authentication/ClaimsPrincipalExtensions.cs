@@ -6,28 +6,30 @@ namespace Infrastructure.Services.Authentication;
 
 internal static class ClaimsPrincipalExtensions
 {
-    public static Guid? GetUserId(this ClaimsPrincipal? principal)
+    public static Guid? GetKeycloakUserId(this ClaimsPrincipal? principal)
     {
-        var sub = principal?.FindFirstValue(ClaimTypes.NameIdentifier)
-                  ?? principal?.FindFirstValue("sub");
+        var sub = principal?.FindFirstValue("sub")
+                  ?? principal?.FindFirstValue(ClaimTypes.NameIdentifier);
 
         return Guid.TryParse(sub, out var userId) ? userId : null;
     }
 
     public static UserEmail? GetUserEmail(this ClaimsPrincipal? principal)
     {
-        var email = principal?.FindFirstValue(ClaimTypes.Email)
-                    ?? principal?.FindFirstValue("email");
+        var email = principal?.FindFirstValue("email")
+                    ?? principal?.FindFirstValue(ClaimTypes.Email);
 
         return string.IsNullOrWhiteSpace(email) ? null : new UserEmail(email);
     }
 
-    public static int? GetPersonId(this ClaimsPrincipal? principal)
-    {
-        var personIdClaim = principal?.FindFirstValue("personId");
+    public static string? GetFirstName(this ClaimsPrincipal? principal) =>
+        principal?.FindFirstValue("given_name");
 
-        return int.TryParse(personIdClaim, out var personId) ? personId : null;
-    }
+    public static string? GetLastName(this ClaimsPrincipal? principal) =>
+        principal?.FindFirstValue("family_name");
+
+    public static string? GetPreferredUsername(this ClaimsPrincipal? principal) =>
+        principal?.FindFirstValue("preferred_username");
 
     public static IReadOnlyList<string> GetRealmRoles(this ClaimsPrincipal? principal)
     {

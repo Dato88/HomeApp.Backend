@@ -10,14 +10,14 @@ namespace Infrastructure.Features.People.Queries;
 
 public sealed class PersonQueries(
     HomeAppContext dbContext,
-    IUserContext userContext,
+    IExecutionContextAccessor executionContext,
     IAppLogger<PersonQueries> logger) : IPersonQueries
 {
     public async Task<PersonResponse?> GetUserPersonAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var userId = userContext.UserId.ToString();
+            var userId = executionContext.KeycloakUserId.ToString();
 
             var person = await dbContext.People.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
