@@ -43,11 +43,7 @@ var api = builder.AddProject<Projects.Web_Api>("api", launchProfileName: null)
     .WaitFor(keycloak)
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ValidAudiences__0", "local-homeapp-api")
-    .WithEndpoint("https", endpoint =>
-    {
-        endpoint.Port = 7254;
-        endpoint.IsProxied = false;
-    });
+    .WithHttpEndpoint(port: 7254, isProxied: false);
 
 builder.AddProject<Projects.HomeApp_Bff>("bff", launchProfileName: null)
     .WithReference(api)
@@ -60,7 +56,9 @@ builder.AddProject<Projects.HomeApp_Bff>("bff", launchProfileName: null)
     .WithEnvironment("OAuth__PostLogoutRedirectUri", "http://localhost:4200")
     .WithEnvironment("OAuth__PostLoginRedirectUri", "http://localhost:4200")
     .WithEnvironment("OAuth__AngularOrigin", "http://localhost:4200")
-    .WithEnvironment("ReverseProxy__Clusters__api-cluster__Destinations__api__Address", "https://localhost:7254/")
+    .WithEnvironment(
+        "ReverseProxy__Clusters__api-cluster__Destinations__api__Address",
+        ReferenceExpression.Create($"{api.GetEndpoint("http")}/"))
     .WithHttpEndpoint(port: 5555, isProxied: false);
 
 builder.Build().Run();
