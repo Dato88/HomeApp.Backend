@@ -1,0 +1,115 @@
+{
+  "realm": "homeapp",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Default HomeApp user role"
+      }
+    ]
+  },
+  "defaultRoles": ["user"],
+  "clients": [
+    {
+      "clientId": "local-homeapp-bff",
+      "name": "HomeApp BFF",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "ZJHzn6jImwN7sjvIMdB3SxRQDMN8Z56N",
+      "redirectUris": [
+        "http://localhost:4200/auth/callback",
+        "http://localhost:5555/auth/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:5555"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:4200##http://localhost:5555"
+      },
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email",
+        "homeapp-api-audience"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "organization",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "local-homeapp-api",
+      "name": "HomeApp API",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "fullScopeAllowed": false
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "homeapp-api-audience",
+      "description": "Adds local-homeapp-api audience to access tokens",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "local-homeapp-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "devuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Dev",
+      "lastName": "User",
+      "email": "devuser@homeapp.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "devpassword",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user"]
+    }
+  ]
+}

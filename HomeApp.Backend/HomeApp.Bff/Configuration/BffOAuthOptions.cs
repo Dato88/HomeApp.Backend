@@ -10,9 +10,11 @@ public sealed class BffOAuthOptions
 
     public string ClientSecret { get; set; } = default!;
 
-    public string RedirectUri { get; set; } = "http://localhost:5000/auth/callback";
+    public string RedirectUri { get; set; } = "http://localhost:4200/auth/callback";
 
     public string PostLogoutRedirectUri { get; set; } = "http://localhost:4200";
+
+    public string PostLoginRedirectUri { get; set; } = "http://localhost:4200";
 
     public string AngularOrigin { get; set; } = "http://localhost:4200";
 }

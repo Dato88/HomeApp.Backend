@@ -25,7 +25,8 @@ var keycloak = builder.AddContainer("keycloak", "quay.io/keycloak/keycloak", "26
     .WithEnvironment("KC_DB_URL", keycloakDb.Resource.JdbcConnectionString)
     .WithEnvironment("KC_DB_USERNAME", keycloakPostgres.Resource.UserNameReference)
     .WithEnvironment("KC_DB_PASSWORD", keycloakPostgres.Resource.PasswordParameter)
-    .WithArgs("start");
+    .WithBindMount("./keycloak", "/opt/keycloak/data/import")
+    .WithArgs("start", "--import-realm");
 
 var postgres = builder
     .AddPostgres("homeappContainer")
@@ -36,31 +37,30 @@ var homeAppDb = postgres.AddDatabase(
     name: "HomeAppConnection",
     databaseName: "homeapp");
 
-var api = builder.AddProject<Projects.Web_Api>("api")
+var api = builder.AddProject<Projects.Web_Api>("api", launchProfileName: null)
     .WithReference(homeAppDb)
     .WaitFor(homeAppDb)
     .WaitFor(keycloak)
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ValidAudiences__0", "local-homeapp-api")
-    .WithEndpoint("http", endpoint =>
+    .WithEndpoint("https", endpoint =>
     {
         endpoint.Port = 7254;
         endpoint.IsProxied = false;
     });
 
-builder.AddProject<Projects.HomeApp_Bff>("bff")
+builder.AddProject<Projects.HomeApp_Bff>("bff", launchProfileName: null)
     .WithReference(api)
     .WaitFor(keycloak)
     .WaitFor(api)
     .WithEnvironment("OAuth__Authority", "http://localhost:8080/realms/homeapp")
     .WithEnvironment("OAuth__ClientId", "local-homeapp-bff")
     .WithEnvironment("OAuth__ClientSecret", bffClientSecret)
-    .WithEnvironment("ReverseProxy__Clusters__api-cluster__Destinations__api__Address",
-        ReferenceExpression.Create($"{api.GetEndpoint("http")}/"))
-    .WithEndpoint("http", endpoint =>
-    {
-        endpoint.Port = 5555;
-        endpoint.IsProxied = false;
-    });
+    .WithEnvironment("OAuth__RedirectUri", "http://localhost:4200/auth/callback")
+    .WithEnvironment("OAuth__PostLogoutRedirectUri", "http://localhost:4200")
+    .WithEnvironment("OAuth__PostLoginRedirectUri", "http://localhost:4200")
+    .WithEnvironment("OAuth__AngularOrigin", "http://localhost:4200")
+    .WithEnvironment("ReverseProxy__Clusters__api-cluster__Destinations__api__Address", "https://localhost:7254/")
+    .WithHttpEndpoint(port: 5555, isProxied: false);
 
 builder.Build().Run();

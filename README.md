@@ -21,16 +21,32 @@ dotnet run --project HomeApp.Backend.AppHost
 
 **BFF Client-Secret:** Aspire-Parameter `bff-client-secret`
 
+**Keycloak-Volume zurücksetzen** (einmalig nach Realm-Import-Änderungen, sonst wird der Import übersprungen):
+
+```bash
+docker volume ls | grep keycloakContainer
+docker volume rm <volume-name>
+```
+
 Der AppHost setzt die OAuth-Konfiguration automatisch per Environment Variables.
 
 ### Angular-Integration (externes Repo)
 
-Kein OAuth-Code im Frontend — nur session-basierte BFF-Kommunikation:
+Kein OAuth-Code im Frontend — nur session-basierte BFF-Kommunikation über den Angular-Dev-Proxy (`localhost:4200` → BFF `:5555`):
 
-- Login: `window.location.href = 'http://localhost:5555/auth/login'`
-- Logout: Redirect zu `http://localhost:5555/auth/logout`
-- API-Calls: `http.get('http://localhost:5555/api/...', { withCredentials: true })`
-- Auth-Status: `GET http://localhost:5555/auth/status`
+- Login: `GET http://localhost:4200/auth/login` (Proxy → BFF → Keycloak)
+- Logout: `GET http://localhost:4200/auth/logout`
+- API-Calls: relative Pfade `/api/...` mit `withCredentials: true` (Proxy → BFF → Web.Api)
+- Auth-Status: `GET http://localhost:4200/auth/status`
+- CSRF-Token: `GET http://localhost:4200/auth/antiforgery` (vor mutierenden Requests)
+
+OAuth-Callback-URI (RedirectUri): `http://localhost:4200/auth/callback`
+
+**Session-only:** Der Browser erhält nur `.AspNetCore.Session` (plus Antiforgery-Cookie). Access-, Refresh- und ID-Tokens liegen ausschließlich serverseitig in der BFF-Session. Keine `access_token`/`refresh_token`/`id_token`-Cookies mehr.
+
+**CSRF-Schutz:** Alle `POST`/`PUT`/`PATCH`/`DELETE`-Requests an `/api/*` benötigen den Header `X-XSRF-TOKEN`. Token holen via `GET /auth/antiforgery` (Response: `{ "token": "..." }`). Mit Angular `HttpClientXsrfModule` funktioniert das automatisch, wenn Cookie- und Header-Name zur BFF-Konfiguration passen (`X-XSRF-TOKEN`).
+
+**Produktion:** Bei mehreren BFF-Instanzen einen shared Session-Store (z. B. Redis) statt `DistributedMemoryCache` verwenden.
 
 ## Person-Provisioning (Erst-Login)
 
@@ -38,7 +54,7 @@ Keycloak übernimmt nur die Authentifizierung. Business-Daten liegen in der API-
 
 **Ablauf nach Login:**
 
-1. Angular ruft z.B. `GET /api/Person/person` auf (via BFF mit Cookie).
+1. Angular ruft z.B. `GET /api/Person/person` auf (via BFF mit Session-Cookie).
 2. Die API validiert den Access-Token (JWT).
 3. `PersonProvisioningMiddleware` mappt `sub` (Keycloak-UUID) → `Person.UserId`.
 4. Existiert keine Person: automatische Anlage aus Token-Claims (`email`, `given_name`, `family_name`, `preferred_username`).
