@@ -36,6 +36,7 @@ public sealed class AuthController(
     public async Task<IActionResult> Callback(
         [FromQuery] string? code,
         [FromQuery] string? state,
+        [FromServices] IAntiforgery antiforgery,
         CancellationToken cancellationToken)
     {
         var expectedState = HttpContext.Session.GetString(SessionKeys.OAuthState);
@@ -60,6 +61,8 @@ public sealed class AuthController(
         HttpContext.Session.Remove(SessionKeys.PkceVerifier);
         HttpContext.Session.Remove(SessionKeys.OAuthState);
 
+        AppendXsrfTokenCookie(HttpContext, antiforgery);
+
         logger.LogInformation("User authenticated via BFF");
 
         return Redirect(_options.PostLoginRedirectUri);
@@ -78,16 +81,29 @@ public sealed class AuthController(
     }
 
     [HttpGet("status")]
-    public IActionResult Status()
+    public IActionResult Status([FromServices] IAntiforgery antiforgery)
     {
         var authenticated = tokenSessionService.IsAuthenticated();
+
+        AppendXsrfTokenCookie(HttpContext, antiforgery);
+
         return Ok(new { authenticated });
     }
 
-    [HttpGet("antiforgery")]
-    public IActionResult Antiforgery([FromServices] IAntiforgery antiforgery)
+    private static void AppendXsrfTokenCookie(HttpContext httpContext, IAntiforgery antiforgery)
     {
-        var tokens = antiforgery.GetAndStoreTokens(HttpContext);
-        return Ok(new { token = tokens.RequestToken });
+        var tokens = antiforgery.GetAndStoreTokens(httpContext);
+
+        // Angular's built-in XSRF interceptor reads this exact cookie name and echoes it
+        // back as the X-XSRF-TOKEN header, so it must stay readable from JavaScript.
+        httpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!,
+            new CookieOptions
+            {
+                HttpOnly = false,
+                SameSite = SameSiteMode.Lax,
+                Secure = httpContext.Request.IsHttps,
+                Path = "/",
+                IsEssential = true
+            });
     }
 }
