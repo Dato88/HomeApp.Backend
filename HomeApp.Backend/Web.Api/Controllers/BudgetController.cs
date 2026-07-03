@@ -10,7 +10,7 @@ using Web.Api.Requests.Budget;
 namespace Web.Api.Controllers;
 
 [ApiController]
-[Authorize(Policy = "ViewBudgetPolicy")]
+[Authorize(Roles = "ViewBudget")]
 [Route("[controller]")]
 public class BudgetController(IMediator mediator) : ControllerBase
 {

@@ -140,6 +140,7 @@ public static class DependencyInjection
             {
                 options.Authority = authority;
                 options.RequireHttpsMetadata = false;
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateAudience = true,
@@ -148,8 +149,8 @@ public static class DependencyInjection
                     ValidateIssuer = true,
                     ValidAlgorithms = ["RS256", "ES256", "EdDSA"],
                     ValidTypes = ["at+jwt"],
-                    NameClaimType = ClaimTypes.NameIdentifier,
-                    RoleClaimType = ClaimTypes.Role
+                    NameClaimType = "sub",
+                    RoleClaimType = "roles"
                 };
             });
 

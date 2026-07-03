@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text.Json;
 using Domain.ValueObjects;
 
 namespace Infrastructure.Services.Authentication;
@@ -33,28 +32,13 @@ internal static class ClaimsPrincipalExtensions
 
     public static IReadOnlyList<string> GetRealmRoles(this ClaimsPrincipal? principal)
     {
-        var rolesClaim = principal?.FindFirst("realm_access")?.Value;
-
-        if (string.IsNullOrWhiteSpace(rolesClaim))
+        if (principal is null)
             return [];
 
-        try
-        {
-            using var document = JsonDocument.Parse(rolesClaim);
-
-            if (!document.RootElement.TryGetProperty("roles", out var rolesElement)
-                || rolesElement.ValueKind != JsonValueKind.Array)
-                return [];
-
-            return rolesElement.EnumerateArray()
-                .Select(role => role.GetString())
-                .Where(role => !string.IsNullOrWhiteSpace(role))
-                .Select(role => role!)
-                .ToList();
-        }
-        catch (JsonException)
-        {
-            return [];
-        }
+        return principal
+            .FindAll("roles")
+            .Select(claim => claim.Value)
+            .Where(role => !string.IsNullOrWhiteSpace(role))
+            .ToList();
     }
 }
