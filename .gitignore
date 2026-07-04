@@ -429,3 +429,7 @@ _UpgradeReport_Files/
 Thumbs.db
 Desktop.ini
 .DS_Store
+# Lokale Umgebungsdateien & Dev-Zertifikate (nur .env.example einchecken)
+.env
+**/nginx/cert.key
+**/nginx/cert.pem

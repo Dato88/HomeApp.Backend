@@ -799,7 +799,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "ZJHzn6jImwN7sjvIMdB3SxRQDMN8Z56N",
+      "secret": "${BFF_CLIENT_SECRET}",
       "redirectUris": [
         "http://localhost:4200/auth/callback"
       ],

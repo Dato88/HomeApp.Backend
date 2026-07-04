@@ -1,98 +1,74 @@
 # HomeApp.Backend
 
-## Lokale Entwicklung
+Backend der HomeApp: eine REST-API für Haushaltsverwaltung (Todos, Budgets, Personen) mit vorgeschaltetem BFF (Backend for Frontend), der die session-basierte Authentifizierung gegen Keycloak übernimmt. Konsumiert wird die API vom Angular-Frontend (externes Repo).
 
-OAuth ist **Pflicht** — die API startet nicht ohne `OAuth:Authority` und `OAuth:ValidAudiences`. PersonId kommt immer aus der Datenbank via JWT (`sub` → `Person.UserId`).
+- **Projekt-Doku-Owner:** Andrej Miller
+- **Projektseite (Confluence):** [Link — nachtragen]
 
-### Mit Keycloak + BFF (Aspire)
+## Voraussetzungen
+
+- .NET SDK 10.x (Target Framework `net10.0`)
+- Docker (Keycloak- und PostgreSQL-Container werden vom Aspire AppHost gestartet)
+
+**Bekannte Fallstricke:**
+
+- OAuth ist **Pflicht** — die API startet nicht ohne `OAuth:Authority` und `OAuth:ValidAudiences`. Beim Start über den AppHost werden diese automatisch per Environment Variables gesetzt.
+- Keycloak importiert den Realm nur beim ersten Start eines frischen Volumes. Nach Änderungen an [`homeapp-realm.json`](./HomeApp.Backend/HomeApp.Backend.AppHost/keycloak/homeapp-realm.json) das Volume zurücksetzen, sonst wird der Import übersprungen:
+
+  ```bash
+  docker volume ls | grep keycloakContainer
+  docker volume rm <volume-name>
+  ```
+
+## Quick Start
 
 ```bash
 cd HomeApp.Backend
 dotnet run --project HomeApp.Backend.AppHost
 ```
 
+Die Anwendung läuft anschließend auf:
+
 | Dienst | URL |
 |--------|-----|
-| Keycloak Admin | http://localhost:8080 (admin / Parameter `keycloak-admin-password`) |
-| BFF | http://localhost:5555 |
-| API | Port 7254 (Aspire) |
+| BFF (Einstiegspunkt) | http://localhost:5555 |
+| Web.Api | http://localhost:7254 |
+| Aspire Dashboard | URL aus der Konsolenausgabe |
 
 **Test-User (Realm-Import):** `devuser` / `devpassword`
 
-**BFF Client-Secret:** Aspire-Parameter `bff-client-secret`
+## Infrastruktur
 
-**Keycloak-Volume zurücksetzen** (einmalig nach Realm-Import-Änderungen, sonst wird der Import übersprungen):
+Benötigte Drittsysteme (lauffähige Definition im Repo: [`AppHost.cs`](./HomeApp.Backend/HomeApp.Backend.AppHost/AppHost.cs)):
+
+| System | Zweck | Lokaler Zugriff |
+|--------|-------|-----------------|
+| Keycloak 26 | Identity Provider (OIDC) | http://localhost:8080 (`admin` / Aspire-Parameter `keycloak-admin-password`) |
+| PostgreSQL `homeappContainer` | Persistenz der API | localhost:5060 |
+| PostgreSQL `keycloakContainer` | Persistenz Keycloak | dynamischer Port (siehe Aspire Dashboard) |
+
+Start/Stopp: `dotnet run --project HomeApp.Backend.AppHost` / `Ctrl+C` (Container verwaltet Aspire).
+
+**Alternativ (produktionsnah, API hinter nginx):** [`Docker/docker-compose.yml`](./HomeApp.Backend/Docker/docker-compose.yml)
 
 ```bash
-docker volume ls | grep keycloakContainer
-docker volume rm <volume-name>
+cd HomeApp.Backend/Docker
+cp .env.example .env    # Platzhalter ersetzen
+# Selbstsigniertes Dev-Zertifikat für nginx erzeugen (einmalig, git-ignoriert):
+openssl req -x509 -newkey rsa:2048 -nodes -days 365 -subj "/CN=localhost" \
+  -keyout nginx/cert.key -out nginx/cert.pem
+docker compose up -d    # Stopp: docker compose down
 ```
-
-Der AppHost setzt die OAuth-Konfiguration automatisch per Environment Variables.
-
-### Angular-Integration (externes Repo)
-
-Kein OAuth-Code im Frontend — nur session-basierte BFF-Kommunikation über den Angular-Dev-Proxy (`localhost:4200` → BFF `:5555`):
-
-- Login: `GET http://localhost:4200/auth/login` (Proxy → BFF → Keycloak)
-- Logout: `GET http://localhost:4200/auth/logout`
-- API-Calls: relative Pfade `/api/...` mit `withCredentials: true` (Proxy → BFF → Web.Api)
-- Auth-Status: `GET http://localhost:4200/auth/status`
-- CSRF-Token: `GET http://localhost:4200/auth/antiforgery` (vor mutierenden Requests)
-
-OAuth-Callback-URI (RedirectUri): `http://localhost:4200/auth/callback`
-
-**Session-only:** Der Browser erhält nur `.AspNetCore.Session` (plus Antiforgery-Cookie). Access-, Refresh- und ID-Tokens liegen ausschließlich serverseitig in der BFF-Session. Keine `access_token`/`refresh_token`/`id_token`-Cookies mehr.
-
-**CSRF-Schutz:** Alle `POST`/`PUT`/`PATCH`/`DELETE`-Requests an `/api/*` benötigen den Header `X-XSRF-TOKEN`. Token holen via `GET /auth/antiforgery` (Response: `{ "token": "..." }`). Mit Angular `HttpClientXsrfModule` funktioniert das automatisch, wenn Cookie- und Header-Name zur BFF-Konfiguration passen (`X-XSRF-TOKEN`).
-
-**Produktion:** Bei mehreren BFF-Instanzen einen shared Session-Store (z. B. Redis) statt `DistributedMemoryCache` verwenden.
-
-## Person-Provisioning (Erst-Login)
-
-Keycloak übernimmt nur die Authentifizierung. Business-Daten liegen in der API-Datenbank (`people`-Tabelle).
-
-**Ablauf nach Login:**
-
-1. Angular ruft z.B. `GET /api/Person/person` auf (via BFF mit Session-Cookie).
-2. Die API validiert den Access-Token (JWT).
-3. `PersonProvisioningMiddleware` mappt `sub` (Keycloak-UUID) → `Person.UserId`.
-4. Existiert keine Person: automatische Anlage aus Token-Claims (`email`, `given_name`, `family_name`, `preferred_username`).
-5. `PersonId` wird 8 Stunden im In-Memory-Cache gehalten (`sub → PersonId`).
-6. `IExecutionContextAccessor.PersonId` steht für alle weiteren Requests bereit.
-
-**Wichtig:** `PersonId` wird **nicht** in Keycloak gespeichert oder als Token-Claim übertragen.
-
-### Keycloak Protocol Mapper (Access-Token)
-
-Die API liest den **Access-Token**, nicht den ID-Token. Profil-Claims müssen im Access-Token landen:
-
-| Claim | Quelle |
-|-------|--------|
-| `sub` | Keycloak User-ID (UUID) — nicht überschreiben |
-| `email` | User Email |
-| `given_name` | First Name |
-| `family_name` | Last Name |
-| `preferred_username` | Username |
-
-Client-Scopes `profile` + `email` werden vom BFF bereits angefordert. Zusätzlich braucht der API-Client (`local-homeapp-api`) einen Audience-Mapper und ggf. Dedicated Client Scopes mit „Add to access token“.
 
 ## Konfiguration
 
-### OAuth (Resource Server, Pflicht)
+Alle Konfigurationsschlüssel für den Compose-Betrieb: siehe [`Docker/.env.example`](./HomeApp.Backend/Docker/.env.example).
+**Keine echten Secrets einchecken — nur Platzhalter und lokale Dummy-Werte.**
 
-```json
-"OAuth": {
-  "Authority": "http://localhost:8080/realms/homeapp",
-  "ValidAudiences": ["local-homeapp-api"]
-}
-```
+Secrets gehören in User Secrets bzw. Aspire-Parameter — nicht in `appsettings.json`:
 
-Client-Secrets und Passwörter gehören in User Secrets / Aspire Parameters — nicht in `appsettings.json`.
-
-## User Secrets (Beispiel)
-
-```json
+```jsonc
+// User Secrets für Web.Api (nötig für Standalone-Start und EF-Migrations):
 {
   "ConnectionStrings": {
     "HomeAppConnection": "yourHomeAppConnectionString"
@@ -103,3 +79,47 @@ Client-Secrets und Passwörter gehören in User Secrets / Aspire Parameters — 
   }
 }
 ```
+
+```jsonc
+// User Secrets für HomeApp.Backend.AppHost — überschreibt die Dev-Defaults der Aspire-Parameter:
+{
+  "Parameters": {
+    "keycloak-admin-password": "<wert>",
+    "bff-client-secret": "<wert>"
+  }
+}
+```
+
+Das BFF-Client-Secret speist der AppHost aus dem Parameter `bff-client-secret` in **beide** Seiten: als `OAuth__ClientSecret` in den BFF und als `${BFF_CLIENT_SECRET}` in den Keycloak-Realm-Import. Für den BFF-Standalone-Start: `dotnet user-secrets set "OAuth:ClientSecret" "<wert>" --project HomeApp.Bff`.
+
+## Tests & Build
+
+```bash
+# identisch zur CI-Pipeline (.github/workflows/dotnet.yml):
+dotnet restore ./HomeApp.Backend/HomeApp.Backend.sln
+dotnet build ./HomeApp.Backend/HomeApp.Backend.sln --no-restore
+dotnet test ./HomeApp.Backend/HomeApp.Backend.sln --no-build
+```
+
+## Datenbank & Migrations
+
+Migrations liegen in [`Infrastructure/Migrations`](./HomeApp.Backend/Infrastructure/Migrations/). Befehle aus `HomeApp.Backend/` ausführen; sie setzen die oben beschriebenen Web.Api-User-Secrets voraus (OAuth ist Pflicht beim Host-Start):
+
+```bash
+# Migrations ausführen:
+dotnet ef database update --project Infrastructure --startup-project Web.Api
+# Neue Migration:
+dotnet ef migrations add <Name> --project Infrastructure --startup-project Web.Api
+# Rollback:
+dotnet ef database update <VorherigeMigration> --project Infrastructure --startup-project Web.Api
+```
+
+## Weiterführende technische Doku
+
+Interne Architektur (Authentifizierung, BFF-Integration, Person-Provisioning) und repo-spezifische Architecture Decision Records (ADRs): [`docs/`](./docs/)
+
+## Links
+
+- Confluence-Projektseite: [Link — nachtragen]
+- CI-Pipeline: [`.github/workflows/dotnet.yml`](./.github/workflows/dotnet.yml) (GitHub Actions)
+- Generierte API-Doku: Scalar UI unter http://localhost:7254/scalar (nur Development)

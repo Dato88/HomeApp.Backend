@@ -1,8 +1,9 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
 
 var keycloakAdminPassword = builder.AddParameter("keycloak-admin-password", value: "admin", secret: true);
+// Nur lokaler Dev-Default; überschreibbar via user secrets (Parameters:bff-client-secret).
 var bffClientSecret =
-    builder.AddParameter("bff-client-secret", value: "ZJHzn6jImwN7sjvIMdB3SxRQDMN8Z56N", secret: true);
+    builder.AddParameter("bff-client-secret", value: "local-dev-only-secret", secret: true);
 
 var keycloakPostgres = builder
     .AddPostgres("keycloakContainer")
@@ -25,6 +26,8 @@ var keycloak = builder.AddContainer("keycloak", "quay.io/keycloak/keycloak", "26
     .WithEnvironment("KC_DB_URL", keycloakDb.Resource.JdbcConnectionString)
     .WithEnvironment("KC_DB_USERNAME", keycloakPostgres.Resource.UserNameReference)
     .WithEnvironment("KC_DB_PASSWORD", keycloakPostgres.Resource.PasswordParameter)
+    // Vom Realm-Import per ${BFF_CLIENT_SECRET} aufgelöst (homeapp-realm.json) — muss zum BFF-Parameter passen.
+    .WithEnvironment("BFF_CLIENT_SECRET", bffClientSecret)
     .WithBindMount("./keycloak", "/opt/keycloak/data/import")
     .WithArgs("start", "--import-realm");
 
