@@ -29,6 +29,8 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
             .IsRequired()
             .HasMaxLength(150);
 
+        builder.Property(r => r.CategoryId)
+            .HasColumnName("category_id");
 
         // Auditing
         builder.ConfigureAuditable();
@@ -43,6 +45,11 @@ internal sealed class BudgetRowConfiguration : IEntityTypeConfiguration<BudgetRo
             .WithMany(g => g.BudgetRows)
             .HasForeignKey(r => r.BudgetGroupId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(r => r.Category)
+            .WithMany()
+            .HasForeignKey(r => r.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(r => r.BudgetCells)
             .WithOne(c => c.BudgetRow)

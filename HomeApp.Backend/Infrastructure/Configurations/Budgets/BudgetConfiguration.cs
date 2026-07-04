@@ -16,8 +16,8 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
         builder.Property(b => b.BudgetId)
             .HasColumnName("budget_id");
 
-        builder.Property(b => b.PersonId)
-            .HasColumnName("person_id")
+        builder.Property(b => b.HouseholdId)
+            .HasColumnName("household_id")
             .IsRequired();
 
         builder.Property(b => b.Year)
@@ -27,15 +27,14 @@ internal sealed class BudgetConfiguration : IEntityTypeConfiguration<Budget>
         // Auditing
         builder.ConfigureAuditable();
 
-        // One budget per person/year
-        builder.HasIndex(b => new { b.PersonId, b.Year })
+        // One budget per household/year
+        builder.HasIndex(b => new { b.HouseholdId, b.Year })
             .IsUnique();
 
         // Relations
-        builder.HasOne(b => b.Person)
-            .WithMany(p => p.Budgets)
-            .HasForeignKey(b => b.PersonId)
-            .HasPrincipalKey(p => p.PersonId)
+        builder.HasOne(b => b.Household)
+            .WithMany(h => h.Budgets)
+            .HasForeignKey(b => b.HouseholdId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(b => b.BudgetGroups)

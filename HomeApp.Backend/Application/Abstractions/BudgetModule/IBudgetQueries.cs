@@ -5,5 +5,5 @@ namespace Application.Abstractions.BudgetModule;
 
 public interface IBudgetQueries
 {
-    Task<Result<Budget>> GetBudgetAsync(int year, CancellationToken cancellationToken);
+    Task<Result<Budget>> GetBudgetAsync(int householdId, int year, CancellationToken cancellationToken);
 }

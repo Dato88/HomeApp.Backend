@@ -9,6 +9,7 @@ public class BudgetRowDto
     public int BudgetGroupId { get; set; }
     public int Index { get; set; }
     public string Title { get; set; } = default!;
+    public int? CategoryId { get; set; }
 
     public static explicit operator BudgetRowDto(BudgetRow entity) =>
         new()
@@ -17,5 +18,6 @@ public class BudgetRowDto
             BudgetGroupId = entity.BudgetGroupId,
             Index = entity.Index,
             Title = entity.Title,
+            CategoryId = entity.CategoryId,
         };
 }

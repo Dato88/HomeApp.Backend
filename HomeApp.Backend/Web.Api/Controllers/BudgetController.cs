@@ -19,12 +19,13 @@ public class BudgetController(IMediator mediator) : ControllerBase
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<BudgetResponse>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
-    public async Task<IActionResult> GetBudgetAsync([FromQuery] int year, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBudgetAsync([FromQuery] int householdId, [FromQuery] int year,
+        CancellationToken cancellationToken)
     {
         if (year <= 0)
             year = DateTime.Now.Year;
 
-        var response = await _mediator.Send(new GetBudgetQuery(year));
+        var response = await _mediator.Send(new GetBudgetQuery(householdId, year));
 
         if (response.IsSuccess) return Ok(response);
 
@@ -37,10 +38,10 @@ public class BudgetController(IMediator mediator) : ControllerBase
     [HttpPost("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
-    public async Task<IActionResult> PostBudgetAsync([FromQuery] int year,
+    public async Task<IActionResult> PostBudgetAsync([FromQuery] int householdId, [FromQuery] int year,
         CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new CreateBudgetCommand(year));
+        var response = await _mediator.Send(new CreateBudgetCommand(householdId, year));
 
         if (response.IsSuccess) return Ok(response);
 
@@ -103,10 +104,10 @@ public class BudgetController(IMediator mediator) : ControllerBase
     [HttpDelete("group")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
-    public async Task<IActionResult> DeleteBudgetGroupAsync([FromQuery] int budgetRowId,
+    public async Task<IActionResult> DeleteBudgetGroupAsync([FromQuery] int budgetGroupId,
         CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new DeleteBudgetGroupCommand(budgetRowId));
+        var response = await _mediator.Send(new DeleteBudgetGroupCommand(budgetGroupId));
 
         if (response.IsSuccess) return Ok(response);
 
@@ -146,6 +147,48 @@ public class BudgetController(IMediator mediator) : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new UpdateBudgetCommand(budgetId, year));
+
+        if (response.IsSuccess) return Ok(response);
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpPatch("group")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
+    public async Task<IActionResult> UpdateBudgetGroupAsync(
+        [FromBody] UpdateBudgetGroupRequest updateBudgetGroupRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((UpdateBudgetGroupCommand)updateBudgetGroupRequest);
+
+        if (response.IsSuccess) return Ok(response);
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpPatch("row")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
+    public async Task<IActionResult> UpdateBudgetRowAsync(
+        [FromBody] UpdateBudgetRowRequest updateBudgetRowRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((UpdateBudgetRowCommand)updateBudgetRowRequest);
+
+        if (response.IsSuccess) return Ok(response);
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpPatch("cell")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
+    public async Task<IActionResult> UpdateBudgetCellAsync(
+        [FromBody] UpdateBudgetCellRequest updateBudgetCellRequest,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send((UpdateBudgetCellCommand)updateBudgetCellRequest);
 
         if (response.IsSuccess) return Ok(response);
 

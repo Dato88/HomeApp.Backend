@@ -1,5 +1,7 @@
 using Domain.Entities.Articles;
 using Domain.Entities.Budgets;
+using Domain.Entities.Finance;
+using Domain.Entities.Households;
 using Domain.Entities.People;
 using Domain.Entities.Recipes;
 using Domain.Entities.Todos;
@@ -11,12 +13,20 @@ public sealed class HomeAppContext(DbContextOptions<HomeAppContext> options) : D
 {
     // PEOPLE
     public DbSet<Person> People { get; set; }
+    public DbSet<Household> Households { get; set; }
+    public DbSet<HouseholdMember> HouseholdMembers { get; set; }
 
     // BUDGET
     public DbSet<Budget> Budgets { get; set; }
     public DbSet<BudgetCell> BudgetCells { get; set; }
     public DbSet<BudgetGroup> BudgetGroups { get; set; }
     public DbSet<BudgetRow> BudgetRows { get; set; }
+
+    // FINANCE
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<AccountHousehold> AccountHouseholds { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     // TODO
     public DbSet<Todo> Todos { get; set; }

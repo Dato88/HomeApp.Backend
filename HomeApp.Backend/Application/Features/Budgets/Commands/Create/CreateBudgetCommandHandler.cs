@@ -15,7 +15,7 @@ public sealed class CreateBudgetCommandHandler(
 
     public async Task<Result<int>> Handle(CreateBudgetCommand request, CancellationToken cancellationToken)
     {
-        var result = await _budgetCommands.CreateBudgetAsync(request.Year, cancellationToken);
+        var result = await _budgetCommands.CreateBudgetAsync(request.HouseholdId, request.Year, cancellationToken);
 
         if (result.IsFailure)
         {

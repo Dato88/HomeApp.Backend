@@ -44,4 +44,16 @@ public static class BudgetErrors
     public static Error UpdateFailedWithMessage(string message) => Error.Failure(
         "Budget.UpdateFailedWithMessage",
         $"The budget could not be updated with message = '{message}'");
+
+    public static Error UpdateGroupFailedWithMessage(string message) => Error.Failure(
+        "Budget.UpdateGroupFailedWithMessage",
+        $"The budgetGroup could not be updated with message = '{message}'");
+
+    public static Error UpdateRowFailedWithMessage(string message) => Error.Failure(
+        "Budget.UpdateRowFailedWithMessage",
+        $"The budgetRow could not be updated with message = '{message}'");
+
+    public static Error UpdateCellFailedWithMessage(string message) => Error.Failure(
+        "Budget.UpdateCellFailedWithMessage",
+        $"The budgetCell could not be updated with message = '{message}'");
 }

@@ -18,7 +18,7 @@ namespace Infrastructure.Migrations.HomeApp
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("public")
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -648,9 +648,9 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnName("created_by_id")
                         .HasColumnOrder(2);
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("HouseholdId")
                         .HasColumnType("integer")
-                        .HasColumnName("person_id");
+                        .HasColumnName("household_id");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp(3) with time zone")
@@ -669,9 +669,9 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasKey("BudgetId")
                         .HasName("pk_budgets");
 
-                    b.HasIndex("PersonId", "Year")
+                    b.HasIndex("HouseholdId", "Year")
                         .IsUnique()
-                        .HasDatabaseName("ix_budgets_person_id_year");
+                        .HasDatabaseName("ix_budgets_household_id_year");
 
                     b.ToTable("budgets", "budget");
                 });
@@ -814,6 +814,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("budget_group_id");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp(3) with time zone")
@@ -852,11 +856,406 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasIndex("BudgetGroupId")
                         .HasDatabaseName("ix_budget_rows_budget_group_id");
 
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_budget_rows_category_id");
+
                     b.HasIndex("BudgetGroupId", "Index")
                         .IsUnique()
                         .HasDatabaseName("ix_budget_rows_budget_group_id_index");
 
                     b.ToTable("budget_rows", "budget");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
+                {
+                    b.Property<int>("AccountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("account_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
+
+                    b.Property<int>("AccountType")
+                        .HasColumnType("integer")
+                        .HasColumnName("account_type");
+
+                    b.Property<string>("Bic")
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)")
+                        .HasColumnName("bic");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Iban")
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("iban");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("AccountId")
+                        .HasName("pk_accounts");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_accounts_person_id");
+
+                    b.HasIndex("PersonId", "Iban")
+                        .IsUnique()
+                        .HasDatabaseName("ix_accounts_person_id_iban")
+                        .HasFilter("iban IS NOT NULL");
+
+                    b.ToTable("accounts", "finance");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.AccountHousehold", b =>
+                {
+                    b.Property<int>("AccountHouseholdId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("account_household_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountHouseholdId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer")
+                        .HasColumnName("account_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("integer")
+                        .HasColumnName("household_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("AccountHouseholdId")
+                        .HasName("pk_account_households");
+
+                    b.HasIndex("HouseholdId")
+                        .HasDatabaseName("ix_account_households_household_id");
+
+                    b.HasIndex("AccountId", "HouseholdId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_account_households_account_id_household_id");
+
+                    b.ToTable("account_households", "finance");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
+
+                    b.Property<int>("CategoryType")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_type");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("integer")
+                        .HasColumnName("household_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("CategoryId")
+                        .HasName("pk_categories");
+
+                    b.HasIndex("HouseholdId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_categories_household_id_name");
+
+                    b.ToTable("categories", "finance");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Transaction", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("transaction_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TransactionId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer")
+                        .HasColumnName("account_id");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("BankReference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_reference");
+
+                    b.Property<DateOnly>("BookingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("booking_date");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("CounterpartyIban")
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("counterparty_iban");
+
+                    b.Property<string>("CounterpartyName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("counterparty_name");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("ImportHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("import_hash");
+
+                    b.Property<string>("Purpose")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("purpose");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer")
+                        .HasColumnName("source");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.Property<DateOnly?>("ValueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("value_date");
+
+                    b.HasKey("TransactionId")
+                        .HasName("pk_transactions");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_transactions_category_id");
+
+                    b.HasIndex("AccountId", "BookingDate")
+                        .HasDatabaseName("ix_transactions_account_id_booking_date");
+
+                    b.HasIndex("AccountId", "ImportHash")
+                        .IsUnique()
+                        .HasDatabaseName("ix_transactions_account_id_import_hash")
+                        .HasFilter("import_hash IS NOT NULL");
+
+                    b.ToTable("transactions", "finance");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Households.Household", b =>
+                {
+                    b.Property<int>("HouseholdId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("household_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("HouseholdId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("HouseholdId")
+                        .HasName("pk_households");
+
+                    b.ToTable("households", "people");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Households.HouseholdMember", b =>
+                {
+                    b.Property<int>("HouseholdMemberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("household_member_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("HouseholdMemberId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("integer")
+                        .HasColumnName("household_id");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("HouseholdMemberId")
+                        .HasName("pk_household_members");
+
+                    b.HasIndex("PersonId")
+                        .HasDatabaseName("ix_household_members_person_id");
+
+                    b.HasIndex("HouseholdId", "PersonId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_household_members_household_id_person_id");
+
+                    b.ToTable("household_members", "people");
                 });
 
             modelBuilder.Entity("Domain.Entities.People.Person", b =>
@@ -1933,14 +2332,14 @@ namespace Infrastructure.Migrations.HomeApp
 
             modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
                 {
-                    b.HasOne("Domain.Entities.People.Person", "Person")
+                    b.HasOne("Domain.Entities.Households.Household", "Household")
                         .WithMany("Budgets")
-                        .HasForeignKey("PersonId")
+                        .HasForeignKey("HouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_budgets_people_person_id");
+                        .HasConstraintName("fk_budgets_households_household_id");
 
-                    b.Navigation("Person");
+                    b.Navigation("Household");
                 });
 
             modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
@@ -1976,7 +2375,101 @@ namespace Infrastructure.Migrations.HomeApp
                         .IsRequired()
                         .HasConstraintName("fk_budget_rows_budget_groups_budget_group_id");
 
+                    b.HasOne("Domain.Entities.Finance.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_budget_rows_categories_category_id");
+
                     b.Navigation("BudgetGroup");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
+                {
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_accounts_people_person_id");
+
+                    b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.AccountHousehold", b =>
+                {
+                    b.HasOne("Domain.Entities.Finance.Account", "Account")
+                        .WithMany("AccountHouseholds")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_account_households_accounts_account_id");
+
+                    b.HasOne("Domain.Entities.Households.Household", "Household")
+                        .WithMany()
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_account_households_households_household_id");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Household");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Category", b =>
+                {
+                    b.HasOne("Domain.Entities.Households.Household", "Household")
+                        .WithMany()
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_categories_households_household_id");
+
+                    b.Navigation("Household");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Transaction", b =>
+                {
+                    b.HasOne("Domain.Entities.Finance.Account", "Account")
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_transactions_accounts_account_id");
+
+                    b.HasOne("Domain.Entities.Finance.Category", "Category")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_transactions_categories_category_id");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Households.HouseholdMember", b =>
+                {
+                    b.HasOne("Domain.Entities.Households.Household", "Household")
+                        .WithMany("Members")
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_household_members_households_household_id");
+
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany("HouseholdMembers")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_household_members_people_person_id");
+
+                    b.Navigation("Household");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Domain.Entities.Recipes.Favorite", b =>
@@ -2243,11 +2736,30 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("BudgetCells");
                 });
 
-            modelBuilder.Entity("Domain.Entities.People.Person", b =>
+            modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
+                {
+                    b.Navigation("AccountHouseholds");
+
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.Category", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Households.Household", b =>
                 {
                     b.Navigation("Budgets");
 
+                    b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("Domain.Entities.People.Person", b =>
+                {
                     b.Navigation("Favorites");
+
+                    b.Navigation("HouseholdMembers");
 
                     b.Navigation("RecipeComments");
 

@@ -10,6 +10,7 @@ public class BaseBudgetCommandsTest : BaseTest
     protected readonly PeopleDataSeeder PeopleDataSeeder;
     protected readonly BudgetCommands BudgetCommands;
     protected readonly BudgetDataSeeder BudgetDataSeeder;
+    protected readonly HouseholdDataSeeder HouseholdDataSeeder;
 
     protected BaseBudgetCommandsTest(UnitTestingApiFactory unitTestingApiFactory) : base(
         unitTestingApiFactory, BuildExecutionContextMock(unitTestingApiFactory).Result)
@@ -17,6 +18,7 @@ public class BaseBudgetCommandsTest : BaseTest
         PeopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
         BudgetCommands = new BudgetCommands(DbContext, ExecutionContext);
         BudgetDataSeeder = new BudgetDataSeeder(unitTestingApiFactory);
+        HouseholdDataSeeder = new HouseholdDataSeeder(unitTestingApiFactory);
     }
 
     private static async Task<IExecutionContextAccessor> BuildExecutionContextMock(UnitTestingApiFactory factory)

@@ -20,7 +20,8 @@ public sealed class GetBudgetQueryHandler(
     {
         try
         {
-            var budgetResult = await _budgetQueries.GetBudgetAsync(request.Year, cancellationToken);
+            var budgetResult = await _budgetQueries.GetBudgetAsync(request.HouseholdId, request.Year,
+                cancellationToken);
 
             if (budgetResult.Error.Type == ErrorType.NotFound)
                 return Result.Failure<BudgetResponse>(BudgetErrors.NotFoundAll);

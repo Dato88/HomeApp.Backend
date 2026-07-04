@@ -7,7 +7,7 @@ internal sealed class CreateBudgetRowCommandValidator : AbstractValidator<Create
     public CreateBudgetRowCommandValidator()
     {
         RuleFor(c => c.BudgetGroupId).GreaterThan(0);
-        RuleFor(c => c.Index).GreaterThan(0);
+        RuleFor(c => c.Index).GreaterThanOrEqualTo(0);
         RuleFor(c => c.Name).NotEmpty()
             .WithMessage("Name is required.");
     }

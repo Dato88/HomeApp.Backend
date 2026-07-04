@@ -80,11 +80,5 @@ internal sealed class PersonConfiguration : IEntityTypeConfiguration<Person>
             .WithOne(rc => rc.Person)
             .HasForeignKey(rc => rc.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        // Budgets (falls vorhanden)
-        builder.HasMany(p => p.Budgets)
-            .WithOne(b => b.Person)
-            .HasForeignKey(b => b.PersonId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -6,7 +6,7 @@ namespace ApplicationTests.IntegrationTests.TestData;
 
 public class BudgetDataSeeder : BaseTest
 {
-    private readonly PeopleDataSeeder _peopleDataSeeder;
+    private readonly HouseholdDataSeeder _householdDataSeeder;
 
     private readonly Faker<Budget> _budgetFaker;
     private readonly Faker<BudgetGroup> _budgetGroupFaker;
@@ -14,7 +14,7 @@ public class BudgetDataSeeder : BaseTest
 
     public BudgetDataSeeder(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
-        _peopleDataSeeder = new PeopleDataSeeder(unitTestingApiFactory);
+        _householdDataSeeder = new HouseholdDataSeeder(unitTestingApiFactory);
 
         _budgetFaker = new Faker<Budget>()
             .RuleFor(u => u.Year, f => f.Date.Recent().Year)
@@ -34,7 +34,12 @@ public class BudgetDataSeeder : BaseTest
     {
         var budget = _budgetFaker.Generate();
 
-        if (personId.HasValue) budget.PersonId = personId.Value;
+        if (personId.HasValue)
+        {
+            var household = await _householdDataSeeder.GenereateDummyHousehold(personId.Value);
+            budget.HouseholdId = household.HouseholdId;
+            budget.CreatedById = personId.Value;
+        }
 
         if (saveAsync)
         {
@@ -79,6 +84,19 @@ public class BudgetDataSeeder : BaseTest
         }
 
         return budget;
+    }
+
+    public async Task<BudgetCell> GenereateDummyBudgetCell(int budgetRowId, int personId, int month, decimal amount)
+    {
+        var newBudgetCell = new BudgetCell
+        {
+            BudgetRowId = budgetRowId, Month = month, Amount = amount, CreatedById = personId
+        };
+
+        await DbContext.BudgetCells.AddAsync(newBudgetCell);
+        await DbContext.SaveChangesAsync();
+
+        return newBudgetCell;
     }
 
     private async Task<BudgetGroup> CreateAndSaveDummyBudgetGroup(int budgetId, int personId, int index)

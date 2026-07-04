@@ -7,7 +7,6 @@ internal sealed class CreateBudgetCellCommandValidator : AbstractValidator<Creat
     public CreateBudgetCellCommandValidator()
     {
         RuleFor(c => c.BudgetRowId).GreaterThan(0);
-        RuleFor(c => c.Amount).NotEmpty();
         RuleFor(c => c.Month).InclusiveBetween(1, 12)
             .WithMessage("Month must be between 1 and 12.");
     }

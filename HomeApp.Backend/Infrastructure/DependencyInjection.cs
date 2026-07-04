@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.BudgetModule;
+using Application.Abstractions.FinanceModule;
+using Application.Abstractions.HouseholdModule;
 using Application.Abstractions.Logging;
 using Application.Features.People.Commands;
 using Application.Features.People.Queries;
@@ -11,6 +13,10 @@ using Infrastructure.Configurations;
 using Infrastructure.Database;
 using Infrastructure.Features.Budgets.Commands;
 using Infrastructure.Features.Budgets.Queries;
+using Infrastructure.Features.Finance.Commands;
+using Infrastructure.Features.Finance.Queries;
+using Infrastructure.Features.Households.Commands;
+using Infrastructure.Features.Households.Queries;
 using Infrastructure.Features.People.Commands;
 using Infrastructure.Features.People.Queries;
 using Infrastructure.Features.People.Services;
@@ -62,6 +68,14 @@ public static class DependencyInjection
 
         services.AddScoped<IBudgetCommands, BudgetCommands>();
         services.AddScoped<IBudgetQueries, BudgetQueries>();
+        services.AddScoped<IHouseholdCommands, HouseholdCommands>();
+        services.AddScoped<IHouseholdQueries, HouseholdQueries>();
+        services.AddScoped<IAccountCommands, AccountCommands>();
+        services.AddScoped<IAccountQueries, AccountQueries>();
+        services.AddScoped<ICategoryCommands, CategoryCommands>();
+        services.AddScoped<ICategoryQueries, CategoryQueries>();
+        services.AddScoped<ITransactionCommands, TransactionCommands>();
+        services.AddScoped<ITransactionQueries, TransactionQueries>();
         services.AddScoped<IPersonCommands, PersonCommands>();
         services.AddScoped<IPersonQueries, PersonQueries>();
         services.AddScoped<ITodoCommands, TodoCommands>();

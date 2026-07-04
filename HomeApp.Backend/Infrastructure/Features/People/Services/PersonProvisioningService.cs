@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Logging;
+using Domain.Entities.Households;
 using Domain.Entities.People;
 using Infrastructure.Database;
 using Infrastructure.Services.Authentication;
@@ -27,6 +28,8 @@ internal sealed class PersonProvisioningService(
 
         if (existingPerson is not null)
         {
+            await EnsurePersonalHouseholdAsync(existingPerson.PersonId,
+                $"{existingPerson.FirstName} {existingPerson.LastName}", cancellationToken);
             personIdCache.SetPersonId(userId, existingPerson.PersonId);
             return existingPerson.PersonId;
         }
@@ -34,6 +37,24 @@ internal sealed class PersonProvisioningService(
         var personId = await CreatePersonAsync(user, userId, cancellationToken);
         personIdCache.SetPersonId(userId, personId);
         return personId;
+    }
+
+    private async Task EnsurePersonalHouseholdAsync(int personId, string name, CancellationToken cancellationToken)
+    {
+        var hasHousehold = await dbContext.HouseholdMembers
+            .AsNoTracking()
+            .AnyAsync(m => m.PersonId == personId, cancellationToken);
+
+        if (hasHousehold)
+            return;
+
+        var household = new Household { Name = name, CreatedById = personId };
+        household.Members.Add(new HouseholdMember { PersonId = personId, CreatedById = personId });
+
+        dbContext.Households.Add(household);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation($"Provisioned personal household {household.HouseholdId} for person {personId}");
     }
 
     private async Task<int> CreatePersonAsync(
@@ -105,6 +126,9 @@ internal sealed class PersonProvisioningService(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation($"Provisioned person {person.PersonId} for Keycloak user {userId}");
+
+        await EnsurePersonalHouseholdAsync(person.PersonId, $"{person.FirstName} {person.LastName}",
+            cancellationToken);
 
         return person.PersonId;
     }
