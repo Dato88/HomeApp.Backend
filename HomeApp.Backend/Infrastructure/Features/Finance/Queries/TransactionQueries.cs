@@ -46,4 +46,27 @@ public sealed class TransactionQueries(HomeAppContext dbContext, IExecutionConte
 
         return Result.Success(new TransactionPage(totalCount, items));
     }
+
+    // IST source for the E+A view: one GROUP BY over all transactions of accounts shared into the
+    // household, aggregated per category and month
+    public async Task<Result<IReadOnlyList<CategoryMonthAmount>>> GetMonthlyCategoryTotalsAsync(int householdId,
+        int year, CancellationToken cancellationToken)
+    {
+        var isMember = _dbContext.HouseholdMembers.Any(m =>
+            m.HouseholdId == householdId && m.PersonId == _executionContext.PersonId);
+
+        if (!isMember)
+            return Result.Success<IReadOnlyList<CategoryMonthAmount>>([]);
+
+        var totals = await _dbContext.Transactions
+            .AsNoTracking()
+            .Where(t =>
+                t.BookingDate.Year == year &&
+                t.Account.AccountHouseholds.Any(ah => ah.HouseholdId == householdId))
+            .GroupBy(t => new { t.CategoryId, t.BookingDate.Month })
+            .Select(g => new CategoryMonthAmount(g.Key.CategoryId, g.Key.Month, g.Sum(t => t.Amount), g.Count()))
+            .ToListAsync(cancellationToken);
+
+        return Result.Success<IReadOnlyList<CategoryMonthAmount>>(totals);
+    }
 }

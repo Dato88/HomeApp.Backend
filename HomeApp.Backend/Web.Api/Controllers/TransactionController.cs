@@ -70,6 +70,24 @@ public class TransactionController(IMediator mediator) : ControllerBase
         return BadRequest(response.Error);
     }
 
+    [HttpPost("import")]
+    [RequestSizeLimit(5 * 1024 * 1024)]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<ImportTransactionsResponse>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
+    public async Task<IActionResult> ImportTransactionsAsync([FromQuery] int accountId,
+        [FromQuery] string? format, IFormFile file, CancellationToken cancellationToken)
+    {
+        using var memory = new MemoryStream();
+        await file.CopyToAsync(memory, cancellationToken);
+
+        var response = await _mediator.Send(new ImportTransactionsCommand(accountId, file.FileName,
+            memory.ToArray(), format));
+
+        if (response.IsSuccess) return Ok(response);
+
+        return BadRequest(response.Error);
+    }
+
     [HttpPatch("category")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<int>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]

@@ -11,6 +11,7 @@ public class BudgetGroupDto
     public int Index { get; set; }
     public string Title { get; set; } = default!;
     public BudgetGroupType BudgetGroupType { get; set; }
+    public decimal? TargetPercent { get; set; }
 
     public static explicit operator BudgetGroupDto(BudgetGroup entity) =>
         new()
@@ -19,6 +20,7 @@ public class BudgetGroupDto
             BudgetId = entity.BudgetId,
             Index = entity.Index,
             Title = entity.Title,
-            BudgetGroupType = entity.BudgetGroupType
+            BudgetGroupType = entity.BudgetGroupType,
+            TargetPercent = entity.TargetPercent
         };
 }

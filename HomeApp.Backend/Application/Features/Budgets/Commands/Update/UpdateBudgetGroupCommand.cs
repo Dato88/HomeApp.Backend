@@ -8,4 +8,5 @@ public sealed record UpdateBudgetGroupCommand(
     int BudgetGroupId,
     int Index,
     string Title,
-    BudgetGroupType BudgetGroupType) : IRequest<Result<int>>;
+    BudgetGroupType BudgetGroupType,
+    decimal? TargetPercent = null) : IRequest<Result<int>>;

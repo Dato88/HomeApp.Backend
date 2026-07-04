@@ -2,6 +2,7 @@
 using Application.Features.Budgets.Commands.Delete;
 using Application.Features.Budgets.Commands.Update;
 using Application.Features.Budgets.DTOs;
+using Application.Features.Budgets.DTOs.Eva;
 using Application.Features.Budgets.Queries;
 using Domain.Entities.Budgets;
 using SharedKernel;
@@ -26,6 +27,25 @@ public class BudgetController(IMediator mediator) : ControllerBase
             year = DateTime.Now.Year;
 
         var response = await _mediator.Send(new GetBudgetQuery(householdId, year));
+
+        if (response.IsSuccess) return Ok(response);
+
+        if (response.Error.Type == ErrorType.NotFound)
+            return NoContent();
+
+        return BadRequest(response.Error);
+    }
+
+    [HttpGet("eva")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<EvaResponse>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
+    public async Task<IActionResult> GetEvaAsync([FromQuery] int householdId, [FromQuery] int year,
+        CancellationToken cancellationToken)
+    {
+        if (year <= 0)
+            year = DateTime.Now.Year;
+
+        var response = await _mediator.Send(new GetEvaQuery(householdId, year));
 
         if (response.IsSuccess) return Ok(response);
 

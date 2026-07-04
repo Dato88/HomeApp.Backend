@@ -19,7 +19,7 @@ public class UpdateBudgetGroupTests : BaseBudgetCommandsTest
 
         // Act
         var result = await BudgetCommands.UpdateBudgetGroupAsync(budgetGroup.BudgetGroupId, 5, "Updated Title",
-            BudgetGroupType.Income, CancellationToken.None);
+            BudgetGroupType.Income, 30, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -28,6 +28,7 @@ public class UpdateBudgetGroupTests : BaseBudgetCommandsTest
         updated.Index.Should().Be(5);
         updated.Title.Should().Be("Updated Title");
         updated.BudgetGroupType.Should().Be(BudgetGroupType.Income);
+        updated.TargetPercent.Should().Be(30);
         updated.UpdatedById.Should().Be(ExecutionContext.PersonId);
         updated.UpdatedAt.Should().NotBeNull();
     }
@@ -42,7 +43,7 @@ public class UpdateBudgetGroupTests : BaseBudgetCommandsTest
 
         // Act
         var result = await BudgetCommands.UpdateBudgetGroupAsync(budgetGroup.BudgetGroupId, 1, "Updated Title",
-            BudgetGroupType.Expense, CancellationToken.None);
+            BudgetGroupType.Expense, null, CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -61,7 +62,7 @@ public class UpdateBudgetGroupTests : BaseBudgetCommandsTest
 
         // Act
         var result = await BudgetCommands.UpdateBudgetGroupAsync(budgetGroups[1].BudgetGroupId,
-            budgetGroups[0].Index, "Updated Title", BudgetGroupType.Expense, CancellationToken.None);
+            budgetGroups[0].Index, "Updated Title", BudgetGroupType.Expense, null, CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -77,7 +78,7 @@ public class UpdateBudgetGroupTests : BaseBudgetCommandsTest
 
         // Act
         var result = await BudgetCommands.UpdateBudgetGroupAsync(budgetGroup.BudgetGroupId, budgetGroup.Index,
-            "Only Title Changed", budgetGroup.BudgetGroupType, CancellationToken.None);
+            "Only Title Changed", budgetGroup.BudgetGroupType, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

@@ -9,7 +9,8 @@ public sealed record CreateBudgetGroupRequest
     public int Index { get; init; }
     public string Title { get; init; } = string.Empty;
     public BudgetGroupType BudgetGroupType { get; init; }
+    public decimal? TargetPercent { get; init; }
 
     public static explicit operator CreateBudgetGroupCommand(CreateBudgetGroupRequest request)
-        => new(request.BudgetId, request.Index, request.Title, request.BudgetGroupType);
+        => new(request.BudgetId, request.Index, request.Title, request.BudgetGroupType, request.TargetPercent);
 }

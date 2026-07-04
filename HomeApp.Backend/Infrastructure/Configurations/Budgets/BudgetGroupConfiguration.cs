@@ -33,6 +33,10 @@ internal sealed class BudgetGroupConfiguration : IEntityTypeConfiguration<Budget
             .HasColumnName("budget_group_type")
             .IsRequired();
 
+        builder.Property(g => g.TargetPercent)
+            .HasColumnName("target_percent")
+            .HasPrecision(5, 2);
+
         // Auditing
         builder.ConfigureAuditable();
 

@@ -19,7 +19,7 @@ public interface IBudgetCommands
     Task<Result<int>> UpdateBudgetAsync(int budgetId, int year, CancellationToken cancellationToken);
 
     Task<Result<int>> UpdateBudgetGroupAsync(int budgetGroupId, int index, string title,
-        BudgetGroupType budgetGroupType, CancellationToken cancellationToken);
+        BudgetGroupType budgetGroupType, decimal? targetPercent, CancellationToken cancellationToken);
 
     Task<Result<int>> UpdateBudgetRowAsync(int budgetRowId, int index, string title, int? categoryId,
         CancellationToken cancellationToken);

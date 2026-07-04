@@ -16,7 +16,7 @@ public sealed class UpdateBudgetGroupCommandHandler(
     public async Task<Result<int>> Handle(UpdateBudgetGroupCommand request, CancellationToken cancellationToken)
     {
         var result = await _budgetCommands.UpdateBudgetGroupAsync(request.BudgetGroupId, request.Index,
-            request.Title, request.BudgetGroupType, cancellationToken);
+            request.Title, request.BudgetGroupType, request.TargetPercent, cancellationToken);
 
         if (result.IsFailure)
         {

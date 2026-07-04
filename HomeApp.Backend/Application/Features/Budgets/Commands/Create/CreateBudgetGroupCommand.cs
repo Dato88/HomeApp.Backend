@@ -9,11 +9,16 @@ public sealed record CreateBudgetGroupCommand(
     int BudgetId,
     int Index,
     string Name,
-    BudgetGroupType BudgetGroupType) : IRequest<Result<int>>
+    BudgetGroupType BudgetGroupType,
+    decimal? TargetPercent = null) : IRequest<Result<int>>
 {
     public static explicit operator BudgetGroup(CreateBudgetGroupCommand item) =>
         new()
         {
-            BudgetId = item.BudgetId, Index = item.Index, Title = item.Name, BudgetGroupType = item.BudgetGroupType
+            BudgetId = item.BudgetId,
+            Index = item.Index,
+            Title = item.Name,
+            BudgetGroupType = item.BudgetGroupType,
+            TargetPercent = item.TargetPercent
         };
 }

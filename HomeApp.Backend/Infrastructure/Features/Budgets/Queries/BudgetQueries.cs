@@ -21,6 +21,9 @@ public sealed class BudgetQueries(
         var budget = await query.Include(i => i.BudgetGroups)
             .ThenInclude(th => th.BudgetRows)
             .ThenInclude(th => th.BudgetCells)
+            .Include(i => i.BudgetGroups)
+            .ThenInclude(th => th.BudgetRows)
+            .ThenInclude(th => th.Category)
             .AsSplitQuery()
             .SingleOrDefaultAsync(x =>
                 x.HouseholdId == householdId &&

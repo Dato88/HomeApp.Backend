@@ -1,7 +1,9 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.FinanceModule;
 using Domain.Entities.Finance;
+using Domain.Entities.Finance.Enums;
 using Infrastructure.Database;
+using Infrastructure.Features.Finance.Import;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
@@ -105,6 +107,71 @@ public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionCont
 
         return Result.Success(transaction.TransactionId);
     }
+
+    public async Task<Result<ImportResult>> ImportTransactionsAsync(int accountId,
+        IReadOnlyList<ParsedTransaction> items, TransactionSource source, CancellationToken cancellationToken)
+    {
+        var accountIsOwned = _dbContext.Accounts.Any(a =>
+            a.AccountId == accountId && a.PersonId == _executionContext.PersonId);
+
+        if (!accountIsOwned)
+            return Result.Failure<ImportResult>(FinanceErrors.ImportFailedWithMessage("AccountId is invalid"));
+
+        // Same canonical hash for every import format; occurrence counter distinguishes identical
+        // bookings within this file
+        var occurrences = new Dictionary<string, int>();
+        var candidates = new List<(ParsedTransaction Item, string Hash)>();
+
+        foreach (var item in items)
+        {
+            var key = TransactionHashCalculator.ComputeKey(accountId, item);
+            occurrences.TryGetValue(key, out var occurrence);
+            occurrences[key] = occurrence + 1;
+            candidates.Add((item, TransactionHashCalculator.ComputeHash(key, occurrence)));
+        }
+
+        var hashes = candidates.Select(c => c.Hash).ToList();
+
+        var existingHashes = (await _dbContext.Transactions
+                .Where(t => t.AccountId == accountId && t.ImportHash != null && hashes.Contains(t.ImportHash))
+                .Select(t => t.ImportHash!)
+                .ToListAsync(cancellationToken))
+            .ToHashSet();
+
+        var imported = 0;
+
+        foreach (var (item, hash) in candidates)
+        {
+            if (existingHashes.Contains(hash))
+                continue;
+
+            _dbContext.Transactions.Add(new Transaction
+            {
+                AccountId = accountId,
+                BookingDate = item.BookingDate,
+                ValueDate = item.ValueDate,
+                Amount = item.Amount,
+                CounterpartyName = Truncate(item.CounterpartyName, 200),
+                CounterpartyIban = item.CounterpartyIban is null
+                    ? null
+                    : Truncate(Domain.ValueObjects.Iban.Normalize(item.CounterpartyIban), 34),
+                Purpose = Truncate(item.Purpose, 500),
+                BankReference = Truncate(item.BankReference, 100),
+                ImportHash = hash,
+                Source = source,
+                CreatedById = _executionContext.PersonId
+            });
+
+            imported++;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Success(new ImportResult(imported, items.Count - imported));
+    }
+
+    private static string? Truncate(string? value, int maxLength) =>
+        value is null || value.Length <= maxLength ? value : value[..maxLength];
 
     // Returns an error message or null. A transaction category must belong to a household the account is
     // shared into and the caller must be a member of that household, otherwise the E+A of that household

@@ -10,5 +10,8 @@ internal sealed class CreateBudgetGroupCommandValidator : AbstractValidator<Crea
         RuleFor(c => c.Index).GreaterThanOrEqualTo(0);
         RuleFor(c => c.Name).NotEmpty()
             .WithMessage("Name is required.");
+        RuleFor(c => c.TargetPercent)
+            .InclusiveBetween(0, 100)
+            .When(c => c.TargetPercent.HasValue);
     }
 }

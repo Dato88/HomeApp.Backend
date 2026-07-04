@@ -220,7 +220,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IExecutionContextAc
     }
 
     public async Task<Result<int>> UpdateBudgetGroupAsync(int budgetGroupId, int index, string title,
-        BudgetGroupType budgetGroupType, CancellationToken cancellationToken)
+        BudgetGroupType budgetGroupType, decimal? targetPercent, CancellationToken cancellationToken)
     {
         var budgetGroup = await _dbContext.BudgetGroups.SingleOrDefaultAsync(x =>
             x.BudgetGroupId == budgetGroupId &&
@@ -240,6 +240,7 @@ public sealed class BudgetCommands(HomeAppContext dbContext, IExecutionContextAc
         budgetGroup.Index = index;
         budgetGroup.Title = title;
         budgetGroup.BudgetGroupType = budgetGroupType;
+        budgetGroup.TargetPercent = targetPercent;
         budgetGroup.UpdatedById = _executionContext.PersonId;
         budgetGroup.UpdatedAt = DateTime.UtcNow;
 

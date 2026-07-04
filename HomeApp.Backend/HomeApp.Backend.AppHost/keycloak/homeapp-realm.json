@@ -58,6 +58,15 @@
         "attributes": {}
       },
       {
+        "id": "3f6a9c2e-1d47-4b8a-9e5f-2c8b7d4a6e01",
+        "name": "ViewFinance",
+        "description": "View finance module (accounts, transactions, categories)",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "9a616669-0b2e-4521-af30-fb02e75d9beb",
+        "attributes": {}
+      },
+      {
         "id": "fd89f570-3786-42ac-a294-9345b2196d98",
         "name": "ViewDashboard",
         "description": "View dashboard",
@@ -451,7 +460,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["default-roles-homeapp", "ViewBudget", "ViewTodo"]
+      "realmRoles": ["default-roles-homeapp", "ViewBudget", "ViewFinance", "ViewTodo"]
     }
   ],
   "defaultRole": {
