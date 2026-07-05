@@ -179,6 +179,7 @@ public sealed class GetEvaQueryHandler(
             unassignedCount);
     }
 
+    // Negative base (e.g. an income category dominated by refunds) would produce nonsense percentages
     private static decimal? Percent(decimal value, decimal baseValue) =>
-        baseValue == 0 ? null : Math.Round(value / baseValue * 100, 2);
+        baseValue <= 0 ? null : Math.Round(value / baseValue * 100, 2, MidpointRounding.AwayFromZero);
 }

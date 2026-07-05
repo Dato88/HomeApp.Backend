@@ -19,6 +19,7 @@ public class BudgetController(IMediator mediator) : ControllerBase
 
     [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<BudgetResponse>))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
     public async Task<IActionResult> GetBudgetAsync([FromQuery] int householdId, [FromQuery] int year,
         CancellationToken cancellationToken)
@@ -38,6 +39,7 @@ public class BudgetController(IMediator mediator) : ControllerBase
 
     [HttpGet("eva")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Result<EvaResponse>))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
     public async Task<IActionResult> GetEvaAsync([FromQuery] int householdId, [FromQuery] int year,
         CancellationToken cancellationToken)
