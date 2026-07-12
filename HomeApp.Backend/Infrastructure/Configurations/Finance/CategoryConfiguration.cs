@@ -29,6 +29,9 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .HasColumnName("category_type")
             .IsRequired();
 
+        builder.Property(c => c.CategoryGroupId)
+            .HasColumnName("category_group_id");
+
         // Auditing
         builder.ConfigureAuditable();
 
@@ -36,10 +39,17 @@ internal sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasIndex(c => new { c.HouseholdId, c.Name })
             .IsUnique();
 
+        builder.HasIndex(c => c.CategoryGroupId);
+
         // Relations
         builder.HasOne(c => c.Household)
             .WithMany()
             .HasForeignKey(c => c.HouseholdId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(c => c.CategoryGroup)
+            .WithMany(g => g.Categories)
+            .HasForeignKey(c => c.CategoryGroupId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

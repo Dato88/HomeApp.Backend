@@ -1,6 +1,6 @@
 # HomeApp.Backend
 
-Backend der HomeApp: eine REST-API für Haushaltsverwaltung (Todos, Budgets, Personen) mit vorgeschaltetem BFF (Backend for Frontend), der die session-basierte Authentifizierung gegen Keycloak übernimmt. Konsumiert wird die API vom Angular-Frontend (externes Repo).
+Backend der HomeApp: eine REST-API für Haushaltsverwaltung (Todos, Finanzen, Personen) mit vorgeschaltetem BFF (Backend for Frontend), der die session-basierte Authentifizierung gegen Keycloak übernimmt. Konsumiert wird die API vom Angular-Frontend (externes Repo).
 
 - **Projekt-Doku-Owner:** Andrej Miller
 - **Projektseite (Confluence):** [Link — nachtragen]

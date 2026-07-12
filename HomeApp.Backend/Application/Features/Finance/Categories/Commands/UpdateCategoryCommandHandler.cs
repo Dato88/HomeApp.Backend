@@ -16,7 +16,7 @@ public sealed class UpdateCategoryCommandHandler(
     public async Task<Result<int>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
         var result = await _categoryCommands.UpdateCategoryAsync(request.CategoryId, request.Name,
-            request.CategoryType, cancellationToken);
+            request.CategoryType, request.CategoryGroupId, cancellationToken);
 
         if (result.IsFailure)
         {

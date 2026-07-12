@@ -626,251 +626,6 @@ namespace Infrastructure.Migrations.HomeApp
                     b.ToTable("units", "article");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
-                {
-                    b.Property<int>("BudgetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_id")
-                        .HasColumnOrder(0);
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("created_at")
-                        .HasColumnOrder(1)
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("created_by_id")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("HouseholdId")
-                        .HasColumnType("integer")
-                        .HasColumnName("household_id");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("updated_at")
-                        .HasColumnOrder(3);
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("updated_by_id")
-                        .HasColumnOrder(4);
-
-                    b.Property<int>("Year")
-                        .HasColumnType("integer")
-                        .HasColumnName("year");
-
-                    b.HasKey("BudgetId")
-                        .HasName("pk_budgets");
-
-                    b.HasIndex("HouseholdId", "Year")
-                        .IsUnique()
-                        .HasDatabaseName("ix_budgets_household_id_year");
-
-                    b.ToTable("budgets", "budget");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
-                {
-                    b.Property<int>("BudgetCellId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_cell_id")
-                        .HasColumnOrder(0);
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetCellId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("amount");
-
-                    b.Property<int>("BudgetRowId")
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_row_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("created_at")
-                        .HasColumnOrder(1)
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("created_by_id")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("Month")
-                        .HasColumnType("integer")
-                        .HasColumnName("month");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("updated_at")
-                        .HasColumnOrder(3);
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("updated_by_id")
-                        .HasColumnOrder(4);
-
-                    b.HasKey("BudgetCellId")
-                        .HasName("pk_budget_cells");
-
-                    b.HasIndex("BudgetRowId")
-                        .HasDatabaseName("ix_budget_cells_budget_row_id");
-
-                    b.HasIndex("BudgetRowId", "Month")
-                        .IsUnique()
-                        .HasDatabaseName("ix_budget_cells_budget_row_id_month");
-
-                    b.ToTable("budget_cells", "budget", t =>
-                        {
-                            t.HasCheckConstraint("ck_budgetcell_month", "month BETWEEN 1 AND 12");
-                        });
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
-                {
-                    b.Property<int>("BudgetGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_group_id")
-                        .HasColumnOrder(0);
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetGroupId"));
-
-                    b.Property<int>("BudgetGroupType")
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_group_type");
-
-                    b.Property<int>("BudgetId")
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("created_at")
-                        .HasColumnOrder(1)
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("created_by_id")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
-
-                    b.Property<decimal?>("TargetPercent")
-                        .HasPrecision(5, 2)
-                        .HasColumnType("numeric(5,2)")
-                        .HasColumnName("target_percent");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("title");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("updated_at")
-                        .HasColumnOrder(3);
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("updated_by_id")
-                        .HasColumnOrder(4);
-
-                    b.HasKey("BudgetGroupId")
-                        .HasName("pk_budget_groups");
-
-                    b.HasIndex("BudgetId")
-                        .HasDatabaseName("ix_budget_groups_budget_id");
-
-                    b.HasIndex("BudgetId", "Index")
-                        .IsUnique()
-                        .HasDatabaseName("ix_budget_groups_budget_id_index");
-
-                    b.ToTable("budget_groups", "budget");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
-                {
-                    b.Property<int>("BudgetRowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_row_id")
-                        .HasColumnOrder(0);
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BudgetRowId"));
-
-                    b.Property<int>("BudgetGroupId")
-                        .HasColumnType("integer")
-                        .HasColumnName("budget_group_id");
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer")
-                        .HasColumnName("category_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("created_at")
-                        .HasColumnOrder(1)
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("created_by_id")
-                        .HasColumnOrder(2);
-
-                    b.Property<int>("Index")
-                        .HasColumnType("integer")
-                        .HasColumnName("index");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
-                        .HasColumnName("title");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp(3) with time zone")
-                        .HasColumnName("updated_at")
-                        .HasColumnOrder(3);
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("integer")
-                        .HasColumnName("updated_by_id")
-                        .HasColumnOrder(4);
-
-                    b.HasKey("BudgetRowId")
-                        .HasName("pk_budget_rows");
-
-                    b.HasIndex("BudgetGroupId")
-                        .HasDatabaseName("ix_budget_rows_budget_group_id");
-
-                    b.HasIndex("CategoryId")
-                        .HasDatabaseName("ix_budget_rows_category_id");
-
-                    b.HasIndex("BudgetGroupId", "Index")
-                        .IsUnique()
-                        .HasDatabaseName("ix_budget_rows_budget_group_id_index");
-
-                    b.ToTable("budget_rows", "budget");
-                });
-
             modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
                 {
                     b.Property<int>("AccountId")
@@ -1021,6 +776,10 @@ namespace Infrastructure.Migrations.HomeApp
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
+                    b.Property<int?>("CategoryGroupId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_group_id");
+
                     b.Property<int>("CategoryType")
                         .HasColumnType("integer")
                         .HasColumnName("category_type");
@@ -1060,11 +819,75 @@ namespace Infrastructure.Migrations.HomeApp
                     b.HasKey("CategoryId")
                         .HasName("pk_categories");
 
+                    b.HasIndex("CategoryGroupId")
+                        .HasDatabaseName("ix_categories_category_group_id");
+
                     b.HasIndex("HouseholdId", "Name")
                         .IsUnique()
                         .HasDatabaseName("ix_categories_household_id_name");
 
                     b.ToTable("categories", "finance");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.CategoryGroup", b =>
+                {
+                    b.Property<int>("CategoryGroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("category_group_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryGroupId"));
+
+                    b.Property<int>("CategoryGroupType")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_group_type");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("integer")
+                        .HasColumnName("household_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal?>("TargetPercent")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("numeric(5,2)")
+                        .HasColumnName("target_percent");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("CategoryGroupId")
+                        .HasName("pk_category_groups");
+
+                    b.HasIndex("HouseholdId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_category_groups_household_id_name");
+
+                    b.ToTable("category_groups", "finance");
                 });
 
             modelBuilder.Entity("Domain.Entities.Finance.Transaction", b =>
@@ -2335,62 +2158,6 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
-                {
-                    b.HasOne("Domain.Entities.Households.Household", "Household")
-                        .WithMany("Budgets")
-                        .HasForeignKey("HouseholdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budgets_households_household_id");
-
-                    b.Navigation("Household");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetCell", b =>
-                {
-                    b.HasOne("Domain.Entities.Budgets.BudgetRow", "BudgetRow")
-                        .WithMany("BudgetCells")
-                        .HasForeignKey("BudgetRowId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_cells_budget_rows_budget_row_id");
-
-                    b.Navigation("BudgetRow");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
-                {
-                    b.HasOne("Domain.Entities.Budgets.Budget", "Budget")
-                        .WithMany("BudgetGroups")
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_groups_budgets_budget_id");
-
-                    b.Navigation("Budget");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
-                {
-                    b.HasOne("Domain.Entities.Budgets.BudgetGroup", "BudgetGroup")
-                        .WithMany("BudgetRows")
-                        .HasForeignKey("BudgetGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_budget_rows_budget_groups_budget_group_id");
-
-                    b.HasOne("Domain.Entities.Finance.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_budget_rows_categories_category_id");
-
-                    b.Navigation("BudgetGroup");
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
                 {
                     b.HasOne("Domain.Entities.People.Person", "Person")
@@ -2426,12 +2193,32 @@ namespace Infrastructure.Migrations.HomeApp
 
             modelBuilder.Entity("Domain.Entities.Finance.Category", b =>
                 {
+                    b.HasOne("Domain.Entities.Finance.CategoryGroup", "CategoryGroup")
+                        .WithMany("Categories")
+                        .HasForeignKey("CategoryGroupId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_categories_category_groups_category_group_id");
+
                     b.HasOne("Domain.Entities.Households.Household", "Household")
                         .WithMany()
                         .HasForeignKey("HouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_categories_households_household_id");
+
+                    b.Navigation("CategoryGroup");
+
+                    b.Navigation("Household");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.CategoryGroup", b =>
+                {
+                    b.HasOne("Domain.Entities.Households.Household", "Household")
+                        .WithMany()
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_category_groups_households_household_id");
 
                     b.Navigation("Household");
                 });
@@ -2726,21 +2513,6 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("ArticlePrices");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Budgets.Budget", b =>
-                {
-                    b.Navigation("BudgetGroups");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetGroup", b =>
-                {
-                    b.Navigation("BudgetRows");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Budgets.BudgetRow", b =>
-                {
-                    b.Navigation("BudgetCells");
-                });
-
             modelBuilder.Entity("Domain.Entities.Finance.Account", b =>
                 {
                     b.Navigation("AccountHouseholds");
@@ -2753,10 +2525,13 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Transactions");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Finance.CategoryGroup", b =>
+                {
+                    b.Navigation("Categories");
+                });
+
             modelBuilder.Entity("Domain.Entities.Households.Household", b =>
                 {
-                    b.Navigation("Budgets");
-
                     b.Navigation("Members");
                 });
 

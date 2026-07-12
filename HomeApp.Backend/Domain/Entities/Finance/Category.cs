@@ -12,6 +12,10 @@ public class Category : AuditableEntity
     public string Name { get; set; } = default!;
     public CategoryType CategoryType { get; set; }
 
+    // Optional grouping (e.g. "Wohnen", "Sparen") for the E+A report
+    public int? CategoryGroupId { get; set; }
+
     public virtual Household? Household { get; set; }
+    public virtual CategoryGroup? CategoryGroup { get; set; }
     public virtual ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();
 }

@@ -80,7 +80,7 @@ public class CategoryTests : BaseFinanceCommandsTest
 
         // Act
         var result = await CategoryCommands.UpdateCategoryAsync(category.CategoryId, "Gehalt",
-            CategoryType.Income, CancellationToken.None);
+            CategoryType.Income, null, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

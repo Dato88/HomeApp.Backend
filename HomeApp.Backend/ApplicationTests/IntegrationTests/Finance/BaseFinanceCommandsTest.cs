@@ -15,8 +15,11 @@ public class BaseFinanceCommandsTest : BaseTest
     protected readonly AccountQueries AccountQueries;
     protected readonly CategoryCommands CategoryCommands;
     protected readonly CategoryQueries CategoryQueries;
+    protected readonly CategoryGroupCommands CategoryGroupCommands;
+    protected readonly CategoryGroupQueries CategoryGroupQueries;
     protected readonly TransactionCommands TransactionCommands;
     protected readonly TransactionQueries TransactionQueries;
+    protected readonly ReportQueries ReportQueries;
 
     protected BaseFinanceCommandsTest(UnitTestingApiFactory unitTestingApiFactory) : base(
         unitTestingApiFactory, BuildExecutionContextMock(unitTestingApiFactory).Result)
@@ -28,8 +31,11 @@ public class BaseFinanceCommandsTest : BaseTest
         AccountQueries = new AccountQueries(DbContext, ExecutionContext);
         CategoryCommands = new CategoryCommands(DbContext, ExecutionContext);
         CategoryQueries = new CategoryQueries(DbContext, ExecutionContext);
+        CategoryGroupCommands = new CategoryGroupCommands(DbContext, ExecutionContext);
+        CategoryGroupQueries = new CategoryGroupQueries(DbContext, ExecutionContext);
         TransactionCommands = new TransactionCommands(DbContext, ExecutionContext);
         TransactionQueries = new TransactionQueries(DbContext, ExecutionContext);
+        ReportQueries = new ReportQueries(DbContext, ExecutionContext);
     }
 
     protected static IExecutionContextAccessor MockExecutionContext(int personId)

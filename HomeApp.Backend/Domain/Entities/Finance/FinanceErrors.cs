@@ -20,6 +20,22 @@ public static class FinanceErrors
         "Finance.AccountShareFailedWithMessage",
         $"The account could not be shared with message = '{message}'");
 
+    public static Error CategoryGroupCreateFailedWithMessage(string message) => Error.Failure(
+        "Finance.CategoryGroupCreateFailedWithMessage",
+        $"The category group could not be created with message = '{message}'");
+
+    public static Error CategoryGroupUpdateFailedWithMessage(string message) => Error.Failure(
+        "Finance.CategoryGroupUpdateFailedWithMessage",
+        $"The category group could not be updated with message = '{message}'");
+
+    public static Error CategoryGroupDeleteFailedWithMessage(string message) => Error.Failure(
+        "Finance.CategoryGroupDeleteFailedWithMessage",
+        $"The category group could not be deleted with message = '{message}'");
+
+    public static Error ReportFailedWithMessage(string message) => Error.Failure(
+        "Finance.ReportFailedWithMessage",
+        $"The report could not be created with message = '{message}'");
+
     public static Error CategoryCreateFailedWithMessage(string message) => Error.Failure(
         "Finance.CategoryCreateFailedWithMessage",
         $"The category could not be created with message = '{message}'");

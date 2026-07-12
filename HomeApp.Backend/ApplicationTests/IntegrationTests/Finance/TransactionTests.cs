@@ -70,11 +70,12 @@ public class TransactionTests : BaseFinanceCommandsTest
             partner.PersonId, new DateOnly(2026, 2, 1), -20);
 
         // Act
-        var result = await TransactionCommands.SetTransactionCategoryAsync(transaction.TransactionId,
+        var result = await TransactionCommands.SetTransactionCategoryAsync([transaction.TransactionId],
             category.CategoryId, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(1);
         var updated = await DbContext.Transactions.AsNoTracking()
             .SingleAsync(t => t.TransactionId == transaction.TransactionId);
         updated.CategoryId.Should().Be(category.CategoryId);
@@ -92,7 +93,7 @@ public class TransactionTests : BaseFinanceCommandsTest
             ExecutionContext.PersonId, new DateOnly(2026, 2, 1), -20);
 
         // Act
-        var result = await TransactionCommands.SetTransactionCategoryAsync(transaction.TransactionId,
+        var result = await TransactionCommands.SetTransactionCategoryAsync([transaction.TransactionId],
             category.CategoryId, CancellationToken.None);
 
         // Assert
@@ -111,12 +112,128 @@ public class TransactionTests : BaseFinanceCommandsTest
             otherPerson.PersonId, new DateOnly(2026, 2, 1), -20);
 
         // Act
-        var result = await TransactionCommands.SetTransactionCategoryAsync(transaction.TransactionId, null,
+        var result = await TransactionCommands.SetTransactionCategoryAsync([transaction.TransactionId], null,
             CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(FinanceErrors.TransactionUpdateFailedWithMessage("TransactionId is invalid"));
+        result.Error.Should().Be(FinanceErrors.TransactionUpdateFailedWithMessage("TransactionIds are invalid"));
+    }
+
+    [Fact]
+    public async Task SetTransactionCategory_ShouldCategorizeManyAtOnce()
+    {
+        // Arrange: recurring bookings selected via multi-select and categorized in one call
+        var household = await HouseholdDataSeeder.GenereateDummyHousehold(ExecutionContext.PersonId);
+        var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId, null,
+            household.HouseholdId);
+        var category = await FinanceDataSeeder.GenereateDummyCategory(household.HouseholdId,
+            ExecutionContext.PersonId);
+
+        var transactionIds = new List<int>();
+        for (var month = 1; month <= 3; month++)
+        {
+            var transaction = await FinanceDataSeeder.GenereateDummyTransaction(account.AccountId,
+                ExecutionContext.PersonId, new DateOnly(2026, month, 1), -950);
+            transactionIds.Add(transaction.TransactionId);
+        }
+
+        // Act
+        var result = await TransactionCommands.SetTransactionCategoryAsync(transactionIds,
+            category.CategoryId, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(3);
+        var categorized = await DbContext.Transactions.AsNoTracking()
+            .Where(t => transactionIds.Contains(t.TransactionId))
+            .ToListAsync();
+        categorized.Should().OnlyContain(t => t.CategoryId == category.CategoryId);
+    }
+
+    [Fact]
+    public async Task SetTransactionCategory_ShouldFailWholeBatchWhenOneTransactionIsForeign()
+    {
+        // Arrange: one own and one foreign transaction in the same batch
+        var otherPerson = await PeopleDataSeeder.SeedPersonAsync();
+        var household = await HouseholdDataSeeder.GenereateDummyHousehold(ExecutionContext.PersonId);
+        var ownAccount = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId, null,
+            household.HouseholdId);
+        var foreignAccount = await FinanceDataSeeder.GenereateDummyAccount(otherPerson.PersonId);
+        var category = await FinanceDataSeeder.GenereateDummyCategory(household.HouseholdId,
+            ExecutionContext.PersonId);
+        var ownTransaction = await FinanceDataSeeder.GenereateDummyTransaction(ownAccount.AccountId,
+            ExecutionContext.PersonId, new DateOnly(2026, 2, 1), -20);
+        var foreignTransaction = await FinanceDataSeeder.GenereateDummyTransaction(foreignAccount.AccountId,
+            otherPerson.PersonId, new DateOnly(2026, 2, 1), -20);
+
+        // Act
+        var result = await TransactionCommands.SetTransactionCategoryAsync(
+            [ownTransaction.TransactionId, foreignTransaction.TransactionId], category.CategoryId,
+            CancellationToken.None);
+
+        // Assert: all-or-nothing, nothing was persisted
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(FinanceErrors.TransactionUpdateFailedWithMessage("TransactionIds are invalid"));
+        var own = await DbContext.Transactions.AsNoTracking()
+            .SingleAsync(t => t.TransactionId == ownTransaction.TransactionId);
+        own.CategoryId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task SetTransactionCategory_ShouldFailWhenCategoryInvalidForOneAccountOfBatch()
+    {
+        // Arrange: batch spans two accounts, but only one is shared into the category's household
+        var household = await HouseholdDataSeeder.GenereateDummyHousehold(ExecutionContext.PersonId);
+        var sharedAccount = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId, null,
+            household.HouseholdId);
+        var unsharedAccount = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
+        var category = await FinanceDataSeeder.GenereateDummyCategory(household.HouseholdId,
+            ExecutionContext.PersonId);
+        var sharedTransaction = await FinanceDataSeeder.GenereateDummyTransaction(sharedAccount.AccountId,
+            ExecutionContext.PersonId, new DateOnly(2026, 2, 1), -20);
+        var unsharedTransaction = await FinanceDataSeeder.GenereateDummyTransaction(unsharedAccount.AccountId,
+            ExecutionContext.PersonId, new DateOnly(2026, 2, 1), -20);
+
+        // Act
+        var result = await TransactionCommands.SetTransactionCategoryAsync(
+            [sharedTransaction.TransactionId, unsharedTransaction.TransactionId], category.CategoryId,
+            CancellationToken.None);
+
+        // Assert: all-or-nothing, the shared transaction stays uncategorized too
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(FinanceErrors.TransactionUpdateFailedWithMessage(
+            "Account is not shared into the category's household"));
+        var shared = await DbContext.Transactions.AsNoTracking()
+            .SingleAsync(t => t.TransactionId == sharedTransaction.TransactionId);
+        shared.CategoryId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task SetTransactionCategory_ShouldClearCategoryForBatch()
+    {
+        // Arrange
+        var household = await HouseholdDataSeeder.GenereateDummyHousehold(ExecutionContext.PersonId);
+        var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId, null,
+            household.HouseholdId);
+        var category = await FinanceDataSeeder.GenereateDummyCategory(household.HouseholdId,
+            ExecutionContext.PersonId);
+        var first = await FinanceDataSeeder.GenereateDummyTransaction(account.AccountId,
+            ExecutionContext.PersonId, new DateOnly(2026, 2, 1), -20, category.CategoryId);
+        var second = await FinanceDataSeeder.GenereateDummyTransaction(account.AccountId,
+            ExecutionContext.PersonId, new DateOnly(2026, 3, 1), -20, category.CategoryId);
+
+        // Act
+        var result = await TransactionCommands.SetTransactionCategoryAsync(
+            [first.TransactionId, second.TransactionId], null, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(2);
+        var cleared = await DbContext.Transactions.AsNoTracking()
+            .Where(t => t.TransactionId == first.TransactionId || t.TransactionId == second.TransactionId)
+            .ToListAsync();
+        cleared.Should().OnlyContain(t => t.CategoryId == null);
     }
 
     [Fact]

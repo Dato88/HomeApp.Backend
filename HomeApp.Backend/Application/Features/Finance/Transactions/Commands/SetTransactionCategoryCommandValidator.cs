@@ -6,7 +6,12 @@ internal sealed class SetTransactionCategoryCommandValidator : AbstractValidator
 {
     public SetTransactionCategoryCommandValidator()
     {
-        RuleFor(c => c.TransactionId).GreaterThan(0);
+        RuleFor(c => c.TransactionIds)
+            .NotEmpty()
+            .WithMessage("At least one TransactionId is required.")
+            .Must(ids => ids.Count <= 500)
+            .WithMessage("At most 500 TransactionIds are allowed per request.");
+        RuleForEach(c => c.TransactionIds).GreaterThan(0);
         RuleFor(c => c.CategoryId)
             .GreaterThan(0)
             .When(c => c.CategoryId.HasValue);

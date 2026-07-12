@@ -16,7 +16,7 @@ public sealed class SetTransactionCategoryCommandHandler(
     public async Task<Result<int>> Handle(SetTransactionCategoryCommand request,
         CancellationToken cancellationToken)
     {
-        var result = await _transactionCommands.SetTransactionCategoryAsync(request.TransactionId,
+        var result = await _transactionCommands.SetTransactionCategoryAsync(request.TransactionIds,
             request.CategoryId, cancellationToken);
 
         if (result.IsFailure)
@@ -27,7 +27,7 @@ public sealed class SetTransactionCategoryCommandHandler(
             return Result.Failure<int>(result.Error);
         }
 
-        _logger.LogInformation($"Setting transaction category: {result.Value}");
+        _logger.LogInformation($"Setting transaction category for {result.Value} transactions");
 
         return result;
     }

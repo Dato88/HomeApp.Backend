@@ -79,33 +79,44 @@ public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionCont
         return Result.Success(transactionId);
     }
 
-    public async Task<Result<int>> SetTransactionCategoryAsync(int transactionId, int? categoryId,
+    public async Task<Result<int>> SetTransactionCategoryAsync(IReadOnlyList<int> transactionIds, int? categoryId,
         CancellationToken cancellationToken)
     {
+        var ids = transactionIds.Distinct().ToList();
+
         // Categorizing is allowed for the owner and for members of households the account is shared into
-        var transaction = await _dbContext.Transactions.SingleOrDefaultAsync(t =>
-            t.TransactionId == transactionId &&
-            (t.Account.PersonId == _executionContext.PersonId ||
-             t.Account.AccountHouseholds.Any(ah =>
-                 ah.Household.Members.Any(m => m.PersonId == _executionContext.PersonId))), cancellationToken);
+        var transactions = await _dbContext.Transactions
+            .Where(t =>
+                ids.Contains(t.TransactionId) &&
+                (t.Account.PersonId == _executionContext.PersonId ||
+                 t.Account.AccountHouseholds.Any(ah =>
+                     ah.Household.Members.Any(m => m.PersonId == _executionContext.PersonId))))
+            .ToListAsync(cancellationToken);
 
-        if (transaction == null)
+        // All-or-nothing: an unknown or invisible id fails the whole batch without leaking which one
+        if (transactions.Count != ids.Count)
             return Result.Failure<int>(
-                FinanceErrors.TransactionUpdateFailedWithMessage("TransactionId is invalid"));
+                FinanceErrors.TransactionUpdateFailedWithMessage("TransactionIds are invalid"));
 
-        var categoryError = ValidateTransactionCategory(transaction.AccountId, categoryId);
+        // A bulk selection may span accounts; the category must be valid for every single one
+        foreach (var accountId in transactions.Select(t => t.AccountId).Distinct())
+        {
+            var categoryError = ValidateTransactionCategory(accountId, categoryId);
 
-        if (categoryError is not null)
-            return Result.Failure<int>(FinanceErrors.TransactionUpdateFailedWithMessage(categoryError));
+            if (categoryError is not null)
+                return Result.Failure<int>(FinanceErrors.TransactionUpdateFailedWithMessage(categoryError));
+        }
 
-        transaction.CategoryId = categoryId;
-        transaction.UpdatedById = _executionContext.PersonId;
-        transaction.UpdatedAt = DateTime.UtcNow;
+        foreach (var transaction in transactions)
+        {
+            transaction.CategoryId = categoryId;
+            transaction.UpdatedById = _executionContext.PersonId;
+            transaction.UpdatedAt = DateTime.UtcNow;
+        }
 
-        _dbContext.Transactions.Update(transaction);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(transaction.TransactionId);
+        return Result.Success(transactions.Count);
     }
 
     public async Task<Result<ImportResult>> ImportTransactionsAsync(int accountId,

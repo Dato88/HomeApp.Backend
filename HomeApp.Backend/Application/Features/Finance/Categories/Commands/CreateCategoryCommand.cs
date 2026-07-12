@@ -8,8 +8,15 @@ namespace Application.Features.Finance.Categories.Commands;
 public sealed record CreateCategoryCommand(
     int HouseholdId,
     string Name,
-    CategoryType CategoryType) : IRequest<Result<int>>
+    CategoryType CategoryType,
+    int? CategoryGroupId) : IRequest<Result<int>>
 {
     public static explicit operator Category(CreateCategoryCommand item) =>
-        new() { HouseholdId = item.HouseholdId, Name = item.Name, CategoryType = item.CategoryType };
+        new()
+        {
+            HouseholdId = item.HouseholdId,
+            Name = item.Name,
+            CategoryType = item.CategoryType,
+            CategoryGroupId = item.CategoryGroupId
+        };
 }

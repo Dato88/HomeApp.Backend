@@ -8,6 +8,7 @@ public class FinanceDataSeeder : BaseTest
 {
     private readonly Faker<Account> _accountFaker;
     private readonly Faker<Category> _categoryFaker;
+    private readonly Faker<CategoryGroup> _categoryGroupFaker;
 
     public FinanceDataSeeder(UnitTestingApiFactory unitTestingApiFactory) : base(unitTestingApiFactory)
     {
@@ -19,6 +20,10 @@ public class FinanceDataSeeder : BaseTest
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
 
         _categoryFaker = new Faker<Category>()
+            .RuleFor(u => u.Name, f => $"{f.Lorem.Word()}-{f.Random.AlphaNumeric(6)}")
+            .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
+
+        _categoryGroupFaker = new Faker<CategoryGroup>()
             .RuleFor(u => u.Name, f => $"{f.Lorem.Word()}-{f.Random.AlphaNumeric(6)}")
             .RuleFor(u => u.CreatedAt, f => f.Date.RecentOffset(10).UtcDateTime);
     }
@@ -44,17 +49,33 @@ public class FinanceDataSeeder : BaseTest
     }
 
     public async Task<Category> GenereateDummyCategory(int householdId, int personId,
-        CategoryType categoryType = CategoryType.Expense)
+        CategoryType categoryType = CategoryType.Expense, int? categoryGroupId = null)
     {
         var category = _categoryFaker.Generate();
         category.HouseholdId = householdId;
         category.CategoryType = categoryType;
+        category.CategoryGroupId = categoryGroupId;
         category.CreatedById = personId;
 
         await DbContext.Categories.AddAsync(category);
         await DbContext.SaveChangesAsync();
 
         return category;
+    }
+
+    public async Task<CategoryGroup> GenereateDummyCategoryGroup(int householdId, int personId,
+        CategoryType categoryGroupType = CategoryType.Expense, decimal? targetPercent = null)
+    {
+        var categoryGroup = _categoryGroupFaker.Generate();
+        categoryGroup.HouseholdId = householdId;
+        categoryGroup.CategoryGroupType = categoryGroupType;
+        categoryGroup.TargetPercent = targetPercent;
+        categoryGroup.CreatedById = personId;
+
+        await DbContext.CategoryGroups.AddAsync(categoryGroup);
+        await DbContext.SaveChangesAsync();
+
+        return categoryGroup;
     }
 
     public async Task<Transaction> GenereateDummyTransaction(int accountId, int personId, DateOnly bookingDate,

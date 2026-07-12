@@ -9,6 +9,7 @@ public sealed class CategoryDto
     public int HouseholdId { get; set; }
     public string Name { get; set; } = default!;
     public CategoryType CategoryType { get; set; }
+    public int? CategoryGroupId { get; set; }
 
     public static explicit operator CategoryDto(Category entity) =>
         new()
@@ -16,6 +17,7 @@ public sealed class CategoryDto
             CategoryId = entity.CategoryId,
             HouseholdId = entity.HouseholdId,
             Name = entity.Name,
-            CategoryType = entity.CategoryType
+            CategoryType = entity.CategoryType,
+            CategoryGroupId = entity.CategoryGroupId
         };
 }

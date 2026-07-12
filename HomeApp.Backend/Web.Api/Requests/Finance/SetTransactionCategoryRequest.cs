@@ -4,9 +4,9 @@ namespace Web.Api.Requests.Finance;
 
 public sealed record SetTransactionCategoryRequest
 {
-    public int TransactionId { get; init; }
+    public int[] TransactionIds { get; init; } = [];
     public int? CategoryId { get; init; }
 
     public static explicit operator SetTransactionCategoryCommand(SetTransactionCategoryRequest request)
-        => new(request.TransactionId, request.CategoryId);
+        => new(request.TransactionIds, request.CategoryId);
 }

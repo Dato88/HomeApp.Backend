@@ -7,4 +7,5 @@ namespace Application.Features.Finance.Categories.Commands;
 public sealed record UpdateCategoryCommand(
     int CategoryId,
     string Name,
-    CategoryType CategoryType) : IRequest<Result<int>>;
+    CategoryType CategoryType,
+    int? CategoryGroupId) : IRequest<Result<int>>;

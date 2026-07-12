@@ -28,6 +28,11 @@ public sealed class CategoryCommands(HomeAppContext dbContext, IExecutionContext
         if (nameExists)
             return Result.Failure<int>(FinanceErrors.CategoryCreateFailedWithMessage("Name already exists"));
 
+        var groupError = ValidateCategoryGroup(category.HouseholdId, category.CategoryGroupId);
+
+        if (groupError is not null)
+            return Result.Failure<int>(FinanceErrors.CategoryCreateFailedWithMessage(groupError));
+
         category.CreatedById = _executionContext.PersonId;
 
         _dbContext.Categories.Add(category);
@@ -37,7 +42,7 @@ public sealed class CategoryCommands(HomeAppContext dbContext, IExecutionContext
     }
 
     public async Task<Result<int>> UpdateCategoryAsync(int categoryId, string name, CategoryType categoryType,
-        CancellationToken cancellationToken)
+        int? categoryGroupId, CancellationToken cancellationToken)
     {
         var category = await _dbContext.Categories.SingleOrDefaultAsync(c =>
             c.CategoryId == categoryId &&
@@ -52,8 +57,14 @@ public sealed class CategoryCommands(HomeAppContext dbContext, IExecutionContext
         if (nameExists)
             return Result.Failure<int>(FinanceErrors.CategoryUpdateFailedWithMessage("Name already exists"));
 
+        var groupError = ValidateCategoryGroup(category.HouseholdId, categoryGroupId);
+
+        if (groupError is not null)
+            return Result.Failure<int>(FinanceErrors.CategoryUpdateFailedWithMessage(groupError));
+
         category.Name = name;
         category.CategoryType = categoryType;
+        category.CategoryGroupId = categoryGroupId;
         category.UpdatedById = _executionContext.PersonId;
         category.UpdatedAt = DateTime.UtcNow;
 
@@ -76,5 +87,18 @@ public sealed class CategoryCommands(HomeAppContext dbContext, IExecutionContext
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success(categoryId);
+    }
+
+    // Returns an error message or null. A category may only be grouped within its own household,
+    // otherwise the E+A report of a household could reference groups its members cannot see.
+    private string? ValidateCategoryGroup(int householdId, int? categoryGroupId)
+    {
+        if (!categoryGroupId.HasValue)
+            return null;
+
+        var groupBelongsToHousehold = _dbContext.CategoryGroups.Any(g =>
+            g.CategoryGroupId == categoryGroupId.Value && g.HouseholdId == householdId);
+
+        return groupBelongsToHousehold ? null : "CategoryGroupId is invalid";
     }
 }

@@ -8,7 +8,8 @@ public sealed record UpdateCategoryRequest
     public int CategoryId { get; init; }
     public string Name { get; init; } = string.Empty;
     public CategoryType CategoryType { get; init; }
+    public int? CategoryGroupId { get; init; }
 
     public static explicit operator UpdateCategoryCommand(UpdateCategoryRequest request)
-        => new(request.CategoryId, request.Name, request.CategoryType);
+        => new(request.CategoryId, request.Name, request.CategoryType, request.CategoryGroupId);
 }

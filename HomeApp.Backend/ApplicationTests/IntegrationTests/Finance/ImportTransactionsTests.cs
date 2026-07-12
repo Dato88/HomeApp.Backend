@@ -1,5 +1,7 @@
 using System.Text;
+using ClosedXML.Excel;
 using Domain.Entities.Finance;
+using Domain.Entities.Finance.Enums;
 using Infrastructure.Features.Finance.Import;
 using Microsoft.EntityFrameworkCore;
 
@@ -208,5 +210,148 @@ public class ImportTransactionsTests : BaseFinanceCommandsTest
         csvParser.CanParse("umsaetze.csv", csvHead).Should().BeTrue();
         csvParser.CanParse("statement.xml", camtHead).Should().BeFalse();
         camtParser.CanParse("statement.xml", camtHead).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Import_ShouldImportXlsxWithNativeAndTextCells()
+    {
+        // Arrange: row 2 uses native Excel date/number cells, row 3 German formatted text
+        var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
+        var bytes = BuildXlsx(worksheet =>
+        {
+            worksheet.Cell(2, 1).Value = new DateTime(2026, 3, 2);
+            worksheet.Cell(2, 2).Value = -49.99;
+            worksheet.Cell(2, 3).Value = "Einkauf Lebensmittel";
+            worksheet.Cell(2, 4).Value = "REWE Markt";
+            worksheet.Cell(2, 5).Value = "DE89370400440532013000";
+
+            worksheet.Cell(3, 1).Value = "05.03.26";
+            worksheet.Cell(3, 2).Value = "-950,00";
+            worksheet.Cell(3, 3).Value = "Miete März";
+            worksheet.Cell(3, 4).Value = "Vermieter Müller";
+        });
+        var parser = new XlsxStatementParser();
+
+        // Act
+        using var stream = new MemoryStream(bytes);
+        var parseResult = parser.Parse(stream);
+        var importResult = await TransactionCommands.ImportTransactionsAsync(account.AccountId,
+            parseResult.Value.Transactions, parser.Source, CancellationToken.None);
+
+        // Assert
+        parseResult.IsSuccess.Should().BeTrue();
+        parseResult.Value.Errors.Should().BeEmpty();
+        parseResult.Value.Transactions.Should().HaveCount(2);
+
+        importResult.IsSuccess.Should().BeTrue();
+        importResult.Value.Imported.Should().Be(2);
+
+        var imported = await DbContext.Transactions.AsNoTracking()
+            .Where(t => t.AccountId == account.AccountId)
+            .ToListAsync();
+        imported.Should().OnlyContain(t => t.Source == TransactionSource.XlsxImport);
+        imported.Should().Contain(t =>
+            t.Amount == -49.99m &&
+            t.BookingDate == new DateOnly(2026, 3, 2) &&
+            t.CounterpartyName == "REWE Markt" &&
+            t.CounterpartyIban == "DE89370400440532013000");
+        imported.Should().Contain(t =>
+            t.Amount == -950.00m &&
+            t.BookingDate == new DateOnly(2026, 3, 5) &&
+            t.Purpose == "Miete März");
+    }
+
+    [Fact]
+    public async Task Import_ShouldSkipAllOnXlsxReimport()
+    {
+        // Arrange
+        var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
+        var bytes = BuildXlsx(worksheet =>
+        {
+            worksheet.Cell(2, 1).Value = new DateTime(2026, 3, 2);
+            worksheet.Cell(2, 2).Value = -49.99;
+            worksheet.Cell(2, 3).Value = "Einkauf Lebensmittel";
+        });
+        var parser = new XlsxStatementParser();
+
+        using (var firstStream = new MemoryStream(bytes))
+        {
+            var first = parser.Parse(firstStream);
+            await TransactionCommands.ImportTransactionsAsync(account.AccountId, first.Value.Transactions,
+                parser.Source, CancellationToken.None);
+        }
+
+        // Act
+        using var reimportStream = new MemoryStream(bytes);
+        var reimportParse = parser.Parse(reimportStream);
+        var reimport = await TransactionCommands.ImportTransactionsAsync(account.AccountId,
+            reimportParse.Value.Transactions, parser.Source, CancellationToken.None);
+
+        // Assert
+        reimport.IsSuccess.Should().BeTrue();
+        reimport.Value.Imported.Should().Be(0);
+        reimport.Value.SkippedDuplicates.Should().Be(1);
+        (await DbContext.Transactions.CountAsync(t => t.AccountId == account.AccountId)).Should().Be(1);
+    }
+
+    [Fact]
+    public void Parse_ShouldReturnErrorWhenXlsxHeaderIsMissingRequiredColumns()
+    {
+        // Arrange
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.AddWorksheet("Umsätze");
+        worksheet.Cell(1, 1).Value = "Datum";
+        worksheet.Cell(1, 2).Value = "Summe";
+        using var buildStream = new MemoryStream();
+        workbook.SaveAs(buildStream);
+        var parser = new XlsxStatementParser();
+
+        // Act
+        using var stream = new MemoryStream(buildStream.ToArray());
+        var result = parser.Parse(stream);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(
+            FinanceErrors.ImportFailedWithMessage("XLSX header is missing Buchungstag or Betrag column"));
+    }
+
+    [Fact]
+    public void CanParse_ShouldDetectXlsx()
+    {
+        // Arrange
+        var parser = new XlsxStatementParser();
+        var csvParser = new SparkasseCamtCsvParser();
+        var bytes = BuildXlsx(worksheet =>
+        {
+            worksheet.Cell(2, 1).Value = new DateTime(2026, 3, 2);
+            worksheet.Cell(2, 2).Value = -1;
+        });
+        var head = bytes[..Math.Min(512, bytes.Length)];
+
+        // Assert: by extension, by ZIP magic bytes, and no false positives on CSV
+        parser.CanParse("umsaetze.xlsx", head).Should().BeTrue();
+        parser.CanParse("umsaetze.dat", head).Should().BeTrue();
+        parser.CanParse("umsaetze.csv", Encoding.UTF8.GetBytes(SparkasseCsv)[..256]).Should().BeFalse();
+        csvParser.CanParse("umsaetze.dat", head).Should().BeFalse();
+    }
+
+    // Builds an in-memory workbook with the Sparkasse header row; fill adds the data rows
+    private static byte[] BuildXlsx(Action<IXLWorksheet> fill)
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.AddWorksheet("Umsätze");
+
+        worksheet.Cell(1, 1).Value = "Buchungstag";
+        worksheet.Cell(1, 2).Value = "Betrag";
+        worksheet.Cell(1, 3).Value = "Verwendungszweck";
+        worksheet.Cell(1, 4).Value = "Begünstigter/Zahlungspflichtiger";
+        worksheet.Cell(1, 5).Value = "Kontonummer/IBAN";
+
+        fill(worksheet);
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
     }
 }

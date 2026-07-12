@@ -10,7 +10,7 @@ public interface ITransactionCommands
     Task<Result<int>> UpdateTransactionAsync(Transaction transaction, CancellationToken cancellationToken);
     Task<Result<int>> DeleteTransactionAsync(int transactionId, CancellationToken cancellationToken);
 
-    Task<Result<int>> SetTransactionCategoryAsync(int transactionId, int? categoryId,
+    Task<Result<int>> SetTransactionCategoryAsync(IReadOnlyList<int> transactionIds, int? categoryId,
         CancellationToken cancellationToken);
 
     Task<Result<ImportResult>> ImportTransactionsAsync(int accountId, IReadOnlyList<ParsedTransaction> items,

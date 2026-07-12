@@ -14,7 +14,6 @@ public class NavigationController : ControllerBase
         {
             new() { Name = "Dashboard", Link = "/dashboard", Icon = "bi bi-bank" },
             new() { Name = "Todo", Link = "/todo", Icon = "bi bi-list-task" },
-            new() { Name = "Budget", Link = "/budget", Icon = "bi bi-bar-chart-line-fill" },
             new() { Name = "Finance", Link = "/finance", Icon = "bi bi-cash-coin" },
             new()
             {

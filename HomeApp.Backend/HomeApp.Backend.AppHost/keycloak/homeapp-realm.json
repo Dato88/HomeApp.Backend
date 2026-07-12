@@ -49,15 +49,6 @@
   "roles": {
     "realm": [
       {
-        "id": "0d4f0198-c248-420e-9bbc-7524dd5e1489",
-        "name": "ViewBudget",
-        "description": "View budget module",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "9a616669-0b2e-4521-af30-fb02e75d9beb",
-        "attributes": {}
-      },
-      {
         "id": "3f6a9c2e-1d47-4b8a-9e5f-2c8b7d4a6e01",
         "name": "ViewFinance",
         "description": "View finance module (accounts, transactions, categories)",
@@ -460,7 +451,7 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["default-roles-homeapp", "ViewBudget", "ViewFinance", "ViewTodo"]
+      "realmRoles": ["default-roles-homeapp", "ViewFinance", "ViewTodo"]
     }
   ],
   "defaultRole": {
