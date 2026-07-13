@@ -56,7 +56,7 @@ Buchungen liegen auf einem Konto. Betrag ist signiert: negativ = Ausgabe, positi
 
 | Funktion | Endpunkt | Verhalten |
 |---|---|---|
-| Buchungen auflisten | `GET /Transaction?accountId=&from=&to=&categoryId=&uncategorized=&page=&pageSize=` | Paginiert (max. 200), neueste zuerst, mit `totalCount` |
+| Buchungen auflisten | `GET /Transaction?accountId=&from=&to=&categoryId=&uncategorized=&counterpartyIban=&page=&pageSize=` | Paginiert (max. 200), neueste zuerst, mit `totalCount`; `counterpartyIban` filtert exakt auf die Gegen-IBAN (normalisierter Vergleich: Groß-/Kleinschreibung und Leerzeichen egal), `totalCount` zählt dann nur die Treffer |
 | Manuell erfassen | `POST /Transaction` | Datum, Betrag, Gegenpartei, Verwendungszweck, optional Kategorie |
 | Ändern / Löschen | `PATCH /Transaction`, `DELETE /Transaction?transactionId=` | Nur Owner |
 | Kategorisieren (einzeln & Mehrfachauswahl) | `PATCH /Transaction/category` | Body: `transactionIds` (Liste, 1–500) + `categoryId` (oder `null` zum Entkategorisieren); **all-or-nothing** — bei einer ungültigen ID wird nichts gespeichert; auch für Haushaltsmitglieder; Kategorie muss zu einem Haushalt gehören, in den jedes betroffene Konto freigegeben ist |
