@@ -9,8 +9,8 @@ public sealed record UpdateTransactionCommand(
     DateOnly BookingDate,
     DateOnly? ValueDate,
     decimal Amount,
-    string? CounterpartyName,
-    string? CounterpartyIban,
+    string? PaymentPartnerName,
+    string? PaymentPartnerIban,
     string? Purpose) : IRequest<Result<int>>
 {
     public static explicit operator Transaction(UpdateTransactionCommand item) =>
@@ -20,10 +20,10 @@ public sealed record UpdateTransactionCommand(
             BookingDate = item.BookingDate,
             ValueDate = item.ValueDate,
             Amount = item.Amount,
-            CounterpartyName = item.CounterpartyName,
-            CounterpartyIban = string.IsNullOrWhiteSpace(item.CounterpartyIban)
+            PaymentPartnerName = item.PaymentPartnerName,
+            PaymentPartnerIban = string.IsNullOrWhiteSpace(item.PaymentPartnerIban)
                 ? null
-                : Domain.ValueObjects.Iban.Normalize(item.CounterpartyIban),
+                : Domain.ValueObjects.Iban.Normalize(item.PaymentPartnerIban),
             Purpose = item.Purpose
         };
 }

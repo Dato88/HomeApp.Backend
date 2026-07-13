@@ -92,8 +92,8 @@ public class ImportTransactionsTests : BaseFinanceCommandsTest
         imported.Should().Contain(t =>
             t.Amount == -49.99m &&
             t.BookingDate == new DateOnly(2026, 3, 2) &&
-            t.CounterpartyName == "REWE Markt" &&
-            t.CounterpartyIban == "DE89370400440532013000");
+            t.PaymentPartnerName == "REWE Markt" &&
+            t.PaymentPartnerIban == "DE89370400440532013000");
         imported.Count(t => t.Amount == -950.00m).Should().Be(2);
     }
 
@@ -155,8 +155,8 @@ public class ImportTransactionsTests : BaseFinanceCommandsTest
 
         var salary = await DbContext.Transactions.AsNoTracking()
             .SingleAsync(t => t.AccountId == account.AccountId && t.Amount == 2500.00m);
-        salary.CounterpartyName.Should().Be("Arbeitgeber GmbH");
-        salary.CounterpartyIban.Should().Be("DE44500105175407324931");
+        salary.PaymentPartnerName.Should().Be("Arbeitgeber GmbH");
+        salary.PaymentPartnerIban.Should().Be("DE44500105175407324931");
         salary.BookingDate.Should().Be(new DateOnly(2026, 3, 1));
     }
 
@@ -194,7 +194,7 @@ public class ImportTransactionsTests : BaseFinanceCommandsTest
         result.IsSuccess.Should().BeTrue();
         result.Value.Errors.Should().BeEmpty();
         result.Value.Transactions.Should().Contain(t =>
-            t.Purpose == "Miete März" && t.CounterpartyName == "Vermieter Müller");
+            t.Purpose == "Miete März" && t.PaymentPartnerName == "Vermieter Müller");
     }
 
     [Fact]
@@ -253,8 +253,8 @@ public class ImportTransactionsTests : BaseFinanceCommandsTest
         imported.Should().Contain(t =>
             t.Amount == -49.99m &&
             t.BookingDate == new DateOnly(2026, 3, 2) &&
-            t.CounterpartyName == "REWE Markt" &&
-            t.CounterpartyIban == "DE89370400440532013000");
+            t.PaymentPartnerName == "REWE Markt" &&
+            t.PaymentPartnerIban == "DE89370400440532013000");
         imported.Should().Contain(t =>
             t.Amount == -950.00m &&
             t.BookingDate == new DateOnly(2026, 3, 5) &&

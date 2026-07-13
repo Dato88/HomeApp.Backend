@@ -14,6 +14,7 @@ public sealed class AccountDto
     public string CurrencyCode { get; set; } = default!;
     public string? Description { get; set; }
     public bool IsActive { get; set; }
+    public DateOnly? DeactivatedFrom { get; set; }
     public bool IsOwner { get; set; }
     public IEnumerable<int> SharedHouseholdIds { get; set; } = new List<int>();
 
@@ -29,6 +30,7 @@ public sealed class AccountDto
             CurrencyCode = entity.CurrencyCode,
             Description = entity.Description,
             IsActive = entity.IsActive,
+            DeactivatedFrom = entity.DeactivatedFrom,
             SharedHouseholdIds = entity.AccountHouseholds.Select(ah => ah.HouseholdId).ToList()
         };
 }

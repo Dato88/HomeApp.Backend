@@ -247,7 +247,7 @@ public sealed class DeutscheBankPdfParser : IBankStatementParser
                 : null;
 
             // PreMarker[0] is the transaction type ("SEPA Lastschrifteinzug von"), the payee follows
-            var counterparty = entry.PreMarker.Count > 1 ? entry.PreMarker[1] : null;
+            var partner = entry.PreMarker.Count > 1 ? entry.PreMarker[1] : null;
             var purpose = entry.Purpose.Count > 0 ? string.Join(' ', entry.Purpose) : null;
 
             transactions.Add(new ParsedTransaction(
@@ -255,7 +255,7 @@ public sealed class DeutscheBankPdfParser : IBankStatementParser
                 valueDate,
                 entry.Amount.Value,
                 null,
-                counterparty,
+                partner,
                 entry.Iban,
                 purpose,
                 null));

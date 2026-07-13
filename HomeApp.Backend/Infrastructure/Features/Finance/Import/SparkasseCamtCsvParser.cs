@@ -58,7 +58,7 @@ public sealed class SparkasseCamtCsvParser : IBankStatementParser
 
         var valueDateIndex = FindColumn(columns, "Valutadatum");
         var purposeIndex = FindColumn(columns, "Verwendungszweck");
-        var counterpartyIndex = FindColumn(columns, "Beguenstigter/Zahlungspflichtiger", "Begünstigter/Zahlungspflichtiger");
+        var partnerIndex = FindColumn(columns, "Beguenstigter/Zahlungspflichtiger", "Begünstigter/Zahlungspflichtiger");
         var ibanIndex = FindColumn(columns, "Kontonummer/IBAN", "IBAN");
         var referenceIndex = FindColumn(columns, "Kundenreferenz (End-to-End)", "Kundenreferenz");
         var currencyIndex = FindColumn(columns, "Waehrung", "Währung");
@@ -85,7 +85,7 @@ public sealed class SparkasseCamtCsvParser : IBankStatementParser
                     TryParseGermanDate(GetField(fields, valueDateIndex)),
                     amount,
                     EmptyToNull(GetField(fields, currencyIndex)),
-                    EmptyToNull(GetField(fields, counterpartyIndex)),
+                    EmptyToNull(GetField(fields, partnerIndex)),
                     EmptyToNull(GetField(fields, ibanIndex)),
                     EmptyToNull(GetField(fields, purposeIndex)),
                     EmptyToNull(reference)));

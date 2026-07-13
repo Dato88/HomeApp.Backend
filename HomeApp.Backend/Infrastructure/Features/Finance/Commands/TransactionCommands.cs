@@ -4,16 +4,18 @@ using Domain.Entities.Finance;
 using Domain.Entities.Finance.Enums;
 using Infrastructure.Database;
 using Infrastructure.Features.Finance.Import;
+using Infrastructure.Features.Finance.Services;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
 namespace Infrastructure.Features.Finance.Commands;
 
-public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionContextAccessor executionContext)
-    : ITransactionCommands
+public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionContextAccessor executionContext,
+    PaymentPartnerResolver partnerResolver) : ITransactionCommands
 {
     private readonly HomeAppContext _dbContext = dbContext;
     private readonly IExecutionContextAccessor _executionContext = executionContext;
+    private readonly PaymentPartnerResolver _partnerResolver = partnerResolver;
 
     public async Task<Result<int>> CreateTransactionAsync(Transaction transaction,
         CancellationToken cancellationToken)
@@ -30,6 +32,10 @@ public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionCont
             return Result.Failure<int>(FinanceErrors.TransactionCreateFailedWithMessage(categoryError));
 
         transaction.CreatedById = _executionContext.PersonId;
+
+        var scope = await _partnerResolver.LoadScopeAsync(_executionContext.PersonId,
+            [(transaction.PaymentPartnerName, transaction.PaymentPartnerIban)], cancellationToken);
+        transaction.PaymentPartner = scope.Resolve(transaction.PaymentPartnerName, transaction.PaymentPartnerIban);
 
         _dbContext.Transactions.Add(transaction);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -51,11 +57,19 @@ public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionCont
         existing.BookingDate = transaction.BookingDate;
         existing.ValueDate = transaction.ValueDate;
         existing.Amount = transaction.Amount;
-        existing.CounterpartyName = transaction.CounterpartyName;
-        existing.CounterpartyIban = transaction.CounterpartyIban;
+        existing.PaymentPartnerName = transaction.PaymentPartnerName;
+        existing.PaymentPartnerIban = transaction.PaymentPartnerIban;
         existing.Purpose = transaction.Purpose;
         existing.UpdatedById = _executionContext.PersonId;
         existing.UpdatedAt = DateTime.UtcNow;
+
+        // Re-resolve: the partner strings may have changed; clearing both unlinks the partner
+        var scope = await _partnerResolver.LoadScopeAsync(_executionContext.PersonId,
+            [(existing.PaymentPartnerName, existing.PaymentPartnerIban)], cancellationToken);
+        existing.PaymentPartner = scope.Resolve(existing.PaymentPartnerName, existing.PaymentPartnerIban);
+
+        if (existing.PaymentPartner is null)
+            existing.PaymentPartnerId = null;
 
         _dbContext.Transactions.Update(existing);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -149,36 +163,35 @@ public sealed class TransactionCommands(HomeAppContext dbContext, IExecutionCont
                 .ToListAsync(cancellationToken))
             .ToHashSet();
 
-        var imported = 0;
+        var newCandidates = candidates.Where(c => !existingHashes.Contains(c.Hash)).ToList();
 
-        foreach (var (item, hash) in candidates)
-        {
-            if (existingHashes.Contains(hash))
-                continue;
+        // One partner lookup for the whole batch; new partners are reused within the same file
+        var scope = await _partnerResolver.LoadScopeAsync(_executionContext.PersonId,
+            newCandidates.Select(c => (c.Item.PaymentPartnerName, c.Item.PaymentPartnerIban)).ToList(),
+            cancellationToken);
 
+        foreach (var (item, hash) in newCandidates)
             _dbContext.Transactions.Add(new Transaction
             {
                 AccountId = accountId,
                 BookingDate = item.BookingDate,
                 ValueDate = item.ValueDate,
                 Amount = item.Amount,
-                CounterpartyName = Truncate(item.CounterpartyName, 200),
-                CounterpartyIban = item.CounterpartyIban is null
+                PaymentPartnerName = Truncate(item.PaymentPartnerName, 200),
+                PaymentPartnerIban = item.PaymentPartnerIban is null
                     ? null
-                    : Truncate(Domain.ValueObjects.Iban.Normalize(item.CounterpartyIban), 34),
+                    : Truncate(Domain.ValueObjects.Iban.Normalize(item.PaymentPartnerIban), 34),
                 Purpose = Truncate(item.Purpose, 500),
                 BankReference = Truncate(item.BankReference, 100),
                 ImportHash = hash,
                 Source = source,
-                CreatedById = _executionContext.PersonId
+                CreatedById = _executionContext.PersonId,
+                PaymentPartner = scope.Resolve(item.PaymentPartnerName, item.PaymentPartnerIban)
             });
-
-            imported++;
-        }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(new ImportResult(imported, items.Count - imported));
+        return Result.Success(new ImportResult(newCandidates.Count, items.Count - newCandidates.Count));
     }
 
     private static string? Truncate(string? value, int maxLength) =>

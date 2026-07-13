@@ -13,6 +13,7 @@ using Infrastructure.Database;
 using Infrastructure.Features.Finance.Commands;
 using Infrastructure.Features.Finance.Import;
 using Infrastructure.Features.Finance.Queries;
+using Infrastructure.Features.Finance.Services;
 using Infrastructure.Features.Households.Commands;
 using Infrastructure.Features.Households.Queries;
 using Infrastructure.Features.People.Commands;
@@ -74,6 +75,9 @@ public static class DependencyInjection
         services.AddScoped<ICategoryGroupQueries, CategoryGroupQueries>();
         services.AddScoped<ITransactionCommands, TransactionCommands>();
         services.AddScoped<ITransactionQueries, TransactionQueries>();
+        services.AddScoped<IPaymentPartnerCommands, PaymentPartnerCommands>();
+        services.AddScoped<IPaymentPartnerQueries, PaymentPartnerQueries>();
+        services.AddScoped<PaymentPartnerResolver>();
         services.AddScoped<IReportQueries, ReportQueries>();
         services.AddScoped<IBankStatementParser, Camt053Parser>();
         services.AddScoped<IBankStatementParser, SparkasseCamtCsvParser>();

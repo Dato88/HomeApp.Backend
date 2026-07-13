@@ -7,9 +7,12 @@ internal sealed class GetTransactionsQueryValidator : AbstractValidator<GetTrans
     public GetTransactionsQueryValidator()
     {
         RuleFor(c => c.AccountId).GreaterThan(0);
-        RuleFor(c => c.CounterpartyIban)
+        RuleFor(c => c.PaymentPartnerIban)
             .MaximumLength(50)
-            .When(c => c.CounterpartyIban != null);
+            .When(c => c.PaymentPartnerIban != null);
+        RuleFor(c => c.PaymentPartnerId)
+            .GreaterThan(0)
+            .When(c => c.PaymentPartnerId.HasValue);
         RuleFor(c => c.Page).GreaterThan(0);
         RuleFor(c => c.PageSize).InclusiveBetween(1, 200);
     }

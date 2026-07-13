@@ -64,6 +64,14 @@ public static class FinanceErrors
         "Finance.ImportFailedWithMessage",
         $"The import failed with message = '{message}'");
 
+    public static Error PaymentPartnerUpdateFailedWithMessage(string message) => Error.Failure(
+        "Finance.PaymentPartnerUpdateFailedWithMessage",
+        $"The payment partner could not be updated with message = '{message}'");
+
+    public static Error PaymentPartnerMergeFailedWithMessage(string message) => Error.Failure(
+        "Finance.PaymentPartnerMergeFailedWithMessage",
+        $"The payment partners could not be merged with message = '{message}'");
+
     public static Error UnexpectedError(string message) => Error.Failure(
         "Finance.UnexpectedError",
         $"An unexpected error occurred: {message}");

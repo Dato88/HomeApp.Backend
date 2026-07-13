@@ -18,11 +18,12 @@ public class TransactionController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Error))]
     public async Task<IActionResult> GetTransactionsAsync([FromQuery] int accountId, [FromQuery] DateOnly? from,
         [FromQuery] DateOnly? to, [FromQuery] int? categoryId, [FromQuery] bool? uncategorized,
-        [FromQuery] string? counterpartyIban = null, [FromQuery] int page = 1, [FromQuery] int pageSize = 50,
+        [FromQuery] string? paymentPartnerIban = null, [FromQuery] int? paymentPartnerId = null,
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 50,
         CancellationToken cancellationToken = default)
     {
         var response = await _mediator.Send(new GetTransactionsQuery(accountId, from, to, categoryId,
-            uncategorized, counterpartyIban, page, pageSize));
+            uncategorized, paymentPartnerIban, paymentPartnerId, page, pageSize));
 
         if (response.IsSuccess) return Ok(response);
 

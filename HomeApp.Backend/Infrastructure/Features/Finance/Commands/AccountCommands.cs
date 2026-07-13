@@ -77,6 +77,7 @@ public sealed class AccountCommands(HomeAppContext dbContext, IExecutionContextA
         existing.CurrencyCode = account.CurrencyCode;
         existing.Description = account.Description;
         existing.IsActive = account.IsActive;
+        existing.DeactivatedFrom = account.DeactivatedFrom;
         existing.UpdatedById = _executionContext.PersonId;
         existing.UpdatedAt = DateTime.UtcNow;
 

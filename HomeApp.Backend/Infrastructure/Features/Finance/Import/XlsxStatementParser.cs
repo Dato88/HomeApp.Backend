@@ -56,7 +56,7 @@ public sealed class XlsxStatementParser : IBankStatementParser
 
             var valueDateColumn = FindColumn(columns, "Valutadatum");
             var purposeColumn = FindColumn(columns, "Verwendungszweck");
-            var counterpartyColumn = FindColumn(columns, "Beguenstigter/Zahlungspflichtiger",
+            var partnerColumn = FindColumn(columns, "Beguenstigter/Zahlungspflichtiger",
                 "Begünstigter/Zahlungspflichtiger");
             var ibanColumn = FindColumn(columns, "Kontonummer/IBAN", "IBAN");
             var referenceColumn = FindColumn(columns, "Kundenreferenz (End-to-End)", "Kundenreferenz");
@@ -85,7 +85,7 @@ public sealed class XlsxStatementParser : IBankStatementParser
                         GetDate(row, valueDateColumn),
                         amount,
                         GetText(row, currencyColumn),
-                        GetText(row, counterpartyColumn),
+                        GetText(row, partnerColumn),
                         GetText(row, ibanColumn),
                         GetText(row, purposeColumn),
                         reference));

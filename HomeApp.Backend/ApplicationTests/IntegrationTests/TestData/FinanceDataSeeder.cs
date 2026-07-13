@@ -79,7 +79,8 @@ public class FinanceDataSeeder : BaseTest
     }
 
     public async Task<Transaction> GenereateDummyTransaction(int accountId, int personId, DateOnly bookingDate,
-        decimal amount, int? categoryId = null, string? counterpartyIban = null)
+        decimal amount, int? categoryId = null, string? paymentPartnerIban = null,
+        string? paymentPartnerName = null)
     {
         var transaction = new Transaction
         {
@@ -87,7 +88,8 @@ public class FinanceDataSeeder : BaseTest
             BookingDate = bookingDate,
             Amount = amount,
             CategoryId = categoryId,
-            CounterpartyIban = counterpartyIban,
+            PaymentPartnerIban = paymentPartnerIban,
+            PaymentPartnerName = paymentPartnerName,
             Source = TransactionSource.Manual,
             CreatedById = personId
         };

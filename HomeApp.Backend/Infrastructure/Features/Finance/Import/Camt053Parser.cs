@@ -78,12 +78,12 @@ public sealed class Camt053Parser : IBankStatementParser
                 if (string.Equals(reference, "NOTPROVIDED", StringComparison.OrdinalIgnoreCase))
                     reference = null;
 
-                // Counterparty: for debits the creditor, for credits the debtor
+                // Partner: for debits the creditor, for credits the debtor
                 var isDebit = amount < 0;
-                var counterpartyName = Descendant(entry, isDebit ? "Cdtr" : "Dbtr") is { } party
+                var paymentPartnerName = Descendant(entry, isDebit ? "Cdtr" : "Dbtr") is { } party
                     ? Descendant(party, "Nm")?.Value
                     : null;
-                var counterpartyIban = Descendant(entry, isDebit ? "CdtrAcct" : "DbtrAcct") is { } acct
+                var paymentPartnerIban = Descendant(entry, isDebit ? "CdtrAcct" : "DbtrAcct") is { } acct
                     ? Descendant(acct, "IBAN")?.Value
                     : null;
 
@@ -95,8 +95,8 @@ public sealed class Camt053Parser : IBankStatementParser
                     valueDate,
                     amount,
                     currency,
-                    counterpartyName,
-                    counterpartyIban,
+                    paymentPartnerName,
+                    paymentPartnerIban,
                     string.IsNullOrWhiteSpace(purpose) ? null : purpose,
                     reference));
             }

@@ -13,7 +13,8 @@ public sealed record UpdateAccountCommand(
     AccountType AccountType,
     string? CurrencyCode,
     string? Description,
-    bool IsActive) : IRequest<Result<int>>
+    bool IsActive,
+    DateOnly? DeactivatedFrom = null) : IRequest<Result<int>>
 {
     public static explicit operator Account(UpdateAccountCommand item) =>
         new()
@@ -27,6 +28,7 @@ public sealed record UpdateAccountCommand(
                 ? "EUR"
                 : item.CurrencyCode.Trim().ToUpperInvariant(),
             Description = item.Description,
-            IsActive = item.IsActive
+            IsActive = item.IsActive,
+            DeactivatedFrom = item.DeactivatedFrom
         };
 }

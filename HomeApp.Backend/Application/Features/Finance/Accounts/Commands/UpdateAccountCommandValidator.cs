@@ -25,5 +25,10 @@ internal sealed class UpdateAccountCommandValidator : AbstractValidator<UpdateAc
             .Length(3)
             .When(c => !string.IsNullOrWhiteSpace(c.CurrencyCode))
             .WithMessage("CurrencyCode must be a 3-letter ISO code.");
+
+        RuleFor(c => c.DeactivatedFrom)
+            .Empty()
+            .When(c => c.IsActive)
+            .WithMessage("DeactivatedFrom may only be set when the account is inactive.");
     }
 }

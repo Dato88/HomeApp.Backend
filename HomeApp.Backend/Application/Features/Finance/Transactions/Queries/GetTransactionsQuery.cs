@@ -10,6 +10,7 @@ public sealed record GetTransactionsQuery(
     DateOnly? To,
     int? CategoryId,
     bool? Uncategorized,
-    string? CounterpartyIban = null,
+    string? PaymentPartnerIban = null,
+    int? PaymentPartnerId = null,
     int Page = 1,
     int PageSize = 50) : IRequest<Result<TransactionListResponse>>;

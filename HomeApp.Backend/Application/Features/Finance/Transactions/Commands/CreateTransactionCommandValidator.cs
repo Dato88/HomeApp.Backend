@@ -8,8 +8,8 @@ internal sealed class CreateTransactionCommandValidator : AbstractValidator<Crea
     {
         RuleFor(c => c.AccountId).GreaterThan(0);
         RuleFor(c => c.BookingDate).NotEmpty();
-        RuleFor(c => c.CounterpartyName).MaximumLength(200);
-        RuleFor(c => c.CounterpartyIban).MaximumLength(34);
+        RuleFor(c => c.PaymentPartnerName).MaximumLength(200);
+        RuleFor(c => c.PaymentPartnerIban).MaximumLength(34);
         RuleFor(c => c.Purpose).MaximumLength(500);
         RuleFor(c => c.CategoryId)
             .GreaterThan(0)

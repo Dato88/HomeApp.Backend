@@ -13,8 +13,8 @@ public sealed class TransactionQueries(HomeAppContext dbContext, IExecutionConte
     private readonly IExecutionContextAccessor _executionContext = executionContext;
 
     public async Task<Result<TransactionPage>> GetTransactionsAsync(int accountId, DateOnly? from, DateOnly? to,
-        int? categoryId, bool? uncategorized, string? counterpartyIban, int page, int pageSize,
-        CancellationToken cancellationToken)
+        int? categoryId, bool? uncategorized, string? paymentPartnerIban, int? paymentPartnerId,
+        int page, int pageSize, CancellationToken cancellationToken)
     {
         var query = _dbContext.Transactions
             .AsNoTracking()
@@ -36,14 +36,17 @@ public sealed class TransactionQueries(HomeAppContext dbContext, IExecutionConte
         if (uncategorized == true)
             query = query.Where(t => t.CategoryId == null);
 
-        // Exact match on the normalized IBAN; both sides are normalized because manually created
-        // transactions may store the counterparty IBAN unnormalized (imports normalize on write)
-        if (!string.IsNullOrWhiteSpace(counterpartyIban))
-        {
-            var normalizedIban = Domain.ValueObjects.Iban.Normalize(counterpartyIban);
+        if (paymentPartnerId.HasValue)
+            query = query.Where(t => t.PaymentPartnerId == paymentPartnerId.Value);
 
-            query = query.Where(t => t.CounterpartyIban != null &&
-                                     t.CounterpartyIban.Replace(" ", "").ToUpper() == normalizedIban);
+        // Exact match on the normalized IBAN; both sides are normalized because manually created
+        // transactions may store the partner IBAN unnormalized (imports normalize on write)
+        if (!string.IsNullOrWhiteSpace(paymentPartnerIban))
+        {
+            var normalizedIban = Domain.ValueObjects.Iban.Normalize(paymentPartnerIban);
+
+            query = query.Where(t => t.PaymentPartnerIban != null &&
+                                     t.PaymentPartnerIban.Replace(" ", "").ToUpper() == normalizedIban);
         }
 
         var totalCount = await query.CountAsync(cancellationToken);

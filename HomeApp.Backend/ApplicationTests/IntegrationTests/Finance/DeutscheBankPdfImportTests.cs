@@ -38,28 +38,28 @@ public class DeutscheBankPdfImportTests : BaseFinanceCommandsTest
         var direktDebit = result.Value.Transactions.Single(t => t.Amount == -10.00m);
         direktDebit.BookingDate.Should().Be(new DateOnly(2026, 3, 2));
         direktDebit.ValueDate.Should().Be(new DateOnly(2026, 3, 2));
-        direktDebit.CounterpartyName.Should().Be("Bayern Versicherung Lebensversicherung AG");
+        direktDebit.PaymentPartnerName.Should().Be("Bayern Versicherung Lebensversicherung AG");
         direktDebit.Purpose.Should().Contain("LEBEN LV-1-0454-2814");
         direktDebit.Purpose.Should().Contain("P82-518038441014");
         direktDebit.Purpose.Should().NotContain("Gläubiger-ID");
         direktDebit.Purpose.Should().NotContain("RCUR");
 
-        // Überweisung: counterparty IBAN captured from its own line
+        // Überweisung: partner IBAN captured from its own line
         var transfer = result.Value.Transactions.Single(t => t.Amount == -16.65m);
         transfer.BookingDate.Should().Be(new DateOnly(2026, 3, 13));
-        transfer.CounterpartyName.Should().Be("Andrej Miller");
-        transfer.CounterpartyIban.Should().Be("DE12793530900011094851");
+        transfer.PaymentPartnerName.Should().Be("Andrej Miller");
+        transfer.PaymentPartnerIban.Should().Be("DE12793530900011094851");
         transfer.Purpose.Should().StartWith("Kontoauflösung");
 
         // Unsigned Haben amount: the right-aligned column decides the sign
         var credit = result.Value.Transactions.Single(t => t.Amount == 2500.00m);
         credit.BookingDate.Should().Be(new DateOnly(2026, 3, 15));
-        credit.CounterpartyName.Should().Be("Arbeitgeber GmbH");
+        credit.PaymentPartnerName.Should().Be("Arbeitgeber GmbH");
         credit.Purpose.Should().Be("Gehalt Maerz");
 
-        // KONTOABRECHNUNG: marker on the entry line itself, no counterparty
+        // KONTOABRECHNUNG: marker on the entry line itself, no partner
         var settlement = result.Value.Transactions.Single(t => t.Amount == -10.76m);
-        settlement.CounterpartyName.Should().BeNull();
+        settlement.PaymentPartnerName.Should().BeNull();
         settlement.Purpose.Should().Be("KONTOABRECHNUNG");
     }
 
@@ -167,7 +167,7 @@ public class DeutscheBankPdfImportTests : BaseFinanceCommandsTest
         Text(140, 615, "ABWA Versicherungskammer Bayern");
         Text(140, 605, "RCUR Wiederholungslastschrift");
 
-        // Entry 2: transfer with counterparty IBAN/BIC lines
+        // Entry 2: transfer with partner IBAN/BIC lines
         Text(50, 590, "13.03.");
         Text(95, 590, "13.03.");
         Text(140, 590, "SEPA Überweisung an");

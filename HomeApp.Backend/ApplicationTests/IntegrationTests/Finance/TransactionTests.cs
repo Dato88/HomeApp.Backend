@@ -21,7 +21,7 @@ public class TransactionTests : BaseFinanceCommandsTest
             AccountId = account.AccountId,
             BookingDate = new DateOnly(2026, 1, 15),
             Amount = -49.99m,
-            CounterpartyName = "REWE",
+            PaymentPartnerName = "REWE",
             Purpose = "Einkauf",
             Source = TransactionSource.Manual
         };
@@ -269,9 +269,9 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act
         var allResult = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null,
-            null, null, 1, 4, CancellationToken.None);
+            null, null, null, 1, 4, CancellationToken.None);
         var rangeResult = await TransactionQueries.GetTransactionsAsync(account.AccountId,
-            new DateOnly(2026, 2, 1), new DateOnly(2026, 3, 31), null, null, null, 1, 50,
+            new DateOnly(2026, 2, 1), new DateOnly(2026, 3, 31), null, null, null, null, 1, 50,
             CancellationToken.None);
 
         // Assert
@@ -294,7 +294,7 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act
         var result = await TransactionQueries.GetTransactionsAsync(foreignAccount.AccountId, null, null, null,
-            null, null, 1, 50, CancellationToken.None);
+            null, null, null, 1, 50, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -316,7 +316,7 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act
         var result = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null, null,
-            null, 1, 50, CancellationToken.None);
+            null, null, 1, 50, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -324,9 +324,9 @@ public class TransactionTests : BaseFinanceCommandsTest
     }
 
     [Fact]
-    public async Task GetTransactions_ShouldFilterByCounterpartyIbanWithPagination()
+    public async Task GetTransactions_ShouldFilterByPaymentPartnerIbanWithPagination()
     {
-        // Arrange: 3 bookings for the target counterparty, 1 for another one, 1 without IBAN
+        // Arrange: 3 bookings for the target partner, 1 for another one, 1 without IBAN
         var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
         const string targetIban = "DE02120300000000202051";
 
@@ -341,22 +341,22 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act
         var filtered = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null,
-            null, targetIban, 1, 2, CancellationToken.None);
+            null, targetIban, null, 1, 2, CancellationToken.None);
         var noMatch = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null,
-            null, "DE44500105175407324931", 1, 50, CancellationToken.None);
+            null, "DE44500105175407324931", null, 1, 50, CancellationToken.None);
 
         // Assert: totalCount reflects the IBAN matches, not all account bookings
         filtered.IsSuccess.Should().BeTrue();
         filtered.Value.TotalCount.Should().Be(3);
         filtered.Value.Items.Should().HaveCount(2);
-        filtered.Value.Items.Should().OnlyContain(t => t.CounterpartyIban == targetIban);
+        filtered.Value.Items.Should().OnlyContain(t => t.PaymentPartnerIban == targetIban);
 
         noMatch.Value.TotalCount.Should().Be(0);
         noMatch.Value.Items.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task GetTransactions_ShouldNormalizeCounterpartyIbanOnBothSides()
+    public async Task GetTransactions_ShouldNormalizePaymentPartnerIbanOnBothSides()
     {
         // Arrange: manually created bookings may store the IBAN unnormalized
         var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
@@ -365,7 +365,7 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act: differently formatted parameter (lowercase, other spacing)
         var result = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null,
-            null, " De021203 0000 0000 202051 ", 1, 50, CancellationToken.None);
+            null, " De021203 0000 0000 202051 ", null, 1, 50, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -373,9 +373,9 @@ public class TransactionTests : BaseFinanceCommandsTest
     }
 
     [Fact]
-    public async Task GetTransactions_ShouldBehaveUnchangedWithoutCounterpartyIban()
+    public async Task GetTransactions_ShouldBehaveUnchangedWithoutPaymentPartnerIban()
     {
-        // Arrange: bookings without counterparty IBAN must still appear in the unfiltered list
+        // Arrange: bookings without partner IBAN must still appear in the unfiltered list
         var account = await FinanceDataSeeder.GenereateDummyAccount(ExecutionContext.PersonId);
         await FinanceDataSeeder.GenereateDummyTransaction(account.AccountId, ExecutionContext.PersonId,
             new DateOnly(2026, 3, 5), -950, null, "DE02120300000000202051");
@@ -384,11 +384,11 @@ public class TransactionTests : BaseFinanceCommandsTest
 
         // Act
         var result = await TransactionQueries.GetTransactionsAsync(account.AccountId, null, null, null,
-            null, null, 1, 50, CancellationToken.None);
+            null, null, null, 1, 50, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.TotalCount.Should().Be(2);
-        result.Value.Items.Should().Contain(t => t.CounterpartyIban == null);
+        result.Value.Items.Should().Contain(t => t.PaymentPartnerIban == null);
     }
 }

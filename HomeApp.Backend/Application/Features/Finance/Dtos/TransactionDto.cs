@@ -10,11 +10,12 @@ public sealed class TransactionDto
     public DateOnly BookingDate { get; set; }
     public DateOnly? ValueDate { get; set; }
     public decimal Amount { get; set; }
-    public string? CounterpartyName { get; set; }
-    public string? CounterpartyIban { get; set; }
+    public string? PaymentPartnerName { get; set; }
+    public string? PaymentPartnerIban { get; set; }
     public string? Purpose { get; set; }
     public string? BankReference { get; set; }
     public int? CategoryId { get; set; }
+    public int? PaymentPartnerId { get; set; }
     public TransactionSource Source { get; set; }
 
     public static explicit operator TransactionDto(Transaction entity) =>
@@ -25,11 +26,12 @@ public sealed class TransactionDto
             BookingDate = entity.BookingDate,
             ValueDate = entity.ValueDate,
             Amount = entity.Amount,
-            CounterpartyName = entity.CounterpartyName,
-            CounterpartyIban = entity.CounterpartyIban,
+            PaymentPartnerName = entity.PaymentPartnerName,
+            PaymentPartnerIban = entity.PaymentPartnerIban,
             Purpose = entity.Purpose,
             BankReference = entity.BankReference,
             CategoryId = entity.CategoryId,
+            PaymentPartnerId = entity.PaymentPartnerId,
             Source = entity.Source
         };
 }

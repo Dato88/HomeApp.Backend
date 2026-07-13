@@ -21,8 +21,8 @@ public sealed class GetTransactionsQueryHandler(
         try
         {
             var result = await _transactionQueries.GetTransactionsAsync(request.AccountId, request.From,
-                request.To, request.CategoryId, request.Uncategorized, request.CounterpartyIban,
-                request.Page, request.PageSize, cancellationToken);
+                request.To, request.CategoryId, request.Uncategorized, request.PaymentPartnerIban,
+                request.PaymentPartnerId, request.Page, request.PageSize, cancellationToken);
 
             if (result.IsFailure)
                 return Result.Failure<TransactionListResponse>(result.Error);

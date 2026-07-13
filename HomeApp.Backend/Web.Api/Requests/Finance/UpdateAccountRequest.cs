@@ -13,8 +13,9 @@ public sealed record UpdateAccountRequest
     public string? CurrencyCode { get; init; }
     public string? Description { get; init; }
     public bool IsActive { get; init; } = true;
+    public DateOnly? DeactivatedFrom { get; init; }
 
     public static explicit operator UpdateAccountCommand(UpdateAccountRequest request)
         => new(request.AccountId, request.Name, request.Iban, request.Bic, request.AccountType,
-            request.CurrencyCode, request.Description, request.IsActive);
+            request.CurrencyCode, request.Description, request.IsActive, request.DeactivatedFrom);
 }

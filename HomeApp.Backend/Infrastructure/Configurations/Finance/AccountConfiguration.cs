@@ -51,6 +51,9 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
             .IsRequired()
             .HasDefaultValue(true);
 
+        builder.Property(a => a.DeactivatedFrom)
+            .HasColumnName("deactivated_from");
+
         // Auditing
         builder.ConfigureAuditable();
 

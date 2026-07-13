@@ -14,9 +14,9 @@ internal static class TransactionHashCalculator
 
     public static string ComputeKey(int accountId, ParsedTransaction transaction)
     {
-        var iban = transaction.CounterpartyIban is null
+        var iban = transaction.PaymentPartnerIban is null
             ? string.Empty
-            : Domain.ValueObjects.Iban.Normalize(transaction.CounterpartyIban);
+            : Domain.ValueObjects.Iban.Normalize(transaction.PaymentPartnerIban);
 
         var purpose = transaction.Purpose is null
             ? string.Empty

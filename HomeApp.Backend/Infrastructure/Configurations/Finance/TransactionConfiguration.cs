@@ -32,12 +32,12 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
             .HasPrecision(18, 2)
             .IsRequired();
 
-        builder.Property(t => t.CounterpartyName)
-            .HasColumnName("counterparty_name")
+        builder.Property(t => t.PaymentPartnerName)
+            .HasColumnName("payment_partner_name")
             .HasMaxLength(200);
 
-        builder.Property(t => t.CounterpartyIban)
-            .HasColumnName("counterparty_iban")
+        builder.Property(t => t.PaymentPartnerIban)
+            .HasColumnName("payment_partner_iban")
             .HasMaxLength(34);
 
         builder.Property(t => t.Purpose)
@@ -50,6 +50,9 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
 
         builder.Property(t => t.CategoryId)
             .HasColumnName("category_id");
+
+        builder.Property(t => t.PaymentPartnerId)
+            .HasColumnName("payment_partner_id");
 
         builder.Property(t => t.ImportHash)
             .HasColumnName("import_hash")
@@ -67,6 +70,8 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
 
         builder.HasIndex(t => t.CategoryId);
 
+        builder.HasIndex(t => t.PaymentPartnerId);
+
         // Import dedup: the same import hash may exist only once per account
         builder.HasIndex(t => new { t.AccountId, t.ImportHash })
             .IsUnique()
@@ -76,6 +81,11 @@ internal sealed class TransactionConfiguration : IEntityTypeConfiguration<Transa
         builder.HasOne(t => t.Category)
             .WithMany(c => c.Transactions)
             .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(t => t.PaymentPartner)
+            .WithMany(p => p.Transactions)
+            .HasForeignKey(t => t.PaymentPartnerId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

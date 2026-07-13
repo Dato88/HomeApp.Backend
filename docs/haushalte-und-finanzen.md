@@ -8,6 +8,7 @@ Das Feature bildet ein Haushaltsbuch ab, das sich **vollständig aus den Buchung
 
 - **Finance = Realität (IST).** Konten (Bankverbindungen mit IBAN) gehören einer Person und enthalten Buchungen (manuell oder importiert). Buchungen werden Kategorien zugeordnet — einzeln oder als Mehrfachauswahl.
 - **Kategorie-Gruppen** strukturieren die Kategorien pro Haushalt (z. B. Wohnen, Versicherungen, Lebenshaltung, Sparen) und tragen optional einen Zielanteil am Einkommen (`target_percent`, z. B. 30/10/30/30-Regel).
+- **Zahlungspartner** (`PaymentPartner`) sind die deduplizierte Sicht auf Empfänger/Auftraggeber: Buchungen behalten die Roh-Strings der Bank (Audit), verweisen aber zusätzlich per `payment_partner_id` auf einen pro Konto-Owner deduplizierte Partner — Grundlage für Auswertungen pro Händler, Bulk-Aktionen und die geplante Regel-Engine.
 - **E+A-Report:** `GET /Report/eva` aggregiert die Buchungen pro Kategorie und Monat und rollt sie über die Gruppen hoch — es gibt **keine manuelle SOLL-Planung** mehr (das frühere Budget-Modul mit Gruppen/Zeilen/Zellen wurde entfernt).
 
 ### Haushalte
@@ -33,7 +34,8 @@ Das Feature bildet ein Haushaltsbuch ab, das sich **vollständig aus den Buchung
 | `finance` | `account_households` | Freigabe Konto↔Haushalt, unique `(account_id, household_id)` |
 | `finance` | `category_groups` | Kategorie-Gruppe pro Haushalt, unique `(household_id, name)`, `category_group_type` (1=Income, 2=Expense) und `target_percent` (Zielanteil am Einkommen, numeric(5,2), nullable) |
 | `finance` | `categories` | Kategorie pro Haushalt, unique `(household_id, name)`, `category_type` (Income/Expense), optional `category_group_id` (FK `SET NULL`) |
-| `finance` | `transactions` | Buchung: signierter Betrag (negativ = Ausgabe), `booking_date`, Gegenpartei, `category_id` (FK `SET NULL`), `import_hash` (unique pro Konto, gefiltert), `source` (Manual/CsvImport/CamtImport/XlsxImport/PdfImport) |
+| `finance` | `payment_partners` | Zahlungspartner pro Konto-Owner (`person_id`): `display_name` (user-editierbar), `normalized_name` (Matching-Key), `iban` (normalisiert, unique pro Person wenn gesetzt), `linked_account_id` (FK `SET NULL`, gesetzt bei Eigenübertrag auf eigenes Konto) |
+| `finance` | `transactions` | Buchung: signierter Betrag (negativ = Ausgabe), `booking_date`, Roh-Strings `payment_partner_name`/`payment_partner_iban` (Audit), `payment_partner_id` (FK `SET NULL`), `category_id` (FK `SET NULL`), `import_hash` (unique pro Konto, gefiltert), `source` (Manual/CsvImport/CamtImport/XlsxImport/PdfImport) |
 
 Löschkaskaden: Person → Konten (→ Buchungen) und Mitgliedschaften; Haushalt → Kategorien und Kategorie-Gruppen (Buchungen werden nur entkategorisiert), Freigaben. Beim Löschen einer Kategorie-Gruppe bleiben die Kategorien bestehen (nur der Gruppen-Link wird geleert).
 
@@ -47,12 +49,13 @@ IBAN: Speicherung normalisiert (ohne Whitespace, Uppercase), Validierung per ISO
 | `20260704…_financeModule` | Alle `finance.*`-Tabellen + `budget_rows.category_id` |
 | `20260704…_budgetGroupTargetPercent` | `budget_groups.target_percent` (numeric(5,2), nullable) |
 | `20260712…_categoryGroupsReplaceBudget` | `finance.category_groups` + `categories.category_group_id` anlegen; **Daten-Backfill** (pro Haushalt werden die Gruppen des jüngsten Budget-Jahres übernommen — Name, Typ, `target_percent` — und die Kategorien über die bisherigen Budget-Zeilen verlinkt); danach werden `budget_cells`, `budget_rows`, `budget_groups`, `budgets` und das Schema `budget` **gelöscht**. Die `Down()`-Migration stellt nur leere Budget-Tabellen wieder her (verlustbehaftet, best effort). |
+| `20260713…_paymentPartners` | `finance.payment_partners` anlegen; `transactions.counterparty_name/-iban` → `payment_partner_name/-iban` (RenameColumn, verlustfrei) + neue FK-Spalte `payment_partner_id`; `accounts.deactivated_from`; **Daten-Backfill** (Partner aus den Roh-Strings dedupliziert: IBAN-Gruppen zuerst, dann Nur-Name-Gruppen; Anzeigename = häufigster bereinigter Rohname; Eigenkonto-Verknüpfung über Konto-IBANs) — gleiche Matching-Regel wie der `PaymentPartnerResolver`. `Down()` ist verlustfrei (Roh-Strings bleiben auf der Buchung). |
 
 Der Backfill läuft als SQL innerhalb der Migration und wird in CI durch die Testcontainers-Integrationstests (`Database.Migrate()`) mit ausgeführt. Für `dotnet ef` existiert `Infrastructure/Database/HomeAppContextDesignTimeFactory.cs` (kein OAuth-Setup nötig).
 
 ## Berechtigungen (Keycloak)
 
-- Realm-Rolle **`ViewFinance`** für `AccountController`, `CategoryController`, `CategoryGroupController`, `TransactionController` und `ReportController`; `HouseholdController` nur `[Authorize]`.
+- Realm-Rolle **`ViewFinance`** für `AccountController`, `CategoryController`, `CategoryGroupController`, `TransactionController`, `PaymentPartnerController` und `ReportController`; `HouseholdController` nur `[Authorize]`.
 - Die Rolle **`ViewBudget` entfällt** (kein Controller referenziert sie mehr) und wurde aus `homeapp-realm.json` entfernt. Lokal greift die Realm-Änderung erst nach einem Keycloak-Volume-Reset; auf echten Instanzen ist die verwaiste Rolle harmlos und kann manuell gelöscht werden.
 - Feingranulare Berechtigung (Owner vs. Mitglied, Mitgliedschaft) wird **datenseitig** in den `Infrastructure/Features/**`-Implementierungen erzwungen, nicht über Rollen.
 
@@ -67,6 +70,18 @@ Der Backfill läuft als SQL innerhalb der Migration und wird in CI durch die Tes
   - **Deutsche-Bank-Kontoauszug-PDF** (`format=deutsche-bank-pdf`, via PdfPig): PDFs tragen keine Datenstruktur, daher **positionsbasiertes** Parsen — die Kopfzeilen-Wörter Buchung/Valuta/Vorgang/Soll/Haben definieren die Spalten, daraus werden Buchungen inkl. mehrzeiligem Verwendungszweck und Gegen-IBAN rekonstruiert; SEPA-Metadaten (Gläubiger-ID, Mand-ID, RCUR, …) werden ausgefiltert, „Neuer Saldo" beendet das Parsen. **Best effort:** bewusst auf das private Kontoauszug-Layout beschränkt; Einträge, die ein Layout-Wechsel bricht, landen in der Fehlerliste der Antwort statt im Import.
 - **Duplikaterkennung:** SHA-256 über `kontoId|buchungstag|betrag|gegen-iban|verwendungszweck(normalisiert)` + Occurrence-Suffix für identische Buchungen innerhalb einer Datei. Der Hash ist formatunabhängig — CSV-, CAMT-, XLSX- und PDF-Importe desselben Kontos dedupen gegeneinander. Gefilterter Unique-Index `(account_id, import_hash)` als Race-Absicherung.
 - Bekannte Grenze: identische Buchungen am selben Tag, die auf **zwei verschiedene** Dateien verteilt sind, kollidieren (Occurrence-Suffix wirkt nur innerhalb einer Datei).
+
+## Zahlungspartner (Matching & Merge)
+
+- **Scoping:** Zahlungspartner gehören dem **Konto-Owner** (`person_id`), nicht dem Haushalt — Konto↔Haushalt ist m:n, nur der Owner ist deterministisch. Haushaltsmitglieder sehen die `paymentPartnerId` über die Buchungen (wie `categoryId`); Details siehe [ADR 0003](./adr/0003-payment-partner-entitaet-und-matching.md).
+- **Matching-Regel** (deterministisch, identisch in `PaymentPartnerResolver` und Migrations-Backfill):
+  1. Buchung **mit IBAN** → Match nur über `(person_id, iban)`; kein Treffer → neuer Partner mit IBAN. Eine IBAN-Buchung wird nie an einen Namens-Match gehängt (IBAN-Identität ist stärker).
+  2. Buchung **ohne IBAN** → Match über `(person_id, normalized_name)` gegen alle Partner (auch IBAN-tragende); bei mehreren Treffern gewinnt der älteste (kleinste ID); kein Treffer → neuer Partner ohne IBAN.
+  3. **Weder Name noch IBAN** (z. B. Revolut) → `payment_partner_id` bleibt `null`.
+- Namens-Normalisierung: Trim + Whitespace kollabieren + Invariant-Uppercase (`Domain/ValueObjects/PartnerName.cs`), kein Fuzzy-Matching. `display_name` behält die Original-Schreibweise des häufigsten Rohnamens; **Umbenennen ändert nur `display_name`** — der Matching-Key bleibt, damit künftige Importe weiter zugeordnet werden.
+- **Eigenüberträge:** Zeigt die Partner-IBAN auf ein eigenes Konto, wird `linked_account_id` gesetzt (beim Anlegen und nachträglich beim nächsten Match, falls das Konto später angelegt wurde). Vorbereitung für einen späteren Report-Ausschluss von Umbuchungen — aktuell rein informativ.
+- **Merge** (`POST /PaymentPartner/merge`): Buchungen werden per `ExecuteUpdate` umgehängt, der Source-Partner gelöscht (in einer DB-Transaktion; Delete zuerst, damit der Unique-Slot `(person_id, iban)` frei wird). Hat das Ziel keine IBAN, erbt es IBAN + `linked_account_id`. **Bewusste Limitation:** kein Alias-Mechanismus — der Matching-Key des Source geht verloren, ein künftiger Import mit dessen Namen legt den Partner neu an (`payment_partner_aliases` = Future Work).
+- **Performance/Parallelität:** Der Resolver lädt pro Import-Batch genau einmal alle in Frage kommenden Partner (IN-Listen) und arbeitet danach über Dictionaries; neue Partner werden innerhalb der Datei wiederverwendet. Parallele Imports desselben Owners können beim Anlegen desselben Partners kollidieren — die partial-unique Indizes lassen das laut fehlschlagen (Retry genügt).
 
 ## Kategorisierung (einzeln & Mehrfachauswahl)
 
@@ -89,6 +104,8 @@ Der Backfill läuft als SQL innerhalb der Migration und wird in CI durch die Tes
 - **PATCH = Full-Replace:** Die PATCH-Endpunkte ersetzen alle Felder des Objekts. Nicht mitgesendete optionale Felder (`targetPercent`, `categoryGroupId`) werden auf `null` gesetzt — Clients müssen immer das vollständige Objekt senden.
 - Es gibt **keine Validierung**, dass der `category_type` einer Kategorie zum Typ ihrer Gruppe passt (der Report flippt grupppierte Kategorien nach dem Gruppen-Typ) — bewusst tolerant, damit der Migrations-Backfill nicht scheitern kann.
 - Breaking Changes fürs Frontend (gebündelt): `/Budget/*` entfällt komplett (E+A jetzt `GET /Report/eva`), `PATCH /Transaction/category` erwartet eine `transactionIds`-Liste, Category-DTO/Requests haben `categoryGroupId`, die Navbar verliert „Budget", Rolle `ViewBudget` entfällt.
-- Auto-Kategorisierung (Regel-Engine) ist bewusst noch nicht umgesetzt (geplant: `CategoryRule` mit Stichwort-Matching beim Import).
+- **Breaking Change (2026-07, Zahlungspartner):** `counterpartyName`/`counterpartyIban` heißen in DTOs, Requests und als Query-Parameter jetzt `paymentPartnerName`/`paymentPartnerIban`; Transaction-DTO trägt zusätzlich `paymentPartnerId`, Account-DTO/-Update `deactivatedFrom`.
+- **Konto-Deaktivierung:** `accounts.deactivated_from` („deaktiviert ab") ist reine Information (nur setzbar bei `is_active = false`, Validator) — das Backend sperrt weder Importe noch Buchungen auf deaktivierten Konten (bewusst; ggf. Future Work).
+- Auto-Kategorisierung (Regel-Engine) ist bewusst noch nicht umgesetzt (geplant: `CategoryRule` mit Stichwort-Matching beim Import — kann jetzt zusätzlich auf `payment_partner_id` aufsetzen, z. B. Default-Kategorie pro Zahlungspartner).
 
 Fachlicher Gesamtkontext: siehe Confluence-Projektseite [Link — nachtragen].

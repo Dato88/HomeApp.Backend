@@ -663,6 +663,10 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("character varying(3)")
                         .HasColumnName("currency_code");
 
+                    b.Property<DateOnly?>("DeactivatedFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("deactivated_from");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
@@ -890,6 +894,85 @@ namespace Infrastructure.Migrations.HomeApp
                     b.ToTable("category_groups", "finance");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Finance.PaymentPartner", b =>
+                {
+                    b.Property<int>("PaymentPartnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_partner_id")
+                        .HasColumnOrder(0);
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentPartnerId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("created_at")
+                        .HasColumnOrder(1)
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("Iban")
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("iban");
+
+                    b.Property<int?>("LinkedAccountId")
+                        .HasColumnType("integer")
+                        .HasColumnName("linked_account_id");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("normalized_name");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer")
+                        .HasColumnName("person_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp(3) with time zone")
+                        .HasColumnName("updated_at")
+                        .HasColumnOrder(3);
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by_id")
+                        .HasColumnOrder(4);
+
+                    b.HasKey("PaymentPartnerId")
+                        .HasName("pk_payment_partners");
+
+                    b.HasIndex("LinkedAccountId")
+                        .HasDatabaseName("ix_payment_partners_linked_account_id");
+
+                    b.HasIndex("PersonId", "Iban")
+                        .IsUnique()
+                        .HasDatabaseName("ix_payment_partners_person_id_iban")
+                        .HasFilter("iban IS NOT NULL");
+
+                    b.HasIndex(new[] { "PersonId", "NormalizedName" }, "ix_payment_partners_person_id_normalized_name")
+                        .HasDatabaseName("ix_payment_partners_person_id_normalized_name");
+
+                    b.HasIndex(new[] { "PersonId", "NormalizedName" }, "ix_payment_partners_person_id_normalized_name_no_iban")
+                        .IsUnique()
+                        .HasDatabaseName("ix_payment_partners_person_id_normalized_name_no_iban")
+                        .HasFilter("iban IS NULL");
+
+                    b.ToTable("payment_partners", "finance");
+                });
+
             modelBuilder.Entity("Domain.Entities.Finance.Transaction", b =>
                 {
                     b.Property<int>("TransactionId")
@@ -922,16 +1005,6 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasColumnType("integer")
                         .HasColumnName("category_id");
 
-                    b.Property<string>("CounterpartyIban")
-                        .HasMaxLength(34)
-                        .HasColumnType("character varying(34)")
-                        .HasColumnName("counterparty_iban");
-
-                    b.Property<string>("CounterpartyName")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("counterparty_name");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp(3) with time zone")
@@ -948,6 +1021,20 @@ namespace Infrastructure.Migrations.HomeApp
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)")
                         .HasColumnName("import_hash");
+
+                    b.Property<string>("PaymentPartnerIban")
+                        .HasMaxLength(34)
+                        .HasColumnType("character varying(34)")
+                        .HasColumnName("payment_partner_iban");
+
+                    b.Property<int?>("PaymentPartnerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_partner_id");
+
+                    b.Property<string>("PaymentPartnerName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("payment_partner_name");
 
                     b.Property<string>("Purpose")
                         .HasMaxLength(500)
@@ -977,6 +1064,9 @@ namespace Infrastructure.Migrations.HomeApp
 
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_transactions_category_id");
+
+                    b.HasIndex("PaymentPartnerId")
+                        .HasDatabaseName("ix_transactions_payment_partner_id");
 
                     b.HasIndex("AccountId", "BookingDate")
                         .HasDatabaseName("ix_transactions_account_id_booking_date");
@@ -2223,6 +2313,26 @@ namespace Infrastructure.Migrations.HomeApp
                     b.Navigation("Household");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Finance.PaymentPartner", b =>
+                {
+                    b.HasOne("Domain.Entities.Finance.Account", "LinkedAccount")
+                        .WithMany()
+                        .HasForeignKey("LinkedAccountId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_payment_partners_accounts_linked_account_id");
+
+                    b.HasOne("Domain.Entities.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_payment_partners_people_person_id");
+
+                    b.Navigation("LinkedAccount");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("Domain.Entities.Finance.Transaction", b =>
                 {
                     b.HasOne("Domain.Entities.Finance.Account", "Account")
@@ -2238,9 +2348,17 @@ namespace Infrastructure.Migrations.HomeApp
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_transactions_categories_category_id");
 
+                    b.HasOne("Domain.Entities.Finance.PaymentPartner", "PaymentPartner")
+                        .WithMany("Transactions")
+                        .HasForeignKey("PaymentPartnerId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_transactions_payment_partners_payment_partner_id");
+
                     b.Navigation("Account");
 
                     b.Navigation("Category");
+
+                    b.Navigation("PaymentPartner");
                 });
 
             modelBuilder.Entity("Domain.Entities.Households.HouseholdMember", b =>
@@ -2528,6 +2646,11 @@ namespace Infrastructure.Migrations.HomeApp
             modelBuilder.Entity("Domain.Entities.Finance.CategoryGroup", b =>
                 {
                     b.Navigation("Categories");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Finance.PaymentPartner", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Domain.Entities.Households.Household", b =>

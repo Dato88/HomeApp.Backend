@@ -17,6 +17,9 @@ public class Account : AuditableEntity
     public string? Description { get; set; }
     public bool IsActive { get; set; } = true;
 
+    // The account counts as deactivated from this date on; only set while IsActive is false
+    public DateOnly? DeactivatedFrom { get; set; }
+
     public virtual Person? Person { get; set; }
     public virtual ICollection<AccountHousehold> AccountHouseholds { get; set; } = new HashSet<AccountHousehold>();
     public virtual ICollection<Transaction> Transactions { get; set; } = new HashSet<Transaction>();

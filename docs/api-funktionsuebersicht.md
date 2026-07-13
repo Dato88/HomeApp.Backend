@@ -23,9 +23,9 @@ Ein Konto (Girokonto, Sparkonto, Kreditkarte, Depot, Bargeld …) gehört dem Nu
 
 | Funktion | Endpunkt | Verhalten |
 |---|---|---|
-| Konten auflisten | `GET /Account` | Eigene Konten + in meine Haushalte freigegebene; mit `isOwner` und `sharedHouseholdIds` |
+| Konten auflisten | `GET /Account` | Eigene Konten + in meine Haushalte freigegebene; mit `isOwner`, `sharedHouseholdIds`, `isActive` und `deactivatedFrom` |
 | Konto anlegen | `POST /Account` | Name, IBAN?, BIC?, Typ, Währung (Default EUR); optional `householdIds` für sofortige Freigabe |
-| Konto ändern | `PATCH /Account` | Nur Owner |
+| Konto ändern | `PATCH /Account` | Nur Owner; `deactivatedFrom` (Datum „deaktiviert ab") darf nur zusammen mit `isActive=false` gesetzt sein — reine Information fürs Frontend, das Backend sperrt nichts |
 | Konto löschen | `DELETE /Account?accountId=` | Nur Owner; löscht alle Buchungen mit |
 | In Haushalt freigeben | `POST /Account/share` | Nur Owner, nur in Haushalte mit eigener Mitgliedschaft; erst danach zählen die Buchungen in die E+A dieses Haushalts und Mitglieder sehen das Konto |
 | Freigabe entziehen | `DELETE /Account/share?accountId=&householdId=` | Nur Owner |
@@ -56,11 +56,23 @@ Buchungen liegen auf einem Konto. Betrag ist signiert: negativ = Ausgabe, positi
 
 | Funktion | Endpunkt | Verhalten |
 |---|---|---|
-| Buchungen auflisten | `GET /Transaction?accountId=&from=&to=&categoryId=&uncategorized=&counterpartyIban=&page=&pageSize=` | Paginiert (max. 200), neueste zuerst, mit `totalCount`; `counterpartyIban` filtert exakt auf die Gegen-IBAN (normalisierter Vergleich: Groß-/Kleinschreibung und Leerzeichen egal), `totalCount` zählt dann nur die Treffer |
-| Manuell erfassen | `POST /Transaction` | Datum, Betrag, Gegenpartei, Verwendungszweck, optional Kategorie |
+| Buchungen auflisten | `GET /Transaction?accountId=&from=&to=&categoryId=&uncategorized=&paymentPartnerIban=&paymentPartnerId=&page=&pageSize=` | Paginiert (max. 200), neueste zuerst, mit `totalCount`; `paymentPartnerId` filtert auf den aufgelösten Zahlungspartner (empfohlen), `paymentPartnerIban` auf den Roh-String der Gegen-IBAN (normalisierter Vergleich; für Spezialfälle) |
+| Manuell erfassen | `POST /Transaction` | Datum, Betrag, Zahlungspartner, Verwendungszweck, optional Kategorie; der Partner wird automatisch einem `PaymentPartner` zugeordnet (siehe unten) |
 | Ändern / Löschen | `PATCH /Transaction`, `DELETE /Transaction?transactionId=` | Nur Owner |
 | Kategorisieren (einzeln & Mehrfachauswahl) | `PATCH /Transaction/category` | Body: `transactionIds` (Liste, 1–500) + `categoryId` (oder `null` zum Entkategorisieren); **all-or-nothing** — bei einer ungültigen ID wird nichts gespeichert; auch für Haushaltsmitglieder; Kategorie muss zu einem Haushalt gehören, in den jedes betroffene Konto freigegeben ist |
 | **Kontoauszug importieren** | `POST /Transaction/import?accountId=&format=` | Datei-Upload (max. 5 MB): CAMT.053-XML, Sparkassen-CSV, Revolut-CSV (nur abgeschlossene Umsätze; Gebühr > 0 wird als separate Buchung angelegt), Excel (`.xlsx`, gleiche Spaltennamen wie der Sparkassen-Export) oder Deutsche-Bank-Kontoauszug-PDF (positionsbasiert, best effort), Format-Autoerkennung; Duplikate werden erkannt und übersprungen (auch format­übergreifend und bei Re-Import); Antwort: `imported` / `skippedDuplicates` / `failed` + Fehlerliste |
+
+**Breaking Change (2026-07):** Die früheren Felder `counterpartyName`/`counterpartyIban` (DTO) und der Query-Parameter `counterpartyIban` heißen jetzt `paymentPartnerName`/`paymentPartnerIban`. Zusätzlich trägt jede Buchung eine `paymentPartnerId` (Verweis auf den deduplizierte Zahlungspartner, `null` wenn weder Name noch IBAN vorhanden — z. B. Revolut).
+
+## Zahlungspartner (`/PaymentPartner`) — Rolle: `ViewFinance`
+
+Zahlungspartner (Empfänger/Auftraggeber) werden beim Import und beim manuellen Erfassen automatisch dedupliziert: Match zuerst über die normalisierte IBAN, ohne IBAN über den normalisierten Namen; die Roh-Strings der Bank bleiben unverändert auf der Buchung (Audit). Zahlungspartner gehören dem Konto-Owner (nicht dem Haushalt). Zeigt die Partner-IBAN auf ein eigenes Konto, wird der Partner damit verknüpft (`linkedAccountId`, Eigenübertrag).
+
+| Funktion | Endpunkt | Verhalten |
+|---|---|---|
+| Zahlungspartner auflisten | `GET /PaymentPartner` | Eigene Partner, sortiert nach Anzeigename, mit `transactionCount`, `lastBookingDate`, `iban`, `linkedAccountId` |
+| Umbenennen | `PATCH /PaymentPartner` | Body: `paymentPartnerId` + `displayName`; ändert nur den Anzeigenamen — der Matching-Schlüssel bleibt, damit künftige Importe weiter zugeordnet werden |
+| Zusammenführen | `POST /PaymentPartner/merge` | Body: `targetPaymentPartnerId` + `sourcePaymentPartnerId`; hängt alle Buchungen um und löscht den Source-Partner; hat das Ziel keine IBAN, erbt es IBAN und Konto-Verknüpfung des Source. Achtung: Der Matching-Schlüssel des Source geht verloren — ein künftiger Import mit dessen Namen legt den Partner neu an (kein Alias-Mechanismus, bewusste Limitation) |
 
 ## E+A-Report (`/Report`) — Rolle: `ViewFinance`
 

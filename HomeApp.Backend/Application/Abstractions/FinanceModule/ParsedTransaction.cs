@@ -5,7 +5,7 @@ public sealed record ParsedTransaction(
     DateOnly? ValueDate,
     decimal Amount,
     string? CurrencyCode,
-    string? CounterpartyName,
-    string? CounterpartyIban,
+    string? PaymentPartnerName,
+    string? PaymentPartnerIban,
     string? Purpose,
     string? BankReference);

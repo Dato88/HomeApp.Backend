@@ -3,6 +3,7 @@ using ApplicationTests.IntegrationTests.TestData;
 using Domain.ValueObjects;
 using Infrastructure.Features.Finance.Commands;
 using Infrastructure.Features.Finance.Queries;
+using Infrastructure.Features.Finance.Services;
 
 namespace ApplicationTests.IntegrationTests.Finance;
 
@@ -19,6 +20,9 @@ public class BaseFinanceCommandsTest : BaseTest
     protected readonly CategoryGroupQueries CategoryGroupQueries;
     protected readonly TransactionCommands TransactionCommands;
     protected readonly TransactionQueries TransactionQueries;
+    protected readonly PaymentPartnerResolver PaymentPartnerResolver;
+    protected readonly PaymentPartnerCommands PaymentPartnerCommands;
+    protected readonly PaymentPartnerQueries PaymentPartnerQueries;
     protected readonly ReportQueries ReportQueries;
 
     protected BaseFinanceCommandsTest(UnitTestingApiFactory unitTestingApiFactory) : base(
@@ -33,8 +37,11 @@ public class BaseFinanceCommandsTest : BaseTest
         CategoryQueries = new CategoryQueries(DbContext, ExecutionContext);
         CategoryGroupCommands = new CategoryGroupCommands(DbContext, ExecutionContext);
         CategoryGroupQueries = new CategoryGroupQueries(DbContext, ExecutionContext);
-        TransactionCommands = new TransactionCommands(DbContext, ExecutionContext);
+        PaymentPartnerResolver = new PaymentPartnerResolver(DbContext);
+        TransactionCommands = new TransactionCommands(DbContext, ExecutionContext, PaymentPartnerResolver);
         TransactionQueries = new TransactionQueries(DbContext, ExecutionContext);
+        PaymentPartnerCommands = new PaymentPartnerCommands(DbContext, ExecutionContext);
+        PaymentPartnerQueries = new PaymentPartnerQueries(DbContext, ExecutionContext);
         ReportQueries = new ReportQueries(DbContext, ExecutionContext);
     }
 

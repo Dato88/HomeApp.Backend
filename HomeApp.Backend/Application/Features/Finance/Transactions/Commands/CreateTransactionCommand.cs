@@ -10,8 +10,8 @@ public sealed record CreateTransactionCommand(
     DateOnly BookingDate,
     DateOnly? ValueDate,
     decimal Amount,
-    string? CounterpartyName,
-    string? CounterpartyIban,
+    string? PaymentPartnerName,
+    string? PaymentPartnerIban,
     string? Purpose,
     int? CategoryId) : IRequest<Result<int>>
 {
@@ -22,10 +22,10 @@ public sealed record CreateTransactionCommand(
             BookingDate = item.BookingDate,
             ValueDate = item.ValueDate,
             Amount = item.Amount,
-            CounterpartyName = item.CounterpartyName,
-            CounterpartyIban = string.IsNullOrWhiteSpace(item.CounterpartyIban)
+            PaymentPartnerName = item.PaymentPartnerName,
+            PaymentPartnerIban = string.IsNullOrWhiteSpace(item.PaymentPartnerIban)
                 ? null
-                : Domain.ValueObjects.Iban.Normalize(item.CounterpartyIban),
+                : Domain.ValueObjects.Iban.Normalize(item.PaymentPartnerIban),
             Purpose = item.Purpose,
             CategoryId = item.CategoryId,
             Source = TransactionSource.Manual
