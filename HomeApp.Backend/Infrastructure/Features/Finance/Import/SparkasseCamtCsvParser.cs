@@ -44,7 +44,7 @@ public sealed class SparkasseCamtCsvParser : IBankStatementParser
             return Result.Failure<BankStatementParseResult>(
                 FinanceErrors.ImportFailedWithMessage("CSV file is empty"));
 
-        var header = SplitCsvLine(lines[0]);
+        var header = CsvLineSplitter.Split(lines[0], ';');
         var columns = header
             .Select((name, i) => (name: name.Trim(), i))
             .ToDictionary(x => x.name, x => x.i, StringComparer.OrdinalIgnoreCase);
@@ -68,7 +68,7 @@ public sealed class SparkasseCamtCsvParser : IBankStatementParser
 
         for (var lineNumber = 1; lineNumber < lines.Count; lineNumber++)
         {
-            var fields = SplitCsvLine(lines[lineNumber]);
+            var fields = CsvLineSplitter.Split(lines[lineNumber], ';');
 
             try
             {
@@ -148,51 +148,5 @@ public sealed class SparkasseCamtCsvParser : IBankStatementParser
         }
 
         return null;
-    }
-
-    // Minimal quote-aware CSV splitter for semicolon separated lines
-    private static List<string> SplitCsvLine(string line)
-    {
-        var fields = new List<string>();
-        var current = new StringBuilder();
-        var inQuotes = false;
-
-        for (var i = 0; i < line.Length; i++)
-        {
-            var c = line[i];
-
-            if (inQuotes)
-            {
-                if (c == '"' && i + 1 < line.Length && line[i + 1] == '"')
-                {
-                    current.Append('"');
-                    i++;
-                }
-                else if (c == '"')
-                {
-                    inQuotes = false;
-                }
-                else
-                {
-                    current.Append(c);
-                }
-            }
-            else if (c == '"')
-            {
-                inQuotes = true;
-            }
-            else if (c == ';')
-            {
-                fields.Add(current.ToString());
-                current.Clear();
-            }
-            else
-            {
-                current.Append(c);
-            }
-        }
-
-        fields.Add(current.ToString());
-        return fields;
     }
 }

@@ -4,7 +4,7 @@ namespace Application.Features.Finance.Transactions.Commands;
 
 internal sealed class ImportTransactionsCommandValidator : AbstractValidator<ImportTransactionsCommand>
 {
-    private static readonly string[] AllowedExtensions = [".csv", ".xml", ".txt", ".xlsx"];
+    private static readonly string[] AllowedExtensions = [".csv", ".xml", ".txt", ".xlsx", ".pdf"];
 
     public ImportTransactionsCommandValidator()
     {
@@ -13,7 +13,7 @@ internal sealed class ImportTransactionsCommandValidator : AbstractValidator<Imp
         RuleFor(c => c.FileName).NotEmpty()
             .Must(fileName => AllowedExtensions.Contains(Path.GetExtension(fileName),
                 StringComparer.OrdinalIgnoreCase))
-            .WithMessage("Only .csv, .xml, .txt and .xlsx files are supported.");
+            .WithMessage("Only .csv, .xml, .txt, .xlsx and .pdf files are supported.");
 
         RuleFor(c => c.Content).NotEmpty()
             .WithMessage("File is empty.");

@@ -60,7 +60,7 @@ Buchungen liegen auf einem Konto. Betrag ist signiert: negativ = Ausgabe, positi
 | Manuell erfassen | `POST /Transaction` | Datum, Betrag, Gegenpartei, Verwendungszweck, optional Kategorie |
 | Ändern / Löschen | `PATCH /Transaction`, `DELETE /Transaction?transactionId=` | Nur Owner |
 | Kategorisieren (einzeln & Mehrfachauswahl) | `PATCH /Transaction/category` | Body: `transactionIds` (Liste, 1–500) + `categoryId` (oder `null` zum Entkategorisieren); **all-or-nothing** — bei einer ungültigen ID wird nichts gespeichert; auch für Haushaltsmitglieder; Kategorie muss zu einem Haushalt gehören, in den jedes betroffene Konto freigegeben ist |
-| **Kontoauszug importieren** | `POST /Transaction/import?accountId=&format=` | Datei-Upload (max. 5 MB): CAMT.053-XML, Sparkassen-CSV oder Excel (`.xlsx`, gleiche Spaltennamen wie der Sparkassen-Export), Format-Autoerkennung; Duplikate werden erkannt und übersprungen (auch format­übergreifend und bei Re-Import); Antwort: `imported` / `skippedDuplicates` / `failed` + Fehlerliste |
+| **Kontoauszug importieren** | `POST /Transaction/import?accountId=&format=` | Datei-Upload (max. 5 MB): CAMT.053-XML, Sparkassen-CSV, Revolut-CSV (nur abgeschlossene Umsätze; Gebühr > 0 wird als separate Buchung angelegt), Excel (`.xlsx`, gleiche Spaltennamen wie der Sparkassen-Export) oder Deutsche-Bank-Kontoauszug-PDF (positionsbasiert, best effort), Format-Autoerkennung; Duplikate werden erkannt und übersprungen (auch format­übergreifend und bei Re-Import); Antwort: `imported` / `skippedDuplicates` / `failed` + Fehlerliste |
 
 ## E+A-Report (`/Report`) — Rolle: `ViewFinance`
 

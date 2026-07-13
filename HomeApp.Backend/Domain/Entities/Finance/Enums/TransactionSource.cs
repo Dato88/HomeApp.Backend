@@ -5,5 +5,6 @@ public enum TransactionSource
     Manual = 0,
     CsvImport = 1,
     CamtImport = 2,
-    XlsxImport = 3
+    XlsxImport = 3,
+    PdfImport = 4
 }

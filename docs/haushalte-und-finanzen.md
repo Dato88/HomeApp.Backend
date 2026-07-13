@@ -33,7 +33,7 @@ Das Feature bildet ein Haushaltsbuch ab, das sich **vollständig aus den Buchung
 | `finance` | `account_households` | Freigabe Konto↔Haushalt, unique `(account_id, household_id)` |
 | `finance` | `category_groups` | Kategorie-Gruppe pro Haushalt, unique `(household_id, name)`, `category_group_type` (1=Income, 2=Expense) und `target_percent` (Zielanteil am Einkommen, numeric(5,2), nullable) |
 | `finance` | `categories` | Kategorie pro Haushalt, unique `(household_id, name)`, `category_type` (Income/Expense), optional `category_group_id` (FK `SET NULL`) |
-| `finance` | `transactions` | Buchung: signierter Betrag (negativ = Ausgabe), `booking_date`, Gegenpartei, `category_id` (FK `SET NULL`), `import_hash` (unique pro Konto, gefiltert), `source` (Manual/CsvImport/CamtImport/XlsxImport) |
+| `finance` | `transactions` | Buchung: signierter Betrag (negativ = Ausgabe), `booking_date`, Gegenpartei, `category_id` (FK `SET NULL`), `import_hash` (unique pro Konto, gefiltert), `source` (Manual/CsvImport/CamtImport/XlsxImport/PdfImport) |
 
 Löschkaskaden: Person → Konten (→ Buchungen) und Mitgliedschaften; Haushalt → Kategorien und Kategorie-Gruppen (Buchungen werden nur entkategorisiert), Freigaben. Beim Löschen einer Kategorie-Gruppe bleiben die Kategorien bestehen (nur der Gruppen-Link wird geleert).
 
@@ -58,9 +58,14 @@ Der Backfill läuft als SQL innerhalb der Migration und wird in CI durch die Tes
 
 ## Import
 
-- Endpunkt: `POST /Transaction/import?accountId=&format=` (Multipart-Datei, max. 5 MB, nur Owner; erlaubte Endungen `.csv`, `.xml`, `.txt`, `.xlsx`).
-- Formate: **CAMT.053-XML** (`format=camt053`, namespace-tolerant für .001.02–.08), **Sparkassen-CSV-CAMT** (`format=sparkasse-csv`, Semikolon, `dd.MM.yy`, Dezimalkomma, UTF-8/Windows-1252-Erkennung) und **Excel** (`format=xlsx`, via ClosedXML: erstes Worksheet, Header-Zeile mit denselben deutschen Spaltennamen wie der Sparkassen-CSV-Export — Pflicht: `Buchungstag`, `Betrag`; Zellen dürfen native Excel-Datums-/Zahlenwerte oder deutsch formatierter Text sein). Ohne `format`-Parameter wird automatisch erkannt (Dateiendung/Magic Bytes).
-- **Duplikaterkennung:** SHA-256 über `kontoId|buchungstag|betrag|gegen-iban|verwendungszweck(normalisiert)` + Occurrence-Suffix für identische Buchungen innerhalb einer Datei. Der Hash ist formatunabhängig — CSV-, CAMT- und XLSX-Exporte desselben Kontos dedupen gegeneinander. Gefilterter Unique-Index `(account_id, import_hash)` als Race-Absicherung.
+- Endpunkt: `POST /Transaction/import?accountId=&format=` (Multipart-Datei, max. 5 MB, nur Owner; erlaubte Endungen `.csv`, `.xml`, `.txt`, `.xlsx`, `.pdf`).
+- Formate (ohne `format`-Parameter automatische Erkennung über Dateiendung/Header/Magic Bytes):
+  - **CAMT.053-XML** (`format=camt053`, namespace-tolerant für .001.02–.08)
+  - **Sparkassen-CSV-CAMT** (`format=sparkasse-csv`, Semikolon, `dd.MM.yy`, Dezimalkomma, UTF-8/Windows-1252-Erkennung)
+  - **Revolut-CSV** (`format=revolut-csv`, der App-Export `account-statement_…​.csv`): Komma-getrennt, deutsche **und** englische Header, Timestamps `yyyy-MM-dd HH:mm:ss` (Buchungstag = Abschluss-, Valuta = Beginn-Datum), Dezimalpunkt. Nur Zeilen mit Status `ABGESCHLOSSEN`/`COMPLETED` (inkl. interner Transfers wie „An EUR Tagesgeld" — die hält man per Kategorie „Umbuchung" aus der E+A); `PENDING`/`REVERTED` wird übersprungen. Eine **Gebühr > 0 erzeugt eine zweite, separat kategorisierbare Buchung** (negativ, Verwendungszweck `Gebühr: …`).
+  - **Excel** (`format=xlsx`, via ClosedXML: erstes Worksheet, Header-Zeile mit denselben deutschen Spaltennamen wie der Sparkassen-CSV-Export — Pflicht: `Buchungstag`, `Betrag`; Zellen dürfen native Excel-Datums-/Zahlenwerte oder deutsch formatierter Text sein)
+  - **Deutsche-Bank-Kontoauszug-PDF** (`format=deutsche-bank-pdf`, via PdfPig): PDFs tragen keine Datenstruktur, daher **positionsbasiertes** Parsen — die Kopfzeilen-Wörter Buchung/Valuta/Vorgang/Soll/Haben definieren die Spalten, daraus werden Buchungen inkl. mehrzeiligem Verwendungszweck und Gegen-IBAN rekonstruiert; SEPA-Metadaten (Gläubiger-ID, Mand-ID, RCUR, …) werden ausgefiltert, „Neuer Saldo" beendet das Parsen. **Best effort:** bewusst auf das private Kontoauszug-Layout beschränkt; Einträge, die ein Layout-Wechsel bricht, landen in der Fehlerliste der Antwort statt im Import.
+- **Duplikaterkennung:** SHA-256 über `kontoId|buchungstag|betrag|gegen-iban|verwendungszweck(normalisiert)` + Occurrence-Suffix für identische Buchungen innerhalb einer Datei. Der Hash ist formatunabhängig — CSV-, CAMT-, XLSX- und PDF-Importe desselben Kontos dedupen gegeneinander. Gefilterter Unique-Index `(account_id, import_hash)` als Race-Absicherung.
 - Bekannte Grenze: identische Buchungen am selben Tag, die auf **zwei verschiedene** Dateien verteilt sind, kollidieren (Occurrence-Suffix wirkt nur innerhalb einer Datei).
 
 ## Kategorisierung (einzeln & Mehrfachauswahl)

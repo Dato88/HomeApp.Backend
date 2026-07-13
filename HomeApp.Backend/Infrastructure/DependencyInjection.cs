@@ -77,7 +77,9 @@ public static class DependencyInjection
         services.AddScoped<IReportQueries, ReportQueries>();
         services.AddScoped<IBankStatementParser, Camt053Parser>();
         services.AddScoped<IBankStatementParser, SparkasseCamtCsvParser>();
+        services.AddScoped<IBankStatementParser, RevolutCsvParser>();
         services.AddScoped<IBankStatementParser, XlsxStatementParser>();
+        services.AddScoped<IBankStatementParser, DeutscheBankPdfParser>();
         services.AddScoped<IPersonCommands, PersonCommands>();
         services.AddScoped<IPersonQueries, PersonQueries>();
         services.AddScoped<ITodoCommands, TodoCommands>();

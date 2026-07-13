@@ -18,6 +18,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="PdfPig"/>
         <PackageReference Include="OpenTelemetry"/>
         <PackageReference Include="OpenTelemetry.Exporter.Console"/>
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
